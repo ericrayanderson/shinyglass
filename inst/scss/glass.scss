@@ -1,0 +1,413 @@
+// Apple Liquid Glass theme layer for Bootstrap 5
+// Inspired by Apple's iOS 26 / visionOS design language
+
+// ---------------------------------------------------------------------------
+// CSS custom properties (overridden per preset in glass_theme())
+// ---------------------------------------------------------------------------
+:root {
+  --glass-bg: #{$glass-bg};
+  --glass-bg-hover: #{$glass-bg-hover};
+  --glass-border: #{$glass-border};
+  --glass-shadow: #{$glass-shadow};
+  --glass-blur: #{$glass-blur};
+  --glass-saturate: #{$glass-saturate};
+  --glass-radius: #{$glass-radius};
+  --glass-highlight: #{$glass-highlight};
+  --glass-specular: #{$glass-specular};
+  --glass-menu-bg: #{$glass-menu-bg};
+  --glass-menu-color: #{$glass-menu-color};
+}
+
+// ---------------------------------------------------------------------------
+// Page background
+// ---------------------------------------------------------------------------
+body {
+  background: $glass-page-bg !important;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Ambient color orbs behind glass surfaces
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%, $glass-orb-1 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 75%, $glass-orb-2 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, $glass-orb-3 0%, transparent 50%);
+  pointer-events: none;
+}
+
+// ---------------------------------------------------------------------------
+// Glass surface mixin
+// ---------------------------------------------------------------------------
+@mixin glass-surface($radius: var(--glass-radius)) {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: $radius;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+
+  // Specular top-edge highlight (behind content — no z-index on children needed)
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(
+      180deg,
+      var(--glass-specular) 0%,
+      transparent 100%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  // Liquid inner glow
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 4px 20px rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// Lighter glass for inputs — no pseudo-elements or overflow clipping
+@mixin glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+// ---------------------------------------------------------------------------
+// Cards
+// ---------------------------------------------------------------------------
+.card {
+  @include glass-surface();
+  color: inherit;
+
+  .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--glass-border);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Navigation
+// ---------------------------------------------------------------------------
+.navbar {
+  @include glass-surface(0);
+  border-radius: 0 !important;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  .navbar-brand {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+}
+
+.nav-tabs {
+  border-bottom: 1px solid var(--glass-border);
+
+  .nav-link {
+    border: none;
+    border-radius: 0.75rem 0.75rem 0 0;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+
+    &.active {
+      opacity: 1;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      border-bottom: 2px solid $primary;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Buttons
+// ---------------------------------------------------------------------------
+.btn {
+  border-radius: 0.75rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info {
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+.btn-outline-primary,
+.btn-outline-secondary {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  &:hover {
+    background: var(--glass-bg-hover);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form controls
+// ---------------------------------------------------------------------------
+.form-control {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  &:focus {
+    background: var(--glass-bg-hover);
+    border-color: rgba($primary, 0.5);
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.15),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.form-select {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  // Opaque menu so options don't show content behind them
+  &:focus,
+  &:active,
+  &[size]:not([size="1"]),
+  &[multiple] {
+    background-color: var(--glass-menu-bg) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 1060;
+    position: relative;
+  }
+
+  option,
+  optgroup {
+    background-color: var(--glass-menu-bg);
+    color: var(--glass-menu-color);
+  }
+}
+
+// Lift the select container above later siblings when the menu is open.
+// Native <select> menus paint in DOM order; without this, radios/checkboxes
+// below bleed through because they share the same stacking level.
+.glass-card,
+.card {
+  .shiny-input-container:has(.form-select) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .shiny-input-container.glass-select-open,
+  .shiny-input-container:has(.form-select:focus),
+  .shiny-input-container:has(.form-select:active) {
+    z-index: 1000;
+  }
+}
+
+.input-group-text {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// Modals & dropdowns
+// ---------------------------------------------------------------------------
+.modal-content {
+  @include glass-surface(1.25rem);
+}
+
+.dropdown-menu {
+  background-color: var(--glass-menu-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px var(--glass-shadow);
+  padding: 0.5rem;
+  z-index: 1060;
+
+  .dropdown-item {
+    border-radius: 0.5rem;
+    color: var(--glass-menu-color);
+
+    &:hover,
+    &:focus {
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Alerts, badges, progress
+// ---------------------------------------------------------------------------
+.alert {
+  @include glass-surface(1rem);
+  border-width: 1px;
+}
+
+.badge {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.progress {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// Tables
+// ---------------------------------------------------------------------------
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: var(--glass-bg-hover);
+  --bs-table-hover-bg: var(--glass-bg-hover);
+}
+
+// ---------------------------------------------------------------------------
+// bslib value boxes & sidebars
+// ---------------------------------------------------------------------------
+.value-box {
+  @include glass-surface();
+}
+
+.bslib-sidebar-layout > .sidebar {
+  @include glass-surface(0);
+  border-radius: 0 !important;
+}
+
+// ---------------------------------------------------------------------------
+// shinyglass component classes
+// ---------------------------------------------------------------------------
+.glass-card {
+  @include glass-surface();
+  overflow: visible; // allow select menus to layer above siblings
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.glass-nav {
+  @include glass-surface(0);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  border-radius: 0 !important;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.glass-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.glass-button {
+  @include glass-surface(0.75rem);
+  background: rgba($primary, 0.15);
+  border-color: rgba($primary, 0.3);
+  color: $primary;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  display: inline-block;
+  text-align: center;
+
+  &:hover {
+    background: rgba($primary, 0.25);
+    box-shadow: 0 4px 12px rgba($primary, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility: respect reduced motion
+// ---------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn,
+  .glass-card,
+  .glass-button,
+  .form-control,
+  .form-select {
+    transition: none;
+  }
+}
