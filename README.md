@@ -12,7 +12,9 @@ Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverv
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
-## Usage
+## Single-file app
+
+Save as `app.R` and run with `shiny::runApp()`:
 
 ```r
 library(shiny)
@@ -20,17 +22,29 @@ library(shinyglass)
 
 ui <- fluidPage(
   theme = glass_theme(),
-  titlePanel("My App"),
-  selectInput("color", "Color", c("Blue", "Purple", "Orange")),
+  titlePanel("Liquid Glass"),
+  selectInput("color", "Favorite color", c("Blue", "Purple", "Orange")),
+  sliderInput("n", "Number of bars", 5, 30, 15),
   plotOutput("plot")
 )
 
-shinyApp(ui, server = function(input, output, session) {})
+server <- function(input, output, session) {
+  output$plot <- renderPlot({
+    barplot(
+      seq_len(input$n),
+      col = "#007AFF",
+      border = NA,
+      main = paste("You chose", input$color)
+    )
+  })
+}
+
+shinyApp(ui, server)
 ```
 
-That's it. Bootstrap cards, buttons, inputs, navbars, and modals are styled automatically.
+You only need `shiny` and `shinyglass`. **You do not need to load bslib** — `glass_theme()` returns a bslib theme object that `fluidPage()` (and other Shiny page functions) understand automatically.
 
-Use [bslib](https://rstudio.github.io/bslib/) helpers like `card()` if you like — they work great with `glass_theme()`.
+Load [bslib](https://rstudio.github.io/bslib/) only if you want its UI helpers like `card()` or `page_fillable()`. Standard Shiny inputs, buttons, and layouts work out of the box.
 
 ## Options
 
