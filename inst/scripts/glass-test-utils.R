@@ -163,8 +163,12 @@ prepare_patched_app_dir <- function(app_dir) {
 
 wait_for_url <- function(url, timeout = 60) {
   deadline <- Sys.time() + timeout
+  h <- curl::new_handle(connecttimeout = 3L, timeout = 5L)
   while (Sys.time() < deadline) {
-    ok <- tryCatch(curl::curl_fetch_memory(url)$status_code == 200, error = function(e) FALSE)
+    ok <- tryCatch(
+      curl::curl_fetch_memory(url, handle = h)$status_code == 200,
+      error = function(e) FALSE
+    )
     if (ok) return(TRUE)
     Sys.sleep(0.5)
   }

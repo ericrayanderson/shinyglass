@@ -298,16 +298,37 @@ results <- data.frame(
   stringsAsFactors = FALSE
 )
 
+run_one_app <- function(app_dir, out_dir, port) {
+  if (requireNamespace("R.utils", quietly = TRUE)) {
+    tryCatch(
+      R.utils::withTimeout(
+        test_one_app(app_dir, out_dir, port = port),
+        timeout = 180,
+        onTimeout = "error"
+      ),
+      error = function(e) {
+        if (grepl("timeout", conditionMessage(e), ignore.case = TRUE)) {
+          list(status = "fail", reason = "app timed out (180s)", shots = 0L)
+        } else {
+          list(status = "fail", reason = conditionMessage(e), shots = 0L)
+        }
+      }
+    )
+  } else {
+    tryCatch(
+      test_one_app(app_dir, out_dir, port = port),
+      error = function(e) list(status = "fail", reason = conditionMessage(e), shots = 0L)
+    )
+  }
+}
+
 base_port <- 4100L
 for (i in seq_along(app_dirs)) {
   app <- basename(app_dirs[[i]])
   plog("[", i, "/", length(app_dirs), "] ", app)
   out_dir <- file.path(out_root, app)
 
-  res <- tryCatch(
-    test_one_app(app_dirs[[i]], out_dir, port = base_port + i),
-    error = function(e) list(status = "fail", reason = conditionMessage(e), shots = 0L)
-  )
+  res <- run_one_app(app_dirs[[i]], out_dir, port = base_port + i)
 
   results$status[i] <- res$status
   results$reason[i] <- res$reason %||% ""
