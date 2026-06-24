@@ -5,10 +5,10 @@
 #   Rscript run-and-screenshot.R [app.R] [port] [output.png]
 #
 # Example:
-#   Rscript inst/scripts/run-and-screenshot.R inst/examples/test-app.R 3847 screenshot.png
+#   Rscript inst/scripts/run-and-screenshot.R inst/examples/demo-app.R 3847 screenshot.png
 
 args <- commandArgs(trailingOnly = TRUE)
-app_path <- if (length(args) >= 1) args[[1]] else system.file("examples", "test-app.R", package = "shinyglass")
+app_path <- if (length(args) >= 1) args[[1]] else system.file("examples", "demo-app.R", package = "shinyglass")
 port <- if (length(args) >= 2) as.integer(args[[2]]) else 3847L
 out_path <- if (length(args) >= 3) args[[3]] else "screenshot.png"
 url <- sprintf("http://127.0.0.1:%d", port)
