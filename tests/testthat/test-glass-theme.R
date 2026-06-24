@@ -18,4 +18,6 @@ test_that("glass_theme compiles dependencies", {
   theme <- glass_theme()
   deps <- bslib::bs_theme_dependencies(theme)
   expect_true(length(deps) >= 1)
+  dep_names <- vapply(deps, function(d) d$name, character(1))
+  expect_true("shinyglass" %in% dep_names)
 })

@@ -1,7 +1,8 @@
 #' Apple Liquid Glass theme for Shiny
 #'
 #' Returns a [bslib::bs_theme()] object styled with Apple's Liquid Glass
-#' aesthetic. Pass it to any bslib-aware page function or Shiny UI container.
+#' aesthetic. Pass it to `fluidPage()`, `navbarPage()`, or any bslib-aware
+#' page function — that's all you need.
 #'
 #' @param preset `"light"` or `"dark"`. Controls the overall color scheme.
 #' @param primary Primary accent color. Defaults to Apple system blue
@@ -21,10 +22,8 @@
 #' ui <- fluidPage(
 #'   theme = glass_theme(),
 #'   titlePanel("Liquid Glass"),
-#'   card(
-#'     card_header("Welcome"),
-#'     "Your app content here."
-#'   )
+#'   selectInput("color", "Color", c("Blue", "Purple", "Orange")),
+#'   plotOutput("plot")
 #' )
 #' }
 #'
@@ -76,42 +75,15 @@ glass_theme <- function(
   )
 
   glass_scss <- system.file("scss", "glass.scss", package = "shinyglass")
-  bslib::bs_add_rules(theme, sass::sass_file(glass_scss))
-}
+  theme <- bslib::bs_add_rules(theme, sass::sass_file(glass_scss))
 
-#' Apply Liquid Glass theme globally
-#'
-#' Sets the Liquid Glass theme as the global Bootstrap theme for the current R
-#' session. Useful when you want every Shiny app in the session to inherit the
-#' glass styling without passing `theme` to each page function.
-#'
-#' @inheritParams glass_theme
-#' @return Invisibly returns the theme object.
-#'
-#' @examples
-#' \dontrun{
-#' apply_glass_theme()
-#' shiny::runApp("my-app")
-#' }
-#'
-#' @export
-apply_glass_theme <- function(
-    preset = c("light", "dark"),
-    primary = "#007AFF",
-    blur = 20,
-    saturation = 180,
-    radius = "1.25rem",
-    ...) {
-  theme <- glass_theme(
-    preset = preset,
-    primary = primary,
-    blur = blur,
-    saturation = saturation,
-    radius = radius,
-    ...
+  glass_js <- htmltools::htmlDependency(
+    name = "shinyglass",
+    version = utils::packageVersion("shinyglass"),
+    src = system.file("js", package = "shinyglass"),
+    script = "shiny-glass.js"
   )
-  bslib::bs_global_theme(theme)
-  invisible(theme)
+  bslib::bs_bundle(theme, sass::sass_layer(html = glass_js))
 }
 
 .glass_font_stack <- function() {

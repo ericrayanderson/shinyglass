@@ -31,11 +31,9 @@ wait_for_shiny_outputs <- function(session, timeout = 30) {
     new Promise((resolve, reject) => {
       const deadline = Date.now() + %d;
       const check = () => {
-        const plotImg = document.querySelector('#demo_plot img');
-        const summary = document.querySelector('#summary');
+        const plotImg = document.querySelector('#dist_plot img, #demo_plot img');
         const plotReady = plotImg && plotImg.complete && plotImg.naturalWidth > 0;
-        const summaryReady = summary && summary.textContent.trim().length > 0;
-        if (plotReady && summaryReady) {
+        if (plotReady) {
           resolve(true);
           return;
         }

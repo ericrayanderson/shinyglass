@@ -32,7 +32,8 @@ A [bslib::bs_theme()] object.
 }
 \description{
 Returns a [bslib::bs_theme()] object styled with Apple's Liquid Glass
-aesthetic. Pass it to any bslib-aware page function or Shiny UI container.
+aesthetic. Pass it to `fluidPage()`, `navbarPage()`, or any bslib-aware
+page function — that's all you need.
 }
 \examples{
 \dontrun{
@@ -42,10 +43,8 @@ library(shinyglass)
 ui <- fluidPage(
   theme = glass_theme(),
   titlePanel("Liquid Glass"),
-  card(
-    card_header("Welcome"),
-    "Your app content here."
-  )
+  selectInput("color", "Color", c("Blue", "Purple", "Orange")),
+  plotOutput("plot")
 )
 }
 

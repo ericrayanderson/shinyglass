@@ -1,6 +1,6 @@
 # shinyglass
 
-Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) aesthetic for R Shiny apps — one theme call, built on [bslib](https://rstudio.github.io/bslib/).
+Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) aesthetic for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
 
 <p align="center">
   <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app" width="700">
@@ -12,41 +12,34 @@ Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverv
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
-## Quick start
+## Usage
 
 ```r
 library(shiny)
-library(bslib)
 library(shinyglass)
 
 ui <- fluidPage(
   theme = glass_theme(),
-  card(
-    card_header("Hello"),
-    "Your app content here."
-  )
+  titlePanel("My App"),
+  selectInput("color", "Color", c("Blue", "Purple", "Orange")),
+  plotOutput("plot")
 )
 
 shinyApp(ui, server = function(input, output, session) {})
 ```
 
-Or use the convenience page wrapper:
+That's it. Bootstrap cards, buttons, inputs, navbars, and modals are styled automatically.
 
-```r
-ui <- glass_page(
-  header = "My App",
-  glass_card(h3("Welcome"), p("Liquid glass styling applied automatically."))
-)
-```
+Use [bslib](https://rstudio.github.io/bslib/) helpers like `card()` if you like — they work great with `glass_theme()`.
 
-## Customization
+## Options
 
 ```r
 glass_theme(
-  preset  = "dark",      # "light" or "dark"
-  primary = "#007AFF",   # accent color
-  blur    = 20,          # backdrop blur (px)
-  saturation = 180       # backdrop saturation (%)
+  preset     = "dark",   # "light" or "dark"
+  primary    = "#007AFF",
+  blur       = 20,
+  saturation = 180
 )
 ```
 

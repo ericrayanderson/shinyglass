@@ -104,6 +104,7 @@ body::before {
 // ---------------------------------------------------------------------------
 .card {
   @include glass-surface();
+  overflow: visible; // allow select menus to layer above siblings
   color: inherit;
 
   .card-header {
@@ -249,9 +250,6 @@ body::before {
 }
 
 // Lift the select container above later siblings when the menu is open.
-// Native <select> menus paint in DOM order; without this, radios/checkboxes
-// below bleed through because they share the same stacking level.
-.glass-card,
 .card {
   .shiny-input-container:has(.form-select) {
     position: relative;
@@ -345,67 +343,11 @@ body::before {
 }
 
 // ---------------------------------------------------------------------------
-// shinyglass component classes
-// ---------------------------------------------------------------------------
-.glass-card {
-  @include glass-surface();
-  overflow: visible; // allow select menus to layer above siblings
-  padding: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.glass-nav {
-  @include glass-surface(0);
-  position: sticky;
-  top: 0;
-  z-index: 1030;
-  border-radius: 0 !important;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.glass-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
-.glass-button {
-  @include glass-surface(0.75rem);
-  background: rgba($primary, 0.15);
-  border-color: rgba($primary, 0.3);
-  color: $primary;
-  padding: 0.5rem 1.25rem;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  display: inline-block;
-  text-align: center;
-
-  &:hover {
-    background: rgba($primary, 0.25);
-    box-shadow: 0 4px 12px rgba($primary, 0.2);
-  }
-
-  &:active {
-    transform: scale(0.97);
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Accessibility: respect reduced motion
 // ---------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   .card,
   .btn,
-  .glass-card,
-  .glass-button,
   .form-control,
   .form-select {
     transition: none;
