@@ -187,7 +187,7 @@ test_one_app <- function(app_dir, out_dir, port = 4000L) {
 
   on.exit(kill_app(), add = TRUE)
 
-  if (!wait_for_url(url, timeout = 90)) {
+  if (!wait_for_url(url, timeout = 30)) {
     err <- proc$read_all_error()
     log("FAIL: app did not start\n", err)
     return(list(status = "fail", reason = "app did not start", shots = 0L))
