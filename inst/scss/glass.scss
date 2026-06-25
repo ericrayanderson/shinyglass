@@ -18,6 +18,10 @@
   --glass-menu-bg: #{$glass-menu-bg};
   --glass-menu-color: #{$glass-menu-color};
   --glass-float-margin: 0.85rem;
+  --glass-tint-r: 0;
+  --glass-tint-g: 122;
+  --glass-tint-b: 255;
+  --glass-tint-strength: 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -37,10 +41,10 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(ellipse 90% 70% at 12% 18%, $glass-orb-1 0%, transparent 58%),
-    radial-gradient(ellipse 75% 55% at 88% 72%, $glass-orb-2 0%, transparent 52%),
-    radial-gradient(ellipse 65% 45% at 52% 42%, $glass-orb-3 0%, transparent 48%),
-    radial-gradient(ellipse 50% 40% at 75% 15%, $glass-orb-2 0%, transparent 45%);
+    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -50,8 +54,8 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 30% 85%, $glass-orb-1 0%, transparent 32%),
-    radial-gradient(circle at 90% 35%, $glass-orb-3 0%, transparent 28%);
+    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 32%),
+    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 28%);
   opacity: 0.85;
   pointer-events: none;
 }
@@ -137,11 +141,35 @@ body::after {
   align-items: flex-start;
 }
 
+// bslib multi-card layouts — gap reveals ambient scene between surfaces
+.bslib-gap-spacing,
+.layout-column-wrap,
+.layout-column-plot {
+  gap: 0.5rem;
+}
+
 // Content columns stay open so the scene shows through
 .col-sm-8[role="main"],
 .col-sm-8 > .tab-content,
 .tab-content > .tab-pane.active {
   background: transparent;
+}
+
+// Hero content region — full-bleed colorful canvas behind floating chrome
+.glass-content-hero {
+  position: relative;
+  min-height: 18rem;
+  margin: 0 0 1rem;
+  border-radius: calc(var(--glass-radius) * 1.1);
+  overflow: hidden;
+
+  .shiny-plot-output,
+  .shiny-html-output {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 // Classic Shiny sidebar — floating glass control deck

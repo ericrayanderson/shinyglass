@@ -31,8 +31,8 @@
 glass_theme <- function(
     preset = c("light", "dark"),
     primary = "#007AFF",
-    blur = 24,
-    saturation = 180,
+    blur = 28,
+    saturation = 200,
     radius = "1.25rem",
     ...) {
   preset <- match.arg(preset)
@@ -78,13 +78,26 @@ glass_theme <- function(
   glass_scss <- system.file("scss", "glass.scss", package = "shinyglass")
   theme <- bslib::bs_add_rules(theme, sass::sass_file(glass_scss))
 
+  preset_tag <- htmltools::tagFunction(function() {
+    htmltools::tags$script(
+      htmltools::HTML(sprintf(
+        "document.documentElement.dataset.glassPreset=%s;",
+        shQuote(preset, type = "cmd")
+      ))
+    )
+  })
+
   glass_js <- htmltools::htmlDependency(
     name = "shinyglass",
     version = utils::packageVersion("shinyglass"),
     src = system.file("js", package = "shinyglass"),
     script = "shiny-glass.js"
   )
-  bslib::bs_bundle(theme, sass::sass_layer(html = glass_js))
+  bslib::bs_bundle(
+    theme,
+    sass::sass_layer(html = preset_tag),
+    sass::sass_layer(html = glass_js)
+  )
 }
 
 .glass_font_stack <- function() {
