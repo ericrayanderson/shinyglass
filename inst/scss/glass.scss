@@ -24,6 +24,11 @@
   --glass-tint-strength: 0;
   --glass-specular-x: 28%;
   --glass-specular-y: 10%;
+  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+}
+
+[data-glass-preset="dark"] {
+  --glass-inner-glow: rgba(255, 255, 255, 0.06);
 }
 
 // ---------------------------------------------------------------------------
@@ -112,7 +117,7 @@ body::after {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    box-shadow: inset 0 4px 20px rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 4px 20px var(--glass-inner-glow);
     pointer-events: none;
     z-index: -1;
   }
@@ -623,29 +628,295 @@ form.well,
 }
 
 // ---------------------------------------------------------------------------
-// bslib value boxes & sidebars
+// bslib value boxes & page_sidebar overlay
 // ---------------------------------------------------------------------------
 .value-box {
   @include glass-surface();
 }
 
-.bslib-sidebar-layout > .sidebar {
-  @include glass-floating(0);
-  border-radius: 0 var(--glass-radius) var(--glass-radius) 0 !important;
-  margin: var(--glass-float-margin) 0 var(--glass-float-margin) var(--glass-float-margin);
-  position: relative;
-  z-index: 2;
+// page_sidebar title — floating glass chrome
+.bslib-page-sidebar > .navbar {
+  @include glass-floating(var(--glass-radius));
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  color: inherit !important;
+  margin: var(--glass-float-margin) var(--glass-float-margin) 0;
+  padding: 0.55rem 1rem;
+  position: sticky;
+  top: var(--glass-float-margin);
+  z-index: 1030;
+
+  --#{$prefix}navbar-brand-color: inherit;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+// Apple overlay: main full-bleed, sidebar floats above content
+.bslib-sidebar-layout {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible;
+
+  > .main,
+  > .main.bslib-page-main {
+    background: transparent !important;
+    color: inherit;
+  }
+
+  > .sidebar {
+    @include glass-floating(var(--glass-radius));
+    background-color: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: inherit;
+    overflow: auto;
+
+    .sidebar-title {
+      border-bottom: 1px solid var(--glass-border);
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  > .collapse-toggle {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 999px !important;
+    box-shadow:
+      0 8px 24px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+    color: inherit;
+    z-index: 30;
+
+    &:hover {
+      background: var(--glass-bg-hover) !important;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: relative;
+
+    > .main,
+    > .main.bslib-page-main {
+      grid-column: 1 / -1 !important;
+      grid-row: 1 / 2;
+      border-radius: 0 !important;
+      padding: var(--glass-float-margin);
+    }
+
+    > .sidebar {
+      position: absolute;
+      top: var(--glass-float-margin);
+      bottom: var(--glass-float-margin);
+      left: var(--glass-float-margin);
+      width: var(--_sidebar-width, 280px);
+      max-width: calc(100% - var(--glass-float-margin) * 2);
+      max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem);
+      margin: 0 !important;
+      z-index: 20;
+      border-radius: var(--glass-radius) !important;
+      transition:
+        transform 0.3s cubic-bezier(0.8, 0.78, 0.22, 1.07),
+        opacity 0.25s ease;
+    }
+
+    &.sidebar-right > .sidebar {
+      left: auto;
+      right: var(--glass-float-margin);
+    }
+
+    &:not(.sidebar-collapsed) > .collapse-toggle {
+      left: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      );
+      right: auto !important;
+      top: calc(var(--glass-float-margin) + var(--_icon-size, 1rem) * 0.5);
+    }
+
+    &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle {
+      left: auto !important;
+      right: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      );
+    }
+
+    &.sidebar-collapsed > .sidebar {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(calc(-100% - var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-right.sidebar-collapsed > .sidebar {
+      transform: translateX(calc(100% + var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-collapsed > .collapse-toggle {
+      left: var(--glass-float-margin) !important;
+      right: auto !important;
+      top: var(--glass-float-margin);
+      color: inherit;
+    }
+
+    &.sidebar-right.sidebar-collapsed > .collapse-toggle {
+      left: auto !important;
+      right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-collapsed > .main,
+    &.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
+      padding-right: var(--glass-float-margin);
+    }
+
+    &.sidebar-right.sidebar-collapsed > .main,
+    &.sidebar-right.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin);
+      padding-right: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
+    }
+  }
 }
 
 // Outputs: light glass frame; plot canvas stays neutral inside
 .shiny-plot-output,
 .shiny-html-output,
-.shiny-image-output,
-.dataTables_wrapper {
+.shiny-image-output {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.65rem;
   margin-bottom: 0.75rem;
   overflow: visible;
+}
+
+// ---------------------------------------------------------------------------
+// DataTables (DT) — glass table chrome
+// ---------------------------------------------------------------------------
+.dataTables_wrapper {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate {
+    color: inherit;
+    margin-bottom: 0.5rem;
+  }
+
+  .dataTables_length select,
+  .dataTables_filter input {
+    @include glass-input();
+    border-radius: 0.65rem;
+    color: inherit;
+    margin: 0 0.35rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  table.dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100% !important;
+
+    thead th,
+    thead td {
+      background: var(--glass-bg-hover);
+      border-bottom: 1px solid var(--glass-border) !important;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.65rem 0.85rem;
+    }
+
+    tbody tr {
+      background: transparent;
+      transition: background 0.15s ease;
+
+      > td {
+        border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+        color: inherit;
+        padding: 0.55rem 0.85rem;
+        vertical-align: middle;
+      }
+
+      &:nth-child(even) > td {
+        background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+      }
+
+      &:hover > td {
+        background: var(--glass-bg-hover);
+      }
+    }
+  }
+
+  .dataTables_paginate {
+    .paginate_button {
+      @include glass-input();
+      border-radius: 0.55rem !important;
+      color: inherit !important;
+      margin: 0 0.1rem;
+      padding: 0.3rem 0.65rem !important;
+
+      &:hover {
+        background: var(--glass-bg-hover) !important;
+        border-color: var(--glass-border) !important;
+        color: inherit !important;
+      }
+
+      &.current,
+      &.current:hover {
+        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
+        border-color: rgba($primary, 0.35) !important;
+        color: inherit !important;
+      }
+
+      &.disabled,
+      &.disabled:hover {
+        opacity: 0.45;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Dark preset polish
+// ---------------------------------------------------------------------------
+[data-glass-preset="dark"] {
+  body::before,
+  body::after {
+    opacity: 0.95;
+  }
+
+  .shiny-notification,
+  .selectize-dropdown {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .dataTables_wrapper {
+    table.dataTable tbody tr:nth-child(even) > td {
+      background: color-mix(in srgb, var(--glass-bg) 85%, transparent);
+    }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+      background-color: var(--glass-menu-bg);
+    }
+  }
+
+  .bslib-sidebar-layout > .sidebar,
+  .bslib-page-sidebar > .navbar {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      0 6px 16px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
 }
 
 // ---------------------------------------------------------------------------

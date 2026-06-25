@@ -155,7 +155,7 @@
 
     var root = document.documentElement;
     var preset = root.dataset.glassPreset || "light";
-    var strength = 0.55;
+    var strength = preset === "dark" ? 0.48 : 0.55;
     var secondary = shiftHue(rgb);
     var tertiary = shiftWarm(rgb);
 
@@ -168,15 +168,15 @@
     if (preset === "dark") {
       root.style.setProperty(
         "--glass-bg",
-        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.10)"
+        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.12)"
       );
       root.style.setProperty(
         "--glass-bg-hover",
-        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.16)"
+        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.20)"
       );
       root.style.setProperty(
         "--glass-border",
-        "rgba(" + blend(rgb.r, 255, 0.35) + ", " + blend(rgb.g, 255, 0.35) + ", " + blend(rgb.b, 255, 0.35) + ", 0.22)"
+        "rgba(" + blend(rgb.r, 255, 0.42) + ", " + blend(rgb.g, 255, 0.42) + ", " + blend(rgb.b, 255, 0.42) + ", 0.28)"
       );
     } else {
       root.style.setProperty(
@@ -193,17 +193,21 @@
       );
     }
 
+    var orb1 = preset === "dark" ? 0.34 : 0.30;
+    var orb2 = preset === "dark" ? 0.28 : 0.24;
+    var orb3 = preset === "dark" ? 0.22 : 0.18;
+
     root.style.setProperty(
       "--glass-orb-tint-1",
-      "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.30)"
+      "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + orb1 + ")"
     );
     root.style.setProperty(
       "--glass-orb-tint-2",
-      "rgba(" + secondary.r + ", " + secondary.g + ", " + secondary.b + ", 0.24)"
+      "rgba(" + secondary.r + ", " + secondary.g + ", " + secondary.b + ", " + orb2 + ")"
     );
     root.style.setProperty(
       "--glass-orb-tint-3",
-      "rgba(" + tertiary.r + ", " + tertiary.g + ", " + tertiary.b + ", 0.18)"
+      "rgba(" + tertiary.r + ", " + tertiary.g + ", " + tertiary.b + ", " + orb3 + ")"
     );
   }
 
@@ -284,7 +288,7 @@
   // Pointer-driven specular highlights on glass surfaces
   (function () {
     var specularSelector =
-      ".card, form.well, .col-sm-4.well, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs";
+      ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper";
 
     document.addEventListener(
       "mousemove",
@@ -322,6 +326,14 @@
   });
 
   // Content-aware tinting (Apple: color informed by surroundings)
+  if (typeof Shiny !== "undefined") {
+    Shiny.addCustomMessageHandler("glassPreset", function (preset) {
+      document.documentElement.dataset.glassPreset = preset || "light";
+      clearTint();
+      scheduleTintUpdate();
+    });
+  }
+
   $(document).on("shiny:connected", scheduleTintUpdate);
   $(document).on("shiny:value shiny:visualchange", scheduleTintUpdate);
 
