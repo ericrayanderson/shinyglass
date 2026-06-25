@@ -31,7 +31,7 @@
 glass_theme <- function(
     preset = c("light", "dark"),
     primary = "#007AFF",
-    blur = 20,
+    blur = 24,
     saturation = 180,
     radius = "1.25rem",
     ...) {
@@ -61,6 +61,7 @@ glass_theme <- function(
     "glass-bg-hover" = tokens$glass_bg_hover,
     "glass-border" = tokens$glass_border,
     "glass-shadow" = tokens$glass_shadow,
+    "glass-elevated-shadow" = tokens$glass_elevated_shadow,
     "glass-blur" = paste0(blur, "px"),
     "glass-saturate" = paste0(saturation, "%"),
     "glass-radius" = radius,
@@ -106,35 +107,37 @@ glass_theme <- function(
     list(
       body_bg = "#f5f5f7",
       body_color = "#1d1d1f",
-      glass_bg = "rgba(255, 255, 255, 0.45)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.6)",
-      glass_border = "rgba(255, 255, 255, 0.65)",
-      glass_shadow = "rgba(0, 0, 0, 0.08)",
-      glass_highlight = "rgba(255, 255, 255, 0.7)",
-      glass_specular = "rgba(255, 255, 255, 0.35)",
+      glass_bg = "rgba(255, 255, 255, 0.28)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.42)",
+      glass_border = "rgba(255, 255, 255, 0.55)",
+      glass_shadow = "rgba(0, 0, 0, 0.12)",
+      glass_elevated_shadow = "rgba(0, 0, 0, 0.18)",
+      glass_highlight = "rgba(255, 255, 255, 0.75)",
+      glass_specular = "rgba(255, 255, 255, 0.45)",
       glass_menu_bg = "#ffffff",
       glass_menu_color = "#1d1d1f",
-      page_bg = "linear-gradient(160deg, #f5f5f7 0%, #e8e8ed 40%, #d2d2d7 100%)",
-      orb_1 = "rgba(0, 122, 255, 0.12)",
-      orb_2 = "rgba(175, 82, 222, 0.10)",
-      orb_3 = "rgba(255, 149, 0, 0.08)"
+      page_bg = "linear-gradient(145deg, #eef0f8 0%, #f5f5f7 35%, #e8e4f0 70%, #dfe8f5 100%)",
+      orb_1 = "rgba(0, 122, 255, 0.28)",
+      orb_2 = "rgba(175, 82, 222, 0.22)",
+      orb_3 = "rgba(255, 149, 0, 0.16)"
     )
   } else {
     list(
       body_bg = "#000000",
       body_color = "#f5f5f7",
-      glass_bg = "rgba(255, 255, 255, 0.08)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.14)",
-      glass_border = "rgba(255, 255, 255, 0.15)",
-      glass_shadow = "rgba(0, 0, 0, 0.3)",
-      glass_highlight = "rgba(255, 255, 255, 0.12)",
-      glass_specular = "rgba(255, 255, 255, 0.08)",
+      glass_bg = "rgba(255, 255, 255, 0.06)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.11)",
+      glass_border = "rgba(255, 255, 255, 0.18)",
+      glass_shadow = "rgba(0, 0, 0, 0.35)",
+      glass_elevated_shadow = "rgba(0, 0, 0, 0.5)",
+      glass_highlight = "rgba(255, 255, 255, 0.14)",
+      glass_specular = "rgba(255, 255, 255, 0.1)",
       glass_menu_bg = "#2c2c2e",
       glass_menu_color = "#f5f5f7",
-      page_bg = "linear-gradient(160deg, #1c1c1e 0%, #000000 50%, #0a0a0c 100%)",
-      orb_1 = "rgba(10, 132, 255, 0.18)",
-      orb_2 = "rgba(191, 90, 242, 0.14)",
-      orb_3 = "rgba(255, 159, 10, 0.10)"
+      page_bg = "linear-gradient(145deg, #0a0a12 0%, #000000 45%, #120818 100%)",
+      orb_1 = "rgba(10, 132, 255, 0.32)",
+      orb_2 = "rgba(191, 90, 242, 0.26)",
+      orb_3 = "rgba(255, 159, 10, 0.18)"
     )
   }
 }

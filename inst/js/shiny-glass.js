@@ -13,3 +13,28 @@ $(document).on("blur change", ".card .form-select", function () {
     }
   }, 150);
 });
+
+// Compact floating navigation on scroll (Apple: chrome yields to content)
+(function () {
+  var threshold = 48;
+  var ticking = false;
+
+  function updateNavCompact() {
+    var compact = window.scrollY > threshold;
+    document.body.classList.toggle("glass-nav-compact", compact);
+    ticking = false;
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNavCompact);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  updateNavCompact();
+})();
