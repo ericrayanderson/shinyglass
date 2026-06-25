@@ -31,7 +31,9 @@ wait_for_shiny_outputs <- function(session, timeout = 30) {
     new Promise((resolve, reject) => {
       const deadline = Date.now() + %d;
       const check = () => {
-        const plotImg = document.querySelector('#dist_plot img, #demo_plot img');
+        const plotImg = document.querySelector(
+          '#dist_plot img, #demo_plot img, #hero_plot img, .shiny-plot-output img'
+        );
         const plotReady = plotImg && plotImg.complete && plotImg.naturalWidth > 0;
         if (plotReady) {
           resolve(true);
