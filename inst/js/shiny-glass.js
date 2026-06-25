@@ -234,13 +234,36 @@
     }, 150);
   });
 
-  // Compact floating navigation on scroll
+  // Bidirectional nav morph: compact on scroll-down, expand on scroll-up
   (function () {
-    var threshold = 48;
+    var threshold = 56;
+    var lastScrollY = window.scrollY || 0;
     var ticking = false;
 
-    function updateNavCompact() {
-      document.body.classList.toggle("glass-nav-compact", window.scrollY > threshold);
+    function updateNavMorph() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
+        ticking = false;
+        return;
+      }
+
+      var y = Math.max(0, window.scrollY);
+      var scrollingDown = y > lastScrollY + 2;
+      var scrollingUp = y < lastScrollY - 2;
+      var body = document.body;
+
+      if (y <= threshold) {
+        body.classList.remove("glass-nav-compact");
+        body.classList.add("glass-nav-expanded");
+      } else if (scrollingDown) {
+        body.classList.add("glass-nav-compact");
+        body.classList.remove("glass-nav-expanded");
+      } else if (scrollingUp) {
+        body.classList.remove("glass-nav-compact");
+        body.classList.add("glass-nav-expanded");
+      }
+
+      lastScrollY = y;
       ticking = false;
     }
 
@@ -248,15 +271,55 @@
       "scroll",
       function () {
         if (!ticking) {
-          window.requestAnimationFrame(updateNavCompact);
+          window.requestAnimationFrame(updateNavMorph);
           ticking = true;
         }
       },
       { passive: true }
     );
 
-    updateNavCompact();
+    updateNavMorph();
   })();
+
+  // Pointer-driven specular highlights on glass surfaces
+  (function () {
+    var specularSelector =
+      ".card, form.well, .col-sm-4.well, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs";
+
+    document.addEventListener(
+      "mousemove",
+      function (e) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var el = e.target.closest(specularSelector);
+        if (!el) return;
+        var rect = el.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var x = ((e.clientX - rect.left) / rect.width) * 100;
+        var y = ((e.clientY - rect.top) / rect.height) * 100;
+        el.style.setProperty("--glass-specular-x", x + "%");
+        el.style.setProperty("--glass-specular-y", y + "%");
+      },
+      { passive: true }
+    );
+  })();
+
+  // Selectize stacking + open state
+  $(document).on("focus mousedown", ".selectize-control .selectize-input", function () {
+    $(this).closest(".shiny-input-container").addClass("glass-select-open");
+  });
+
+  $(document).on("blur", ".selectize-control .selectize-input", function () {
+    var container = $(this).closest(".shiny-input-container");
+    setTimeout(function () {
+      if (!container.find(".selectize-input").is(":focus")) {
+        container.removeClass("glass-select-open");
+      }
+    }, 200);
+  });
+
+  $(document).on("change", ".selectize-control", function () {
+    $(this).closest(".shiny-input-container").removeClass("glass-select-open");
+  });
 
   // Content-aware tinting (Apple: color informed by surroundings)
   $(document).on("shiny:connected", scheduleTintUpdate);

@@ -34,9 +34,9 @@ ui <- fluidPage(
         choices = names(palette_colors),
         selected = "Ocean"
       ),
-      selectInput(
+      selectizeInput(
         "species",
-        "Species",
+        "Species (selectize)",
         choices = c("setosa", "versicolor", "virginica"),
         selected = "setosa"
       ),
@@ -67,13 +67,22 @@ ui <- fluidPage(
           "Checklist",
           tags$ul(
             tags$li("Floating glass sidebar (functional layer above content)"),
-            tags$li("Pill tab bar with scroll-compact navigation"),
+            tags$li("Pill tab bar — compact on scroll down, expand on scroll up"),
             tags$li("Content-aware tint sampled from the chart"),
+            tags$li("Selectize dropdown with glass menu styling"),
+            tags$li("Pointer-driven specular highlights on glass surfaces"),
             tags$li("Notification toast as a floating glass layer"),
             tags$li("Compare against ", tags$a(
               href = "https://developer.apple.com/documentation/TechnologyOverviews/adopting-liquid-glass",
               "Apple's Adopting Liquid Glass"
             ))
+          ),
+          tags$p(tags$strong("Scroll this tab"), " to test navigation morph."),
+          tags$div(
+            style = "min-height: 120vh; padding-bottom: 4rem;",
+            lapply(seq_len(18), function(i) {
+              tags$p(paste("Scroll section", i, "— navigation should compact while scrolling down."))
+            })
           )
         )
       )
