@@ -2,3 +2,11 @@
 ^\.Rproj\.user$
 ^visual-test-output/
 ^\.github/
+^man/figures/gallery/
+^man/figures/inputs-gallery\.png$
+^man/figures/apple-glass-reference\.png$
+^inst/scripts/
+^\.Rcheck$
+^shinyglass\.Rcheck$
+^.*\.tar\.gz$
+^cran-comments\.md$

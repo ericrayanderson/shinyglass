@@ -33,7 +33,7 @@ A [bslib::bs_theme()] object.
 \description{
 Returns a [bslib::bs_theme()] object styled with Apple's Liquid Glass
 aesthetic. Pass it to `fluidPage()`, `navbarPage()`, or any bslib-aware
-page function — that's all you need.
+page function; that is all you need.
 }
 \examples{
 \dontrun{
