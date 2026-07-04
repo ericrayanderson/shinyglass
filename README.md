@@ -66,16 +66,6 @@ install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
-Every Shiny input in one app:
-
-<p align="center">
-  <img src="man/figures/inputs-gallery.png" alt="Shiny inputs gallery" width="700">
-</p>
-
-```r
-shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
-```
-
 Apple Liquid Glass reference app (sidebar overlay, tinting, DataTables):
 
 ```r
