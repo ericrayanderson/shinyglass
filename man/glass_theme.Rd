@@ -7,8 +7,8 @@
 glass_theme(
   preset = c("light", "dark"),
   primary = "#007AFF",
-  blur = 20,
-  saturation = 180,
+  blur = 28,
+  saturation = 200,
   radius = "1.25rem",
   ...
 )

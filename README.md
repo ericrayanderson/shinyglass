@@ -52,14 +52,17 @@ Load [bslib](https://rstudio.github.io/bslib/) only if you want its UI helpers l
 glass_theme(
   preset     = "dark",   # "light" or "dark"
   primary    = "#007AFF",
-  blur       = 20,
-  saturation = 180
+  blur       = 28,
+  saturation = 200
 )
 ```
 
 ## Demo
 
+The bundled demo uses [bslib](https://rstudio.github.io/bslib/) cards and [ggplot2](https://ggplot2.tidyverse.org/). Install them first if needed:
+
 ```r
+install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
