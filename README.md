@@ -66,6 +66,30 @@ install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
+Apple Liquid Glass reference app (sidebar overlay, tinting, DataTables):
+
+```r
+shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
+```
+
+## Gallery
+
+Curated screenshots from official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied. Full visual-test output stays local (gitignored); these eight heroes live in `man/figures/gallery/` for docs and README.
+
+| | | | |
+|:---:|:---:|:---:|:---:|
+| <img src="man/figures/gallery/01-fluid-sidebar.png" width="200" alt="fluidPage sidebar"> | <img src="man/figures/gallery/02-tabsets.png" width="200" alt="tabsets"> | <img src="man/figures/gallery/03-action-button.png" width="200" alt="action button"> | <img src="man/figures/gallery/04-download.png" width="200" alt="download button"> |
+| fluidPage + sidebar | Pill tab bar | actionButton | downloadButton |
+| <img src="man/figures/gallery/05-datatables.png" width="200" alt="datatables"> | <img src="man/figures/gallery/06-selectize.png" width="200" alt="selectize"> | <img src="man/figures/gallery/07-navbar.png" width="200" alt="navbar"> | <img src="man/figures/gallery/08-page-sidebar.png" width="200" alt="page sidebar"> |
+| DataTables | selectizeInput | navbarPage | page_sidebar |
+
+Regenerate after a visual test run:
+
+```bash
+Rscript inst/scripts/visual-test-examples.R /path/to/shiny-examples visual-test-output/shiny-examples-curated-$(date +%Y-%m-%d) 15
+Rscript inst/scripts/promote-screenshots.R visual-test-output/shiny-examples-curated-$(date +%Y-%m-%d)
+```
+
 ## License
 
 GPL-3
