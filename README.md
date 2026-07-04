@@ -1,5 +1,13 @@
 # shinyglass
 
+<!-- badges: start -->
+
+[![CRAN status](https://www.r-pkg.org/badges/version/shinyglass)](https://cran.r-project.org/package=shinyglass)
+[![R-CMD-check](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/ericrayanderson/shinyglass/graph/badge.svg)](https://app.codecov.io/gh/ericrayanderson/shinyglass)
+
+<!-- badges: end -->
+
 Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) aesthetic for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
 
 <p align="center">
