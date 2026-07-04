@@ -74,7 +74,7 @@ shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shin
 
 ## Gallery
 
-Curated screenshots from official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied. Full visual-test output stays local (gitignored); these eight heroes live in `man/figures/gallery/` for docs and README.
+Screenshots from official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied.
 
 | | | | |
 |:---:|:---:|:---:|:---:|
@@ -82,13 +82,6 @@ Curated screenshots from official [Shiny examples](https://github.com/rstudio/sh
 | fluidPage + sidebar | Pill tab bar | actionButton | downloadButton |
 | <img src="man/figures/gallery/05-datatables.png" width="200" alt="datatables"> | <img src="man/figures/gallery/06-selectize.png" width="200" alt="selectize"> | <img src="man/figures/gallery/07-navbar.png" width="200" alt="navbar"> | <img src="man/figures/gallery/08-page-sidebar.png" width="200" alt="page sidebar"> |
 | DataTables | selectizeInput | navbarPage | page_sidebar |
-
-Regenerate after a visual test run:
-
-```bash
-Rscript inst/scripts/visual-test-examples.R /path/to/shiny-examples visual-test-output/shiny-examples-curated-$(date +%Y-%m-%d) 15
-Rscript inst/scripts/promote-screenshots.R visual-test-output/shiny-examples-curated-$(date +%Y-%m-%d)
-```
 
 ## License
 
