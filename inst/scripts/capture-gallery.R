@@ -76,13 +76,26 @@ wait_for_shiny <- function(session, timeout = 40) {
   )
 }
 
-capture_url <- function(url, out_path, width = 1400L, height = 560L, click = NULL) {
+capture_url <- function(
+    url,
+    out_path,
+    width = 1400L,
+    height = 560L,
+    click = NULL,
+    collapse_sidebar = FALSE) {
   b <- chromote::ChromoteSession$new()
   on.exit(tryCatch(b$close(), error = function(e) NULL), add = TRUE)
   b$set_viewport_size(width = width, height = height)
   b$go_to(url)
   Sys.sleep(1.5)
   tryCatch(wait_for_shiny(b, timeout = 40), error = function(e) NULL)
+
+  if (isTRUE(collapse_sidebar)) {
+    b$Runtime$evaluate(
+      "document.querySelector('.bslib-sidebar-layout')?.classList.add('sidebar-collapsed'); window.scrollTo(0, 0);"
+    )
+    Sys.sleep(0.75)
+  }
 
   if (!is.null(click)) {
     js <- sprintf("
@@ -192,6 +205,14 @@ shots <- list(
     type = "package",
     path = "apple-glass-reference.R",
     height = 640L
+  ),
+  list(
+    dest = "inputs-gallery.png",
+    type = "package",
+    path = "inputs-gallery.R",
+    height = 1100L,
+    out_dir = file.path(pkg_root, "man", "figures"),
+    collapse_sidebar = TRUE
   )
 )
 
@@ -200,7 +221,7 @@ results <- character()
 
 for (i in seq_along(shots)) {
   shot <- shots[[i]]
-  dest <- file.path(gallery_dir, shot$dest)
+  dest <- file.path(shot$out_dir %||% gallery_dir, shot$dest)
   port <- base_port + i
   url <- sprintf("http://127.0.0.1:%d", port)
 
@@ -230,7 +251,13 @@ for (i in seq_along(shots)) {
   }
 
   ok <- tryCatch({
-    capture_url(url, dest, height = shot$height, click = shot$click %||% NULL)
+    capture_url(
+      url,
+      dest,
+      height = shot$height,
+      click = shot$click %||% NULL,
+      collapse_sidebar = isTRUE(shot$collapse_sidebar)
+    )
     TRUE
   }, error = function(e) {
     warning("Capture failed for ", shot$dest, ": ", conditionMessage(e))
