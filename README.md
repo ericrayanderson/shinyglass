@@ -4,10 +4,6 @@
 
 Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) aesthetic for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
 
-<p align="center">
-  <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app" width="700">
-</p>
-
 ## Install
 
 ```r
@@ -75,6 +71,10 @@ shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shin
 ```
 
 ## Gallery
+
+<p align="center">
+  <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app" width="700">
+</p>
 
 Screenshots from official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied.
 
