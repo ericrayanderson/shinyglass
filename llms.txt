@@ -1,4 +1,4 @@
-![shinyglass](inst/logo.png?v=2)
+![shinyglass](inst/logo2.png)
 
 Apple’s [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
