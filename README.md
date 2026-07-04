@@ -57,10 +57,6 @@ glass_theme(
 
 ## Demo
 
-<p align="center">
-  <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app" width="700">
-</p>
-
 The bundled demo uses [bslib](https://rstudio.github.io/bslib/) cards and [ggplot2](https://ggplot2.tidyverse.org/). Install them first if needed:
 
 ```r
@@ -74,9 +70,17 @@ Apple Liquid Glass reference app (sidebar overlay, tinting, DataTables):
 shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
 ```
 
-## Gallery
+## Screenshots
 
-Screenshots from official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied.
+The bundled example app and official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied.
+
+**Bundled example app**
+
+<p align="center">
+  <img src="man/figures/shinyglass-demo.png" alt="bundled example app" width="700">
+</p>
+
+**Shiny examples**
 
 | | | | |
 |:---:|:---:|:---:|:---:|
