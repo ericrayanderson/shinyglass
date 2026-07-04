@@ -167,7 +167,7 @@ test_one_app <- function(app_dir, out_dir, port = 4000L) {
 
   url <- sprintf("http://127.0.0.1:%d", port)
   run_expr <- sprintf(
-    "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE)",
+    "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE, display.mode='normal')",
     gsub("'", "\\\\'", normalizePath(prep$dir, winslash = "/")),
     port
   )
