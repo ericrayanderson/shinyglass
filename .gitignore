@@ -10,3 +10,4 @@
 *.Rproj
 inst/examples/screenshot*.png
 visual-test-output/
+docs/
