@@ -388,47 +388,189 @@ body.glass-nav-expanded {
 }
 
 // ---------------------------------------------------------------------------
-// Buttons
+// Buttons — Apple Liquid Glass typography + tinted glass fills
 // ---------------------------------------------------------------------------
-.btn {
-  border-radius: 0.75rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  transition: all 0.2s ease;
+@mixin glass-button-type {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  &:active {
+@mixin glass-button-tinted($color) {
+  @include glass-button-type();
+  color: #fff !important;
+  background: color-mix(in srgb, #{$color} 76%, transparent) !important;
+  border: 1px solid color-mix(in srgb, #{$color} 34%, rgba(255, 255, 255, 0.42)) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow:
+    0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+
+  &:hover,
+  &:focus {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$color} 86%, transparent) !important;
+    border-color: color-mix(in srgb, #{$color} 42%, rgba(255, 255, 255, 0.48)) !important;
+    box-shadow:
+      0 6px 22px color-mix(in srgb, #{$color} 30%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 0.2rem color-mix(in srgb, #{$color} 22%, transparent),
+      0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.36);
+  }
+}
+
+@mixin glass-button-ghost($label-color: $primary) {
+  @include glass-button-type();
+  @include glass-input();
+  color: #{$label-color} !important;
+  background: var(--glass-bg) !important;
+
+  &:hover,
+  &:focus {
+    color: #{$label-color} !important;
+    background: var(--glass-bg-hover) !important;
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 4px 14px var(--glass-shadow);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: rgba($primary, 0.45) !important;
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.14),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.btn,
+.action-button {
+  @include glass-button-type();
+  border-radius: 0.75rem;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+
+  &:active:not(:disabled) {
     transform: scale(0.97);
   }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.42;
+    transform: none;
+  }
+}
+
+// Shiny default — frosted glass with accent label (not Bootstrap gray)
+.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info),
+.action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+  @include glass-button-ghost($primary);
+}
+
+.btn-secondary,
+.btn-light {
+  @include glass-button-ghost($body-color);
 }
 
 .btn-primary,
-.btn-secondary,
-.btn-success,
-.btn-danger,
-.btn-warning,
-.btn-info {
-  backdrop-filter: blur(8px) saturate(150%);
-  -webkit-backdrop-filter: blur(8px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+.action-button.btn-primary {
+  @include glass-button-tinted($primary);
+}
 
-  &:hover {
-    box-shadow:
-      0 6px 20px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+.btn-success,
+.action-button.btn-success {
+  @include glass-button-tinted($success);
+}
+
+.btn-danger,
+.action-button.btn-danger {
+  @include glass-button-tinted($danger);
+}
+
+.btn-warning,
+.action-button.btn-warning {
+  @include glass-button-tinted($warning);
+  color: #1d1d1f !important;
+
+  &:hover,
+  &:focus {
+    color: #1d1d1f !important;
   }
 }
 
-.btn-outline-primary,
-.btn-outline-secondary {
-  background: var(--glass-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+.btn-info,
+.action-button.btn-info {
+  @include glass-button-tinted($info);
+}
 
-  &:hover {
-    background: var(--glass-bg-hover);
+.btn-outline-primary {
+  @include glass-button-ghost($primary);
+}
+
+.btn-outline-secondary,
+.btn-outline-light {
+  @include glass-button-ghost($body-color);
+}
+
+.btn-outline-success {
+  @include glass-button-ghost($success);
+}
+
+.btn-outline-danger {
+  @include glass-button-ghost($danger);
+}
+
+.btn-outline-warning {
+  @include glass-button-ghost($warning);
+}
+
+.btn-outline-info {
+  @include glass-button-ghost($info);
+}
+
+.btn-link {
+  @include glass-button-type();
+  color: $primary !important;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover,
+  &:focus {
+    color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+    text-decoration: none;
+  }
+}
+
+[data-glass-preset="dark"] {
+  .btn-warning {
+    color: #1d1d1f !important;
+  }
+
+  .btn-default:not(.btn-primary),
+  .action-button.btn-default:not(.btn-primary),
+  .btn-outline-primary {
+    color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+    }
   }
 }
 

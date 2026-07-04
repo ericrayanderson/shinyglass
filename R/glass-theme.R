@@ -52,6 +52,12 @@ glass_theme <- function(
     "card-border-color" = tokens$glass_border,
     "input-border-color" = tokens$glass_border,
     "navbar-padding-y" = "0.75rem",
+    "btn-font-weight" = 600,
+    "btn-font-size" = "0.9375rem",
+    "btn-line-height" = 1.2,
+    "btn-padding-y" = ".55rem",
+    "btn-padding-x" = "1.2rem",
+    "btn-border-width" = "1px",
     ...
   )
 
