@@ -5,8 +5,6 @@ Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glas
 aesthetic for R Shiny — one function, built on
 [bslib](https://rstudio.github.io/bslib/).
 
-![shinyglass demo app](reference/figures/shinyglass-demo.png)
-
 ## Install
 
 ``` r
@@ -70,6 +68,8 @@ glass_theme(
 ```
 
 ## Demo
+
+![shinyglass demo app](reference/figures/shinyglass-demo.png)
 
 The bundled demo uses [bslib](https://rstudio.github.io/bslib/) cards
 and [ggplot2](https://ggplot2.tidyverse.org/). Install them first if
