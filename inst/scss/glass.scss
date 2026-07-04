@@ -478,7 +478,7 @@ body.glass-nav-expanded {
 }
 
 // Shiny default — frosted glass with accent label (not Bootstrap gray)
-.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info),
+.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.shiny-download-link),
 .action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
   @include glass-button-ghost($primary);
 }
@@ -557,14 +557,84 @@ body.glass-nav-expanded {
   }
 }
 
+// Shiny download controls — override bslib's .btn-default outline on <a> tags
+a.shiny-download-link {
+  text-decoration: none !important;
+
+  &.btn {
+    @include glass-button-tinted($primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35em;
+
+    i[class*="fa-"] {
+      font-size: 0.9em;
+      opacity: 0.95;
+    }
+
+    &:active:not(.disabled):not([aria-disabled="true"]) {
+      transform: scale(0.97);
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+      transform: none;
+    }
+
+    &.btn-primary {
+      @include glass-button-tinted($primary);
+    }
+
+    &.btn-secondary,
+    &.btn-light {
+      @include glass-button-ghost($body-color);
+    }
+
+    &.btn-success {
+      @include glass-button-tinted($success);
+    }
+
+    &.btn-danger {
+      @include glass-button-tinted($danger);
+    }
+  }
+
+  &:not(.btn) {
+    @include glass-button-type();
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    color: $primary !important;
+    padding: 0.15rem 0.1rem;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, opacity 0.2s ease;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+      text-decoration: none !important;
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+    }
+  }
+}
+
 [data-glass-preset="dark"] {
   .btn-warning {
     color: #1d1d1f !important;
   }
 
-  .btn-default:not(.btn-primary),
+  .btn-default:not(.btn-primary):not(.shiny-download-link),
   .action-button.btn-default:not(.btn-primary),
-  .btn-outline-primary {
+  .btn-outline-primary,
+  a.shiny-download-link:not(.btn) {
     color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
 
     &:hover,
