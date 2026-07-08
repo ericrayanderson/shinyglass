@@ -22,7 +22,5 @@ Suggests:
     ggplot2,
     shiny (>= 1.5.0),
     testthat (>= 3.0.0)
-Enhances:
-    shiny
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
