@@ -2,6 +2,11 @@
 
 ## shinyglass (development version)
 
+- Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets
+  gallery, and a bs4Dash AdminLTE3 demo, with chromote capture script
+  `inst/scripts/visual-test-tier-ab.R` and example launchers.
+- Fix `replace_page_theme()` for complex nested `theme =` expressions
+  (needed to glass-wrap the shinyWidgets gallery).
 - Fix overlapping glass frames in multi-column layouts (e.g. dreamRs
   gh-dashboard avatar + statiCards): clip plot/html outputs to their
   surfaces, constrain flex columns, and ellipsize long avatar text.
