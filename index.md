@@ -1,16 +1,22 @@
-Apple’s [Liquid
+# shinyglass
+
+Apple-inspired [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
-aesthetic for R Shiny — one function, built on
+themes for R Shiny — one function, built on
 [bslib](https://rstudio.github.io/bslib/).
+
+![shinyglass demo app with liquid glass
+theme](reference/figures/shinyglass-demo.png)
 
 ## Install
 
 ``` r
 
+# install.packages("shinyglass")  # once on CRAN
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
-## Single-file app
+## Quick start
 
 Save as `app.R` and run with
 [`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html):
@@ -42,18 +48,18 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-You only need `shiny` and `shinyglass`. **You do not need to load
-bslib** —
+You only need `shiny` and `shinyglass`.
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
 returns a bslib theme object that
-[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html) (and other
-Shiny page functions) understand automatically.
+[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html) and other
+Shiny page functions understand automatically — you do not need to load
+bslib.
 
 Load [bslib](https://rstudio.github.io/bslib/) only if you want its UI
 helpers like `card()` or `page_fillable()`. Standard Shiny inputs,
 buttons, and layouts work out of the box.
 
-## Options
+## Customization
 
 ``` r
 
@@ -65,11 +71,12 @@ glass_theme(
 )
 ```
 
-## Demo
+## Example apps
+
+### Demo
 
 The bundled demo uses [bslib](https://rstudio.github.io/bslib/) cards
-and [ggplot2](https://ggplot2.tidyverse.org/). Install them first if
-needed:
+and [ggplot2](https://ggplot2.tidyverse.org/):
 
 ``` r
 
@@ -77,31 +84,30 @@ install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
-Apple Liquid Glass reference app (sidebar overlay, tinting, DataTables):
+### Reference app
+
+Sidebar overlay, content-aware tinting, and DataTables:
 
 ``` r
 
 shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
 ```
 
-## Screenshots
+![Apple Liquid Glass reference app
+controls](reference/figures/apple-glass-reference.png)
 
-The bundled example app and official [Shiny
+## Gallery
+
+Official [Shiny
 examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-applied.
-
-**Bundled example app**
-
-![bundled example app](reference/figures/shinyglass-demo.png)
-
-**Shiny examples**
+applied:
 
 |  |  |  |  |
 |:--:|:--:|:--:|:--:|
-| ![fluidPage sidebar](reference/figures/gallery/01-fluid-sidebar.png) | ![tabsets](reference/figures/gallery/02-tabsets.png) | ![action button](reference/figures/gallery/03-action-button.png) | ![download button](reference/figures/gallery/04-download.png) |
+| ![fluidPage with sidebar layout](reference/figures/gallery/01-fluid-sidebar.png) | ![tabset with pill-style tabs](reference/figures/gallery/02-tabsets.png) | ![action button in a glass card](reference/figures/gallery/03-action-button.png) | ![download button with data preview](reference/figures/gallery/thumbs/04-download.png) |
 | fluidPage + sidebar | Pill tab bar | actionButton | downloadButton |
-| ![datatables](reference/figures/gallery/05-datatables.png) | ![selectize](reference/figures/gallery/06-selectize.png) | ![navbar](reference/figures/gallery/07-navbar.png) | ![page sidebar](reference/figures/gallery/08-page-sidebar.png) |
+| ![interactive DataTable with glass styling](reference/figures/gallery/05-datatables.png) | ![selectize inputs with glass styling](reference/figures/gallery/thumbs/06-selectize.png) | ![navbarPage with glass navigation bar](reference/figures/gallery/thumbs/07-navbar.png) | ![page_sidebar with glass controls](reference/figures/gallery/08-page-sidebar.png) |
 | DataTables | selectizeInput | navbarPage | page_sidebar |
 
 ## License

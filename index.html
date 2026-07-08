@@ -46,15 +46,21 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p>Apple’s <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> aesthetic for R Shiny — one function, built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="shinyglass">shinyglass<a class="anchor" aria-label="anchor" href="#shinyglass"></a>
+</h1></div>
+<p>Apple-inspired <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for R Shiny — one function, built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
+<p align="center">
+<img src="reference/figures/shinyglass-demo.png" alt="shinyglass demo app with liquid glass theme" width="720"></p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("shinyglass")  # once on CRAN</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="single-file-app">Single-file app<a class="anchor" aria-label="anchor" href="#single-file-app"></a>
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <p>Save as <code>app.R</code> and run with <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -81,11 +87,11 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>You only need <code>shiny</code> and <code>shinyglass</code>. <strong>You do not need to load bslib</strong> — <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a bslib theme object that <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code> (and other Shiny page functions) understand automatically.</p>
+<p>You only need <code>shiny</code> and <code>shinyglass</code>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a bslib theme object that <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code> and other Shiny page functions understand automatically — you do not need to load bslib.</p>
 <p>Load <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> only if you want its UI helpers like <code>card()</code> or <code>page_fillable()</code>. Standard Shiny inputs, buttons, and layouts work out of the box.</p>
 </div>
 <div class="section level2">
-<h2 id="options">Options<a class="anchor" aria-label="anchor" href="#options"></a>
+<h2 id="customization">Customization<a class="anchor" aria-label="anchor" href="#customization"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span></span>
@@ -96,24 +102,30 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="demo">Demo<a class="anchor" aria-label="anchor" href="#demo"></a>
+<h2 id="example-apps">Example apps<a class="anchor" aria-label="anchor" href="#example-apps"></a>
 </h2>
-<p>The bundled demo uses <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> cards and <a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot2</a>. Install them first if needed:</p>
+<div class="section level3">
+<h3 id="demo">Demo<a class="anchor" aria-label="anchor" href="#demo"></a>
+</h3>
+<p>The bundled demo uses <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> cards and <a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot2</a>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bslib"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Apple Liquid Glass reference app (sidebar overlay, tinting, DataTables):</p>
+</div>
+<div class="section level3">
+<h3 id="reference-app">Reference app<a class="anchor" aria-label="anchor" href="#reference-app"></a>
+</h3>
+<p>Sidebar overlay, content-aware tinting, and DataTables:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p align="center">
+<img src="reference/figures/apple-glass-reference.png" alt="Apple Liquid Glass reference app controls" width="720"></p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="screenshots">Screenshots<a class="anchor" aria-label="anchor" href="#screenshots"></a>
+<h2 id="gallery">Gallery<a class="anchor" aria-label="anchor" href="#gallery"></a>
 </h2>
-<p>The bundled example app and official <a href="https://github.com/rstudio/shiny/tree/main/inst/examples" class="external-link">Shiny examples</a> with <code><a href="reference/glass_theme.html">glass_theme()</a></code> applied.</p>
-<p><strong>Bundled example app</strong></p>
-<p align="center">
-<img src="reference/figures/shinyglass-demo.png" alt="bundled example app" width="700"></p>
-<p><strong>Shiny examples</strong></p>
+<p>Official <a href="https://github.com/rstudio/shiny/tree/main/inst/examples" class="external-link">Shiny examples</a> with <code><a href="reference/glass_theme.html">glass_theme()</a></code> applied:</p>
 <table class="table">
 <colgroup>
 <col width="25%">
@@ -123,10 +135,10 @@
 </colgroup>
 <tbody>
 <tr>
-<td align="center"><img src="reference/figures/gallery/01-fluid-sidebar.png" width="200" alt="fluidPage sidebar"></td>
-<td align="center"><img src="reference/figures/gallery/02-tabsets.png" width="200" alt="tabsets"></td>
-<td align="center"><img src="reference/figures/gallery/03-action-button.png" width="200" alt="action button"></td>
-<td align="center"><img src="reference/figures/gallery/04-download.png" width="200" alt="download button"></td>
+<td align="center"><img src="reference/figures/gallery/01-fluid-sidebar.png" width="270" alt="fluidPage with sidebar layout"></td>
+<td align="center"><img src="reference/figures/gallery/02-tabsets.png" width="270" alt="tabset with pill-style tabs"></td>
+<td align="center"><img src="reference/figures/gallery/03-action-button.png" width="270" alt="action button in a glass card"></td>
+<td align="center"><img src="reference/figures/gallery/thumbs/04-download.png" width="270" alt="download button with data preview"></td>
 </tr>
 <tr>
 <td align="center">fluidPage + sidebar</td>
@@ -135,10 +147,10 @@
 <td align="center">downloadButton</td>
 </tr>
 <tr>
-<td align="center"><img src="reference/figures/gallery/05-datatables.png" width="200" alt="datatables"></td>
-<td align="center"><img src="reference/figures/gallery/06-selectize.png" width="200" alt="selectize"></td>
-<td align="center"><img src="reference/figures/gallery/07-navbar.png" width="200" alt="navbar"></td>
-<td align="center"><img src="reference/figures/gallery/08-page-sidebar.png" width="200" alt="page sidebar"></td>
+<td align="center"><img src="reference/figures/gallery/05-datatables.png" width="270" alt="interactive DataTable with glass styling"></td>
+<td align="center"><img src="reference/figures/gallery/thumbs/06-selectize.png" width="270" alt="selectize inputs with glass styling"></td>
+<td align="center"><img src="reference/figures/gallery/thumbs/07-navbar.png" width="270" alt="navbarPage with glass navigation bar"></td>
+<td align="center"><img src="reference/figures/gallery/08-page-sidebar.png" width="270" alt="page_sidebar with glass controls"></td>
 </tr>
 <tr>
 <td align="center">DataTables</td>
@@ -154,7 +166,7 @@
 </h2>
 <p>GPL-3</p>
 </div>
-
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
