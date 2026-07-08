@@ -1,8 +1,14 @@
 # Apple Liquid Glass theme for Shiny
 
-Returns a \[bslib::bs_theme()\] object styled with Apple's Liquid Glass
-aesthetic. Pass it to \`fluidPage()\`, \`navbarPage()\`, or any
-bslib-aware page function; that is all you need.
+Create a
+[`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
+styled with an Apple-inspired Liquid Glass look: translucent surfaces,
+backdrop blur, soft depth, and system typography. Pass the result to
+`theme =` on
+[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
+[`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
+[`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
+or any other page function that accepts a bslib theme.
 
 ## Usage
 
@@ -21,11 +27,12 @@ glass_theme(
 
 - preset:
 
-  \`"light"\` or \`"dark"\`. Controls the overall color scheme.
+  `"light"` or `"dark"`. Switches the full color system.
 
 - primary:
 
-  Primary accent color. Defaults to Apple system blue (\`#007AFF\`).
+  Accent color for buttons, links, and focus rings. Defaults to Apple
+  system blue (`#007AFF`).
 
 - blur:
 
@@ -37,15 +44,18 @@ glass_theme(
 
 - radius:
 
-  Default border radius for glass surfaces.
+  Default border radius for glass surfaces (CSS length).
 
 - ...:
 
-  Additional arguments forwarded to \[bslib::bs_theme()\].
+  Additional arguments forwarded to
+  [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html).
 
 ## Value
 
-A \[bslib::bs_theme()\] object.
+A
+[`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
+object suitable for Shiny page functions.
 
 ## Examples
 
@@ -59,6 +69,12 @@ ui <- fluidPage(
   titlePanel("Liquid Glass"),
   selectInput("color", "Color", c("Blue", "Purple", "Orange")),
   plotOutput("plot")
+)
+
+# Dark preset with a custom accent
+ui <- fluidPage(
+  theme = glass_theme(preset = "dark", primary = "#BF5AF2"),
+  titlePanel("Dark glass")
 )
 } # }
 ```

@@ -2,6 +2,8 @@
 
 ## shinyglass (development version)
 
+- Refresh the README and pkgdown site for end users: feature list,
+  clearer examples, and no developer-only testing notes.
 - Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets
   gallery, and a bs4Dash AdminLTE3 demo, with chromote capture script
   `inst/scripts/visual-test-tier-ab.R` and example launchers.

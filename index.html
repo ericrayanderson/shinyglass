@@ -5,24 +5,26 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Apple-Inspired Liquid Glass Design for Shiny Applications • shinyglass</title>
+<title>shinyglass • Liquid Glass themes for Shiny • shinyglass</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Apple-Inspired Liquid Glass Design for Shiny Applications">
-<meta name="description" content="Provides the exported function glass_theme(), which returns a bslib theme object styled with an Apple-inspired Liquid Glass aesthetic for use in shiny applications. The theme applies translucent surfaces, backdrop blur, and system typography to Bootstrap components. See Apple's Liquid Glass design overview at &lt;https://developer.apple.com/documentation/technologyoverviews/liquid-glass&gt;.">
-<meta property="og:description" content="Provides the exported function glass_theme(), which returns a bslib theme object styled with an Apple-inspired Liquid Glass aesthetic for use in shiny applications. The theme applies translucent surfaces, backdrop blur, and system typography to Bootstrap components. See Apple's Liquid Glass design overview at &lt;https://developer.apple.com/documentation/technologyoverviews/liquid-glass&gt;.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="shinyglass • Liquid Glass themes for Shiny">
+<meta name="description" content="Apple-inspired Liquid Glass themes for R Shiny. One function, glass_theme(), for translucent surfaces, backdrop blur, and system typography on Bootstrap-based apps.
+">
+<meta property="og:description" content="Apple-inspired Liquid Glass themes for R Shiny. One function, glass_theme(), for translucent surfaces, backdrop blur, and system typography on Bootstrap-based apps.
+">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,14 +33,15 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="active nav-item"><a class="nav-link" href="index.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ericrayanderson/shinyglass/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ericrayanderson/shinyglass" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -49,8 +52,11 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="shinyglass">shinyglass<a class="anchor" aria-label="anchor" href="#shinyglass"></a>
 </h1></div>
-<p>Apple-inspired <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for R Shiny — one function, built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
-<p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report an issue</a></p>
+<!-- badges: start -->
+
+<p><strong>Apple-inspired Liquid Glass themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>.</strong></p>
+<p>One function — <code><a href="reference/glass_theme.html">glass_theme()</a></code> — and your app gets translucent surfaces, backdrop blur, soft depth, and system typography. Built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>, so it works with <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, <code>page_sidebar()</code>, and other Bootstrap-aware layouts.</p>
+<p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">Source</a> · <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Issues</a></p>
 <p align="center">
 </p>
 <table class="table">
@@ -64,15 +70,31 @@
 </tr>
 <tr>
 <td align="center">
-Light
+<strong>Light</strong>
 </td>
 <td align="center">
-Dark
+<strong>Dark</strong>
 </td>
 </tr>
 </table>
 <div class="section level2">
-<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
+<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+</h2>
+<ul>
+<li>
+<strong>Drop-in theme</strong> — pass <code>theme = glass_theme()</code> to any Shiny page function that accepts a bslib theme</li>
+<li>
+<strong>Light and dark presets</strong> — full color systems, not just inverted text</li>
+<li>
+<strong>Familiar Shiny UI</strong> — standard inputs, buttons, navbars, sidebars, cards, and DataTables pick up glass styling automatically</li>
+<li>
+<strong>Works with bslib</strong> — optional cards, value boxes, and <code>page_sidebar()</code> dashboards</li>
+<li>
+<strong>Tunable</strong> — accent color, blur, saturation, and corner radius</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("shinyglass")  # once on CRAN</span></span>
@@ -81,7 +103,6 @@ Dark
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>Save as <code>app.R</code> and run with <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
@@ -106,8 +127,7 @@ Dark
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>You only need <code>shiny</code> and <code>shinyglass</code>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a bslib theme object that <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code> and other Shiny page functions understand automatically — you do not need to load bslib.</p>
-<p>Load <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> only if you want its UI helpers like <code>card()</code> or <code>page_fillable()</code>. Standard Shiny inputs, buttons, and layouts work out of the box.</p>
+<p>You only need <strong>shiny</strong> and <strong>shinyglass</strong>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme object that Shiny page functions understand — you do not need to load bslib unless you want its UI helpers (<code>card()</code>, <code>page_fillable()</code>, and so on).</p>
 </div>
 <div class="section level2">
 <h2 id="customization">Customization<a class="anchor" aria-label="anchor" href="#customization"></a>
@@ -117,25 +137,58 @@ Dark
 <span>  preset     <span class="op">=</span> <span class="st">"dark"</span>,   <span class="co"># "light" or "dark"</span></span>
 <span>  primary    <span class="op">=</span> <span class="st">"#007AFF"</span>,</span>
 <span>  blur       <span class="op">=</span> <span class="fl">28</span>,</span>
-<span>  saturation <span class="op">=</span> <span class="fl">200</span></span>
+<span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  radius     <span class="op">=</span> <span class="st">"1.25rem"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><code>preset</code> switches the full color system — both variants are shown above.</p>
+<table class="table">
+<thead><tr>
+<th>Argument</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>preset</code></td>
+<td>Overall light or dark appearance</td>
+</tr>
+<tr>
+<td><code>primary</code></td>
+<td>Accent color (buttons, links, focus rings)</td>
+</tr>
+<tr>
+<td><code>blur</code></td>
+<td>Backdrop blur radius in pixels</td>
+</tr>
+<tr>
+<td><code>saturation</code></td>
+<td>Backdrop saturation percentage</td>
+</tr>
+<tr>
+<td><code>radius</code></td>
+<td>Corner radius for glass surfaces</td>
+</tr>
+<tr>
+<td><code>...</code></td>
+<td>Passed through to <code><a href="https://rstudio.github.io/bslib/reference/bs_theme.html" class="external-link">bslib::bs_theme()</a></code>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="example-apps">Example apps<a class="anchor" aria-label="anchor" href="#example-apps"></a>
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
+<p>Bundled demos live in the package. Run any of them with <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">shiny::runApp()</a></code>.</p>
 <div class="section level3">
-<h3 id="demo">Demo<a class="anchor" aria-label="anchor" href="#demo"></a>
+<h3 id="cards-and-plots">Cards and plots<a class="anchor" aria-label="anchor" href="#cards-and-plots"></a>
 </h3>
-<p>The bundled demo uses <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> cards and <a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot2</a>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bslib"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="bslib-dashboard">bslib dashboard<a class="anchor" aria-label="anchor" href="#bslib-dashboard"></a>
+<h3 id="dashboard-layout">Dashboard layout<a class="anchor" aria-label="anchor" href="#dashboard-layout"></a>
 </h3>
-<p><code>value_box()</code>, <code>layout_columns()</code>, <code>navset_card_tab()</code>, and <code>card(full_screen = TRUE)</code> on a <code>page_sidebar()</code> dashboard:</p>
+<p>A <code>page_sidebar()</code> app with value boxes, tabbed cards, and a DataTable:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bslib"</span>, <span class="st">"ggplot2"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -161,9 +214,9 @@ Dark
 </table>
 </div>
 <div class="section level3">
-<h3 id="querychat-explorer">querychat explorer<a class="anchor" aria-label="anchor" href="#querychat-explorer"></a>
+<h3 id="natural-language-filtering">Natural-language filtering<a class="anchor" aria-label="anchor" href="#natural-language-filtering"></a>
 </h3>
-<p><a href="https://posit-dev.github.io/querychat/r/" class="external-link">querychat</a> natural-language filtering with a glass dashboard layout. Quick-filter buttons work without an API key; chat requires an LLM credential (e.g. <code>OPENAI_API_KEY</code>):</p>
+<p>Explore data with <a href="https://posit-dev.github.io/querychat/r/" class="external-link">querychat</a>. Quick-filter buttons work offline; chat needs an LLM API key (for example <code>OPENAI_API_KEY</code>):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"querychat"</span>, <span class="st">"duckdb"</span>, <span class="st">"DT"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"querychat-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -189,65 +242,11 @@ Dark
 </table>
 </div>
 <div class="section level3">
-<h3 id="dreamrs-apps">dreamRs apps<a class="anchor" aria-label="anchor" href="#dreamrs-apps"></a>
+<h3 id="sidebar-reference">Sidebar reference<a class="anchor" aria-label="anchor" href="#sidebar-reference"></a>
 </h3>
-<p>Real-world dashboards from <a href="https://github.com/dreamRs/shinyapps" class="external-link">dreamRs/shinyapps</a> with <code><a href="reference/glass_theme.html">glass_theme()</a></code> applied. Useful for spotting styling gaps on custom CSS, legacy widgets, and third-party outputs (leaflet, reactable, apexcharter, shinydashboard).</p>
+<p>Floating sidebar, plots, and DataTables:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"shinyWidgets"</span>, <span class="st">"ggplot2"</span>, <span class="st">"reactable"</span>, <span class="st">"apexcharter"</span>,</span>
-<span>  <span class="st">"leaflet"</span>, <span class="st">"sf"</span>, <span class="st">"billboarder"</span>, <span class="st">"shinydashboard"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-gh-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-olympic-medals.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-tdb-naissances.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-ratp-traffic.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="27%">
-<col width="38%">
-<col width="33%">
-</colgroup>
-<thead><tr>
-<th>App</th>
-<th>Light</th>
-<th>Dark</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>GitHub dashboard</td>
-<td><img src="reference/figures/dreamrs-gh-dashboard.png" width="220" alt="dreamRs GitHub dashboard, light"></td>
-<td><img src="reference/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="dreamRs GitHub dashboard, dark"></td>
-</tr>
-<tr>
-<td>Olympic medals</td>
-<td><img src="reference/figures/dreamrs-olympic-medals.png" width="220" alt="dreamRs Olympic medals, light"></td>
-<td><img src="reference/figures/dreamrs-olympic-medals-dark.png" width="220" alt="dreamRs Olympic medals, dark"></td>
-</tr>
-<tr>
-<td>Births in France</td>
-<td><img src="reference/figures/dreamrs-tdb-naissances.png" width="220" alt="dreamRs births dashboard, light"></td>
-<td><img src="reference/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="dreamRs births dashboard, dark"></td>
-</tr>
-<tr>
-<td>Paris metro</td>
-<td><img src="reference/figures/dreamrs-ratp-traffic.png" width="220" alt="dreamRs RATP traffic, light"></td>
-<td><img src="reference/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="dreamRs RATP traffic, dark"></td>
-</tr>
-</tbody>
-</table>
-<p>Re-capture screenshots (requires <a href="https://rstudio.github.io/chromote/" class="external-link">chromote</a>):</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/scripts/capture-dreamrs-screenshots.R</span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="reference-app">Reference app<a class="anchor" aria-label="anchor" href="#reference-app"></a>
-</h3>
-<p>Sidebar overlay, content-aware tinting, and DataTables:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Dark preset:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SHINYGLASS_PRESET <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p align="center">
 </p>
 <table class="table">
@@ -269,11 +268,59 @@ Dark
 </tr>
 </table>
 </div>
+<div class="section level3">
+<h3 id="community-dashboards">Community dashboards<a class="anchor" aria-label="anchor" href="#community-dashboards"></a>
+</h3>
+<p>Glass themes applied to open dashboards from <a href="https://github.com/dreamRs/shinyapps" class="external-link">dreamRs</a> — GitHub stats, Olympic medals, French births, and Paris metro traffic:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"shinyWidgets"</span>, <span class="st">"ggplot2"</span>, <span class="st">"reactable"</span>, <span class="st">"apexcharter"</span>,</span>
+<span>  <span class="st">"leaflet"</span>, <span class="st">"sf"</span>, <span class="st">"billboarder"</span>, <span class="st">"shinydashboard"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-gh-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-olympic-medals.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-tdb-naissances.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-ratp-traffic.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="27%">
+<col width="38%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>App</th>
+<th align="center">Light</th>
+<th align="center">Dark</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>GitHub dashboard</td>
+<td align="center"><img src="reference/figures/dreamrs-gh-dashboard.png" width="220" alt="GitHub dashboard, light"></td>
+<td align="center"><img src="reference/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="GitHub dashboard, dark"></td>
+</tr>
+<tr>
+<td>Olympic medals</td>
+<td align="center"><img src="reference/figures/dreamrs-olympic-medals.png" width="220" alt="Olympic medals, light"></td>
+<td align="center"><img src="reference/figures/dreamrs-olympic-medals-dark.png" width="220" alt="Olympic medals, dark"></td>
+</tr>
+<tr>
+<td>Births in France</td>
+<td align="center"><img src="reference/figures/dreamrs-tdb-naissances.png" width="220" alt="Births dashboard, light"></td>
+<td align="center"><img src="reference/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="Births dashboard, dark"></td>
+</tr>
+<tr>
+<td>Paris metro</td>
+<td align="center"><img src="reference/figures/dreamrs-ratp-traffic.png" width="220" alt="RATP traffic, light"></td>
+<td align="center"><img src="reference/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="RATP traffic, dark"></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="gallery">Gallery<a class="anchor" aria-label="anchor" href="#gallery"></a>
 </h2>
-<p>Official <a href="https://github.com/rstudio/shiny/tree/main/inst/examples" class="external-link">Shiny examples</a> with <code><a href="reference/glass_theme.html">glass_theme()</a></code> applied:</p>
+<p>Common Shiny patterns with <code><a href="reference/glass_theme.html">glass_theme()</a></code>:</p>
 <table class="table">
 <colgroup>
 <col width="25%">
@@ -290,7 +337,7 @@ Dark
 </tr>
 <tr>
 <td align="center">fluidPage + sidebar</td>
-<td align="center">Pill tab bar</td>
+<td align="center">Pill tabs</td>
 <td align="center">actionButton</td>
 <td align="center">downloadButton</td>
 </tr>
@@ -310,6 +357,18 @@ Dark
 </table>
 </div>
 <div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<ul>
+<li>Function reference: <a href="https://ericrayanderson.github.io/shinyglass/reference/glass_theme.html"><code>glass_theme()</code></a>
+</li>
+<li>Package site: <a href="https://ericrayanderson.github.io/shinyglass/">ericrayanderson.github.io/shinyglass</a>
+</li>
+<li>Design inspiration: <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Apple Liquid Glass</a>
+</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
 <p>GPL-3</p>
@@ -318,8 +377,7 @@ Dark
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/ericrayanderson/shinyglass/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report a bug</a></li>
+<li><p><a href="https://github.com/ericrayanderson/shinyglass" class="external-link">Source code</a> <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report a bug</a></p></li>
 </ul>
 </div>
 
