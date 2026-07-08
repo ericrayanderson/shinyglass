@@ -7,6 +7,12 @@
 ^man/figures/apple-glass-reference\.png$
 ^man/figures/apple-glass-reference-dark\.png$
 ^man/figures/shinyglass-demo-dark\.png$
+^man/figures/bslib-dashboard\.png$
+^man/figures/bslib-dashboard-dark\.png$
+^man/figures/querychat-demo\.png$
+^man/figures/querychat-demo-dark\.png$
+^man/figures/dreamrs-.*\.png$
+^inst/shinyapps/
 ^inst/scripts/
 ^\.Rcheck$
 ^shinyglass\.Rcheck$

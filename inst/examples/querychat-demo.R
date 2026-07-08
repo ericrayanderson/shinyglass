@@ -26,7 +26,26 @@ glass_preset <- match.arg(
   c("light", "dark")
 )
 
-qc <- QueryChat$new(iris)
+greeting <- r"(
+# Iris Explorer
+
+Filter the classic iris dataset with natural language, or use the quick
+filters in the sidebar (no API key required).
+
+##### Try asking
+- <span class="suggestion">Show only setosa flowers</span>
+- <span class="suggestion">Which species has the widest petals?</span>
+- <span class="suggestion">Average petal width by species</span>
+)"
+
+qc <- QueryChat$new(
+  iris,
+  greeting = greeting,
+  data_description = paste(
+    "The iris dataset has sepal and petal measurements for 150 flowers",
+    "across three species: setosa, versicolor, and virginica."
+  )
+)
 
 ui <- page_sidebar(
   title = "Iris Explorer",

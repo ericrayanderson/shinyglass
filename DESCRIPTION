@@ -19,10 +19,27 @@ Imports:
     sass (>= 0.4.0)
 Suggests:
     DT,
+    apexcharter,
+    billboarder,
+    data.table,
+    dplyr,
     duckdb,
+    gh,
     ggplot2,
+    ggtext,
+    ggthemes,
+    leaflet,
+    leaflet.extras,
+    phosphoricons,
     querychat,
+    reactable,
+    sf,
     shiny (>= 1.5.0),
-    testthat (>= 3.0.0)
+    shinydashboard,
+    shinyjs,
+    shinythemes,
+    shinyWidgets,
+    testthat (>= 3.0.0),
+    tidyr
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2

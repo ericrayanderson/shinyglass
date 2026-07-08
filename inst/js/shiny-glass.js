@@ -212,12 +212,14 @@
   }
 
   function updateContentTint() {
+    if (window.__shinyglassDisableTint) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     var rgb = averageSamples(collectSamples());
     applyTint(rgb);
   }
 
   function scheduleTintUpdate() {
+    if (window.__shinyglassDisableTint) return;
     if (tintTimer) clearTimeout(tintTimer);
     tintTimer = setTimeout(updateContentTint, TINT_THROTTLE_MS);
   }

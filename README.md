@@ -91,6 +91,19 @@ install.packages(c("bslib", "ggplot2", "DT"))
 shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
 ```
 
+<p align="center">
+<table>
+<tr>
+<td align="center"><img src="man/figures/bslib-dashboard.png" width="340" alt="bslib dashboard, light preset"></td>
+<td align="center"><img src="man/figures/bslib-dashboard-dark.png" width="340" alt="bslib dashboard, dark preset"></td>
+</tr>
+<tr>
+<td align="center">Light</td>
+<td align="center">Dark</td>
+</tr>
+</table>
+</p>
+
 ### querychat explorer
 
 [querychat](https://posit-dev.github.io/querychat/r/) natural-language filtering with a glass dashboard layout. Quick-filter buttons work without an API key; chat requires an LLM credential (e.g. `OPENAI_API_KEY`):
@@ -98,6 +111,47 @@ shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass
 ```r
 install.packages(c("querychat", "duckdb", "DT", "ggplot2"))
 shiny::runApp(system.file("examples", "querychat-demo.R", package = "shinyglass"))
+```
+
+<p align="center">
+<table>
+<tr>
+<td align="center"><img src="man/figures/querychat-demo.png" width="340" alt="querychat explorer, light preset"></td>
+<td align="center"><img src="man/figures/querychat-demo-dark.png" width="340" alt="querychat explorer, dark preset"></td>
+</tr>
+<tr>
+<td align="center">Light</td>
+<td align="center">Dark</td>
+</tr>
+</table>
+</p>
+
+### dreamRs apps
+
+Real-world dashboards from [dreamRs/shinyapps](https://github.com/dreamRs/shinyapps) with `glass_theme()` applied. Useful for spotting styling gaps on custom CSS, legacy widgets, and third-party outputs (leaflet, reactable, apexcharter, shinydashboard).
+
+```r
+install.packages(c(
+  "shinyWidgets", "ggplot2", "reactable", "apexcharter",
+  "leaflet", "sf", "billboarder", "shinydashboard"
+))
+shiny::runApp(system.file("examples", "dreamrs-gh-dashboard.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-olympic-medals.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-tdb-naissances.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-ratp-traffic.R", package = "shinyglass"))
+```
+
+| App | Light | Dark |
+|-----|-------|------|
+| GitHub dashboard | <img src="man/figures/dreamrs-gh-dashboard.png" width="220" alt="dreamRs GitHub dashboard, light"> | <img src="man/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="dreamRs GitHub dashboard, dark"> |
+| Olympic medals | <img src="man/figures/dreamrs-olympic-medals.png" width="220" alt="dreamRs Olympic medals, light"> | <img src="man/figures/dreamrs-olympic-medals-dark.png" width="220" alt="dreamRs Olympic medals, dark"> |
+| Births in France | <img src="man/figures/dreamrs-tdb-naissances.png" width="220" alt="dreamRs births dashboard, light"> | <img src="man/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="dreamRs births dashboard, dark"> |
+| Paris metro | <img src="man/figures/dreamrs-ratp-traffic.png" width="220" alt="dreamRs RATP traffic, light"> | <img src="man/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="dreamRs RATP traffic, dark"> |
+
+Re-capture screenshots (requires [chromote](https://rstudio.github.io/chromote/)):
+
+```bash
+Rscript inst/scripts/capture-dreamrs-screenshots.R
 ```
 
 ### Reference app
