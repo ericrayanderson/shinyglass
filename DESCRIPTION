@@ -10,7 +10,7 @@ Description: Provides the exported function 'glass_theme()', which returns a
     Bootstrap components. See Apple's Liquid Glass design overview at
     <https://developer.apple.com/documentation/technologyoverviews/liquid-glass>.
 License: GPL-3 + file LICENSE
-URL: https://github.com/ericrayanderson/shinyglass
+URL: https://ericrayanderson.github.io/shinyglass/, https://github.com/ericrayanderson/shinyglass
 BugReports: https://github.com/ericrayanderson/shinyglass/issues
 Encoding: UTF-8
 Imports:

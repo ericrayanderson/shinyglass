@@ -2,6 +2,8 @@
 
 Apple-inspired [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
 
+[Documentation](https://ericrayanderson.github.io/shinyglass/) · [Report an issue](https://github.com/ericrayanderson/shinyglass/issues)
+
 <p align="center">
   <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app with liquid glass theme" width="720">
 </p>

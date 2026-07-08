@@ -2,3 +2,7 @@ url: https://ericrayanderson.github.io/shinyglass/
 
 template:
   bootstrap: 5
+
+authors:
+  Eric Anderson:
+    href: https://github.com/ericrayanderson
