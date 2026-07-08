@@ -1,0 +1,1154 @@
+// Apple Liquid Glass theme layer for Bootstrap 5
+// Inspired by Apple's iOS 26 / visionOS design language
+
+// ---------------------------------------------------------------------------
+// CSS custom properties (overridden per preset in glass_theme())
+// ---------------------------------------------------------------------------
+:root {
+  --glass-bg: #{$glass-bg};
+  --glass-bg-hover: #{$glass-bg-hover};
+  --glass-border: #{$glass-border};
+  --glass-shadow: #{$glass-shadow};
+  --glass-elevated-shadow: #{$glass-elevated-shadow};
+  --glass-blur: #{$glass-blur};
+  --glass-saturate: #{$glass-saturate};
+  --glass-radius: #{$glass-radius};
+  --glass-highlight: #{$glass-highlight};
+  --glass-specular: #{$glass-specular};
+  --glass-menu-bg: #{$glass-menu-bg};
+  --glass-menu-color: #{$glass-menu-color};
+  --glass-float-margin: 0.85rem;
+  --glass-tint-r: 0;
+  --glass-tint-g: 122;
+  --glass-tint-b: 255;
+  --glass-tint-strength: 0;
+  --glass-specular-x: 28%;
+  --glass-specular-y: 10%;
+  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+}
+
+[data-glass-preset="dark"] {
+  --glass-inner-glow: rgba(255, 255, 255, 0.06);
+}
+
+// ---------------------------------------------------------------------------
+// Page background
+// ---------------------------------------------------------------------------
+body {
+  background: $glass-page-bg !important;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Rich ambient scene — glass refracts this, not flat gray
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 32%),
+    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 28%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+// ---------------------------------------------------------------------------
+// Glass surface mixin
+// ---------------------------------------------------------------------------
+@mixin glass-surface($radius: var(--glass-radius)) {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: $radius;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    padding 0.25s ease,
+    margin 0.25s ease;
+
+  // Specular highlight follows pointer (set via shiny-glass.js)
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 120% 90% at var(--glass-specular-x, 28%) var(--glass-specular-y, 10%),
+      var(--glass-specular) 0%,
+      transparent 62%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.88;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  // Liquid inner glow
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 4px 20px var(--glass-inner-glow);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// Lighter glass for inputs — no pseudo-elements or overflow clipping
+@mixin glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+// Floating functional layer (Apple: controls sit above content)
+@mixin glass-floating($radius: var(--glass-radius)) {
+  @include glass-surface($radius);
+  margin: var(--glass-float-margin);
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    0 4px 12px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+
+// ---------------------------------------------------------------------------
+// Shiny layout — content vs chrome
+// ---------------------------------------------------------------------------
+.container-fluid > .row {
+  align-items: flex-start;
+}
+
+// bslib multi-card layouts — gap reveals ambient scene between surfaces
+.bslib-gap-spacing,
+.layout-column-wrap,
+.layout-column-plot {
+  gap: 0.5rem;
+}
+
+// Content columns stay open so the scene shows through
+.col-sm-8[role="main"],
+.col-sm-8 > .tab-content,
+.tab-content > .tab-pane.active {
+  background: transparent;
+}
+
+// Hero content region — full-bleed colorful canvas behind floating chrome
+.glass-content-hero {
+  position: relative;
+  min-height: 18rem;
+  margin: 0 0 1rem;
+  border-radius: calc(var(--glass-radius) * 1.1);
+  overflow: hidden;
+
+  .shiny-plot-output,
+  .shiny-html-output {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Classic Shiny sidebar — floating glass control deck
+form.well,
+.col-sm-4.well {
+  @include glass-floating();
+  border: 1px solid var(--glass-border) !important;
+  background-color: var(--glass-bg) !important;
+  padding: 1.15rem 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+// ---------------------------------------------------------------------------
+// Cards
+// ---------------------------------------------------------------------------
+.card {
+  @include glass-floating();
+  overflow: visible; // allow select menus to layer above siblings
+  color: inherit;
+
+  .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--glass-border);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Navigation — floating glass layer above content
+// ---------------------------------------------------------------------------
+body.bslib-page-navbar > .navbar,
+.navbar.navbar-static-top,
+.navbar.navbar-default {
+  @include glass-floating(var(--glass-radius));
+  border-radius: var(--glass-radius) !important;
+  border: 1px solid var(--glass-border) !important;
+  margin: var(--glass-float-margin) var(--glass-float-margin) 0;
+  padding: 0.55rem 1rem;
+  position: sticky;
+  top: var(--glass-float-margin);
+  z-index: 1030;
+
+  .navbar-brand {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .nav > li > a,
+  .nav-link {
+    border-radius: 0.75rem;
+    opacity: 0.75;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+
+  .nav > li.active > a,
+  .nav-link.active {
+    opacity: 1;
+    background: var(--glass-bg-hover);
+  }
+}
+
+// iOS-style floating pill tab bar (tabsetPanel)
+.tabbable > .nav-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 0.3rem;
+  margin: 0 0 1rem var(--glass-float-margin);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+  position: relative;
+  z-index: 2;
+
+  > li {
+    margin-bottom: 0;
+    float: none;
+
+    > a {
+      border: none !important;
+      border-radius: 999px !important;
+      color: inherit;
+      opacity: 0.7;
+      padding: 0.45rem 1rem;
+      transition: opacity 0.2s ease, background 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+        background: var(--glass-bg-hover);
+      }
+    }
+
+    &.active > a {
+      opacity: 1;
+      background: var(--glass-bg-hover) !important;
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+    }
+  }
+}
+
+// Navlist sidebar pills
+.col-sm-4.well .nav-pills > li > a {
+  border-radius: 0.75rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    background: var(--glass-bg-hover);
+  }
+}
+
+.col-sm-4.well .nav-pills > li.active > a {
+  opacity: 1;
+  background: var(--glass-bg-hover) !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
+
+// Generic nav-tabs outside tabbable (e.g. DT example tabs)
+.nav-tabs:not(.tabbable > .nav-tabs) {
+  border-bottom: 1px solid var(--glass-border);
+
+  .nav-link,
+  > li > a {
+    border: none;
+    border-radius: 0.75rem 0.75rem 0 0;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+
+  .nav-link.active,
+  > li.active > a {
+    opacity: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border-bottom: 2px solid $primary;
+  }
+}
+
+// Scroll: compact on scroll-down, expand on scroll-up (Apple tab bar)
+body.glass-nav-compact {
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  body.bslib-page-navbar > .navbar {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
+    transform: scale(0.97);
+    opacity: 0.94;
+
+    .navbar-brand {
+      font-size: 0.95rem;
+    }
+  }
+
+  .tabbable > .nav-tabs {
+    padding: 0.12rem;
+    transform: scale(0.96);
+    opacity: 0.92;
+
+    > li > a {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.92rem;
+    }
+  }
+
+  form.well,
+  .col-sm-4.well {
+    transform: scale(0.99);
+  }
+}
+
+body.glass-nav-expanded {
+  .tabbable > .nav-tabs,
+  .navbar.navbar-static-top,
+  .navbar.navbar-default {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Buttons — Apple Liquid Glass typography + tinted glass fills
+// ---------------------------------------------------------------------------
+@mixin glass-button-type {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin glass-button-tinted($color) {
+  @include glass-button-type();
+  color: #fff !important;
+  background: color-mix(in srgb, #{$color} 76%, transparent) !important;
+  border: 1px solid color-mix(in srgb, #{$color} 34%, rgba(255, 255, 255, 0.42)) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow:
+    0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+
+  &:hover,
+  &:focus {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$color} 86%, transparent) !important;
+    border-color: color-mix(in srgb, #{$color} 42%, rgba(255, 255, 255, 0.48)) !important;
+    box-shadow:
+      0 6px 22px color-mix(in srgb, #{$color} 30%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 0.2rem color-mix(in srgb, #{$color} 22%, transparent),
+      0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.36);
+  }
+}
+
+@mixin glass-button-ghost($label-color: $primary) {
+  @include glass-button-type();
+  @include glass-input();
+  color: #{$label-color} !important;
+  background: var(--glass-bg) !important;
+
+  &:hover,
+  &:focus {
+    color: #{$label-color} !important;
+    background: var(--glass-bg-hover) !important;
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 4px 14px var(--glass-shadow);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: rgba($primary, 0.45) !important;
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.14),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.btn,
+.action-button {
+  @include glass-button-type();
+  border-radius: 0.75rem;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.42;
+    transform: none;
+  }
+}
+
+// Shiny default — frosted glass with accent label (not Bootstrap gray)
+.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.shiny-download-link),
+.action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+  @include glass-button-ghost($primary);
+}
+
+.btn-secondary,
+.btn-light {
+  @include glass-button-ghost($body-color);
+}
+
+.btn-primary,
+.action-button.btn-primary {
+  @include glass-button-tinted($primary);
+}
+
+.btn-success,
+.action-button.btn-success {
+  @include glass-button-tinted($success);
+}
+
+.btn-danger,
+.action-button.btn-danger {
+  @include glass-button-tinted($danger);
+}
+
+.btn-warning,
+.action-button.btn-warning {
+  @include glass-button-tinted($warning);
+  color: #1d1d1f !important;
+
+  &:hover,
+  &:focus {
+    color: #1d1d1f !important;
+  }
+}
+
+.btn-info,
+.action-button.btn-info {
+  @include glass-button-tinted($info);
+}
+
+.btn-outline-primary {
+  @include glass-button-ghost($primary);
+}
+
+.btn-outline-secondary,
+.btn-outline-light {
+  @include glass-button-ghost($body-color);
+}
+
+.btn-outline-success {
+  @include glass-button-ghost($success);
+}
+
+.btn-outline-danger {
+  @include glass-button-ghost($danger);
+}
+
+.btn-outline-warning {
+  @include glass-button-ghost($warning);
+}
+
+.btn-outline-info {
+  @include glass-button-ghost($info);
+}
+
+.btn-link {
+  @include glass-button-type();
+  color: $primary !important;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover,
+  &:focus {
+    color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+    text-decoration: none;
+  }
+}
+
+// Shiny download controls — override bslib's .btn-default outline on <a> tags
+a.shiny-download-link {
+  text-decoration: none !important;
+
+  &.btn {
+    @include glass-button-tinted($primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35em;
+
+    i[class*="fa-"] {
+      font-size: 0.9em;
+      opacity: 0.95;
+    }
+
+    &:active:not(.disabled):not([aria-disabled="true"]) {
+      transform: scale(0.97);
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+      transform: none;
+    }
+
+    &.btn-primary {
+      @include glass-button-tinted($primary);
+    }
+
+    &.btn-secondary,
+    &.btn-light {
+      @include glass-button-ghost($body-color);
+    }
+
+    &.btn-success {
+      @include glass-button-tinted($success);
+    }
+
+    &.btn-danger {
+      @include glass-button-tinted($danger);
+    }
+  }
+
+  &:not(.btn) {
+    @include glass-button-type();
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    color: $primary !important;
+    padding: 0.15rem 0.1rem;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, opacity 0.2s ease;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+      text-decoration: none !important;
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+    }
+  }
+}
+
+[data-glass-preset="dark"] {
+  .btn-warning {
+    color: #1d1d1f !important;
+  }
+
+  .btn-default:not(.btn-primary):not(.shiny-download-link),
+  .action-button.btn-default:not(.btn-primary),
+  .btn-outline-primary,
+  a.shiny-download-link:not(.btn) {
+    color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form controls
+// ---------------------------------------------------------------------------
+.form-control {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 2px 10px var(--glass-shadow);
+  }
+
+  &:focus {
+    background: var(--glass-bg-hover);
+    border-color: rgba($primary, 0.5);
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.15),
+      inset 0 1px 0 var(--glass-highlight),
+      0 4px 14px var(--glass-shadow);
+  }
+}
+
+.form-select {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  // Opaque menu so options don't show content behind them
+  &:focus,
+  &:active,
+  &[size]:not([size="1"]),
+  &[multiple] {
+    background-color: var(--glass-menu-bg) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 1060;
+    position: relative;
+  }
+
+  option,
+  optgroup {
+    background-color: var(--glass-menu-bg);
+    color: var(--glass-menu-color);
+  }
+}
+
+// Lift open selects above later siblings
+.card,
+form.well,
+.col-sm-4.well {
+  .shiny-input-container:has(.form-select),
+  .shiny-input-container:has(.selectize-control) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .shiny-input-container.glass-select-open,
+  .shiny-input-container:has(.form-select:focus),
+  .shiny-input-container:has(.form-select:active),
+  .shiny-input-container:has(.selectize-input.input-active) {
+    z-index: 1000;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Selectize (glass dropdown menus)
+// ---------------------------------------------------------------------------
+.selectize-control.single .selectize-input,
+.selectize-control.multi .selectize-input {
+  @include glass-input();
+  border-radius: 0.75rem !important;
+  color: inherit;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 2px 10px var(--glass-shadow);
+  }
+
+  &.input-active {
+    background: var(--glass-bg-hover) !important;
+    border-color: rgba($primary, 0.45) !important;
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.12),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.selectize-dropdown {
+  background: var(--glass-bg-hover) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+  padding: 0.4rem;
+  z-index: 1060 !important;
+  overflow: hidden;
+
+  .option,
+  .create {
+    border-radius: 0.55rem;
+    color: var(--glass-menu-color, inherit);
+    padding: 0.45rem 0.65rem;
+  }
+
+  .active {
+    background: color-mix(in srgb, var(--glass-bg-hover) 65%, $primary 35%) !important;
+    color: inherit;
+  }
+
+  .optgroup-header {
+    color: inherit;
+    opacity: 0.65;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.65rem 0.15rem;
+  }
+}
+
+.input-group-text {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// Modals & dropdowns
+// ---------------------------------------------------------------------------
+.modal-content {
+  @include glass-surface(1.25rem);
+}
+
+.dropdown-menu {
+  background-color: var(--glass-menu-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px var(--glass-shadow);
+  padding: 0.5rem;
+  z-index: 1060;
+
+  .dropdown-item {
+    border-radius: 0.5rem;
+    color: var(--glass-menu-color);
+
+    &:hover,
+    &:focus {
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Alerts, badges, progress
+// ---------------------------------------------------------------------------
+.alert {
+  @include glass-surface(1rem);
+  border-width: 1px;
+}
+
+.badge {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.progress {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// Tables
+// ---------------------------------------------------------------------------
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: var(--glass-bg-hover);
+  --bs-table-hover-bg: var(--glass-bg-hover);
+}
+
+// ---------------------------------------------------------------------------
+// bslib value boxes & page_sidebar overlay
+// ---------------------------------------------------------------------------
+.value-box {
+  @include glass-surface();
+}
+
+// page_sidebar title — floating glass chrome
+.bslib-page-sidebar > .navbar {
+  @include glass-floating(var(--glass-radius));
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  color: inherit !important;
+  margin: var(--glass-float-margin) var(--glass-float-margin) 0;
+  padding: 0.55rem 1rem;
+  position: sticky;
+  top: var(--glass-float-margin);
+  z-index: 1030;
+
+  --#{$prefix}navbar-brand-color: inherit;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+// Apple overlay: main full-bleed, sidebar floats above content
+.bslib-sidebar-layout {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible;
+
+  > .main,
+  > .main.bslib-page-main {
+    background: transparent !important;
+    color: inherit;
+  }
+
+  > .sidebar {
+    @include glass-floating(var(--glass-radius));
+    background-color: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: inherit;
+    overflow: auto;
+
+    .sidebar-title {
+      border-bottom: 1px solid var(--glass-border);
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  > .collapse-toggle {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 999px !important;
+    box-shadow:
+      0 8px 24px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+    color: inherit;
+    z-index: 30;
+
+    &:hover {
+      background: var(--glass-bg-hover) !important;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: relative;
+
+    > .main,
+    > .main.bslib-page-main {
+      grid-column: 1 / -1 !important;
+      grid-row: 1 / 2;
+      border-radius: 0 !important;
+      padding: var(--glass-float-margin);
+    }
+
+    > .sidebar {
+      position: absolute;
+      top: var(--glass-float-margin);
+      bottom: var(--glass-float-margin);
+      left: var(--glass-float-margin);
+      width: var(--_sidebar-width, 280px);
+      max-width: calc(100% - var(--glass-float-margin) * 2);
+      max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem);
+      margin: 0 !important;
+      z-index: 20;
+      border-radius: var(--glass-radius) !important;
+      transition:
+        transform 0.3s cubic-bezier(0.8, 0.78, 0.22, 1.07),
+        opacity 0.25s ease;
+    }
+
+    &.sidebar-right > .sidebar {
+      left: auto;
+      right: var(--glass-float-margin);
+    }
+
+    &:not(.sidebar-collapsed) > .collapse-toggle {
+      left: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      );
+      right: auto !important;
+      top: calc(var(--glass-float-margin) + var(--_icon-size, 1rem) * 0.5);
+    }
+
+    &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle {
+      left: auto !important;
+      right: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      );
+    }
+
+    &.sidebar-collapsed > .sidebar {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(calc(-100% - var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-right.sidebar-collapsed > .sidebar {
+      transform: translateX(calc(100% + var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-collapsed > .collapse-toggle {
+      left: var(--glass-float-margin) !important;
+      right: auto !important;
+      top: var(--glass-float-margin);
+      color: inherit;
+    }
+
+    &.sidebar-right.sidebar-collapsed > .collapse-toggle {
+      left: auto !important;
+      right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-collapsed > .main,
+    &.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
+      padding-right: var(--glass-float-margin);
+    }
+
+    &.sidebar-right.sidebar-collapsed > .main,
+    &.sidebar-right.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin);
+      padding-right: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
+    }
+  }
+}
+
+// Outputs: light glass frame; plot canvas stays neutral inside
+.shiny-plot-output,
+.shiny-html-output,
+.shiny-image-output {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.65rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+}
+
+// ---------------------------------------------------------------------------
+// DataTables (DT) — glass table chrome
+// ---------------------------------------------------------------------------
+.dataTables_wrapper {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate {
+    color: inherit;
+    margin-bottom: 0.5rem;
+  }
+
+  .dataTables_length select,
+  .dataTables_filter input {
+    @include glass-input();
+    border-radius: 0.65rem;
+    color: inherit;
+    margin: 0 0.35rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  table.dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100% !important;
+
+    thead th,
+    thead td {
+      background: var(--glass-bg-hover);
+      border-bottom: 1px solid var(--glass-border) !important;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.65rem 0.85rem;
+    }
+
+    tbody tr {
+      background: transparent;
+      transition: background 0.15s ease;
+
+      > td {
+        border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+        color: inherit;
+        padding: 0.55rem 0.85rem;
+        vertical-align: middle;
+      }
+
+      &:nth-child(even) > td {
+        background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+      }
+
+      &:hover > td {
+        background: var(--glass-bg-hover);
+      }
+    }
+  }
+
+  .dataTables_paginate {
+    .paginate_button {
+      @include glass-input();
+      border-radius: 0.55rem !important;
+      color: inherit !important;
+      margin: 0 0.1rem;
+      padding: 0.3rem 0.65rem !important;
+
+      &:hover {
+        background: var(--glass-bg-hover) !important;
+        border-color: var(--glass-border) !important;
+        color: inherit !important;
+      }
+
+      &.current,
+      &.current:hover {
+        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
+        border-color: rgba($primary, 0.35) !important;
+        color: inherit !important;
+      }
+
+      &.disabled,
+      &.disabled:hover {
+        opacity: 0.45;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Dark preset polish
+// ---------------------------------------------------------------------------
+[data-glass-preset="dark"] {
+  body::before,
+  body::after {
+    opacity: 0.95;
+  }
+
+  .shiny-notification,
+  .selectize-dropdown {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .dataTables_wrapper {
+    table.dataTable tbody tr:nth-child(even) > td {
+      background: color-mix(in srgb, var(--glass-bg) 85%, transparent);
+    }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+      background-color: var(--glass-menu-bg);
+    }
+  }
+
+  .bslib-sidebar-layout > .sidebar,
+  .bslib-page-sidebar > .navbar {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      0 6px 16px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Accessibility: respect reduced motion
+// ---------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn,
+  .form-control,
+  .form-select,
+  .navbar,
+  .tabbable > .nav-tabs {
+    transition: none;
+  }
+
+  body.glass-nav-compact .navbar,
+  body.glass-nav-compact .tabbable > .nav-tabs,
+  body.glass-nav-expanded .navbar,
+  body.glass-nav-expanded .tabbable > .nav-tabs {
+    transform: none;
+    opacity: 1;
+  }
+}

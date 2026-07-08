@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="inst/logo2.png" alt="shinyglass" width="700">
-</p>
-
 Apple's [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) aesthetic for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
 
 ## Install

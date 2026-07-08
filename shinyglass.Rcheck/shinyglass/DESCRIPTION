@@ -1,0 +1,25 @@
+Package: shinyglass
+Type: Package
+Title: Apple-Inspired Liquid Glass Design for Shiny Applications
+Version: 0.1.0
+Authors@R: person("Eric", "Anderson", role = c("aut", "cre"), email = "eric.ray.anderson@gmail.com")
+Description: Provides the exported function 'glass_theme()', which returns a
+    'bslib' theme object styled with an Apple-inspired Liquid Glass
+    aesthetic for use in 'shiny' applications. The theme applies
+    translucent surfaces, backdrop blur, and system typography to
+    Bootstrap components. See Apple's Liquid Glass design overview at
+    <https://developer.apple.com/documentation/technologyoverviews/liquid-glass>.
+License: GPL-3 + file LICENSE
+URL: https://github.com/ericrayanderson/shinyglass
+BugReports: https://github.com/ericrayanderson/shinyglass/issues
+Encoding: UTF-8
+Imports: bslib (>= 0.5.0), htmltools (>= 0.5.0), sass (>= 0.4.0)
+Suggests: DT, ggplot2, shiny (>= 1.5.0), testthat (>= 3.0.0)
+Enhances: shiny
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+NeedsCompilation: no
+Packaged: 2026-07-08 00:44:44 UTC; ericrayanderson
+Author: Eric Anderson [aut, cre]
+Maintainer: Eric Anderson <eric.ray.anderson@gmail.com>
+Built: R 4.4.1; ; 2026-07-08 00:45:08 UTC; unix
