@@ -52,7 +52,25 @@
 <p>Apple-inspired <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for R Shiny — one function, built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report an issue</a></p>
 <p align="center">
-<img src="reference/figures/shinyglass-demo.png" alt="shinyglass demo app with liquid glass theme" width="720"></p>
+</p>
+<table class="table">
+<tr>
+<td align="center">
+<img src="reference/figures/shinyglass-demo.png" width="340" alt="shinyglass demo app, light preset">
+</td>
+<td align="center">
+<img src="reference/figures/shinyglass-demo-dark.png" width="340" alt="shinyglass demo app, dark preset">
+</td>
+</tr>
+<tr>
+<td align="center">
+Light
+</td>
+<td align="center">
+Dark
+</td>
+</tr>
+</table>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
@@ -101,6 +119,7 @@
 <span>  blur       <span class="op">=</span> <span class="fl">28</span>,</span>
 <span>  saturation <span class="op">=</span> <span class="fl">200</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p><code>preset</code> switches the full color system — both variants are shown above.</p>
 </div>
 <div class="section level2">
 <h2 id="example-apps">Example apps<a class="anchor" aria-label="anchor" href="#example-apps"></a>
@@ -119,8 +138,30 @@
 <p>Sidebar overlay, content-aware tinting, and DataTables:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Dark preset:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SHINYGLASS_PRESET <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p align="center">
-<img src="reference/figures/apple-glass-reference.png" alt="Apple Liquid Glass reference app controls" width="720"></p>
+</p>
+<table class="table">
+<tr>
+<td align="center">
+<img src="reference/figures/apple-glass-reference.png" width="340" alt="reference app, light preset">
+</td>
+<td align="center">
+<img src="reference/figures/apple-glass-reference-dark.png" width="340" alt="reference app, dark preset">
+</td>
+</tr>
+<tr>
+<td align="center">
+Light
+</td>
+<td align="center">
+Dark
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="section level2">

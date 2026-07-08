@@ -8,8 +8,10 @@ themes for R Shiny — one function, built on
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Report
 an issue](https://github.com/ericrayanderson/shinyglass/issues)
 
-![shinyglass demo app with liquid glass
-theme](reference/figures/shinyglass-demo.png)
+|  |  |
+|:--:|:--:|
+| ![shinyglass demo app, light preset](reference/figures/shinyglass-demo.png) | ![shinyglass demo app, dark preset](reference/figures/shinyglass-demo-dark.png) |
+| Light | Dark |
 
 ## Install
 
@@ -74,6 +76,8 @@ glass_theme(
 )
 ```
 
+`preset` switches the full color system — both variants are shown above.
+
 ## Example apps
 
 ### Demo
@@ -96,8 +100,18 @@ Sidebar overlay, content-aware tinting, and DataTables:
 shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
 ```
 
-![Apple Liquid Glass reference app
-controls](reference/figures/apple-glass-reference.png)
+Dark preset:
+
+``` r
+
+Sys.setenv(SHINYGLASS_PRESET = "dark")
+shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
+```
+
+|  |  |
+|:--:|:--:|
+| ![reference app, light preset](reference/figures/apple-glass-reference.png) | ![reference app, dark preset](reference/figures/apple-glass-reference-dark.png) |
+| Light | Dark |
 
 ## Gallery
 
