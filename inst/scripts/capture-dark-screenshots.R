@@ -32,6 +32,18 @@ wait_for_shiny <- function(session, timeout = 40) {
   )
 }
 
+prep_screenshot_layout <- function(session) {
+  session$Runtime$evaluate(expression = "
+    window.scrollTo(0, 0);
+    document.body.classList.remove('glass-nav-compact');
+    document.body.classList.add('glass-nav-expanded');
+    document.querySelectorAll('.navbar, .tabbable > .nav-tabs').forEach((el) => {
+      el.style.transform = 'none';
+      el.style.opacity = '1';
+    });
+  ")
+}
+
 hide_sidebar_toggle <- function(session) {
   session$Runtime$evaluate(expression = "
     document.querySelectorAll('.collapse-toggle').forEach((el) => {
@@ -58,16 +70,32 @@ capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height 
                         env = character(), disable_tint = FALSE,
                         hide_sidebar_toggle = FALSE) {
   url <- sprintf("http://127.0.0.1:%d", port)
+  args <- commandArgs(trailingOnly = FALSE)
+  file_arg <- grep("^--file=", args, value = TRUE)
+  script_dir <- if (length(file_arg)) {
+    dirname(sub("^--file=", "", file_arg[1]))
+  } else {
+    "."
+  }
+  pkg_root <- normalizePath(file.path(script_dir, "..", ".."), winslash = "/")
+  launch_expr <- sprintf(
+    paste(
+      "if (requireNamespace('pkgload', quietly = TRUE)) {",
+      "  pkgload::load_all('%s', quiet = TRUE)",
+      "} else {",
+      "  devtools::load_all('%s', quiet = TRUE)",
+      "}",
+      "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE)",
+      sep = "; "
+    ),
+    gsub("'", "\\\\'", pkg_root),
+    gsub("'", "\\\\'", pkg_root),
+    gsub("'", "\\\\'", normalizePath(app_path, winslash = "/")),
+    port
+  )
   proc <- processx::process$new(
     command = normalizePath(Sys.which("Rscript")),
-    args = c(
-      "-e",
-      sprintf(
-        "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE)",
-        gsub("'", "\\\\'", normalizePath(app_path, winslash = "/")),
-        port
-      )
-    ),
+    args = c("-e", launch_expr),
     env = c(Sys.getenv(), env),
     stdout = "|",
     stderr = "|"
@@ -106,6 +134,8 @@ capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height 
     hide_sidebar_toggle(b)
     Sys.sleep(0.25)
   }
+  prep_screenshot_layout(b)
+  Sys.sleep(0.35)
   b$screenshot(filename = out_path)
   message("Saved ", out_path)
 }

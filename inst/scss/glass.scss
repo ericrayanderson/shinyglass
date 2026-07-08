@@ -1322,6 +1322,86 @@ body .Reactable {
 // ---------------------------------------------------------------------------
 // dreamRs / legacy app CSS overrides (when www/styles.css is bundled)
 // ---------------------------------------------------------------------------
+
+// gh-dashboard: .main-icon is absolute but .title lacks position:relative,
+// so the logo escapes and overlaps the header/inputs in screenshots.
+.title {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  padding-right: clamp(4.5rem, 12vw, 8.5rem);
+}
+
+.main-icon {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  font-size: clamp(6rem, 11vw, 9.5rem) !important;
+  line-height: 1 !important;
+  z-index: 0 !important;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.title .titre,
+.title .soustitre {
+  position: relative;
+  z-index: 1;
+}
+
+// Legacy debug rule in gh-dashboard/www/styles.css (unused id, but neutralize)
+#magnifying-glass {
+  position: static !important;
+  font-size: inherit !important;
+  width: auto !important;
+  height: auto !important;
+  border: none !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+#magnifying-glass::before {
+  display: none !important;
+}
+
+// Keep statiCards and avatar cells inside their Bootstrap columns
+.row > [class*="col-"] {
+  min-width: 0;
+}
+
+.row:has(.stati) {
+  align-items: stretch;
+}
+
+.row:has(.stati) > [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+}
+
+.stati {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.stati .stati-content,
+.stati .stati-value {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.shiny-html-output[id$="user_avatar"] {
+  display: flex !important;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 7em;
+  overflow: visible;
+}
+
 body .shiny-output-error,
 body .shiny-output-error-no-pat,
 body .shiny-output-error-validation {

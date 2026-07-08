@@ -27,6 +27,18 @@ hide_sidebar_toggle <- function(session) {
   ")
 }
 
+prep_screenshot_layout <- function(session) {
+  session$Runtime$evaluate(expression = "
+    window.scrollTo(0, 0);
+    document.body.classList.remove('glass-nav-compact');
+    document.body.classList.add('glass-nav-expanded');
+    document.querySelectorAll('.navbar, .tabbable > .nav-tabs').forEach((el) => {
+      el.style.transform = 'none';
+      el.style.opacity = '1';
+    });
+  ")
+}
+
 apply_widget_glass_overrides <- function(session) {
   session$Runtime$evaluate(expression = "
     document.querySelectorAll('.stati').forEach((el) => {
@@ -132,7 +144,7 @@ prep_gh <- function(session) {
       return false;
     })();
   ", returnByValue = TRUE)
-  Sys.sleep(6)
+  Sys.sleep(8)
 }
 
 prep_ratp <- function(session) {
@@ -225,6 +237,7 @@ capture_dreamrs_app <- function(
       Sys.sleep(1.5)
     }
     hide_sidebar_toggle(b)
+    prep_screenshot_layout(b)
     apply_widget_glass_overrides(b)
     if (isTRUE(disable_tint)) {
       disable_content_tint(b)
@@ -244,7 +257,7 @@ capture_dreamrs_app(
   file.path(fig_dir, "dreamrs-gh-dashboard.png"),
   file.path(fig_dir, "dreamrs-gh-dashboard-dark.png"),
   port = 3860L,
-  height = 920L,
+  height = 960L,
   wait_mode = "gh",
   prep = prep_gh
 )
