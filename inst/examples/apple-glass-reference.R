@@ -126,6 +126,8 @@ server <- function(input, output, session) {
   output$hero_plot <- renderPlot({
     df <- plot_data()
     cols <- palette_colors[[input$palette]]
+    plot_bg <- if (input$preset == "dark") "#14141a" else "#f8f9fc"
+    text_col <- if (input$preset == "dark") "#f5f5f7" else "black"
 
     p <- ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
       geom_point(size = 3, alpha = 0.85) +
@@ -137,9 +139,13 @@ server <- function(input, output, session) {
       ) +
       theme_minimal(base_size = 14) +
       theme(
-        panel.background = element_rect(fill = "#f8f9fc", color = NA),
-        plot.background = element_rect(fill = "#f8f9fc", color = NA),
-        legend.position = "bottom"
+        panel.background = element_rect(fill = plot_bg, color = NA),
+        plot.background = element_rect(fill = plot_bg, color = NA),
+        legend.position = "bottom",
+        text = element_text(color = text_col),
+        axis.text = element_text(color = text_col),
+        axis.title = element_text(color = text_col),
+        plot.title = element_text(color = text_col)
       )
 
     if (isTRUE(input$density)) {
