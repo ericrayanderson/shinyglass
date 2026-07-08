@@ -1,5 +1,3 @@
-![shinyglass](inst/logo2.png)
-
 Apple’s [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 aesthetic for R Shiny — one function, built on
