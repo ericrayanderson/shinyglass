@@ -5,6 +5,8 @@
 ^man/figures/gallery/
 ^man/figures/inputs-gallery\.png$
 ^man/figures/apple-glass-reference\.png$
+^man/figures/apple-glass-reference-dark\.png$
+^man/figures/shinyglass-demo-dark\.png$
 ^inst/scripts/
 ^\.Rcheck$
 ^shinyglass\.Rcheck$

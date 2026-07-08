@@ -5,7 +5,16 @@ Apple-inspired [Liquid Glass](https://developer.apple.com/documentation/technolo
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Report an issue](https://github.com/ericrayanderson/shinyglass/issues)
 
 <p align="center">
-  <img src="man/figures/shinyglass-demo.png" alt="shinyglass demo app with liquid glass theme" width="720">
+<table>
+<tr>
+<td align="center"><img src="man/figures/shinyglass-demo.png" width="340" alt="shinyglass demo app, light preset"></td>
+<td align="center"><img src="man/figures/shinyglass-demo-dark.png" width="340" alt="shinyglass demo app, dark preset"></td>
+</tr>
+<tr>
+<td align="center">Light</td>
+<td align="center">Dark</td>
+</tr>
+</table>
 </p>
 
 ## Install
@@ -60,6 +69,8 @@ glass_theme(
 )
 ```
 
+`preset` switches the full color system — both variants are shown above.
+
 ## Example apps
 
 ### Demo
@@ -79,8 +90,24 @@ Sidebar overlay, content-aware tinting, and DataTables:
 shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
 ```
 
+Dark preset:
+
+```r
+Sys.setenv(SHINYGLASS_PRESET = "dark")
+shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
+```
+
 <p align="center">
-  <img src="man/figures/apple-glass-reference.png" alt="Apple Liquid Glass reference app controls" width="720">
+<table>
+<tr>
+<td align="center"><img src="man/figures/apple-glass-reference.png" width="340" alt="reference app, light preset"></td>
+<td align="center"><img src="man/figures/apple-glass-reference-dark.png" width="340" alt="reference app, dark preset"></td>
+</tr>
+<tr>
+<td align="center">Light</td>
+<td align="center">Dark</td>
+</tr>
+</table>
 </p>
 
 ## Gallery
