@@ -2,7 +2,8 @@
 
 ## Authors
 
-- **Eric Anderson**. Author, maintainer.
+- **[Eric Anderson](https://github.com/ericrayanderson)**. Author,
+  maintainer.
 
 ## Citation
 
@@ -11,12 +12,12 @@ Source:
 
 Anderson E (2026). *shinyglass: Apple-Inspired Liquid Glass Design for
 Shiny Applications*. R package version 0.1.0,
-<https://github.com/ericrayanderson/shinyglass>.
+<https://ericrayanderson.github.io/shinyglass/>.
 
     @Manual{,
       title = {shinyglass: Apple-Inspired Liquid Glass Design for Shiny Applications},
       author = {Eric Anderson},
       year = {2026},
       note = {R package version 0.1.0},
-      url = {https://github.com/ericrayanderson/shinyglass},
+      url = {https://ericrayanderson.github.io/shinyglass/},
     }
