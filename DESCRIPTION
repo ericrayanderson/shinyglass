@@ -2,7 +2,8 @@ Package: shinyglass
 Type: Package
 Title: Apple-Inspired Liquid Glass Design for Shiny Applications
 Version: 0.1.0
-Authors@R: person("Eric", "Anderson", role = c("aut", "cre"), email = "eric.ray.anderson@gmail.com")
+Authors@R: person("Eric", "Anderson", role = c("aut", "cre"),
+    email = "eric.ray.anderson@gmail.com")
 Description: Drop-in Apple-inspired Liquid Glass themes for 'shiny'.
     Call 'glass_theme()' and pass the result to 'fluidPage()',
     'navbarPage()', or any 'bslib'-aware page function to get
@@ -12,7 +13,8 @@ Description: Drop-in Apple-inspired Liquid Glass themes for 'shiny'.
     Liquid Glass design overview at
     <https://developer.apple.com/documentation/technologyoverviews/liquid-glass>.
 License: GPL-3 + file LICENSE
-URL: https://ericrayanderson.github.io/shinyglass/, https://github.com/ericrayanderson/shinyglass
+URL: https://ericrayanderson.github.io/shinyglass/,
+    https://github.com/ericrayanderson/shinyglass
 BugReports: https://github.com/ericrayanderson/shinyglass/issues
 Encoding: UTF-8
 Imports:
@@ -21,27 +23,10 @@ Imports:
     sass (>= 0.4.0)
 Suggests:
     DT,
-    apexcharter,
-    billboarder,
-    data.table,
-    dplyr,
     duckdb,
-    gh,
     ggplot2,
-    ggtext,
-    ggthemes,
-    leaflet,
-    leaflet.extras,
-    phosphoricons,
     querychat,
-    reactable,
-    sf,
     shiny (>= 1.5.0),
-    shinydashboard,
-    shinyjs,
-    shinythemes,
-    shinyWidgets,
-    testthat (>= 3.0.0),
-    tidyr
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
