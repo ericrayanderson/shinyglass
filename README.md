@@ -82,6 +82,24 @@ install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
+### bslib dashboard
+
+`value_box()`, `layout_columns()`, `navset_card_tab()`, and `card(full_screen = TRUE)` on a `page_sidebar()` dashboard:
+
+```r
+install.packages(c("bslib", "ggplot2", "DT"))
+shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
+```
+
+### querychat explorer
+
+[querychat](https://posit-dev.github.io/querychat/r/) natural-language filtering with a glass dashboard layout. Quick-filter buttons work without an API key; chat requires an LLM credential (e.g. `OPENAI_API_KEY`):
+
+```r
+install.packages(c("querychat", "duckdb", "DT", "ggplot2"))
+shiny::runApp(system.file("examples", "querychat-demo.R", package = "shinyglass"))
+```
+
 ### Reference app
 
 Sidebar overlay, content-aware tinting, and DataTables:

@@ -3,7 +3,9 @@ bslib
 chromote
 CRAN
 DataTables
+duckdb
 ggplot
+querychat
 Liquid
 navbar
 pkgdown
