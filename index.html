@@ -139,6 +139,26 @@ Dark
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bslib"</span>, <span class="st">"ggplot2"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p align="center">
+</p>
+<table class="table">
+<tr>
+<td align="center">
+<img src="reference/figures/bslib-dashboard.png" width="340" alt="bslib dashboard, light preset">
+</td>
+<td align="center">
+<img src="reference/figures/bslib-dashboard-dark.png" width="340" alt="bslib dashboard, dark preset">
+</td>
+</tr>
+<tr>
+<td align="center">
+Light
+</td>
+<td align="center">
+Dark
+</td>
+</tr>
+</table>
 </div>
 <div class="section level3">
 <h3 id="querychat-explorer">querychat explorer<a class="anchor" aria-label="anchor" href="#querychat-explorer"></a>
@@ -147,15 +167,85 @@ Dark
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"querychat"</span>, <span class="st">"duckdb"</span>, <span class="st">"DT"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"querychat-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p align="center">
+</p>
+<table class="table">
+<tr>
+<td align="center">
+<img src="reference/figures/querychat-demo.png" width="340" alt="querychat explorer, light preset">
+</td>
+<td align="center">
+<img src="reference/figures/querychat-demo-dark.png" width="340" alt="querychat explorer, dark preset">
+</td>
+</tr>
+<tr>
+<td align="center">
+Light
+</td>
+<td align="center">
+Dark
+</td>
+</tr>
+</table>
+</div>
+<div class="section level3">
+<h3 id="dreamrs-apps">dreamRs apps<a class="anchor" aria-label="anchor" href="#dreamrs-apps"></a>
+</h3>
+<p>Real-world dashboards from <a href="https://github.com/dreamRs/shinyapps" class="external-link">dreamRs/shinyapps</a> with <code><a href="reference/glass_theme.html">glass_theme()</a></code> applied. Useful for spotting styling gaps on custom CSS, legacy widgets, and third-party outputs (leaflet, reactable, apexcharter, shinydashboard).</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"shinyWidgets"</span>, <span class="st">"ggplot2"</span>, <span class="st">"reactable"</span>, <span class="st">"apexcharter"</span>,</span>
+<span>  <span class="st">"leaflet"</span>, <span class="st">"sf"</span>, <span class="st">"billboarder"</span>, <span class="st">"shinydashboard"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-gh-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-olympic-medals.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-tdb-naissances.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"dreamrs-ratp-traffic.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="27%">
+<col width="38%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>App</th>
+<th>Light</th>
+<th>Dark</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>GitHub dashboard</td>
+<td><img src="reference/figures/dreamrs-gh-dashboard.png" width="220" alt="dreamRs GitHub dashboard, light"></td>
+<td><img src="reference/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="dreamRs GitHub dashboard, dark"></td>
+</tr>
+<tr>
+<td>Olympic medals</td>
+<td><img src="reference/figures/dreamrs-olympic-medals.png" width="220" alt="dreamRs Olympic medals, light"></td>
+<td><img src="reference/figures/dreamrs-olympic-medals-dark.png" width="220" alt="dreamRs Olympic medals, dark"></td>
+</tr>
+<tr>
+<td>Births in France</td>
+<td><img src="reference/figures/dreamrs-tdb-naissances.png" width="220" alt="dreamRs births dashboard, light"></td>
+<td><img src="reference/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="dreamRs births dashboard, dark"></td>
+</tr>
+<tr>
+<td>Paris metro</td>
+<td><img src="reference/figures/dreamrs-ratp-traffic.png" width="220" alt="dreamRs RATP traffic, light"></td>
+<td><img src="reference/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="dreamRs RATP traffic, dark"></td>
+</tr>
+</tbody>
+</table>
+<p>Re-capture screenshots (requires <a href="https://rstudio.github.io/chromote/" class="external-link">chromote</a>):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/scripts/capture-dreamrs-screenshots.R</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="reference-app">Reference app<a class="anchor" aria-label="anchor" href="#reference-app"></a>
 </h3>
 <p>Sidebar overlay, content-aware tinting, and DataTables:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Dark preset:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SHINYGLASS_PRESET <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p align="center">

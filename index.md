@@ -102,6 +102,11 @@ install.packages(c("bslib", "ggplot2", "DT"))
 shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
 ```
 
+|  |  |
+|:--:|:--:|
+| ![bslib dashboard, light preset](reference/figures/bslib-dashboard.png) | ![bslib dashboard, dark preset](reference/figures/bslib-dashboard-dark.png) |
+| Light | Dark |
+
 ### querychat explorer
 
 [querychat](https://posit-dev.github.io/querychat/r/) natural-language
@@ -113,6 +118,46 @@ without an API key; chat requires an LLM credential
 
 install.packages(c("querychat", "duckdb", "DT", "ggplot2"))
 shiny::runApp(system.file("examples", "querychat-demo.R", package = "shinyglass"))
+```
+
+|  |  |
+|:--:|:--:|
+| ![querychat explorer, light preset](reference/figures/querychat-demo.png) | ![querychat explorer, dark preset](reference/figures/querychat-demo-dark.png) |
+| Light | Dark |
+
+### dreamRs apps
+
+Real-world dashboards from
+[dreamRs/shinyapps](https://github.com/dreamRs/shinyapps) with
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+applied. Useful for spotting styling gaps on custom CSS, legacy widgets,
+and third-party outputs (leaflet, reactable, apexcharter,
+shinydashboard).
+
+``` r
+
+install.packages(c(
+  "shinyWidgets", "ggplot2", "reactable", "apexcharter",
+  "leaflet", "sf", "billboarder", "shinydashboard"
+))
+shiny::runApp(system.file("examples", "dreamrs-gh-dashboard.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-olympic-medals.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-tdb-naissances.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-ratp-traffic.R", package = "shinyglass"))
+```
+
+| App | Light | Dark |
+|----|----|----|
+| GitHub dashboard | ![dreamRs GitHub dashboard, light](reference/figures/dreamrs-gh-dashboard.png) | ![dreamRs GitHub dashboard, dark](reference/figures/dreamrs-gh-dashboard-dark.png) |
+| Olympic medals | ![dreamRs Olympic medals, light](reference/figures/dreamrs-olympic-medals.png) | ![dreamRs Olympic medals, dark](reference/figures/dreamrs-olympic-medals-dark.png) |
+| Births in France | ![dreamRs births dashboard, light](reference/figures/dreamrs-tdb-naissances.png) | ![dreamRs births dashboard, dark](reference/figures/dreamrs-tdb-naissances-dark.png) |
+| Paris metro | ![dreamRs RATP traffic, light](reference/figures/dreamrs-ratp-traffic.png) | ![dreamRs RATP traffic, dark](reference/figures/dreamrs-ratp-traffic-dark.png) |
+
+Re-capture screenshots (requires
+[chromote](https://rstudio.github.io/chromote/)):
+
+``` bash
+Rscript inst/scripts/capture-dreamrs-screenshots.R
 ```
 
 ### Reference app
