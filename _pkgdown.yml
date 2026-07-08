@@ -2,7 +2,55 @@ url: https://ericrayanderson.github.io/shinyglass/
 
 template:
   bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#007AFF"
+    border-radius: 0.75rem
+    btn-border-radius: 0.75rem
+
+home:
+  title: shinyglass • Liquid Glass themes for Shiny
+  description: >
+    Apple-inspired Liquid Glass themes for R Shiny. One function,
+    glass_theme(), for translucent surfaces, backdrop blur, and
+    system typography on Bootstrap-based apps.
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
+    components:
+      links:
+        title: Links
+        text: |
+          [Source code](https://github.com/ericrayanderson/shinyglass)
+          [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
+
+navbar:
+  structure:
+    left:  [intro, reference, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/ericrayanderson/shinyglass
+      aria-label: GitHub
+
+reference:
+- title: Theme
+  desc: Create a Liquid Glass theme for your Shiny app.
+  contents:
+  - glass_theme
 
 authors:
   Eric Anderson:
     href: https://github.com/ericrayanderson
+
+development:
+  mode: auto

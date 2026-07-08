@@ -1,8 +1,14 @@
 # shinyglass
 
-Apple-inspired [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for R Shiny — one function, built on [bslib](https://rstudio.github.io/bslib/).
+<!-- badges: start -->
+[![License: GPL-3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<!-- badges: end -->
 
-[Documentation](https://ericrayanderson.github.io/shinyglass/) · [Report an issue](https://github.com/ericrayanderson/shinyglass/issues)
+**Apple-inspired Liquid Glass themes for [Shiny](https://shiny.posit.co/).**
+
+One function — `glass_theme()` — and your app gets translucent surfaces, backdrop blur, soft depth, and system typography. Built on [bslib](https://rstudio.github.io/bslib/), so it works with `fluidPage()`, `navbarPage()`, `page_sidebar()`, and other Bootstrap-aware layouts.
+
+[Documentation](https://ericrayanderson.github.io/shinyglass/) · [Source](https://github.com/ericrayanderson/shinyglass) · [Issues](https://github.com/ericrayanderson/shinyglass/issues)
 
 <p align="center">
 <table>
@@ -11,13 +17,21 @@ Apple-inspired [Liquid Glass](https://developer.apple.com/documentation/technolo
 <td align="center"><img src="man/figures/shinyglass-demo-dark.png" width="340" alt="shinyglass demo app, dark preset"></td>
 </tr>
 <tr>
-<td align="center">Light</td>
-<td align="center">Dark</td>
+<td align="center"><strong>Light</strong></td>
+<td align="center"><strong>Dark</strong></td>
 </tr>
 </table>
 </p>
 
-## Install
+## Features
+
+- **Drop-in theme** — pass `theme = glass_theme()` to any Shiny page function that accepts a bslib theme
+- **Light and dark presets** — full color systems, not just inverted text
+- **Familiar Shiny UI** — standard inputs, buttons, navbars, sidebars, cards, and DataTables pick up glass styling automatically
+- **Works with bslib** — optional cards, value boxes, and `page_sidebar()` dashboards
+- **Tunable** — accent color, blur, saturation, and corner radius
+
+## Installation
 
 ```r
 # install.packages("shinyglass")  # once on CRAN
@@ -25,8 +39,6 @@ remotes::install_github("ericrayanderson/shinyglass")
 ```
 
 ## Quick start
-
-Save as `app.R` and run with `shiny::runApp()`:
 
 ```r
 library(shiny)
@@ -54,9 +66,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-You only need `shiny` and `shinyglass`. `glass_theme()` returns a bslib theme object that `fluidPage()` and other Shiny page functions understand automatically — you do not need to load bslib.
-
-Load [bslib](https://rstudio.github.io/bslib/) only if you want its UI helpers like `card()` or `page_fillable()`. Standard Shiny inputs, buttons, and layouts work out of the box.
+You only need **shiny** and **shinyglass**. `glass_theme()` returns a [bslib](https://rstudio.github.io/bslib/) theme object that Shiny page functions understand — you do not need to load bslib unless you want its UI helpers (`card()`, `page_fillable()`, and so on).
 
 ## Customization
 
@@ -65,26 +75,34 @@ glass_theme(
   preset     = "dark",   # "light" or "dark"
   primary    = "#007AFF",
   blur       = 28,
-  saturation = 200
+  saturation = 200,
+  radius     = "1.25rem"
 )
 ```
 
-`preset` switches the full color system — both variants are shown above.
+| Argument | Description |
+|----------|-------------|
+| `preset` | Overall light or dark appearance |
+| `primary` | Accent color (buttons, links, focus rings) |
+| `blur` | Backdrop blur radius in pixels |
+| `saturation` | Backdrop saturation percentage |
+| `radius` | Corner radius for glass surfaces |
+| `...` | Passed through to `bslib::bs_theme()` |
 
-## Example apps
+## Examples
 
-### Demo
+Bundled demos live in the package. Run any of them with `shiny::runApp()`.
 
-The bundled demo uses [bslib](https://rstudio.github.io/bslib/) cards and [ggplot2](https://ggplot2.tidyverse.org/):
+### Cards and plots
 
 ```r
 install.packages(c("bslib", "ggplot2"))
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 ```
 
-### bslib dashboard
+### Dashboard layout
 
-`value_box()`, `layout_columns()`, `navset_card_tab()`, and `card(full_screen = TRUE)` on a `page_sidebar()` dashboard:
+A `page_sidebar()` app with value boxes, tabbed cards, and a DataTable:
 
 ```r
 install.packages(c("bslib", "ggplot2", "DT"))
@@ -104,9 +122,9 @@ shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass
 </table>
 </p>
 
-### querychat explorer
+### Natural-language filtering
 
-[querychat](https://posit-dev.github.io/querychat/r/) natural-language filtering with a glass dashboard layout. Quick-filter buttons work without an API key; chat requires an LLM credential (e.g. `OPENAI_API_KEY`):
+Explore data with [querychat](https://posit-dev.github.io/querychat/r/). Quick-filter buttons work offline; chat needs an LLM API key (for example `OPENAI_API_KEY`):
 
 ```r
 install.packages(c("querychat", "duckdb", "DT", "ggplot2"))
@@ -126,46 +144,11 @@ shiny::runApp(system.file("examples", "querychat-demo.R", package = "shinyglass"
 </table>
 </p>
 
-### dreamRs apps
+### Sidebar reference
 
-Real-world dashboards from [dreamRs/shinyapps](https://github.com/dreamRs/shinyapps) with `glass_theme()` applied. Useful for spotting styling gaps on custom CSS, legacy widgets, and third-party outputs (leaflet, reactable, apexcharter, shinydashboard).
-
-```r
-install.packages(c(
-  "shinyWidgets", "ggplot2", "reactable", "apexcharter",
-  "leaflet", "sf", "billboarder", "shinydashboard"
-))
-shiny::runApp(system.file("examples", "dreamrs-gh-dashboard.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "dreamrs-olympic-medals.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "dreamrs-tdb-naissances.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "dreamrs-ratp-traffic.R", package = "shinyglass"))
-```
-
-| App | Light | Dark |
-|-----|-------|------|
-| GitHub dashboard | <img src="man/figures/dreamrs-gh-dashboard.png" width="220" alt="dreamRs GitHub dashboard, light"> | <img src="man/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="dreamRs GitHub dashboard, dark"> |
-| Olympic medals | <img src="man/figures/dreamrs-olympic-medals.png" width="220" alt="dreamRs Olympic medals, light"> | <img src="man/figures/dreamrs-olympic-medals-dark.png" width="220" alt="dreamRs Olympic medals, dark"> |
-| Births in France | <img src="man/figures/dreamrs-tdb-naissances.png" width="220" alt="dreamRs births dashboard, light"> | <img src="man/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="dreamRs births dashboard, dark"> |
-| Paris metro | <img src="man/figures/dreamrs-ratp-traffic.png" width="220" alt="dreamRs RATP traffic, light"> | <img src="man/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="dreamRs RATP traffic, dark"> |
-
-Re-capture screenshots (requires [chromote](https://rstudio.github.io/chromote/)):
-
-```bash
-Rscript inst/scripts/capture-dreamrs-screenshots.R
-```
-
-### Reference app
-
-Sidebar overlay, content-aware tinting, and DataTables:
+Floating sidebar, plots, and DataTables:
 
 ```r
-shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
-```
-
-Dark preset:
-
-```r
-Sys.setenv(SHINYGLASS_PRESET = "dark")
 shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
 ```
 
@@ -182,16 +165,44 @@ shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shin
 </table>
 </p>
 
+### Community dashboards
+
+Glass themes applied to open dashboards from [dreamRs](https://github.com/dreamRs/shinyapps) — GitHub stats, Olympic medals, French births, and Paris metro traffic:
+
+```r
+install.packages(c(
+  "shinyWidgets", "ggplot2", "reactable", "apexcharter",
+  "leaflet", "sf", "billboarder", "shinydashboard"
+))
+shiny::runApp(system.file("examples", "dreamrs-gh-dashboard.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-olympic-medals.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-tdb-naissances.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "dreamrs-ratp-traffic.R", package = "shinyglass"))
+```
+
+| App | Light | Dark |
+|-----|:-----:|:----:|
+| GitHub dashboard | <img src="man/figures/dreamrs-gh-dashboard.png" width="220" alt="GitHub dashboard, light"> | <img src="man/figures/dreamrs-gh-dashboard-dark.png" width="220" alt="GitHub dashboard, dark"> |
+| Olympic medals | <img src="man/figures/dreamrs-olympic-medals.png" width="220" alt="Olympic medals, light"> | <img src="man/figures/dreamrs-olympic-medals-dark.png" width="220" alt="Olympic medals, dark"> |
+| Births in France | <img src="man/figures/dreamrs-tdb-naissances.png" width="220" alt="Births dashboard, light"> | <img src="man/figures/dreamrs-tdb-naissances-dark.png" width="220" alt="Births dashboard, dark"> |
+| Paris metro | <img src="man/figures/dreamrs-ratp-traffic.png" width="220" alt="RATP traffic, light"> | <img src="man/figures/dreamrs-ratp-traffic-dark.png" width="220" alt="RATP traffic, dark"> |
+
 ## Gallery
 
-Official [Shiny examples](https://github.com/rstudio/shiny/tree/main/inst/examples) with `glass_theme()` applied:
+Common Shiny patterns with `glass_theme()`:
 
 | | | | |
 |:---:|:---:|:---:|:---:|
 | <img src="man/figures/gallery/01-fluid-sidebar.png" width="270" alt="fluidPage with sidebar layout"> | <img src="man/figures/gallery/02-tabsets.png" width="270" alt="tabset with pill-style tabs"> | <img src="man/figures/gallery/03-action-button.png" width="270" alt="action button in a glass card"> | <img src="man/figures/gallery/thumbs/04-download.png" width="270" alt="download button with data preview"> |
-| fluidPage + sidebar | Pill tab bar | actionButton | downloadButton |
+| fluidPage + sidebar | Pill tabs | actionButton | downloadButton |
 | <img src="man/figures/gallery/05-datatables.png" width="270" alt="interactive DataTable with glass styling"> | <img src="man/figures/gallery/thumbs/06-selectize.png" width="270" alt="selectize inputs with glass styling"> | <img src="man/figures/gallery/thumbs/07-navbar.png" width="270" alt="navbarPage with glass navigation bar"> | <img src="man/figures/gallery/08-page-sidebar.png" width="270" alt="page_sidebar with glass controls"> |
 | DataTables | selectizeInput | navbarPage | page_sidebar |
+
+## Learn more
+
+- Function reference: [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.html)
+- Package site: [ericrayanderson.github.io/shinyglass](https://ericrayanderson.github.io/shinyglass/)
+- Design inspiration: [Apple Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 
 ## License
 

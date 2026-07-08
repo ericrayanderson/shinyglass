@@ -14,26 +14,28 @@ glass_theme(
 )
 }
 \arguments{
-\item{preset}{`"light"` or `"dark"`. Controls the overall color scheme.}
+\item{preset}{\code{"light"} or \code{"dark"}. Switches the full color system.}
 
-\item{primary}{Primary accent color. Defaults to Apple system blue
-(`#007AFF`).}
+\item{primary}{Accent color for buttons, links, and focus rings.
+Defaults to Apple system blue (\code{#007AFF}).}
 
 \item{blur}{Backdrop blur radius in pixels.}
 
 \item{saturation}{Backdrop saturation percentage.}
 
-\item{radius}{Default border radius for glass surfaces.}
+\item{radius}{Default border radius for glass surfaces (CSS length).}
 
-\item{...}{Additional arguments forwarded to [bslib::bs_theme()].}
+\item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }
 \value{
-A [bslib::bs_theme()] object.
+A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for Shiny page functions.
 }
 \description{
-Returns a [bslib::bs_theme()] object styled with Apple's Liquid Glass
-aesthetic. Pass it to `fluidPage()`, `navbarPage()`, or any bslib-aware
-page function; that is all you need.
+Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with an Apple-inspired Liquid Glass
+look: translucent surfaces, backdrop blur, soft depth, and system
+typography. Pass the result to \code{theme =} on \code{fluidPage()},
+\code{navbarPage()}, \code{bslib::page_sidebar()}, or any other page function that
+accepts a bslib theme.
 }
 \examples{
 \dontrun{
@@ -45,6 +47,12 @@ ui <- fluidPage(
   titlePanel("Liquid Glass"),
   selectInput("color", "Color", c("Blue", "Purple", "Orange")),
   plotOutput("plot")
+)
+
+# Dark preset with a custom accent
+ui <- fluidPage(
+  theme = glass_theme(preset = "dark", primary = "#BF5AF2"),
+  titlePanel("Dark glass")
 )
 }
 
