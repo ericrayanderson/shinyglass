@@ -996,12 +996,24 @@ form.well,
 
 // Outputs: light glass frame; plot canvas stays neutral inside
 .shiny-plot-output,
-.shiny-html-output,
+.shiny-html-output:not(:has(.Reactable)),
 .shiny-image-output {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.65rem;
   margin-bottom: 0.75rem;
   overflow: visible;
+}
+
+// reactable ships its own surface — avoid double-framing the wrapper
+.shiny-html-output.reactable,
+.shiny-html-output:has(.Reactable) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 0.75rem;
 }
 
 // ---------------------------------------------------------------------------
@@ -1096,6 +1108,249 @@ form.well,
 }
 
 // ---------------------------------------------------------------------------
+// shinyWidgets statiCard
+// ---------------------------------------------------------------------------
+.stati {
+  @include glass-surface(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  margin: 0.65rem 0;
+
+  &:hover {
+    background: var(--glass-bg-hover) !important;
+    box-shadow:
+      0 12px 40px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight) !important;
+  }
+
+  .stati-content .stati-value,
+  .stati-content .stati-subtitle {
+    color: inherit !important;
+  }
+
+  i,
+  svg {
+    color: inherit !important;
+    opacity: 0.85;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// shinydashboard (boxes, value boxes) — body prefix beats bundled www/*.css
+// ---------------------------------------------------------------------------
+body .box {
+  @include glass-floating(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit;
+  overflow: visible;
+
+  > .box-header,
+  &.box-primary > .box-header,
+  &.box-solid.box-primary > .box-header,
+  &.box-solid.box-success > .box-header {
+    background: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
+    background-color: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    border-top-color: var(--glass-border) !important;
+    color: inherit !important;
+  }
+
+  &.box-primary,
+  &.box-solid.box-primary {
+    border-top-color: var(--glass-border) !important;
+    border-color: var(--glass-border) !important;
+  }
+
+  > .box-body {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit;
+  }
+}
+
+body .small-box,
+body .info-box,
+body .small-box.bg-aqua,
+body .small-box.bg-green,
+body .small-box.bg-yellow,
+body .small-box.bg-red,
+body .small-box.bg-navy,
+body .bg-navy,
+body .bg-teal,
+body .bg-green,
+body .bg-aqua {
+  @include glass-surface(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+  overflow: hidden;
+
+  .inner,
+  .small-box-footer,
+  .info-box-content,
+  .info-box-icon {
+    background: transparent !important;
+    color: inherit !important;
+  }
+
+  .icon,
+  .icon-large {
+    color: inherit !important;
+    opacity: 0.35;
+  }
+}
+
+.content-wrapper,
+.right-side {
+  background: transparent !important;
+}
+
+// Neutralize AdminLTE skin fills when only widgets are used inside navbarPage
+.skin-blue .main-header .navbar,
+.skin-blue-light .main-header .navbar,
+.skin-green .main-header .navbar,
+.skin-black .main-header .navbar {
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+}
+
+// ---------------------------------------------------------------------------
+// reactable — body prefix beats widget CSS loaded after the theme
+// ---------------------------------------------------------------------------
+body .reactable,
+body .Reactable {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  color: inherit !important;
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+
+  .rt-table {
+    background: transparent !important;
+    color: inherit;
+    border-color: var(--glass-border) !important;
+  }
+
+  .rt-thead .rt-th {
+    background: var(--glass-bg-hover) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    border-left-color: color-mix(in srgb, var(--glass-border) 45%, transparent) !important;
+    color: inherit !important;
+    font-weight: 600;
+  }
+
+  .rt-tbody .rt-tr-group .rt-td {
+    background: transparent !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+    border-top-color: color-mix(in srgb, var(--glass-border) 35%, transparent) !important;
+    color: inherit !important;
+  }
+
+  .rt-tbody .rt-tr-group:nth-child(even) .rt-td,
+  .rt-tr-striped {
+    background: color-mix(in srgb, var(--glass-bg) 70%, transparent) !important;
+  }
+
+  .rt-tbody .rt-tr-group:hover .rt-td,
+  .rt-tr-highlight:hover {
+    background: var(--glass-bg-hover) !important;
+  }
+
+  .rt-td-inner,
+  .rt-th-inner,
+  .rt-text-content {
+    color: inherit !important;
+  }
+
+  .rt-filter,
+  .rt-search,
+  .rt-page-jump,
+  .rt-page-size-select {
+    @include glass-input();
+    background-color: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    color: inherit !important;
+  }
+
+  .rt-pagination {
+    color: inherit;
+    border-top-color: var(--glass-border) !important;
+
+    .rt-page-button {
+      @include glass-input();
+      border-radius: 0.55rem !important;
+      color: inherit !important;
+      margin: 0 0.1rem;
+
+      &.rt-page-button-current {
+        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
+        border-color: rgba($primary, 0.35) !important;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Chart / map output chrome (billboarder, apexcharter, leaflet wrappers)
+// ---------------------------------------------------------------------------
+.billboarder-output,
+.apexchart-output,
+.leaflet.html-widget,
+.leaflet.html-widget-output {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.45rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  background: color-mix(in srgb, var(--glass-bg) 40%, #1a1a2e 60%);
+  font-family: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// dreamRs / legacy app CSS overrides (when www/styles.css is bundled)
+// ---------------------------------------------------------------------------
+body .shiny-output-error,
+body .shiny-output-error-no-pat,
+body .shiny-output-error-validation {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  color: inherit !important;
+  line-height: 1.5 !important;
+  padding: 2rem 1.25rem !important;
+  text-align: center;
+}
+
+.plot-spin {
+  background: transparent !important;
+}
+
+.titre,
+.soustitre {
+  color: inherit !important;
+}
+
+body .controls-pane {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------------
 // Dark preset polish
 // ---------------------------------------------------------------------------
 [data-glass-preset="dark"] {
@@ -1128,6 +1383,27 @@ form.well,
       0 20px 56px var(--glass-elevated-shadow),
       0 6px 16px var(--glass-shadow),
       inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .stati,
+  .box,
+  .small-box,
+  .info-box,
+  .reactable,
+  .Reactable,
+  .shiny-output-error,
+  .shiny-output-error-no-pat {
+    box-shadow:
+      0 16px 48px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  body .reactable,
+  body .Reactable {
+    .rt-tbody .rt-tr-group:nth-child(even) .rt-td,
+    .rt-tr-striped {
+      background: color-mix(in srgb, var(--glass-bg) 85%, transparent) !important;
+    }
   }
 }
 

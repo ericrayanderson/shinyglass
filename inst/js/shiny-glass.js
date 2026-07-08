@@ -287,10 +287,35 @@
     updateNavMorph();
   })();
 
+  // Beat inline/widget CSS on statiCard and reactable (dreamRs demos)
+  function applyWidgetGlassOverrides() {
+    document.querySelectorAll(".stati").forEach(function (el) {
+      el.style.setProperty("background", "var(--glass-bg)", "important");
+      el.style.setProperty("background-color", "var(--glass-bg)", "important");
+      el.style.setProperty("color", "inherit", "important");
+      el.style.setProperty(
+        "box-shadow",
+        "0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight)",
+        "important"
+      );
+      el.querySelectorAll(".stati-value, .stati-subtitle, i, svg").forEach(function (child) {
+        child.style.setProperty("color", "inherit", "important");
+        child.style.removeProperty("fill");
+      });
+    });
+
+    document.querySelectorAll(".Reactable").forEach(function (el) {
+      el.style.setProperty("background-color", "var(--glass-bg)", "important");
+      el.style.setProperty("color", "inherit", "important");
+    });
+  }
+
+  $(document).on("shiny:connected shiny:value shiny:visualchange", applyWidgetGlassOverrides);
+
   // Pointer-driven specular highlights on glass surfaces
   (function () {
     var specularSelector =
-      ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper";
+      ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper, .stati, .box, .small-box, .info-box, .reactable, .Reactable, .value-box";
 
     document.addEventListener(
       "mousemove",
@@ -341,9 +366,13 @@
 
   $(function () {
     scheduleTintUpdate();
+    applyWidgetGlassOverrides();
 
     if (typeof MutationObserver !== "undefined") {
       var observer = new MutationObserver(function (mutations) {
+        var needsTint = false;
+        var needsWidgetGlass = false;
+
         for (var i = 0; i < mutations.length; i++) {
           var t = mutations[i].target;
           if (
@@ -352,20 +381,28 @@
               t.matches(".shiny-image-output img") ||
               t.matches("canvas"))
           ) {
-            scheduleTintUpdate();
-            return;
+            needsTint = true;
+          } else if (
+            t.matches &&
+            (t.matches(".stati") || t.matches(".Reactable") || t.closest(".stati, .Reactable"))
+          ) {
+            needsWidgetGlass = true;
           }
-          if (t.querySelector && t.querySelector(".shiny-plot-output img, canvas")) {
-            scheduleTintUpdate();
-            return;
+
+          if (t.querySelector) {
+            if (t.querySelector(".shiny-plot-output img, canvas")) needsTint = true;
+            if (t.querySelector(".stati, .Reactable")) needsWidgetGlass = true;
           }
         }
+
+        if (needsTint) scheduleTintUpdate();
+        if (needsWidgetGlass) applyWidgetGlassOverrides();
       });
       observer.observe(document.body, {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ["src", "style"],
+        attributeFilter: ["src", "style", "class"],
       });
     }
   });

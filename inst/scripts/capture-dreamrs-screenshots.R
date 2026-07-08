@@ -27,6 +27,24 @@ hide_sidebar_toggle <- function(session) {
   ")
 }
 
+apply_widget_glass_overrides <- function(session) {
+  session$Runtime$evaluate(expression = "
+    document.querySelectorAll('.stati').forEach((el) => {
+      el.style.setProperty('background', 'var(--glass-bg)', 'important');
+      el.style.setProperty('background-color', 'var(--glass-bg)', 'important');
+      el.style.setProperty('color', 'inherit', 'important');
+      el.querySelectorAll('.stati-value, .stati-subtitle, i, svg').forEach((child) => {
+        child.style.setProperty('color', 'inherit', 'important');
+        child.style.removeProperty('fill');
+      });
+    });
+    document.querySelectorAll('.Reactable').forEach((el) => {
+      el.style.setProperty('background-color', 'var(--glass-bg)', 'important');
+      el.style.setProperty('color', 'inherit', 'important');
+    });
+  ")
+}
+
 disable_content_tint <- function(session) {
   session$Runtime$evaluate(expression = "
     document.documentElement.classList.remove('glass-tint-active');
@@ -55,7 +73,7 @@ wait_for_app <- function(session, mode = c("default", "gh", "olympic", "naissanc
       if (tableRows < 3) { retry(); return; }
     ",
     naissances = "
-      const cards = document.querySelectorAll('.stati-card, .stat-card');
+      const cards = document.querySelectorAll('.stati');
       const cardReady = cards.length >= 3;
       if (!cardReady) { retry(); return; }
     ",
@@ -150,16 +168,27 @@ capture_dreamrs_app <- function(
     preset <- match.arg(preset)
     url <- sprintf("http://127.0.0.1:%d", port)
     env <- if (preset == "dark") c(SHINYGLASS_PRESET = "dark") else character()
+    app_dir <- dirname(normalizePath(app_file, winslash = "/"))
+    launch_expr <- sprintf(
+      paste(
+        "if (requireNamespace('pkgload', quietly = TRUE)) {",
+        "  pkgload::load_all('%s', quiet = TRUE)",
+        "} else {",
+        "  devtools::load_all('%s', quiet = TRUE)",
+        "}",
+        "setwd('%s')",
+        "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE)",
+        sep = "; "
+      ),
+      gsub("'", "\\\\'", pkg_root),
+      gsub("'", "\\\\'", pkg_root),
+      gsub("'", "\\\\'", app_dir),
+      gsub("'", "\\\\'", normalizePath(app_file, winslash = "/")),
+      port
+    )
     proc <- processx::process$new(
       command = normalizePath(Sys.which("Rscript")),
-      args = c(
-        "-e",
-        sprintf(
-          "shiny::runApp('%s', host='127.0.0.1', port=%d, launch.browser=FALSE)",
-          gsub("'", "\\\\'", normalizePath(app_file, winslash = "/")),
-          port
-        )
-      ),
+      args = c("-e", launch_expr),
       env = c(Sys.getenv(), env),
       stdout = "|",
       stderr = "|"
@@ -196,10 +225,12 @@ capture_dreamrs_app <- function(
       Sys.sleep(1.5)
     }
     hide_sidebar_toggle(b)
+    apply_widget_glass_overrides(b)
     if (isTRUE(disable_tint)) {
       disable_content_tint(b)
       Sys.sleep(0.35)
     }
+    Sys.sleep(0.5)
     b$screenshot(filename = out_path)
     message("Saved ", out_path)
   }
