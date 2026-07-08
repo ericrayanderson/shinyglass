@@ -65,6 +65,55 @@ find_matching_paren <- function(text, open_pos) {
   NA_integer_
 }
 
+# Skip whitespace; return first non-ws index or NA.
+skip_ws <- function(code, pos) {
+  pos <- as.integer(pos[[1]])
+  n <- nchar(code)
+  while (pos <= n && grepl("^\\s$", substr(code, pos, pos))) {
+    pos <- pos + 1L
+  }
+  if (pos > n) NA_integer_ else pos
+}
+
+# End index of a theme= value expression (function call, paren group, or atom).
+find_theme_value_end <- function(code, val_start) {
+  val_start <- as.integer(val_start[[1]])
+  if (is.na(val_start)) return(NA_integer_)
+  ch <- substr(code, val_start, val_start)
+  if (identical(ch, "(")) {
+    return(find_matching_paren(code, val_start))
+  }
+
+  rest <- substr(code, val_start, nchar(code))
+  # Function / namespaced call: glass_theme(...), bs_add_rules(...), pkg::fn(...)
+  name_m <- regexpr("^[A-Za-z.][A-Za-z0-9_.]*(::[A-Za-z.][A-Za-z0-9_.]*)?", rest, perl = TRUE)
+  if (name_m[1] == 1L) {
+    name_len <- as.integer(attr(name_m, "match.length")[[1]])
+    after <- val_start + name_len
+    after_ws <- skip_ws(code, after)
+    if (!is.na(after_ws) && identical(substr(code, after_ws, after_ws), "(")) {
+      return(find_matching_paren(code, after_ws))
+    }
+    return(val_start + name_len - 1L)
+  }
+
+  # Fallback: read until comma or newline at depth 0
+  depth <- 0L
+  i <- val_start
+  n <- nchar(code)
+  while (i <= n) {
+    ch <- substr(code, i, i)
+    if (ch == "(" || ch == "[" || ch == "{") depth <- depth + 1L
+    if (ch == ")" || ch == "]" || ch == "}") {
+      if (depth == 0L) return(i - 1L)
+      depth <- depth - 1L
+    }
+    if (depth == 0L && (ch == "," || ch == "\n")) return(i - 1L)
+    i <- i + 1L
+  }
+  n
+}
+
 replace_page_theme <- function(code) {
   if (grepl("theme\\s*=\\s*glass_theme\\s*\\(", code, perl = TRUE)) {
     return(code)
@@ -79,7 +128,8 @@ replace_page_theme <- function(code) {
     return(NA_character_)
   }
 
-  page_open <- m[1] + attr(m, "match.length") - 1L
+  # Use first page layout only; match.length is a vector under gregexpr
+  page_open <- as.integer(m[1] + attr(m, "match.length")[1] - 1L)
   page_close <- find_matching_paren(code, page_open)
   if (is.na(page_close)) {
     return(NA_character_)
@@ -89,25 +139,12 @@ replace_page_theme <- function(code) {
   theme_m <- regexpr("theme\\s*=", header, perl = TRUE)
 
   if (theme_m[1] != -1) {
-    theme_start <- page_open + theme_m[1]
-    val_start <- theme_start + attr(theme_m, "match.length")
-    while (val_start <= nchar(code) && grepl("\\s", substr(code, val_start, val_start))) {
-      val_start <- val_start + 1L
-    }
-
-    if (substr(code, val_start, val_start) == "(") {
-      val_end <- find_matching_paren(code, val_start)
-    } else {
-      rest <- substr(code, val_start, nchar(code))
-      fn_paren <- regexpr("\\(", rest, perl = TRUE)
-      if (fn_paren[1] != -1) {
-        val_end <- find_matching_paren(code, val_start + fn_paren[1] - 1L)
-      } else {
-        end_m <- regexpr(",|\\n", rest, perl = TRUE)
-        val_end <- if (end_m[1] == -1) nchar(code) else val_start + end_m[1] - 2L
-      }
-    }
-
+    theme_start <- as.integer(page_open + theme_m[1])
+    val_start <- skip_ws(
+      code,
+      theme_start + as.integer(attr(theme_m, "match.length")[[1]])
+    )
+    val_end <- find_theme_value_end(code, val_start)
     if (is.na(val_end)) {
       return(NA_character_)
     }

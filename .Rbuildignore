@@ -19,3 +19,4 @@
 ^.*\.tar\.gz$
 ^cran-comments\.md$
 ^_pkgdown\.yml$
+^inst/external/
