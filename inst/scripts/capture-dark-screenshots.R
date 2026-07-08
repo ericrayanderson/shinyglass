@@ -32,6 +32,14 @@ wait_for_shiny <- function(session, timeout = 40) {
   )
 }
 
+hide_sidebar_toggle <- function(session) {
+  session$Runtime$evaluate(expression = "
+    document.querySelectorAll('.collapse-toggle').forEach((el) => {
+      el.style.display = 'none';
+    });
+  ")
+}
+
 disable_content_tint <- function(session) {
   session$Runtime$evaluate(expression = "
     document.documentElement.classList.remove('glass-tint-active');
@@ -47,7 +55,8 @@ disable_content_tint <- function(session) {
 }
 
 capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height = 1100L,
-                        env = character(), disable_tint = FALSE) {
+                        env = character(), disable_tint = FALSE,
+                        hide_sidebar_toggle = FALSE) {
   url <- sprintf("http://127.0.0.1:%d", port)
   proc <- processx::process$new(
     command = normalizePath(Sys.which("Rscript")),
@@ -93,6 +102,10 @@ capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height 
   } else {
     Sys.sleep(2)
   }
+  if (isTRUE(hide_sidebar_toggle)) {
+    hide_sidebar_toggle(b)
+    Sys.sleep(0.25)
+  }
   b$screenshot(filename = out_path)
   message("Saved ", out_path)
 }
@@ -115,11 +128,23 @@ writeLines(demo_lines, tmp_demo)
 on.exit(unlink(tmp_demo), add = TRUE)
 
 capture_app(tmp_demo, file.path(fig_dir, "shinyglass-demo-dark.png"), port = 3847L)
+
+reference_app <- file.path(pkg_root, "inst", "examples", "apple-glass-reference.R")
+
 capture_app(
-  file.path(pkg_root, "inst", "examples", "apple-glass-reference.R"),
-  file.path(fig_dir, "apple-glass-reference-dark.png"),
+  reference_app,
+  file.path(fig_dir, "apple-glass-reference.png"),
   port = 3848L,
   height = 640L,
+  disable_tint = TRUE,
+  hide_sidebar_toggle = TRUE
+)
+capture_app(
+  reference_app,
+  file.path(fig_dir, "apple-glass-reference-dark.png"),
+  port = 3849L,
+  height = 640L,
   env = c(SHINYGLASS_PRESET = "dark"),
-  disable_tint = TRUE
+  disable_tint = TRUE,
+  hide_sidebar_toggle = TRUE
 )
