@@ -2,6 +2,9 @@
 
 ## shinyglass (development version)
 
+- CRAN packaging: exclude pkgdown `docs/`, vendor demos, and large
+  screenshots from the source tarball; load README images from GitHub;
+  trim Suggests to packages used by shipped examples and tests.
 - Refresh the README and pkgdown site for end users: feature list,
   clearer examples, and no developer-only testing notes.
 - Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets
