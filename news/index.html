@@ -34,25 +34,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li>Teal gallery visual coverage (<code>inst/scripts/visual-test-teal.R</code>) plus CSS fixes for teal/teal.slice: pin filter sidebars so they no longer expand full-width over module tables, skip glass frames on empty <code>shiny-html-output</code> placeholders, raise modal opacity, and glass teal nav/filter/accordion chrome. Example: <code>inst/examples/teal-glass-demo.R</code>.</li>
-<li>Shiny User Showcase coverage (<code>inst/scripts/visual-test-shiny-gallery.R</code>) for rstudio/shiny-gallery apps (hangman, life-of-pi, one-source-indy, lake-profile-dashboard, nyc-metro-vis, …). Glass patching now finds nested <code>ui/ui.R</code> / <code>app.r</code>, allows nested <code>bootstrapPage</code> inside <code>fluidPage</code>, and fixes deprecated <code>plan(multiprocess)</code>.</li>
-<li>Checked and documented under R 4.6.</li>
-<li>Simplify the README to a short background and quick start.</li>
-<li>Inject the glass preset via an <code>htmlDependency</code> head script instead of a <code>tagFunction</code> that returned tags (avoids an htmltools warning when resolving theme dependencies).</li>
-<li>CRAN packaging: exclude pkgdown <code>docs/</code>, vendor demos, and large screenshots from the source tarball; load README images from GitHub; trim Suggests to packages used by shipped examples and tests.</li>
-<li>Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets gallery, and a bs4Dash AdminLTE3 demo, with chromote capture script <code>inst/scripts/visual-test-tier-ab.R</code> and example launchers.</li>
-<li>Fix <code>replace_page_theme()</code> for complex nested <code>theme =</code> expressions (needed to glass-wrap the shinyWidgets gallery).</li>
-<li>Fix overlapping glass frames in multi-column layouts (e.g. dreamRs gh-dashboard avatar + statiCards): clip plot/html outputs to their surfaces, constrain flex columns, and ellipsize long avatar text.</li>
-</ul></div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="shinyglass-010">shinyglass 0.1.0<a class="anchor" aria-label="anchor" href="#shinyglass-010"></a></h2>
 <ul><li>Initial release.</li>
 <li>
-<code><a href="../reference/glass_theme.html">glass_theme()</a></code> returns a ‘bslib’ theme with Apple-inspired Liquid Glass styling for ‘shiny’ applications.</li>
+<code><a href="../reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme with Apple-inspired Liquid Glass styling for <a href="https://shiny.posit.co/" class="external-link">shiny</a> apps: translucent surfaces, backdrop blur, soft depth, and system typography.</li>
+<li>Light and dark presets, with options for accent color, blur, saturation, and corner radius.</li>
+<li>Works with <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, <code><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">bslib::page_sidebar()</a></code>, and other bslib-aware page functions. Pass the theme via <code>theme = glass_theme()</code>, or for <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps via <code>options(teal.bs_theme = glass_theme())</code>.</li>
+<li>Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars, inputs, tables, plots, modals) and holds up on denser UIs such as leaflet maps, DT, shinyWidgets, bs4Dash, and teal filter panels.</li>
 </ul></div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside></div>
+  </main></div>
 
 
     <footer><div class="pkgdown-footer-left">

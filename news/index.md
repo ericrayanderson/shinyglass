@@ -1,39 +1,23 @@
 # Changelog
 
-## shinyglass (development version)
-
-- Teal gallery visual coverage (`inst/scripts/visual-test-teal.R`) plus
-  CSS fixes for teal/teal.slice: pin filter sidebars so they no longer
-  expand full-width over module tables, skip glass frames on empty
-  `shiny-html-output` placeholders, raise modal opacity, and glass teal
-  nav/filter/accordion chrome. Example:
-  `inst/examples/teal-glass-demo.R`.
-- Shiny User Showcase coverage
-  (`inst/scripts/visual-test-shiny-gallery.R`) for rstudio/shiny-gallery
-  apps (hangman, life-of-pi, one-source-indy, lake-profile-dashboard,
-  nyc-metro-vis, …). Glass patching now finds nested `ui/ui.R` /
-  `app.r`, allows nested `bootstrapPage` inside `fluidPage`, and fixes
-  deprecated `plan(multiprocess)`.
-- Checked and documented under R 4.6.
-- Simplify the README to a short background and quick start.
-- Inject the glass preset via an `htmlDependency` head script instead of
-  a `tagFunction` that returned tags (avoids an htmltools warning when
-  resolving theme dependencies).
-- CRAN packaging: exclude pkgdown `docs/`, vendor demos, and large
-  screenshots from the source tarball; load README images from GitHub;
-  trim Suggests to packages used by shipped examples and tests.
-- Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets
-  gallery, and a bs4Dash AdminLTE3 demo, with chromote capture script
-  `inst/scripts/visual-test-tier-ab.R` and example launchers.
-- Fix `replace_page_theme()` for complex nested `theme =` expressions
-  (needed to glass-wrap the shinyWidgets gallery).
-- Fix overlapping glass frames in multi-column layouts (e.g. dreamRs
-  gh-dashboard avatar + statiCards): clip plot/html outputs to their
-  surfaces, constrain flex columns, and ellipsize long avatar text.
-
 ## shinyglass 0.1.0
 
 - Initial release.
 - [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  returns a ‘bslib’ theme with Apple-inspired Liquid Glass styling for
-  ‘shiny’ applications.
+  returns a [bslib](https://rstudio.github.io/bslib/) theme with
+  Apple-inspired Liquid Glass styling for
+  [shiny](https://shiny.posit.co/) apps: translucent surfaces, backdrop
+  blur, soft depth, and system typography.
+- Light and dark presets, with options for accent color, blur,
+  saturation, and corner radius.
+- Works with
+  [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
+  [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
+  [`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
+  and other bslib-aware page functions. Pass the theme via
+  `theme = glass_theme()`, or for
+  [teal](https://insightsengineering.github.io/teal/) apps via
+  `options(teal.bs_theme = glass_theme())`.
+- Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars,
+  inputs, tables, plots, modals) and holds up on denser UIs such as
+  leaflet maps, DT, shinyWidgets, bs4Dash, and teal filter panels.
