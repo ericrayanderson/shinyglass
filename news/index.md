@@ -8,6 +8,12 @@
   `shiny-html-output` placeholders, raise modal opacity, and glass teal
   nav/filter/accordion chrome. Example:
   `inst/examples/teal-glass-demo.R`.
+- Shiny User Showcase coverage
+  (`inst/scripts/visual-test-shiny-gallery.R`) for rstudio/shiny-gallery
+  apps (hangman, life-of-pi, one-source-indy, lake-profile-dashboard,
+  nyc-metro-vis, …). Glass patching now finds nested `ui/ui.R` /
+  `app.r`, allows nested `bootstrapPage` inside `fluidPage`, and fixes
+  deprecated `plan(multiprocess)`.
 - Checked and documented under R 4.6.
 - Simplify the README to a short background and quick start.
 - Inject the glass preset via an `htmlDependency` head script instead of
