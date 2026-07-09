@@ -1,6 +1,6 @@
 # shinyglass
 
-Apple-inspired [Liquid
+[Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 themes for [Shiny](https://shiny.posit.co/). Call
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)

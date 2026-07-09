@@ -10,12 +10,12 @@
 Source:
 [`DESCRIPTION`](https://github.com/ericrayanderson/shinyglass/blob/main/DESCRIPTION)
 
-Anderson E (2026). *shinyglass: Apple-Inspired Liquid Glass Design for
-Shiny Applications*. R package version 0.1.0,
+Anderson E (2026). *shinyglass: Liquid Glass Design Themes for Shiny
+Applications*. R package version 0.1.0,
 <https://ericrayanderson.github.io/shinyglass/>.
 
     @Manual{,
-      title = {shinyglass: Apple-Inspired Liquid Glass Design for Shiny Applications},
+      title = {shinyglass: Liquid Glass Design Themes for Shiny Applications},
       author = {Eric Anderson},
       year = {2026},
       note = {R package version 0.1.0},

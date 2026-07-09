@@ -1,10 +1,9 @@
-# Apple Liquid Glass theme for Shiny
+# Liquid Glass theme for Shiny
 
 Create a
 [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
-styled with an Apple-inspired Liquid Glass look: translucent surfaces,
-backdrop blur, soft depth, and system typography. Pass the result to
-`theme =` on
+styled with a Liquid Glass look: translucent surfaces, backdrop blur,
+soft depth, and system typography. Pass the result to `theme =` on
 [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
 [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
 [`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
@@ -31,8 +30,8 @@ glass_theme(
 
 - primary:
 
-  Accent color for buttons, links, and focus rings. Defaults to Apple
-  system blue (`#007AFF`).
+  Accent color for buttons, links, and focus rings. Defaults to system
+  blue (`#007AFF`).
 
 - blur:
 

@@ -1,6 +1,6 @@
 # shinyglass
 
-Apple-inspired [Liquid
+[Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 themes for [Shiny](https://shiny.posit.co/). Call
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
@@ -46,5 +46,5 @@ shinyApp(ui, server)
 Create a Liquid Glass theme for your Shiny app.
 
 - [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  : Apple Liquid Glass theme for Shiny
+  : Liquid Glass theme for Shiny
 

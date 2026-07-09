@@ -4,10 +4,9 @@
 
 - Initial release.
 - [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  returns a [bslib](https://rstudio.github.io/bslib/) theme with
-  Apple-inspired Liquid Glass styling for
-  [shiny](https://shiny.posit.co/) apps: translucent surfaces, backdrop
-  blur, soft depth, and system typography.
+  returns a [bslib](https://rstudio.github.io/bslib/) theme with Liquid
+  Glass styling for [shiny](https://shiny.posit.co/) apps: translucent
+  surfaces, backdrop blur, soft depth, and system typography.
 - Light and dark presets, with options for accent color, blur,
   saturation, and corner radius.
 - Works with
