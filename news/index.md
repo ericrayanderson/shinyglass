@@ -2,7 +2,7 @@
 
 ## shinyglass (development version)
 
-- Checked and documented under R 4.6; maintainer email updated.
+- Checked and documented under R 4.6.
 - Simplify the README to a short background and quick start.
 - Inject the glass preset via an `htmlDependency` head script instead of
   a `tagFunction` that returned tags (avoids an htmltools warning when
