@@ -92,24 +92,32 @@ glass_theme <- function(
   glass_scss <- system.file("scss", "glass.scss", package = "shinyglass")
   theme <- bslib::bs_add_rules(theme, sass::sass_file(glass_scss))
 
-  preset_tag <- htmltools::tagFunction(function() {
-    htmltools::tags$script(
-      htmltools::HTML(sprintf(
-        "document.documentElement.dataset.glassPreset=%s;",
-        shQuote(preset, type = "cmd")
-      ))
-    )
-  })
+  pkg_version <- as.character(utils::packageVersion("shinyglass"))
+  js_src <- system.file("js", package = "shinyglass")
+
+  # htmlDependency (not tagFunction-returned tags) so htmltools does not
+  # warn when dependencies are resolved via bs_theme_dependencies().
+  preset_dep <- htmltools::htmlDependency(
+    name = "shinyglass-preset",
+    version = pkg_version,
+    src = js_src,
+    head = sprintf(
+      "<script>document.documentElement.dataset.glassPreset=%s;</script>",
+      shQuote(preset, type = "cmd")
+    ),
+    all_files = FALSE
+  )
 
   glass_js <- htmltools::htmlDependency(
     name = "shinyglass",
-    version = utils::packageVersion("shinyglass"),
-    src = system.file("js", package = "shinyglass"),
-    script = "shiny-glass.js"
+    version = pkg_version,
+    src = js_src,
+    script = "shiny-glass.js",
+    all_files = FALSE
   )
   bslib::bs_bundle(
     theme,
-    sass::sass_layer(html = preset_tag),
+    sass::sass_layer(html = preset_dep),
     sass::sass_layer(html = glass_js)
   )
 }

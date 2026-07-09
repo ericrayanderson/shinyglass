@@ -17,7 +17,7 @@ glass_theme(
 \item{preset}{\code{"light"} or \code{"dark"}. Switches the full color system.}
 
 \item{primary}{Accent color for buttons, links, and focus rings.
-Defaults to Apple system blue (\code{#007AFF}).}
+Defaults to Apple system blue (\verb{#007AFF}).}
 
 \item{blur}{Backdrop blur radius in pixels.}
 
@@ -33,7 +33,7 @@ A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for Shiny page
 \description{
 Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with an Apple-inspired Liquid Glass
 look: translucent surfaces, backdrop blur, soft depth, and system
-typography. Pass the result to \code{theme =} on \code{fluidPage()},
+typography. Pass the result to \verb{theme =} on \code{fluidPage()},
 \code{navbarPage()}, \code{bslib::page_sidebar()}, or any other page function that
 accepts a bslib theme.
 }

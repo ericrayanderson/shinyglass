@@ -20,4 +20,14 @@ test_that("glass_theme compiles dependencies", {
   expect_true(length(deps) >= 1)
   dep_names <- vapply(deps, function(d) d$name, character(1))
   expect_true("shinyglass" %in% dep_names)
+  expect_true("shinyglass-preset" %in% dep_names)
+})
+
+test_that("glass_theme sets preset data attribute in head", {
+  skip_if_not_installed("bslib")
+  dark <- glass_theme(preset = "dark")
+  deps <- bslib::bs_theme_dependencies(dark)
+  preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
+  expect_length(preset_deps, 1)
+  expect_match(preset_deps[[1]]$head, 'glassPreset="dark"')
 })

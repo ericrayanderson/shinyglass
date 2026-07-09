@@ -1,6 +1,6 @@
 ## Test environments
 
-* local macOS Monterey, R 4.4.1
+* local macOS Monterey, R 4.6.1
 * `R CMD check --as-cran` on the source tarball
 
 ## R CMD check results
@@ -10,8 +10,7 @@
 ## Notes
 
 * **New submission.** First CRAN release of shinyglass.
-* **Unable to verify current time.** Environment/network time check; not package-related.
-* **HTML manual validation** (`<main>`, table summary). Standard Rd2HTML/tidy notes on recent R; no package-specific HTML.
+* **HTML manual validation.** Local check skips HTML tidy validation when the installed tidy is too old; not package-related.
 * **README / NEWS.** Screenshots are loaded from the GitHub repository so the source tarball stays small. Pandoc is recommended when checking README locally.
 
 ## Downstream dependencies
