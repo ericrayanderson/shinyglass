@@ -1,14 +1,13 @@
-#' Apple Liquid Glass theme for Shiny
+#' Liquid Glass theme for Shiny
 #'
-#' Create a [bslib::bs_theme()] styled with an Apple-inspired Liquid Glass
-#' look: translucent surfaces, backdrop blur, soft depth, and system
-#' typography. Pass the result to `theme =` on `fluidPage()`,
-#' `navbarPage()`, `bslib::page_sidebar()`, or any other page function that
-#' accepts a bslib theme.
+#' Create a [bslib::bs_theme()] styled with a Liquid Glass look: translucent
+#' surfaces, backdrop blur, soft depth, and system typography. Pass the result
+#' to `theme =` on `fluidPage()`, `navbarPage()`, `bslib::page_sidebar()`, or
+#' any other page function that accepts a bslib theme.
 #'
 #' @param preset `"light"` or `"dark"`. Switches the full color system.
 #' @param primary Accent color for buttons, links, and focus rings.
-#'   Defaults to Apple system blue (`#007AFF`).
+#'   Defaults to system blue (`#007AFF`).
 #' @param blur Backdrop blur radius in pixels.
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).

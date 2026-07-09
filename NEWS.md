@@ -2,8 +2,8 @@
 
 * Initial release.
 * `glass_theme()` returns a [bslib](https://rstudio.github.io/bslib/) theme with
-  Apple-inspired Liquid Glass styling for [shiny](https://shiny.posit.co/) apps:
-  translucent surfaces, backdrop blur, soft depth, and system typography.
+  Liquid Glass styling for [shiny](https://shiny.posit.co/) apps: translucent
+  surfaces, backdrop blur, soft depth, and system typography.
 * Light and dark presets, with options for accent color, blur, saturation, and
   corner radius.
 * Works with `fluidPage()`, `navbarPage()`, `bslib::page_sidebar()`, and other

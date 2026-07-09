@@ -2,7 +2,7 @@
 % Please edit documentation in R/glass-theme.R
 \name{glass_theme}
 \alias{glass_theme}
-\title{Apple Liquid Glass theme for Shiny}
+\title{Liquid Glass theme for Shiny}
 \usage{
 glass_theme(
   preset = c("light", "dark"),
@@ -17,7 +17,7 @@ glass_theme(
 \item{preset}{\code{"light"} or \code{"dark"}. Switches the full color system.}
 
 \item{primary}{Accent color for buttons, links, and focus rings.
-Defaults to Apple system blue (\verb{#007AFF}).}
+Defaults to system blue (\verb{#007AFF}).}
 
 \item{blur}{Backdrop blur radius in pixels.}
 
@@ -31,11 +31,10 @@ Defaults to Apple system blue (\verb{#007AFF}).}
 A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for Shiny page functions.
 }
 \description{
-Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with an Apple-inspired Liquid Glass
-look: translucent surfaces, backdrop blur, soft depth, and system
-typography. Pass the result to \verb{theme =} on \code{fluidPage()},
-\code{navbarPage()}, \code{bslib::page_sidebar()}, or any other page function that
-accepts a bslib theme.
+Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with a Liquid Glass look: translucent
+surfaces, backdrop blur, soft depth, and system typography. Pass the result
+to \verb{theme =} on \code{fluidPage()}, \code{navbarPage()}, \code{bslib::page_sidebar()}, or
+any other page function that accepts a bslib theme.
 }
 \examples{
 theme <- glass_theme()

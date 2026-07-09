@@ -11,9 +11,9 @@ template:
 home:
   title: shinyglass • Liquid Glass themes for Shiny
   description: >
-    Apple-inspired Liquid Glass themes for R Shiny. One function,
-    glass_theme(), for translucent surfaces, backdrop blur, and
-    system typography on Bootstrap-based apps.
+    Liquid Glass themes for R Shiny. One function, glass_theme(), for
+    translucent surfaces, backdrop blur, and system typography on
+    Bootstrap-based apps.
   sidebar:
     structure: [links, license, community, citation, authors, dev]
     components:

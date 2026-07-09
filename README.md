@@ -4,7 +4,7 @@
 [![License: GPL-3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 <!-- badges: end -->
 
-Apple-inspired [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). Call `glass_theme()` to get translucent surfaces, backdrop blur, and system typography on Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
+[Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). Call `glass_theme()` to get translucent surfaces, backdrop blur, and system typography on Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass)
 

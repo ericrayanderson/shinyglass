@@ -1,4 +1,4 @@
-# Apple Liquid Glass reference app for shinyglass visual validation.
+# Liquid Glass reference app for shinyglass visual validation.
 # Exercises: page_sidebar overlay, pill tabs, content-aware tinting, DT tables.
 #
 # Run:
@@ -32,7 +32,7 @@ palette_colors <- list(
 )
 
 ui <- page_sidebar(
-  title = "Apple Liquid Glass Reference",
+  title = "Liquid Glass Reference",
   theme = glass_theme(preset = glass_preset),
   fillable = TRUE,
   sidebar = sidebar(
@@ -69,7 +69,7 @@ ui <- page_sidebar(
   ),
   p(
     class = "text-muted",
-    "Validates shinyglass against Apple's Liquid Glass goals: translucent chrome ",
+    "Validates shinyglass Liquid Glass goals: translucent chrome ",
     "floating above full-bleed content, informed by surrounding color."
   ),
   navset_card_tab(
@@ -97,7 +97,7 @@ ui <- page_sidebar(
         tags$li("Dark preset via glass_theme(preset = \"dark\")"),
         tags$li("Compare against ", tags$a(
           href = "https://developer.apple.com/documentation/TechnologyOverviews/adopting-liquid-glass",
-          "Apple's Adopting Liquid Glass"
+          "Adopting Liquid Glass design notes"
         ))
       ),
       tags$p(tags$strong("Scroll this tab"), " to test navigation morph."),
