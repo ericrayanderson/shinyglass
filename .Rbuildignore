@@ -26,4 +26,5 @@
 ^inst/examples/superzip-glass\.R$
 ^inst/examples/shinywidgets-gallery-glass\.R$
 ^inst/examples/bs4dash-glass-demo\.R$
+^inst/examples/teal-glass-demo\.R$
 ^inst/examples/querychat-demo\.R$

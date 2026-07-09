@@ -1,5 +1,10 @@
 # shinyglass (development version)
 
+* Teal gallery visual coverage (`inst/scripts/visual-test-teal.R`) plus CSS
+  fixes for teal/teal.slice: pin filter sidebars so they no longer expand
+  full-width over module tables, skip glass frames on empty
+  `shiny-html-output` placeholders, raise modal opacity, and glass teal
+  nav/filter/accordion chrome. Example: `inst/examples/teal-glass-demo.R`.
 * Checked and documented under R 4.6.
 * Simplify the README to a short background and quick start.
 * Inject the glass preset via an `htmlDependency` head script instead of
@@ -16,6 +21,15 @@
 * Fix overlapping glass frames in multi-column layouts (e.g. dreamRs
   gh-dashboard avatar + statiCards): clip plot/html outputs to their
   surfaces, constrain flex columns, and ellipsize long avatar text.
+
+# shinyglass (development)
+
+* Teal gallery visual coverage (`inst/scripts/visual-test-teal.R`) and CSS
+  fixes for teal/teal.slice: filter sidebars no longer expand full-width over
+  module tables, empty `shiny-html-output` placeholders no longer render as
+  thin glass bars, modals are more opaque, and teal nav/filter/accordion
+  chrome picks up glass surfaces.
+* New example: `inst/examples/teal-glass-demo.R` (`options(teal.bs_theme = glass_theme())`).
 
 # shinyglass 0.1.0
 

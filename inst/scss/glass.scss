@@ -743,6 +743,9 @@ form.well,
 
 .modal-content {
   @include glass-surface(1.25rem);
+  // Keep dialogs readable over dense app chrome (teal delayed-data, etc.)
+  background: color-mix(in srgb, var(--glass-menu-bg) 82%, transparent) !important;
+  color: var(--glass-menu-color, inherit);
 }
 
 .dropdown-menu {
@@ -946,7 +949,6 @@ form.well,
 
 // clip framed outputs so content can't overflow into sibling columns
 .shiny-plot-output,
-.shiny-html-output:not(:has(.Reactable)),
 .shiny-image-output {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.65rem;
@@ -954,6 +956,45 @@ form.well,
   overflow: hidden;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+// Frame html outputs that carry real content. Empty teal validation
+// placeholders (and similar) must not become thin glass bars.
+.shiny-html-output:not(:has(.Reactable)):is(
+  .shiny-table-output,
+  :has(table),
+  :has(.dataTables_wrapper),
+  :has(.html-widget),
+  :has(.plotly),
+  :has(img),
+  :has(pre),
+  :has(canvas),
+  :has(.form-group),
+  :has(.shiny-input-container),
+  :has(.shiny-plot-output),
+  :has(.shiny-image-output)
+) {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.65rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Explicitly neutralize empty / message-only html outputs
+.shiny-html-output:empty,
+.shiny-html-output:not(:has(*)),
+.teal_validated > .shiny-html-output,
+.teal-output-warning.shiny-html-output:empty {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
 }
 
 .shiny-plot-output img,
@@ -1460,6 +1501,234 @@ body .controls-pane {
     .rt-tr-striped {
       background: color-mix(in srgb, var(--glass-bg) 85%, transparent) !important;
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// teal / teal.slice / teal.widgets
+// Applied when options(teal.bs_theme = glass_theme()). Teal uses bslib
+// sidebars, filter-cards, and many empty shiny-html-output placeholders.
+// ---------------------------------------------------------------------------
+
+.teal-body,
+.teal-modules-wrapper {
+  background: transparent;
+}
+
+.teal-navbar.nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  margin: 0 0 0.85rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+
+  a,
+  .action-button,
+  .nav-link {
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    color: inherit;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// Teal filter sidebars expand very wide by default; pin them to a
+// floating column so main module tables are not buried underneath.
+.teal-body .bslib-sidebar-layout {
+  --teal-glass-sidebar-width: min(var(--_sidebar-width, 22rem), 26rem);
+
+  > .sidebar.teal-sidebar,
+  > .sidebar {
+    position: absolute !important;
+    top: var(--glass-float-margin) !important;
+    bottom: auto !important;
+    left: var(--glass-float-margin) !important;
+    right: auto !important;
+    width: var(--teal-glass-sidebar-width) !important;
+    max-width: calc(100% - var(--glass-float-margin) * 2) !important;
+    max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem) !important;
+    z-index: 25 !important;
+    overflow: auto !important;
+    // More opaque than generic glass so dense tables don't show through
+    background: color-mix(in srgb, var(--glass-menu-bg) 72%, transparent) !important;
+    background-color: color-mix(in srgb, var(--glass-menu-bg) 72%, transparent) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--glass-radius) !important;
+    box-shadow:
+      0 16px 48px var(--glass-elevated-shadow),
+      0 4px 12px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight) !important;
+  }
+
+  &.sidebar-right > .sidebar.teal-sidebar,
+  &.sidebar-right > .sidebar {
+    left: auto !important;
+    right: var(--glass-float-margin) !important;
+  }
+
+  &:not(.sidebar-collapsed) > .main,
+  &:not(.sidebar-collapsed) > .main.bslib-page-main {
+    padding-left: calc(
+      var(--glass-float-margin) + var(--teal-glass-sidebar-width) + 0.85rem
+    ) !important;
+    padding-right: var(--glass-float-margin) !important;
+  }
+
+  &.sidebar-right:not(.sidebar-collapsed) > .main,
+  &.sidebar-right:not(.sidebar-collapsed) > .main.bslib-page-main {
+    padding-left: var(--glass-float-margin) !important;
+    padding-right: calc(
+      var(--glass-float-margin) + var(--teal-glass-sidebar-width) + 0.85rem
+    ) !important;
+  }
+
+  &.sidebar-collapsed > .sidebar.teal-sidebar,
+  &.sidebar-collapsed > .sidebar {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(calc(-100% - var(--glass-float-margin) * 2));
+  }
+
+  &.sidebar-right.sidebar-collapsed > .sidebar {
+    transform: translateX(calc(100% + var(--glass-float-margin) * 2));
+  }
+}
+
+.teal-filter-panel {
+  background: transparent !important;
+}
+
+.teal-active-data-summary-panel,
+.teal-active-data-summary,
+.filter-card {
+  @include glass-surface(calc(var(--glass-radius) * 0.75));
+  background: color-mix(in srgb, var(--glass-bg) 70%, var(--glass-menu-bg) 30%) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit;
+  overflow: visible;
+  margin-bottom: 0.55rem;
+}
+
+.filter-card-header,
+.filter-card-title,
+.teal-active-data-summary-panel .accordion-button,
+.teal-filter-panel .accordion-button,
+.teal-body .accordion-button {
+  background: color-mix(in srgb, var(--glass-bg-hover) 70%, $primary 30%) !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+
+  &:not(.collapsed) {
+    background: color-mix(in srgb, var(--glass-bg-hover) 55%, $primary 45%) !important;
+    color: inherit !important;
+  }
+
+  &:focus {
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 0 0 0.15rem rgba($primary, 0.2);
+  }
+
+  &::after {
+    filter: none;
+    opacity: 0.75;
+  }
+}
+
+.teal-body .accordion-item,
+.teal-filter-panel .accordion-item {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--glass-radius) * 0.75);
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+
+  .accordion-body {
+    background: color-mix(in srgb, var(--glass-bg) 80%, transparent);
+    color: inherit;
+  }
+}
+
+.filter-card-body,
+.filter-card-summary {
+  color: inherit;
+  background: transparent;
+}
+
+.filter-card-summary-value,
+.data-filter-badge-count {
+  background: var(--glass-bg-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  color: inherit;
+}
+
+// Module tree dropdown
+.teal-modules-tree {
+  background: transparent;
+  color: inherit;
+
+  a {
+    border-radius: 0.55rem;
+    color: inherit;
+
+    &:hover {
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// Nested layout inside teal main (standard-layout-wrapper) should not
+// re-float a second full-width sidebar over the module body.
+.teal-body .main .bslib-sidebar-layout,
+.teal-body .teal-widgets .bslib-sidebar-layout {
+  > .sidebar:not(.teal-sidebar) {
+    position: relative !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    inset: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  > .main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// teal delayed-data modal form chrome
+.modal-content {
+  .form-control,
+  .form-select,
+  .selectize-input {
+    background: color-mix(in srgb, var(--glass-menu-bg) 90%, transparent) !important;
   }
 }
 
