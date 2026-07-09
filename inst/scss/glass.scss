@@ -1,9 +1,4 @@
-// Apple Liquid Glass theme layer for Bootstrap 5
-// Inspired by Apple's iOS 26 / visionOS design language
 
-// ---------------------------------------------------------------------------
-// CSS custom properties (overridden per preset in glass_theme())
-// ---------------------------------------------------------------------------
 :root {
   --glass-bg: #{$glass-bg};
   --glass-bg-hover: #{$glass-bg-hover};
@@ -31,9 +26,6 @@
   --glass-inner-glow: rgba(255, 255, 255, 0.06);
 }
 
-// ---------------------------------------------------------------------------
-// Page background
-// ---------------------------------------------------------------------------
 body {
   background: $glass-page-bg !important;
   min-height: 100vh;
@@ -41,7 +33,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Rich ambient scene — glass refracts this, not flat gray
 body::before {
   content: "";
   position: fixed;
@@ -67,9 +58,6 @@ body::after {
   pointer-events: none;
 }
 
-// ---------------------------------------------------------------------------
-// Glass surface mixin
-// ---------------------------------------------------------------------------
 @mixin glass-surface($radius: var(--glass-radius)) {
   position: relative;
   isolation: isolate;
@@ -90,7 +78,7 @@ body::after {
     padding 0.25s ease,
     margin 0.25s ease;
 
-  // Specular highlight follows pointer (set via shiny-glass.js)
+  // pointer position from shiny-glass.js
   &::before {
     content: "";
     position: absolute;
@@ -111,7 +99,6 @@ body::after {
     opacity: 1;
   }
 
-  // Liquid inner glow
   &::after {
     content: "";
     position: absolute;
@@ -123,7 +110,7 @@ body::after {
   }
 }
 
-// Lighter glass for inputs — no pseudo-elements or overflow clipping
+// inputs: no pseudo-elements (overflow must stay visible for menus)
 @mixin glass-input {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
@@ -133,7 +120,6 @@ body::after {
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
-// Floating functional layer (Apple: controls sit above content)
 @mixin glass-floating($radius: var(--glass-radius)) {
   @include glass-surface($radius);
   margin: var(--glass-float-margin);
@@ -144,28 +130,22 @@ body::after {
     inset 0 -1px 0 rgba(0, 0, 0, 0.04);
 }
 
-// ---------------------------------------------------------------------------
-// Shiny layout — content vs chrome
-// ---------------------------------------------------------------------------
 .container-fluid > .row {
   align-items: flex-start;
 }
 
-// bslib multi-card layouts — gap reveals ambient scene between surfaces
 .bslib-gap-spacing,
 .layout-column-wrap,
 .layout-column-plot {
   gap: 0.5rem;
 }
 
-// Content columns stay open so the scene shows through
 .col-sm-8[role="main"],
 .col-sm-8 > .tab-content,
 .tab-content > .tab-pane.active {
   background: transparent;
 }
 
-// Hero content region — full-bleed colorful canvas behind floating chrome
 .glass-content-hero {
   position: relative;
   min-height: 18rem;
@@ -182,7 +162,6 @@ body::after {
   }
 }
 
-// Classic Shiny sidebar — floating glass control deck
 form.well,
 .col-sm-4.well {
   @include glass-floating();
@@ -193,9 +172,6 @@ form.well,
   z-index: 2;
 }
 
-// ---------------------------------------------------------------------------
-// Cards
-// ---------------------------------------------------------------------------
 .card {
   @include glass-floating();
   overflow: visible; // allow select menus to layer above siblings
@@ -214,9 +190,6 @@ form.well,
   }
 }
 
-// ---------------------------------------------------------------------------
-// Navigation — floating glass layer above content
-// ---------------------------------------------------------------------------
 body.bslib-page-navbar > .navbar,
 .navbar.navbar-static-top,
 .navbar.navbar-default {
@@ -253,7 +226,7 @@ body.bslib-page-navbar > .navbar,
   }
 }
 
-// iOS-style floating pill tab bar (tabsetPanel)
+// tabsetPanel pills
 .tabbable > .nav-tabs {
   display: inline-flex;
   flex-wrap: wrap;
@@ -299,7 +272,6 @@ body.bslib-page-navbar > .navbar,
   }
 }
 
-// Navlist sidebar pills
 .col-sm-4.well .nav-pills > li > a {
   border-radius: 0.75rem;
   opacity: 0.8;
@@ -317,7 +289,7 @@ body.bslib-page-navbar > .navbar,
   box-shadow: inset 0 1px 0 var(--glass-highlight);
 }
 
-// Generic nav-tabs outside tabbable (e.g. DT example tabs)
+// DT-style nav-tabs outside .tabbable
 .nav-tabs:not(.tabbable > .nav-tabs) {
   border-bottom: 1px solid var(--glass-border);
 
@@ -345,7 +317,7 @@ body.bslib-page-navbar > .navbar,
   }
 }
 
-// Scroll: compact on scroll-down, expand on scroll-up (Apple tab bar)
+// body.glass-nav-compact / glass-nav-expanded (see shiny-glass.js)
 body.glass-nav-compact {
   .navbar.navbar-static-top,
   .navbar.navbar-default,
@@ -387,9 +359,6 @@ body.glass-nav-expanded {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Buttons — Apple Liquid Glass typography + tinted glass fills
-// ---------------------------------------------------------------------------
 @mixin glass-button-type {
   font-family: inherit;
   font-weight: 600;
@@ -477,7 +446,7 @@ body.glass-nav-expanded {
   }
 }
 
-// Shiny default — frosted glass with accent label (not Bootstrap gray)
+// default actionButton (not Bootstrap gray fill)
 .btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.shiny-download-link),
 .action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
   @include glass-button-ghost($primary);
@@ -557,7 +526,7 @@ body.glass-nav-expanded {
   }
 }
 
-// Shiny download controls — override bslib's .btn-default outline on <a> tags
+// downloadButton is often <a class="btn-default">
 a.shiny-download-link {
   text-decoration: none !important;
 
@@ -644,9 +613,6 @@ a.shiny-download-link {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Form controls
-// ---------------------------------------------------------------------------
 .form-control {
   @include glass-input();
   border-radius: 0.75rem;
@@ -674,7 +640,7 @@ a.shiny-download-link {
   border-radius: 0.75rem;
   color: inherit;
 
-  // Opaque menu so options don't show content behind them
+  // opaque so list items aren't see-through
   &:focus,
   &:active,
   &[size]:not([size="1"]),
@@ -693,7 +659,7 @@ a.shiny-download-link {
   }
 }
 
-// Lift open selects above later siblings
+// .glass-select-open z-index (native + selectize)
 .card,
 form.well,
 .col-sm-4.well {
@@ -711,9 +677,6 @@ form.well,
   }
 }
 
-// ---------------------------------------------------------------------------
-// Selectize (glass dropdown menus)
-// ---------------------------------------------------------------------------
 .selectize-control.single .selectize-input,
 .selectize-control.multi .selectize-input {
   @include glass-input();
@@ -778,9 +741,6 @@ form.well,
   color: inherit;
 }
 
-// ---------------------------------------------------------------------------
-// Modals & dropdowns
-// ---------------------------------------------------------------------------
 .modal-content {
   @include glass-surface(1.25rem);
 }
@@ -806,9 +766,6 @@ form.well,
   }
 }
 
-// ---------------------------------------------------------------------------
-// Alerts, badges, progress
-// ---------------------------------------------------------------------------
 .alert {
   @include glass-surface(1rem);
   border-width: 1px;
@@ -830,23 +787,16 @@ form.well,
   overflow: hidden;
 }
 
-// ---------------------------------------------------------------------------
-// Tables
-// ---------------------------------------------------------------------------
 .table {
   --bs-table-bg: transparent;
   --bs-table-striped-bg: var(--glass-bg-hover);
   --bs-table-hover-bg: var(--glass-bg-hover);
 }
 
-// ---------------------------------------------------------------------------
-// bslib value boxes & page_sidebar overlay
-// ---------------------------------------------------------------------------
 .value-box {
   @include glass-surface();
 }
 
-// page_sidebar title — floating glass chrome
 .bslib-page-sidebar > .navbar {
   @include glass-floating(var(--glass-radius));
   background: var(--glass-bg) !important;
@@ -863,7 +813,7 @@ form.well,
   border-bottom: 1px solid var(--glass-border) !important;
 }
 
-// Apple overlay: main full-bleed, sidebar floats above content
+// page_sidebar: main fills; sidebar floats over it
 .bslib-sidebar-layout {
   border: none !important;
   background: transparent !important;
@@ -994,7 +944,7 @@ form.well,
   }
 }
 
-// Outputs: light glass frame; clip content so boxes never spill into siblings
+// clip framed outputs so content can't overflow into sibling columns
 .shiny-plot-output,
 .shiny-html-output:not(:has(.Reactable)),
 .shiny-image-output {
@@ -1006,7 +956,6 @@ form.well,
   box-sizing: border-box;
 }
 
-// ggplot/static plot images should follow the glass radius, not square-bleed
 .shiny-plot-output img,
 .shiny-image-output img {
   display: block;
@@ -1015,7 +964,7 @@ form.well,
   border-radius: calc(var(--glass-radius) * 0.45);
 }
 
-// reactable ships its own surface — avoid double-framing the wrapper
+// reactable has its own surface; don't double-frame the wrapper
 .shiny-html-output.reactable,
 .shiny-html-output:has(.Reactable) {
   background: transparent !important;
@@ -1027,9 +976,6 @@ form.well,
   margin-bottom: 0.75rem;
 }
 
-// ---------------------------------------------------------------------------
-// DataTables (DT) — glass table chrome
-// ---------------------------------------------------------------------------
 .dataTables_wrapper {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.85rem 1rem;
@@ -1118,9 +1064,6 @@ form.well,
   }
 }
 
-// ---------------------------------------------------------------------------
-// shinyWidgets statiCard
-// ---------------------------------------------------------------------------
 .stati {
   @include glass-surface(calc(var(--glass-radius) * 0.9));
   background: var(--glass-bg) !important;
@@ -1153,9 +1096,7 @@ form.well,
   }
 }
 
-// ---------------------------------------------------------------------------
-// shinydashboard (boxes, value boxes) — body prefix beats bundled www/*.css
-// ---------------------------------------------------------------------------
+// body prefix beats AdminLTE/www CSS load order
 body .box {
   @include glass-floating(calc(var(--glass-radius) * 0.9));
   background: var(--glass-bg) !important;
@@ -1225,7 +1166,6 @@ body .bg-aqua {
   background: transparent !important;
 }
 
-// Neutralize AdminLTE skin fills when only widgets are used inside navbarPage
 .skin-blue .main-header .navbar,
 .skin-blue-light .main-header .navbar,
 .skin-green .main-header .navbar,
@@ -1234,9 +1174,6 @@ body .bg-aqua {
   background-color: var(--glass-bg) !important;
 }
 
-// ---------------------------------------------------------------------------
-// reactable — body prefix beats widget CSS loaded after the theme
-// ---------------------------------------------------------------------------
 body .reactable,
 body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
@@ -1312,9 +1249,6 @@ body .Reactable {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Chart / map output chrome (billboarder, apexcharter, leaflet wrappers)
-// ---------------------------------------------------------------------------
 .billboarder-output,
 .apexchart-output,
 .leaflet.html-widget,
@@ -1330,12 +1264,7 @@ body .Reactable {
   font-family: inherit;
 }
 
-// ---------------------------------------------------------------------------
-// dreamRs / legacy app CSS overrides (when www/styles.css is bundled)
-// ---------------------------------------------------------------------------
-
-// gh-dashboard: .main-icon is absolute but .title lacks position:relative,
-// so the logo escapes and overlaps the header/inputs in screenshots.
+// .main-icon is position:absolute; need containing block on .title
 .title {
   position: relative;
   overflow: hidden;
@@ -1361,7 +1290,7 @@ body .Reactable {
   z-index: 1;
 }
 
-// Legacy debug rule in gh-dashboard/www/styles.css (unused id, but neutralize)
+// neutralize unused debug CSS from bundled www/styles.css
 #magnifying-glass {
   position: static !important;
   font-size: inherit !important;
@@ -1376,9 +1305,7 @@ body .Reactable {
   display: none !important;
 }
 
-// Keep statiCards and avatar cells inside their Bootstrap columns.
-// Flex columns default min-width:auto, so long unbreakable content (URLs)
-// would otherwise expand the glass frame into the next card.
+// flex min-width:auto + long URLs otherwise expand past the column
 .row > [class*="col-"] {
   min-width: 0;
 }
@@ -1413,8 +1340,6 @@ body .Reactable {
   text-overflow: ellipsis;
 }
 
-// dreamRs gh-dashboard avatar: fixed 109px img + table-cell + long URLs.
-// Override table layout and clip so the glass frame stays in its col-3.
 .shiny-html-output[id$="user_avatar"] {
   display: flex !important;
   align-items: center;
@@ -1435,7 +1360,7 @@ body .Reactable {
     object-fit: cover;
   }
 
-  // server.R uses display:table-cell on the bio/links wrapper
+  // dreamRs server uses display:table-cell on the text wrapper
   > div {
     display: block !important;
     flex: 1 1 0;
@@ -1484,9 +1409,6 @@ body .controls-pane {
   color: inherit;
 }
 
-// ---------------------------------------------------------------------------
-// Dark preset polish
-// ---------------------------------------------------------------------------
 [data-glass-preset="dark"] {
   body::before,
   body::after {
@@ -1541,9 +1463,6 @@ body .controls-pane {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Accessibility: respect reduced motion
-// ---------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   .card,
   .btn,

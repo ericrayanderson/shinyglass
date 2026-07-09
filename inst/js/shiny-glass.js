@@ -1,5 +1,3 @@
-// shinyglass — Apple Liquid Glass behaviors for Shiny (web)
-
 (function () {
   "use strict";
 
@@ -224,7 +222,7 @@
     tintTimer = setTimeout(updateContentTint, TINT_THROTTLE_MS);
   }
 
-  // Native <select> stacking inside cards
+  // raise native <select> above later card content
   $(document).on("focus mousedown", ".card .form-select, form.well .form-select", function () {
     var container = $(this).closest(".shiny-input-container");
     container.addClass("glass-select-open");
@@ -240,7 +238,7 @@
     }, 150);
   });
 
-  // Bidirectional nav morph: compact on scroll-down, expand on scroll-up
+  // compact navbar on scroll down; expand on scroll up
   (function () {
     var threshold = 56;
     var lastScrollY = window.scrollY || 0;
@@ -287,7 +285,7 @@
     updateNavMorph();
   })();
 
-  // Beat inline/widget CSS on statiCard and reactable (dreamRs demos)
+  // force glass colors past inline widget styles
   function applyWidgetGlassOverrides() {
     document.querySelectorAll(".stati").forEach(function (el) {
       el.style.setProperty("background", "var(--glass-bg)", "important");
@@ -312,7 +310,7 @@
 
   $(document).on("shiny:connected shiny:value shiny:visualchange", applyWidgetGlassOverrides);
 
-  // Pointer-driven specular highlights on glass surfaces
+  // --glass-specular-x/y from pointer
   (function () {
     var specularSelector =
       ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper, .stati, .box, .small-box, .info-box, .reactable, .Reactable, .value-box";
@@ -334,7 +332,7 @@
     );
   })();
 
-  // Selectize stacking + open state
+  // selectize open/close class for z-index
   $(document).on("focus mousedown", ".selectize-control .selectize-input", function () {
     $(this).closest(".shiny-input-container").addClass("glass-select-open");
   });
@@ -352,7 +350,7 @@
     $(this).closest(".shiny-input-container").removeClass("glass-select-open");
   });
 
-  // Content-aware tinting (Apple: color informed by surroundings)
+  // re-tint when plots/images update
   if (typeof Shiny !== "undefined") {
     Shiny.addCustomMessageHandler("glassPreset", function (preset) {
       document.documentElement.dataset.glassPreset = preset || "light";

@@ -65,7 +65,6 @@ find_matching_paren <- function(text, open_pos) {
   NA_integer_
 }
 
-# Skip whitespace; return first non-ws index or NA.
 skip_ws <- function(code, pos) {
   pos <- as.integer(pos[[1]])
   n <- nchar(code)
@@ -75,7 +74,6 @@ skip_ws <- function(code, pos) {
   if (pos > n) NA_integer_ else pos
 }
 
-# End index of a theme= value expression (function call, paren group, or atom).
 find_theme_value_end <- function(code, val_start) {
   val_start <- as.integer(val_start[[1]])
   if (is.na(val_start)) return(NA_integer_)
@@ -85,7 +83,6 @@ find_theme_value_end <- function(code, val_start) {
   }
 
   rest <- substr(code, val_start, nchar(code))
-  # Function / namespaced call: glass_theme(...), bs_add_rules(...), pkg::fn(...)
   name_m <- regexpr("^[A-Za-z.][A-Za-z0-9_.]*(::[A-Za-z.][A-Za-z0-9_.]*)?", rest, perl = TRUE)
   if (name_m[1] == 1L) {
     name_len <- as.integer(attr(name_m, "match.length")[[1]])
@@ -97,7 +94,6 @@ find_theme_value_end <- function(code, val_start) {
     return(val_start + name_len - 1L)
   }
 
-  # Fallback: read until comma or newline at depth 0
   depth <- 0L
   i <- val_start
   n <- nchar(code)
@@ -128,7 +124,7 @@ replace_page_theme <- function(code) {
     return(NA_character_)
   }
 
-  # Use first page layout only; match.length is a vector under gregexpr
+  # gregexpr match.length is a vector — use first page call only
   page_open <- as.integer(m[1] + attr(m, "match.length")[1] - 1L)
   page_close <- find_matching_paren(code, page_open)
   if (is.na(page_close)) {

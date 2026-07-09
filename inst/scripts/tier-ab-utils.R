@@ -1,7 +1,5 @@
-# Helpers for tier A/B visual coverage targets (SuperZIP, shinyWidgets, bs4Dash).
+# Tier A/B visual targets. Overlay CSS compiles glass.scss without Bootstrap reboot.
 
-# Compile glass.scss alone (no Bootstrap reboot) so AdminLTE/bs4Dash layouts
-# keep working while still receiving glass surface rules.
 compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#007AFF") {
   preset <- match.arg(preset)
   if (!requireNamespace("sass", quietly = TRUE)) {
@@ -11,7 +9,7 @@ compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#0
     stop("shinyglass must be loaded", call. = FALSE)
   }
 
-  # Mirror tokens from shinyglass::: .glass_tokens without relying on :::
+  # same tokens as .glass_tokens() (avoid :::)
   tokens <- if (identical(preset, "light")) {
     list(
       glass_bg = "rgba(255, 255, 255, 0.28)",
@@ -79,7 +77,7 @@ compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#0
     stop("glass.scss not found in shinyglass package", call. = FALSE)
   }
 
-  # Stub Bootstrap mixins used by glass.scss so we can compile without BS reboot
+  # glass.scss uses media-breakpoint-up from Bootstrap
   bootstrap_stubs <- "
 @mixin media-breakpoint-up($name) {
   @if $name == sm {
@@ -99,7 +97,7 @@ compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#0
   sass::sass(list(defaults, bootstrap_stubs, sass::sass_file(scss)))
 }
 
-# htmlDependency with overlay CSS + shiny-glass.js (no Bootstrap 5 reboot).
+# CSS + JS dependency without BS5 reboot (for AdminLTE/bs4Dash).
 glass_overlay_dependency <- function(preset = c("light", "dark"), primary = "#007AFF") {
   preset <- match.arg(preset)
   css <- compile_glass_overlay_css(preset = preset, primary = primary)
@@ -134,7 +132,7 @@ tier_ab_pkg_root <- function() {
   normalizePath(file.path(getwd(), "."), winslash = "/")
 }
 
-# Locate or shallow-clone rstudio/shiny-examples for SuperZIP.
+# SuperZIP path or sparse-clone of shiny-examples.
 resolve_superzip_dir <- function(pkg_root = tier_ab_pkg_root()) {
   candidates <- c(
     Sys.getenv("SHINYGLASS_SUPERZIP_DIR", unset = ""),
@@ -214,7 +212,7 @@ resolve_bs4dash_demo_path <- function(pkg_root = tier_ab_pkg_root()) {
   normalizePath(path, winslash = "/")
 }
 
-# Stage a runnable app dir for each tier-AB target.
+# Stage a runnable app dir per target.
 prepare_tier_ab_app <- function(id, pkg_root = tier_ab_pkg_root()) {
   id <- match.arg(id, c("superzip", "shinywidgets-gallery", "bs4dash-demo"))
 
@@ -247,7 +245,7 @@ prepare_tier_ab_app <- function(id, pkg_root = tier_ab_pkg_root()) {
     ))
   }
 
-  # bs4Dash: copy demo as app.R; SHINYGLASS_PKG_ROOT points at package sources
+  # copy demo; env SHINYGLASS_PKG_ROOT for overlay helper
   if (!requireNamespace("bs4Dash", quietly = TRUE)) {
     return(list(ok = FALSE, reason = "bs4Dash not installed", id = id, tier = "B"))
   }
