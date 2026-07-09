@@ -35,8 +35,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li>CRAN packaging: exclude pkgdown <code>docs/</code>, vendor demos, and large screenshots from the source tarball; load README images from GitHub; trim Suggests to packages used by shipped examples and tests.</li>
-<li>Refresh the README and pkgdown site for end users: feature list, clearer examples, and no developer-only testing notes.</li>
+<ul><li>Checked and documented under R 4.6; maintainer email updated.</li>
+<li>Simplify the README to a short background and quick start.</li>
+<li>Inject the glass preset via an <code>htmlDependency</code> head script instead of a <code>tagFunction</code> that returned tags (avoids an htmltools warning when resolving theme dependencies).</li>
+<li>CRAN packaging: exclude pkgdown <code>docs/</code>, vendor demos, and large screenshots from the source tarball; load README images from GitHub; trim Suggests to packages used by shipped examples and tests.</li>
 <li>Add tier A/B visual coverage: SuperZIP (leaflet), shinyWidgets gallery, and a bs4Dash AdminLTE3 demo, with chromote capture script <code>inst/scripts/visual-test-tier-ab.R</code> and example launchers.</li>
 <li>Fix <code>replace_page_theme()</code> for complex nested <code>theme =</code> expressions (needed to glass-wrap the shinyWidgets gallery).</li>
 <li>Fix overlapping glass frames in multi-column layouts (e.g. dreamRs gh-dashboard avatar + statiCards): clip plot/html outputs to their surfaces, constrain flex columns, and ellipsize long avatar text.</li>

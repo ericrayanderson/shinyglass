@@ -1,12 +1,11 @@
 # shinyglass
 
-**Apple-inspired Liquid Glass themes for
-[Shiny](https://shiny.posit.co/).**
-
-One function —
+Apple-inspired [Liquid
+Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
+themes for [Shiny](https://shiny.posit.co/). Call
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-— gives your app translucent surfaces, backdrop blur, soft depth, and
-system typography. Built on [bslib](https://rstudio.github.io/bslib/).
+to get translucent surfaces, backdrop blur, and system typography on
+Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
 [GitHub](https://github.com/ericrayanderson/shinyglass)
@@ -16,115 +15,26 @@ light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/fig
 app,
 dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo-dark.png)
 
-*Light and dark presets*
-
-## Installation
+## Quick start
 
 ``` r
 
-# install.packages("shinyglass")  # once on CRAN
+# install.packages("remotes")
 remotes::install_github("ericrayanderson/shinyglass")
-```
-
-## Usage
-
-``` r
 
 library(shiny)
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(),
+  theme = glass_theme(),  # or glass_theme(preset = "dark")
   titlePanel("Liquid Glass"),
-  selectInput("color", "Favorite color", c("Blue", "Purple", "Orange")),
-  sliderInput("n", "Number of bars", 5, 30, 15),
+  sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) {
-  output$plot <- renderPlot({
-    barplot(
-      seq_len(input$n),
-      col = "#007AFF",
-      border = NA,
-      main = paste("You chose", input$color)
-    )
-  })
+  output$plot <- renderPlot(barplot(seq_len(input$n), col = "#007AFF", border = NA))
 }
 
 shinyApp(ui, server)
 ```
-
-Pass
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-to any page function that accepts a bslib theme
-([`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
-[`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
-`page_sidebar()`, and so on). Standard Shiny inputs and layouts are
-styled automatically.
-
-## Options
-
-``` r
-
-glass_theme(
-  preset     = "dark",   # "light" or "dark"
-  primary    = "#007AFF",
-  blur       = 28,
-  saturation = 200,
-  radius     = "1.25rem"
-)
-```
-
-## Screenshots
-
-![Dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
-
-![Data explorer,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/querychat-demo.png)![Data
-explorer,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/querychat-demo-dark.png)
-
-![Sidebar layout,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/apple-glass-reference.png)![Sidebar
-layout,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/apple-glass-reference-dark.png)
-
-![GitHub dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-gh-dashboard.png)![GitHub
-dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-gh-dashboard-dark.png)
-
-![Olympic medals,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-olympic-medals.png)![Olympic
-medals,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-olympic-medals-dark.png)
-
-![Time series dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-tdb-naissances.png)![Time
-series dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-tdb-naissances-dark.png)
-
-![Map dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-ratp-traffic.png)![Map
-dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-ratp-traffic-dark.png)
-
-![Sidebar](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/01-fluid-sidebar.png)![Tabs](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/02-tabsets.png)![DataTables](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/05-datatables.png)![Buttons](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/03-action-button.png)
-
-## Examples
-
-``` r
-
-# Bundled demos (install Suggests as needed)
-shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "apple-glass-reference.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
-```
-
-## License
-
-GPL-3

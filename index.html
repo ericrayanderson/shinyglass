@@ -54,96 +54,32 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><strong>Apple-inspired Liquid Glass themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>.</strong></p>
-<p>One function — <code><a href="reference/glass_theme.html">glass_theme()</a></code> — gives your app translucent surfaces, backdrop blur, soft depth, and system typography. Built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
+<p>Apple-inspired <a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>. Call <code><a href="reference/glass_theme.html">glass_theme()</a></code> to get translucent surfaces, backdrop blur, and system typography on Bootstrap components via <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>.</p>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo.png" width="48%" alt="Demo app, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo-dark.png" width="48%" alt="Demo app, dark"></p>
-<p align="center">
-<em>Light and dark presets</em>
-</p>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("shinyglass")  # once on CRAN</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span><span class="op">)</span>,  <span class="co"># or glass_theme(preset = "dark")</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Liquid Glass"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"color"</span>, <span class="st">"Favorite color"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Blue"</span>, <span class="st">"Purple"</span>, <span class="st">"Orange"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Number of bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>,</span>
-<span>      col <span class="op">=</span> <span class="st">"#007AFF"</span>,</span>
-<span>      border <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>      main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"You chose"</span>, <span class="va">input</span><span class="op">$</span><span class="va">color</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#007AFF"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>Pass <code><a href="reference/glass_theme.html">glass_theme()</a></code> to any page function that accepts a bslib theme (<code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, <code>page_sidebar()</code>, and so on). Standard Shiny inputs and layouts are styled automatically.</p>
-</div>
-<div class="section level2">
-<h2 id="options">Options<a class="anchor" aria-label="anchor" href="#options"></a>
-</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span></span>
-<span>  preset     <span class="op">=</span> <span class="st">"dark"</span>,   <span class="co"># "light" or "dark"</span></span>
-<span>  primary    <span class="op">=</span> <span class="st">"#007AFF"</span>,</span>
-<span>  blur       <span class="op">=</span> <span class="fl">28</span>,</span>
-<span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
-<span>  radius     <span class="op">=</span> <span class="st">"1.25rem"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="screenshots">Screenshots<a class="anchor" aria-label="anchor" href="#screenshots"></a>
-</h2>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Dashboard, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/querychat-demo.png" width="48%" alt="Data explorer, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/querychat-demo-dark.png" width="48%" alt="Data explorer, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/apple-glass-reference.png" width="48%" alt="Sidebar layout, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/apple-glass-reference-dark.png" width="48%" alt="Sidebar layout, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-gh-dashboard.png" width="48%" alt="GitHub dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-gh-dashboard-dark.png" width="48%" alt="GitHub dashboard, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-olympic-medals.png" width="48%" alt="Olympic medals, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-olympic-medals-dark.png" width="48%" alt="Olympic medals, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-tdb-naissances.png" width="48%" alt="Time series dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-tdb-naissances-dark.png" width="48%" alt="Time series dashboard, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-ratp-traffic.png" width="48%" alt="Map dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/dreamrs-ratp-traffic-dark.png" width="48%" alt="Map dashboard, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/01-fluid-sidebar.png" width="24%" alt="Sidebar"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/02-tabsets.png" width="24%" alt="Tabs"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/05-datatables.png" width="24%" alt="DataTables"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/gallery/03-action-button.png" width="24%" alt="Buttons"></p>
-</div>
-<div class="section level2">
-<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
-</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Bundled demos (install Suggests as needed)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"apple-glass-reference.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"inputs-gallery.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
-</h2>
-<p>GPL-3</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
