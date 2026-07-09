@@ -21,8 +21,9 @@
 ^man/figures/bslib-dashboard.*\.png$
 ^man/figures/querychat-demo.*\.png$
 ^man/figures/dreamrs-.*\.png$
-# Examples that need vendor data/scripts not shipped on CRAN
+# Examples that need vendor data/scripts or screenshot-only deps
 ^inst/examples/dreamrs-
 ^inst/examples/superzip-glass\.R$
 ^inst/examples/shinywidgets-gallery-glass\.R$
 ^inst/examples/bs4dash-glass-demo\.R$
+^inst/examples/querychat-demo\.R$
