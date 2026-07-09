@@ -38,11 +38,24 @@ find_app_files <- function(app_dir) {
 primary_ui_file <- function(app_dir) {
   candidates <- c(
     file.path(app_dir, "app.R"),
+    file.path(app_dir, "app.r"),
     file.path(app_dir, "ui.R"),
-    file.path(app_dir, "ui.r")
+    file.path(app_dir, "ui.r"),
+    # nested golem / modular layouts
+    file.path(app_dir, "ui", "ui.R"),
+    file.path(app_dir, "app", "ui.R"),
+    file.path(app_dir, "src", "app", "ui.R")
   )
-  hit <- candidates[file.exists(candidates)]
-  if (length(hit)) hit[[1]] else NA_character_
+  existing <- candidates[file.exists(candidates)]
+  if (!length(existing)) return(NA_character_)
+
+  # Prefer a file that actually constructs a supported page (not a thin
+  # launcher that only sources other files / run_app()).
+  for (f in existing) {
+    code <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    if (grepl(page_pat, code, perl = TRUE)) return(f)
+  }
+  existing[[1]]
 }
 
 find_matching_paren <- function(text, open_pos) {
@@ -173,7 +186,9 @@ prepare_patched_app_dir <- function(app_dir) {
   if (grepl("\\bbs_themer\\s*\\(", code, perl = TRUE)) {
     return(list(ok = FALSE, reason = "bs_themer demo"))
   }
-  if (grepl("\\bbootstrapPage\\s*\\(", code, perl = TRUE)) {
+  # Skip only when bootstrapPage is the outer page constructor (no fluid/navbar/page_*)
+  if (grepl("\\bbootstrapPage\\s*\\(", code, perl = TRUE) &&
+        !grepl(page_pat, code, perl = TRUE)) {
     return(list(ok = FALSE, reason = "bootstrapPage (legacy)"))
   }
   if (!grepl(page_pat, code, perl = TRUE)) {
@@ -189,9 +204,17 @@ prepare_patched_app_dir <- function(app_dir) {
   dir.create(tmp, recursive = TRUE)
   file.copy(app_dir, tmp, recursive = TRUE)
   staged <- file.path(tmp, basename(app_dir))
-  writeLines(patched, file.path(staged, basename(ui_file)))
+  # ui_file may be nested (ui/ui.R); preserve relative path under staged dir
+  rel <- sub(paste0("^", normalizePath(app_dir, winslash = "/"), "/?"), "",
+             normalizePath(ui_file, winslash = "/"))
+  if (!nzchar(rel) || identical(rel, normalizePath(ui_file, winslash = "/"))) {
+    rel <- basename(ui_file)
+  }
+  out_path <- file.path(staged, rel)
+  dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
+  writeLines(patched, out_path)
 
-  list(ok = TRUE, dir = staged, ui_file = basename(ui_file))
+  list(ok = TRUE, dir = staged, ui_file = rel)
 }
 
 wait_for_url <- function(url, timeout = 60) {
