@@ -17,9 +17,11 @@
 #' @return A [bslib::bs_theme()] object suitable for Shiny page functions.
 #'
 #' @examples
+#' theme <- glass_theme()
+#' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
+#'
 #' \dontrun{
 #' library(shiny)
-#' library(shinyglass)
 #'
 #' ui <- fluidPage(
 #'   theme = glass_theme(),
@@ -28,11 +30,7 @@
 #'   plotOutput("plot")
 #' )
 #'
-#' # Dark preset with a custom accent
-#' ui <- fluidPage(
-#'   theme = glass_theme(preset = "dark", primary = "#BF5AF2"),
-#'   titlePanel("Dark glass")
-#' )
+#' shinyApp(ui, function(...) {})
 #' }
 #'
 #' @export

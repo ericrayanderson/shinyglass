@@ -38,9 +38,11 @@ typography. Pass the result to \verb{theme =} on \code{fluidPage()},
 accepts a bslib theme.
 }
 \examples{
+theme <- glass_theme()
+dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
+
 \dontrun{
 library(shiny)
-library(shinyglass)
 
 ui <- fluidPage(
   theme = glass_theme(),
@@ -49,11 +51,7 @@ ui <- fluidPage(
   plotOutput("plot")
 )
 
-# Dark preset with a custom accent
-ui <- fluidPage(
-  theme = glass_theme(preset = "dark", primary = "#BF5AF2"),
-  titlePanel("Dark glass")
-)
+shinyApp(ui, function(...) {})
 }
 
 }
