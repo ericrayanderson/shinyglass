@@ -741,6 +741,81 @@ form.well,
   color: inherit;
 }
 
+// ion.rangeSlider (shiny::sliderInput): value bubble sits on primary fill
+// and was inheriting body text color (near-black) — unreadable on blue.
+.irs {
+  .irs-bar,
+  .irs-bar-edge {
+    background: $primary;
+    border-color: $primary;
+  }
+
+  .irs-single,
+  .irs-from,
+  .irs-to {
+    background: $primary !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 0.55rem;
+    font-weight: 600;
+    text-shadow: none;
+  }
+
+  .irs-handle {
+    border: 2px solid $primary;
+    background: #ffffff;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    cursor: pointer;
+
+    > i:first-child {
+      // legacy ion handle grip lines
+      background: color-mix(in srgb, $primary 55%, transparent);
+    }
+  }
+
+  .irs-line {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .irs-grid-text,
+  .irs-min,
+  .irs-max {
+    color: inherit;
+    opacity: 0.65;
+  }
+}
+
+// Bootstrap 5 native range (bslib / some custom inputs)
+.form-range {
+  &:focus {
+    &::-webkit-slider-thumb {
+      box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
+    }
+    &::-moz-range-thumb {
+      box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
+    }
+  }
+
+  &::-webkit-slider-thumb {
+    background-color: $primary;
+    border: 2px solid #ffffff;
+  }
+
+  &::-moz-range-thumb {
+    background-color: $primary;
+    border: 2px solid #ffffff;
+  }
+
+  &::-webkit-slider-runnable-track {
+    background: color-mix(in srgb, $primary 28%, var(--glass-bg));
+  }
+
+  &::-moz-range-track {
+    background: color-mix(in srgb, $primary 28%, var(--glass-bg));
+  }
+}
+
 .modal-content {
   @include glass-surface(1.25rem);
   // Keep dialogs readable over dense app chrome (teal delayed-data, etc.)
