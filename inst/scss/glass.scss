@@ -1,15 +1,15 @@
 
-// Readable ink on a solid (or mostly solid) fill. Prefers Bootstrap's
-// color-contrast($background) when available; otherwise a lightness
-// threshold so custom primaries (e.g. pale yellow) stay legible.
+// Readable ink on a solid UI fill (value chips, tinted buttons, …).
+// Intentionally NOT Bootstrap color-contrast(): that uses a 4.5:1 WCAG
+// gate and returns black for brand blues like #007AFF (white fails by a
+// hair). For short chip/button labels we use relative luminance instead.
 @function glass-on($fill, $light: #ffffff, $dark: #1d1d1f) {
   @if type-of($fill) != color {
     @return $light;
   }
-  @if function-exists(color-contrast) {
-    @return color-contrast($fill);
-  }
-  @if lightness($fill) >= 62% {
+  // Approx sRGB relative luminance (0–255 channel weights).
+  $y: (0.2126 * red($fill) + 0.7152 * green($fill) + 0.0722 * blue($fill)) / 255;
+  @if $y >= 0.55 {
     @return $dark;
   }
   @return $light;
