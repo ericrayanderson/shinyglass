@@ -1,4 +1,29 @@
 
+// Readable ink on a solid (or mostly solid) fill. Prefers Bootstrap's
+// color-contrast($background) when available; otherwise a lightness
+// threshold so custom primaries (e.g. pale yellow) stay legible.
+@function glass-on($fill, $light: #ffffff, $dark: #1d1d1f) {
+  @if type-of($fill) != color {
+    @return $light;
+  }
+  @if function-exists(color-contrast) {
+    @return color-contrast($fill);
+  }
+  @if lightness($fill) >= 62% {
+    @return $dark;
+  }
+  @return $light;
+}
+
+// Solid fill + contrast-safe label (sliders, badges, chips, tooltips, …)
+@mixin glass-solid-fill($fill) {
+  background-color: $fill !important;
+  background: $fill !important;
+  color: glass-on($fill) !important;
+  text-shadow: none;
+  border-color: color-mix(in srgb, #{$fill} 70%, transparent);
+}
+
 :root {
   --glass-bg: #{$glass-bg};
   --glass-bg-hover: #{$glass-bg-hover};
@@ -20,6 +45,12 @@
   --glass-specular-x: 28%;
   --glass-specular-y: 10%;
   --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  // Contrast-safe ink for solid theme fills (widgets that inherit body color)
+  --glass-on-primary: #{glass-on($primary)};
+  --glass-on-success: #{glass-on($success)};
+  --glass-on-danger: #{glass-on($danger)};
+  --glass-on-warning: #{glass-on($warning)};
+  --glass-on-info: #{glass-on($info)};
 }
 
 [data-glass-preset="dark"] {
@@ -372,7 +403,8 @@ body.glass-nav-expanded {
 
 @mixin glass-button-tinted($color) {
   @include glass-button-type();
-  color: #fff !important;
+  $ink: glass-on($color);
+  color: $ink !important;
   background: color-mix(in srgb, #{$color} 76%, transparent) !important;
   border: 1px solid color-mix(in srgb, #{$color} 34%, rgba(255, 255, 255, 0.42)) !important;
   backdrop-filter: blur(12px) saturate(180%);
@@ -383,7 +415,7 @@ body.glass-nav-expanded {
 
   &:hover,
   &:focus {
-    color: #fff !important;
+    color: $ink !important;
     background: color-mix(in srgb, #{$color} 86%, transparent) !important;
     border-color: color-mix(in srgb, #{$color} 42%, rgba(255, 255, 255, 0.48)) !important;
     box-shadow:
@@ -741,8 +773,35 @@ form.well,
   color: inherit;
 }
 
-// ion.rangeSlider (shiny::sliderInput): value bubble sits on primary fill
-// and was inheriting body text color (near-black) — unreadable on blue.
+// ---------------------------------------------------------------------------
+// Solid theme fills: never inherit body ink onto accent backgrounds
+// (slider value chips, badges, progress, noUi tooltips, …)
+// ---------------------------------------------------------------------------
+
+// Only solid fills (not pastel alert/list-group surfaces)
+@each $name, $color in (
+  "primary": $primary,
+  "success": $success,
+  "danger": $danger,
+  "warning": $warning,
+  "info": $info
+) {
+  .bg-#{$name},
+  .badge.bg-#{$name},
+  .badge-#{$name},
+  .text-bg-#{$name},
+  .progress-bar.bg-#{$name} {
+    color: glass-on($color) !important;
+  }
+}
+
+// Default progress bar uses primary
+.progress-bar:not([class*="bg-"]) {
+  background-color: $primary;
+  color: glass-on($primary) !important;
+}
+
+// ion.rangeSlider (shiny::sliderInput) value bubbles + track
 .irs {
   .irs-bar,
   .irs-bar-edge {
@@ -753,22 +812,19 @@ form.well,
   .irs-single,
   .irs-from,
   .irs-to {
-    background: $primary !important;
-    color: #ffffff !important;
-    border: none;
+    @include glass-solid-fill($primary);
+    border: none !important;
     border-radius: 0.55rem;
     font-weight: 600;
-    text-shadow: none;
   }
 
   .irs-handle {
     border: 2px solid $primary;
-    background: #ffffff;
+    background: var(--glass-menu-bg, #ffffff);
     box-shadow: 0 2px 8px var(--glass-shadow);
     cursor: pointer;
 
     > i:first-child {
-      // legacy ion handle grip lines
       background: color-mix(in srgb, $primary 55%, transparent);
     }
   }
@@ -786,7 +842,27 @@ form.well,
   }
 }
 
-// Bootstrap 5 native range (bslib / some custom inputs)
+// noUiSlider / shinyWidgets tooltips on solid fills
+.noUi-connect {
+  background: $primary;
+}
+
+.noUi-tooltip,
+.noUi-horizontal .noUi-tooltip,
+.noUi-vertical .noUi-tooltip {
+  @include glass-solid-fill($primary);
+  border: none !important;
+  border-radius: 0.55rem;
+  font-weight: 600;
+}
+
+// bootstrap-slider / generic tooltip chips over range controls
+.slider .tooltip-inner,
+.sliderInput .tooltip-inner {
+  @include glass-solid-fill($primary);
+}
+
+// Bootstrap 5 native range
 .form-range {
   &:focus {
     &::-webkit-slider-thumb {
@@ -799,12 +875,12 @@ form.well,
 
   &::-webkit-slider-thumb {
     background-color: $primary;
-    border: 2px solid #ffffff;
+    border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 
   &::-moz-range-thumb {
     background-color: $primary;
-    border: 2px solid #ffffff;
+    border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 
   &::-webkit-slider-runnable-track {
