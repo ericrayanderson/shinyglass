@@ -52,5 +52,7 @@ authors:
   Eric Anderson:
     href: https://github.com/ericrayanderson
 
+# Keep the site at the package root even while DESCRIPTION is a .9000
+# development version (otherwise pkgdown only publishes under /dev/).
 development:
-  mode: auto
+  mode: release
