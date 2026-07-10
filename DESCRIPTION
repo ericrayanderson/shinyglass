@@ -1,7 +1,7 @@
 Package: shinyglass
 Type: Package
 Title: Liquid Glass Design Themes for Shiny Applications
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: person("Eric", "Anderson", role = c("aut", "cre"),
     email = "eric.ray.anderson@gmail.com")
 Description: Drop-in Liquid Glass themes for 'shiny'. Call
