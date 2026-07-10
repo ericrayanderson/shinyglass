@@ -2,10 +2,11 @@
 
 [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
-themes for [Shiny](https://shiny.posit.co/). Call
+themes for [Shiny](https://shiny.posit.co/).
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
-to get translucent surfaces, backdrop blur, and system typography on
-Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
+returns a [bslib](https://rstudio.github.io/bslib/) theme with
+translucent surfaces, backdrop blur, and system typography—pass it to
+any page that accepts `theme =`.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
 [GitHub](https://github.com/ericrayanderson/shinyglass)
