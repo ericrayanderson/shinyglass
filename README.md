@@ -9,8 +9,8 @@
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass)
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo.png" width="48%" alt="Demo app, light">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo-dark.png" width="48%" alt="Demo app, dark">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark">
 </p>
 
 ## Quick start
