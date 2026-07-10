@@ -1,7 +1,7 @@
 Package: shinyglass
 Type: Package
 Title: Liquid Glass Design Themes for Shiny Applications
-Version: 0.1.0.9000
+Version: 0.1.0
 Authors@R: person("Eric", "Anderson", role = c("aut", "cre"),
     email = "eric.ray.anderson@gmail.com")
 Description: Drop-in Liquid Glass themes for 'shiny'. Call
@@ -10,7 +10,7 @@ Description: Drop-in Liquid Glass themes for 'shiny'. Call
     translucent surfaces, backdrop blur, and system typography on
     Bootstrap components. Light and dark presets are included, with
     options for accent color, blur, and corner radius.
-License: GPL-3 + file LICENSE
+License: GPL-3
 URL: https://ericrayanderson.github.io/shinyglass/,
     https://github.com/ericrayanderson/shinyglass
 BugReports: https://github.com/ericrayanderson/shinyglass/issues
