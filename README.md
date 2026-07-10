@@ -23,7 +23,7 @@ library(shiny)
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(),  # a bslib theme; try glass_theme(preset = "dark")
+  theme = glass_theme(),  # or glass_theme(preset = "dark")
   titlePanel("Liquid Glass"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
