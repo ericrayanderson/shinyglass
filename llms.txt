@@ -10,10 +10,10 @@ Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
 [GitHub](https://github.com/ericrayanderson/shinyglass)
 
-![Demo app,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo.png)![Demo
-app,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/shinyglass-demo-dark.png)
+![Glass dashboard,
+light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Glass
+dashboard,
+dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
 
 ## Quick start
 
