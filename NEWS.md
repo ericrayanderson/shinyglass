@@ -1,8 +1,8 @@
 # shinyglass (development version)
 
-* Fix contrast on range value chips (`sliderInput` “20” bubbles, noUi
-  tooltips): use luminance-aware ink via `glass-on()`, scoped so badges and
-  other Bootstrap surfaces are unchanged.
+* Fix contrast on range value chips (`sliderInput` bubbles, noUi tooltips):
+  use luminance-aware ink via `glass-on()`, scoped so badges and other
+  Bootstrap surfaces are unchanged.
 * README hero uses denser bslib dashboard light/dark screenshots.
 
 # shinyglass 0.1.0

@@ -778,7 +778,7 @@ form.well,
 // ---------------------------------------------------------------------------
 // Range value chips only — scoped so we don't restyle badges, progress,
 // alerts, or other Bootstrap solid/pastel surfaces.
-// Problem: chips paint primary fill but inherit body ink (black "20" on blue).
+// Problem: chips paint primary fill but inherit body ink (dark text on blue).
 // ---------------------------------------------------------------------------
 
 // shiny::sliderInput (ion.rangeSlider)
