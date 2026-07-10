@@ -1,12 +1,5 @@
 # Changelog
 
-## shinyglass (development version)
-
-- Fix contrast on range value chips (`sliderInput` bubbles, noUi
-  tooltips): use luminance-aware ink via `glass-on()`, scoped so badges
-  and other Bootstrap surfaces are unchanged.
-- README hero uses denser bslib dashboard light/dark screenshots.
-
 ## shinyglass 0.1.0
 
 - Initial release.
@@ -20,7 +13,7 @@
   [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
   [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
   [`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
-  and other bslib-aware page functions. Pass the theme via
+  and other page functions that accept a bslib theme. Pass the theme via
   `theme = glass_theme()`, or for
   [teal](https://insightsengineering.github.io/teal/) apps via
   `options(teal.bs_theme = glass_theme())`.

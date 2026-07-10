@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,21 +34,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li>Fix contrast on range value chips (<code>sliderInput</code> bubbles, noUi tooltips): use luminance-aware ink via <code>glass-on()</code>, scoped so badges and other Bootstrap surfaces are unchanged.</li>
-<li>README hero uses denser bslib dashboard light/dark screenshots.</li>
-</ul></div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="shinyglass-010">shinyglass 0.1.0<a class="anchor" aria-label="anchor" href="#shinyglass-010"></a></h2>
 <ul><li>Initial release.</li>
 <li>
 <code><a href="../reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme with Liquid Glass styling for <a href="https://shiny.posit.co/" class="external-link">shiny</a> apps: translucent surfaces, backdrop blur, soft depth, and system typography.</li>
 <li>Light and dark presets, with options for accent color, blur, saturation, and corner radius.</li>
-<li>Works with <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, <code><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">bslib::page_sidebar()</a></code>, and other bslib-aware page functions. Pass the theme via <code>theme = glass_theme()</code>, or for <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps via <code>options(teal.bs_theme = glass_theme())</code>.</li>
+<li>Works with <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, <code><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">bslib::page_sidebar()</a></code>, and other page functions that accept a bslib theme. Pass the theme via <code>theme = glass_theme()</code>, or for <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps via <code>options(teal.bs_theme = glass_theme())</code>.</li>
 <li>Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars, inputs, tables, plots, modals) and holds up on denser UIs such as leaflet maps, DT, shinyWidgets, bs4Dash, and teal filter panels.</li>
 </ul></div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside></div>
+  </main></div>
 
 
     <footer><div class="pkgdown-footer-left">
