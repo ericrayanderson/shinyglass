@@ -15,13 +15,15 @@
   @return $light;
 }
 
-// Solid fill + contrast-safe label (sliders, badges, chips, tooltips, …)
-@mixin glass-solid-fill($fill) {
+// Solid value chip (slider bubbles / range tooltips only — not general .bg-*)
+@mixin glass-value-chip($fill: $primary) {
   background-color: $fill !important;
   background: $fill !important;
   color: glass-on($fill) !important;
   text-shadow: none;
-  border-color: color-mix(in srgb, #{$fill} 70%, transparent);
+  border: none !important;
+  border-radius: 0.55rem;
+  font-weight: 600;
 }
 
 :root {
@@ -774,34 +776,12 @@ form.well,
 }
 
 // ---------------------------------------------------------------------------
-// Solid theme fills: never inherit body ink onto accent backgrounds
-// (slider value chips, badges, progress, noUi tooltips, …)
+// Range value chips only — scoped so we don't restyle badges, progress,
+// alerts, or other Bootstrap solid/pastel surfaces.
+// Problem: chips paint primary fill but inherit body ink (black "20" on blue).
 // ---------------------------------------------------------------------------
 
-// Only solid fills (not pastel alert/list-group surfaces)
-@each $name, $color in (
-  "primary": $primary,
-  "success": $success,
-  "danger": $danger,
-  "warning": $warning,
-  "info": $info
-) {
-  .bg-#{$name},
-  .badge.bg-#{$name},
-  .badge-#{$name},
-  .text-bg-#{$name},
-  .progress-bar.bg-#{$name} {
-    color: glass-on($color) !important;
-  }
-}
-
-// Default progress bar uses primary
-.progress-bar:not([class*="bg-"]) {
-  background-color: $primary;
-  color: glass-on($primary) !important;
-}
-
-// ion.rangeSlider (shiny::sliderInput) value bubbles + track
+// shiny::sliderInput (ion.rangeSlider)
 .irs {
   .irs-bar,
   .irs-bar-edge {
@@ -812,10 +792,7 @@ form.well,
   .irs-single,
   .irs-from,
   .irs-to {
-    @include glass-solid-fill($primary);
-    border: none !important;
-    border-radius: 0.55rem;
-    font-weight: 600;
+    @include glass-value-chip($primary);
   }
 
   .irs-handle {
@@ -842,37 +819,21 @@ form.well,
   }
 }
 
-// noUiSlider / shinyWidgets tooltips on solid fills
-.noUi-connect {
-  background: $primary;
-}
-
+// shinyWidgets / noUiSlider value tooltips (same failure mode as .irs-single)
 .noUi-tooltip,
 .noUi-horizontal .noUi-tooltip,
 .noUi-vertical .noUi-tooltip {
-  @include glass-solid-fill($primary);
-  border: none !important;
-  border-radius: 0.55rem;
-  font-weight: 600;
+  @include glass-value-chip($primary);
 }
 
-// bootstrap-slider / generic tooltip chips over range controls
-.slider .tooltip-inner,
-.sliderInput .tooltip-inner {
-  @include glass-solid-fill($primary);
+// bootstrap-slider tooltips when present
+.slider .tooltip.top .tooltip-inner,
+.slider .tooltip-inner {
+  @include glass-value-chip($primary);
 }
 
-// Bootstrap 5 native range
+// Native range thumbs only (no text labels to fix)
 .form-range {
-  &:focus {
-    &::-webkit-slider-thumb {
-      box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
-    }
-    &::-moz-range-thumb {
-      box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
-    }
-  }
-
   &::-webkit-slider-thumb {
     background-color: $primary;
     border: 2px solid var(--glass-menu-bg, #ffffff);
@@ -881,14 +842,6 @@ form.well,
   &::-moz-range-thumb {
     background-color: $primary;
     border: 2px solid var(--glass-menu-bg, #ffffff);
-  }
-
-  &::-webkit-slider-runnable-track {
-    background: color-mix(in srgb, $primary 28%, var(--glass-bg));
-  }
-
-  &::-moz-range-track {
-    background: color-mix(in srgb, $primary 28%, var(--glass-bg));
   }
 }
 
