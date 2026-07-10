@@ -3,7 +3,7 @@
 [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 themes for [Shiny](https://shiny.posit.co/). Call
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
 to get translucent surfaces, backdrop blur, and system typography on
 Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
 
@@ -38,3 +38,13 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
+# Package index
+
+## Theme
+
+Create a Liquid Glass theme for your Shiny app.
+
+- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
+  : Liquid Glass theme for Shiny
+

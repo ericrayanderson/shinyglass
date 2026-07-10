@@ -1,7 +1,7 @@
 # Liquid Glass Design Themes for Shiny Applications
 
 Drop-in Liquid Glass themes for [shiny](https://shiny.posit.co/). Call
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
 and pass the result to `theme =` on
 [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
 [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html), or any
@@ -28,7 +28,7 @@ For [teal](https://insightsengineering.github.io/teal/) apps, set
 
 ## See also
 
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
 
 ## Author
 
