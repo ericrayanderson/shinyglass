@@ -4,7 +4,7 @@
 [![License: GPL-3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 <!-- badges: end -->
 
-[Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). Call `glass_theme()` to get translucent surfaces, backdrop blur, and system typography on Bootstrap components via [bslib](https://rstudio.github.io/bslib/).
+[Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). `glass_theme()` returns a [bslib](https://rstudio.github.io/bslib/) theme with translucent surfaces, backdrop blur, and system typography—pass it to any page that accepts `theme =`.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass)
 
@@ -23,7 +23,7 @@ library(shiny)
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(),  # or glass_theme(preset = "dark")
+  theme = glass_theme(),  # a bslib theme; try glass_theme(preset = "dark")
   titlePanel("Liquid Glass"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
