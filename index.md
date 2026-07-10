@@ -3,7 +3,7 @@
 [Liquid
 Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
 themes for [Shiny](https://shiny.posit.co/).
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
 returns a [bslib](https://rstudio.github.io/bslib/) theme with
 translucent surfaces, backdrop blur, and system typography. Pass it as
 `theme = glass_theme()` to

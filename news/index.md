@@ -10,7 +10,7 @@
 ## shinyglass 0.1.0
 
 - Initial release.
-- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/dev/reference/glass_theme.md)
+- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
   returns a [bslib](https://rstudio.github.io/bslib/) theme with Liquid
   Glass styling for [shiny](https://shiny.posit.co/) apps: translucent
   surfaces, backdrop blur, soft depth, and system typography.
