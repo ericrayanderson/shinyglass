@@ -62,16 +62,16 @@ object suitable for Shiny page functions.
 theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 
-if (FALSE) { # \dontrun{
-library(shiny)
+if (interactive()) {
+  library(shiny)
 
-ui <- fluidPage(
-  theme = glass_theme(),
-  titlePanel("Liquid Glass"),
-  selectInput("color", "Color", c("Blue", "Purple", "Orange")),
-  plotOutput("plot")
-)
+  ui <- fluidPage(
+    theme = glass_theme(),
+    titlePanel("Liquid Glass"),
+    selectInput("color", "Color", c("Blue", "Purple", "Orange")),
+    plotOutput("plot")
+  )
 
-shinyApp(ui, function(...) {})
-} # }
+  shinyApp(ui, function(...) {})
+}
 ```
