@@ -2,15 +2,16 @@
 
 This is a resubmission. In this version I have:
 
-* Set `License: GPL-3` and removed the `LICENSE` file (it was the MIT-style
-  YEAR/COPYRIGHT template and is not appropriate for unrestricted GPL-3).
+* Formatted software and package names in Title and Description with single
+  quotes ('shiny', 'bslib', 'Bootstrap') and removed quotes around function
+  names (glass_theme(), fluidPage(), navbarPage()).
+* Replaced \dontrun{} with if (interactive()) {} in examples.
 
 ## Test environments
 
 * local macOS Monterey, R 4.6.1
 * GitHub Actions: ubuntu (release, devel), macOS (release), windows (release)
 * R CMD check --as-cran on the source tarball
-* win-builder R-devel (previous submission)
 
 ## R CMD check results
 
@@ -18,7 +19,7 @@ This is a resubmission. In this version I have:
 
 ## Notes
 
-* New submission. First CRAN release of shinyglass.
+* First CRAN release of shinyglass (resubmission).
 
 ## Downstream dependencies
 
