@@ -2,6 +2,8 @@
 
 ## shinyglass 0.1.0
 
+CRAN release: 2026-07-28
+
 - Initial release.
 - [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
   returns a [bslib](https://rstudio.github.io/bslib/) theme with Liquid
