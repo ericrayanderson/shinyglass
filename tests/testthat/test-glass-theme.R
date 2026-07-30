@@ -31,3 +31,25 @@ test_that("glass_theme sets preset data attribute in head", {
   expect_length(preset_deps, 1)
   expect_match(preset_deps[[1]]$head, 'glassPreset="dark"')
 })
+
+test_that("compiled CSS reserves main space for open sidebars", {
+  skip_if_not_installed("bslib")
+  theme <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(theme)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "glass-sidebar-reserve")
+  expect_match(css, "position:absolute\\s*!important")
+  expect_match(css, "width:var\\(--_sidebar-width")
+})

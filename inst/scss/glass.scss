@@ -920,12 +920,20 @@ form.well,
   border-bottom: 1px solid var(--glass-border) !important;
 }
 
-// page_sidebar: main fills; sidebar floats over it
+// page_sidebar / layout_sidebar: glass sidebar floats beside main.
+// bslib ships its own `.bslib-sidebar-layout > .sidebar { position: relative;
+// width: 100% }` rules *after* theme CSS, so layout properties here need
+// !important to stick. When open, main is padded so content is never buried
+// under the floating chrome (matches the teal special-case pattern).
 .bslib-sidebar-layout {
+  --glass-sidebar-reserve: calc(
+    var(--glass-float-margin) + var(--_sidebar-width, 250px) + var(--glass-float-margin)
+  );
+
   border: none !important;
   background: transparent !important;
   border-radius: 0 !important;
-  overflow: visible;
+  overflow: visible !important;
 
   > .main,
   > .main.bslib-page-main {
@@ -938,7 +946,7 @@ form.well,
     background-color: var(--glass-bg) !important;
     border: 1px solid var(--glass-border) !important;
     color: inherit;
-    overflow: auto;
+    overflow: auto !important;
 
     .sidebar-title {
       border-bottom: 1px solid var(--glass-border);
@@ -958,7 +966,7 @@ form.well,
       0 8px 24px var(--glass-shadow),
       inset 0 1px 0 var(--glass-highlight);
     color: inherit;
-    z-index: 30;
+    z-index: 30 !important;
 
     &:hover {
       background: var(--glass-bg-hover) !important;
@@ -966,53 +974,70 @@ form.well,
   }
 
   @include media-breakpoint-up(sm) {
+    // Single-column grid so main can full-bleed; sidebar is taken out of flow.
     grid-template-columns: minmax(0, 1fr) !important;
-    position: relative;
+    position: relative !important;
 
     > .main,
     > .main.bslib-page-main {
       grid-column: 1 / -1 !important;
-      grid-row: 1 / 2;
+      grid-row: 1 / 2 !important;
       border-radius: 0 !important;
-      padding: var(--glass-float-margin);
+      // Default open-state gutter; collapsed rules below override.
+      padding-top: var(--glass-float-margin) !important;
+      padding-bottom: var(--glass-float-margin) !important;
+      padding-right: var(--glass-float-margin) !important;
+      padding-left: var(--glass-sidebar-reserve) !important;
+      transition: padding var(--_transition-easing-x, ease) var(--_transition-duration, 0.3s);
     }
 
     > .sidebar {
-      position: absolute;
-      top: var(--glass-float-margin);
-      bottom: var(--glass-float-margin);
-      left: var(--glass-float-margin);
-      width: var(--_sidebar-width, 280px);
-      max-width: calc(100% - var(--glass-float-margin) * 2);
-      max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem);
+      // Beat bslib's later `position: relative; width: 100%` rules.
+      position: absolute !important;
+      top: var(--glass-float-margin) !important;
+      bottom: var(--glass-float-margin) !important;
+      left: var(--glass-float-margin) !important;
+      right: auto !important;
+      width: var(--_sidebar-width, 250px) !important;
+      max-width: calc(100% - var(--glass-float-margin) * 2) !important;
+      max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem) !important;
+      height: auto !important;
       margin: 0 !important;
-      z-index: 20;
+      z-index: 20 !important;
       border-radius: var(--glass-radius) !important;
+      grid-column: unset !important;
+      grid-row: unset !important;
       transition:
         transform 0.3s cubic-bezier(0.8, 0.78, 0.22, 1.07),
         opacity 0.25s ease;
     }
 
     &.sidebar-right > .sidebar {
-      left: auto;
-      right: var(--glass-float-margin);
+      left: auto !important;
+      right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-right:not(.sidebar-collapsed) > .main,
+    &.sidebar-right:not(.sidebar-collapsed) > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: var(--glass-sidebar-reserve) !important;
     }
 
     &:not(.sidebar-collapsed) > .collapse-toggle {
       left: calc(
-        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+        var(--glass-float-margin) + var(--_sidebar-width, 250px) -
           var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
-      );
+      ) !important;
       right: auto !important;
-      top: calc(var(--glass-float-margin) + var(--_icon-size, 1rem) * 0.5);
+      top: calc(var(--glass-float-margin) + var(--_icon-size, 1rem) * 0.5) !important;
     }
 
     &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle {
       left: auto !important;
       right: calc(
-        var(--glass-float-margin) + var(--_sidebar-width, 280px) -
+        var(--glass-float-margin) + var(--_sidebar-width, 250px) -
           var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
-      );
+      ) !important;
     }
 
     &.sidebar-collapsed > .sidebar {
@@ -1028,7 +1053,7 @@ form.well,
     &.sidebar-collapsed > .collapse-toggle {
       left: var(--glass-float-margin) !important;
       right: auto !important;
-      top: var(--glass-float-margin);
+      top: var(--glass-float-margin) !important;
       color: inherit;
     }
 
@@ -1039,14 +1064,14 @@ form.well,
 
     &.sidebar-collapsed > .main,
     &.sidebar-collapsed > .main.bslib-page-main {
-      padding-left: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
-      padding-right: var(--glass-float-margin);
+      padding-left: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem)) !important;
+      padding-right: var(--glass-float-margin) !important;
     }
 
     &.sidebar-right.sidebar-collapsed > .main,
     &.sidebar-right.sidebar-collapsed > .main.bslib-page-main {
-      padding-left: var(--glass-float-margin);
-      padding-right: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem));
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem)) !important;
     }
   }
 }

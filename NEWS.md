@@ -1,3 +1,10 @@
+# shinyglass (development version)
+
+* Fix: `bslib::sidebar()` / `page_sidebar()` layout no longer collapses to a
+  full-width stack. Glass floating-sidebar rules now win over bslib's later
+  `position`/`width` cascade, and open sidebars reserve space in main so value
+  boxes and cards stay fully visible beside the chrome (not under it).
+
 # shinyglass 0.1.0
 
 * Initial release.
