@@ -1,3 +1,10 @@
+# shinyglass (development version)
+
+* Fix: `bslib::sidebar()` / `page_sidebar()` layout no longer collapses to a
+  full-width stack. Glass floating-sidebar rules now win over bslib's later
+  `position`/`width` cascade, and open sidebars reserve space in main so value
+  boxes and cards stay fully visible beside the chrome (not under it).
+
 # shinyglass 0.1.0
 
 * Initial release.
@@ -13,7 +20,3 @@
 * Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars, inputs,
   tables, plots, modals) and holds up on denser UIs such as leaflet maps, DT,
   shinyWidgets, bs4Dash, and teal filter panels.
-* Fix: `bslib::sidebar()` / `page_sidebar()` layout no longer collapses to a
-  full-width stack. Glass floating-sidebar rules now win over bslib's later
-  `position`/`width` cascade, and open sidebars reserve space in main so value
-  boxes and cards stay fully visible beside the chrome (not under it).
