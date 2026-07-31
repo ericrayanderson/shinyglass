@@ -7,6 +7,9 @@
 * Fix: nested `layout_sidebar()` no longer double-floats. Inner sidebars keep
   glass styling but use bslib's in-flow grid so content is not pushed into a
   large empty gutter beside a second absolute panel.
+* Improve: AdminLTE chrome (classic `shinydashboard` and `bs4Dash`) gets stronger
+  glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and
+  clearer menu active states — without breaking AdminLTE layout.
 
 # shinyglass 0.1.0
 

@@ -1401,7 +1401,10 @@ body .box {
   > .box-header,
   &.box-primary > .box-header,
   &.box-solid.box-primary > .box-header,
-  &.box-solid.box-success > .box-header {
+  &.box-solid.box-success > .box-header,
+  &.box-solid.box-info > .box-header,
+  &.box-solid.box-warning > .box-header,
+  &.box-solid.box-danger > .box-header {
     background: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
     background-color: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
     border-bottom: 1px solid var(--glass-border) !important;
@@ -1410,7 +1413,15 @@ body .box {
   }
 
   &.box-primary,
-  &.box-solid.box-primary {
+  &.box-info,
+  &.box-success,
+  &.box-warning,
+  &.box-danger,
+  &.box-solid.box-primary,
+  &.box-solid.box-info,
+  &.box-solid.box-success,
+  &.box-solid.box-warning,
+  &.box-solid.box-danger {
     border-top-color: var(--glass-border) !important;
     border-color: var(--glass-border) !important;
   }
@@ -1422,13 +1433,29 @@ body .box {
   }
 }
 
+// valueBox / infoBox — glass surface + soft status tint (not solid AdminLTE fills)
 body .small-box,
 body .info-box,
 body .small-box.bg-aqua,
+body .small-box.bg-blue,
 body .small-box.bg-green,
 body .small-box.bg-yellow,
 body .small-box.bg-red,
 body .small-box.bg-navy,
+body .small-box.bg-teal,
+body .small-box.bg-purple,
+body .small-box.bg-maroon,
+body .small-box.bg-orange,
+body .info-box.bg-aqua,
+body .info-box.bg-blue,
+body .info-box.bg-green,
+body .info-box.bg-yellow,
+body .info-box.bg-red,
+body .info-box.bg-navy,
+body .info-box.bg-teal,
+body .info-box.bg-purple,
+body .info-box.bg-maroon,
+body .info-box.bg-orange,
 body .bg-navy,
 body .bg-teal,
 body .bg-green,
@@ -1439,33 +1466,239 @@ body .bg-aqua {
   border: 1px solid var(--glass-border) !important;
   color: inherit !important;
   overflow: hidden;
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
 
   .inner,
   .small-box-footer,
   .info-box-content,
+  .info-box-number,
+  .info-box-text,
   .info-box-icon {
     background: transparent !important;
     color: inherit !important;
   }
 
+  // Status accent: subtle wash + icon tint instead of solid AdminLTE swatches
+  &.bg-aqua,
+  &.bg-blue {
+    background: color-mix(in srgb, var(--bs-info, #5ac8fa) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-info, #5ac8fa) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-green {
+    background: color-mix(in srgb, var(--bs-success, #34c759) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-success, #34c759) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-yellow,
+  &.bg-orange {
+    background: color-mix(in srgb, var(--bs-warning, #ff9500) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-warning, #ff9500) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-red,
+  &.bg-maroon {
+    background: color-mix(in srgb, var(--bs-danger, #ff3b30) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-danger, #ff3b30) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-purple,
+  &.bg-navy {
+    background: color-mix(in srgb, var(--bs-primary, #007aff) 16%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-primary, #007aff) 16%, var(--glass-bg)) !important;
+  }
+
   .icon,
-  .icon-large {
+  .icon-large,
+  .info-box-icon > i,
+  .info-box-icon > span {
     color: inherit !important;
     opacity: 0.35;
   }
 }
 
-.content-wrapper,
-.right-side {
+// ---------------------------------------------------------------------------
+// AdminLTE2 (shinydashboard) + AdminLTE3 (bs4Dash) chrome
+// Overlay-friendly: glass surfaces without rewriting AdminLTE layout.
+// High-specificity body/skin selectors beat AdminLTE skin-*.css.
+// ---------------------------------------------------------------------------
+
+// Page shell: let glass orbs / gradient show through
+body.skin-blue,
+body.skin-blue-light,
+body.skin-black,
+body.skin-black-light,
+body.skin-green,
+body.skin-green-light,
+body.skin-purple,
+body.skin-red,
+body.skin-yellow,
+body.hold-transition,
+body.layout-fixed,
+body.sidebar-mini,
+body.sidebar-collapse {
   background: transparent !important;
+  background-color: transparent !important;
 }
 
-.skin-blue .main-header .navbar,
-.skin-blue-light .main-header .navbar,
-.skin-green .main-header .navbar,
-.skin-black .main-header .navbar {
+body .wrapper,
+body .content-wrapper,
+body .right-side,
+body .main-footer {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+// Header logo + navbar
+body .main-header .logo,
+body .main-header .navbar,
+body.skin-blue .main-header .logo,
+body.skin-blue .main-header .navbar,
+body.skin-blue-light .main-header .logo,
+body.skin-blue-light .main-header .navbar,
+body.skin-black .main-header .logo,
+body.skin-black .main-header .navbar,
+body.skin-black-light .main-header .logo,
+body.skin-black-light .main-header .navbar,
+body.skin-green .main-header .logo,
+body.skin-green .main-header .navbar,
+body.skin-purple .main-header .logo,
+body.skin-purple .main-header .navbar,
+body.skin-red .main-header .logo,
+body.skin-red .main-header .navbar,
+body.skin-yellow .main-header .logo,
+body.skin-yellow .main-header .navbar {
+  @include glass-surface(0);
   background: var(--glass-bg) !important;
   background-color: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight) !important;
+}
+
+body .main-header {
+  max-height: none;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: 0 8px 28px var(--glass-shadow) !important;
+}
+
+body .main-header .logo,
+body .main-header .logo:hover {
+  color: inherit !important;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  border-right: 1px solid var(--glass-border) !important;
+}
+
+body .main-header .navbar .nav > li > a,
+body .main-header .navbar .sidebar-toggle {
+  color: inherit !important;
+  background: transparent !important;
+
+  &:hover,
+  &:focus {
+    background: var(--glass-bg-hover) !important;
+    color: inherit !important;
+  }
+}
+
+// Left sidebar (fixed AdminLTE column — translucent glass, not solid skin)
+body .main-sidebar,
+body .left-side,
+body.skin-blue .main-sidebar,
+body.skin-blue-light .main-sidebar,
+body.skin-black .main-sidebar,
+body.skin-black-light .main-sidebar,
+body.skin-green .main-sidebar,
+body.skin-purple .main-sidebar,
+body.skin-red .main-sidebar,
+body.skin-yellow .main-sidebar,
+body .main-sidebar .sidebar {
+  background: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  background-color: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  box-shadow:
+    8px 0 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
+  color: inherit !important;
+}
+
+body .main-sidebar .user-panel,
+body .main-sidebar .user-panel > .info,
+body .main-sidebar .user-panel > .info > p,
+body .main-sidebar .user-panel > .info > a {
+  color: inherit !important;
+}
+
+// Menu links
+body .sidebar-menu > li > a,
+body .sidebar-menu > li > .treeview-menu > li > a,
+body.skin-blue .sidebar-menu > li > a,
+body.skin-black .sidebar-menu > li > a,
+body.skin-blue .sidebar a,
+body.skin-black .sidebar a {
+  color: inherit !important;
+  border-left-color: transparent !important;
+  opacity: 0.82;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+body .sidebar-menu > li:hover > a,
+body .sidebar-menu > li.active > a,
+body .sidebar-menu > li.menu-open > a,
+body.skin-blue .sidebar-menu > li:hover > a,
+body.skin-blue .sidebar-menu > li.active > a,
+body.skin-black .sidebar-menu > li:hover > a,
+body.skin-black .sidebar-menu > li.active > a {
+  background: var(--glass-bg-hover) !important;
+  background-color: var(--glass-bg-hover) !important;
+  color: inherit !important;
+  border-left-color: var(--bs-primary, #007aff) !important;
+  opacity: 1;
+}
+
+body .sidebar-menu > li > .treeview-menu {
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent) !important;
+  margin: 0 !important;
+}
+
+// Form controls inside AdminLTE sidebar
+body .main-sidebar .form-control,
+body .main-sidebar .selectize-input,
+body .main-sidebar .irs--shiny .irs-line {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit !important;
+}
+
+// Footer
+body .main-footer {
+  border-top: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+}
+
+// bs4Dash / AdminLTE3 extras
+body .navbar-white,
+body .navbar-light,
+body .navbar-dark,
+body .brand-link,
+body .main-header .navbar-nav .nav-link {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+body .brand-link {
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+body .control-sidebar,
+body .control-sidebar-dark,
+body .control-sidebar-light {
+  background: color-mix(in srgb, var(--glass-bg) 94%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  border-left: 1px solid var(--glass-border) !important;
+  color: inherit !important;
 }
 
 body .reactable,
