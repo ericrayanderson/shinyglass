@@ -55,4 +55,7 @@ test_that("compiled CSS reserves main space for open sidebars", {
   # Nested layouts opt out of absolute float
   expect_match(css, "\\.bslib-sidebar-layout \\.bslib-sidebar-layout")
   expect_match(css, "position:relative\\s*!important")
+  # AdminLTE / shinydashboard overlay chrome
+  expect_match(css, "main-sidebar")
+  expect_match(css, "small-box")
 })
