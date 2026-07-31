@@ -9,6 +9,9 @@
   `position`/`width` cascade, and open sidebars reserve space in main so
   value boxes and cards stay fully visible beside the chrome (not under
   it).
+- Fix: nested `layout_sidebar()` no longer double-floats. Inner sidebars
+  keep glass styling but use bslib’s in-flow grid so content is not
+  pushed into a large empty gutter beside a second absolute panel.
 
 ## shinyglass 0.1.0
 
