@@ -1076,7 +1076,131 @@ form.well,
   }
 }
 
-// clip framed outputs so content can't overflow into sibling columns
+// Nested layout_sidebar (inside another sidebar layout / page main): keep
+// glass surface styling but use bslib's in-flow 2-column grid. Absolute float
+// + main reserve on nested layouts double-pads and leaves a large empty gutter.
+.bslib-sidebar-layout .bslib-sidebar-layout {
+  @include media-breakpoint-up(sm) {
+    // Restore two tracks: sidebar column + flexible main (bslib-like).
+    grid-template-columns:
+      Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px))
+      minmax(0, 1fr) !important;
+    position: relative !important;
+
+    > .sidebar {
+      position: relative !important;
+      top: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      right: auto !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      height: auto !important;
+      margin: 0.35rem 0 0.35rem 0.35rem !important;
+      z-index: 1 !important;
+      grid-column: 1 / 2 !important;
+      grid-row: 1 / 2 !important;
+      transform: none !important;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    > .main,
+    > .main.bslib-page-main {
+      grid-column: 2 / 3 !important;
+      grid-row: 1 / 2 !important;
+      padding: 0.35rem 0.5rem !important;
+    }
+
+    &.sidebar-right {
+      grid-template-columns:
+        minmax(0, 1fr)
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) !important;
+
+      > .sidebar {
+        grid-column: 2 / 3 !important;
+        margin: 0.35rem 0.35rem 0.35rem 0 !important;
+      }
+
+      > .main,
+      > .main.bslib-page-main {
+        grid-column: 1 / 2 !important;
+      }
+    }
+
+    // Collapse toggles sit on the grid edge rather than over absolute chrome.
+    > .collapse-toggle,
+    &:not(.sidebar-collapsed) > .collapse-toggle,
+    &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle,
+    &.sidebar-collapsed > .collapse-toggle,
+    &.sidebar-right.sidebar-collapsed > .collapse-toggle {
+      left: auto !important;
+      right: auto !important;
+      top: 0.5rem !important;
+      position: absolute !important;
+    }
+
+    &:not(.sidebar-right) > .collapse-toggle {
+      // Near the sidebar / main seam
+      left: calc(
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) -
+          var(--_icon-button-size, 2rem) * 0.5
+      ) !important;
+    }
+
+    &.sidebar-right > .collapse-toggle {
+      right: calc(
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) -
+          var(--_icon-button-size, 2rem) * 0.5
+      ) !important;
+    }
+
+    &.sidebar-collapsed {
+      grid-template-columns: 0 minmax(0, 1fr) !important;
+
+      > .sidebar {
+        opacity: 0;
+        pointer-events: none;
+        transform: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-width: 0 !important;
+        overflow: hidden !important;
+      }
+
+      > .main,
+      > .main.bslib-page-main {
+        padding-left: calc(0.35rem + var(--_padding-icon, 3rem)) !important;
+        padding-right: 0.5rem !important;
+      }
+
+      > .collapse-toggle {
+        left: 0.35rem !important;
+        right: auto !important;
+      }
+    }
+
+    &.sidebar-right.sidebar-collapsed {
+      grid-template-columns: minmax(0, 1fr) 0 !important;
+
+      > .main,
+      > .main.bslib-page-main {
+        padding-left: 0.5rem !important;
+        padding-right: calc(0.35rem + var(--_padding-icon, 3rem)) !important;
+      }
+
+      > .collapse-toggle {
+        left: auto !important;
+        right: 0.35rem !important;
+      }
+    }
+  }
+}
+
 .shiny-plot-output,
 .shiny-image-output {
   @include glass-surface(calc(var(--glass-radius) * 0.85));

@@ -52,4 +52,7 @@ test_that("compiled CSS reserves main space for open sidebars", {
   expect_match(css, "glass-sidebar-reserve")
   expect_match(css, "position:absolute\\s*!important")
   expect_match(css, "width:var\\(--_sidebar-width")
+  # Nested layouts opt out of absolute float
+  expect_match(css, "\\.bslib-sidebar-layout \\.bslib-sidebar-layout")
+  expect_match(css, "position:relative\\s*!important")
 })
