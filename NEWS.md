@@ -10,6 +10,8 @@
 * Improve: AdminLTE chrome (classic `shinydashboard` and `bs4Dash`) gets stronger
   glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and
   clearer menu active states — without breaking AdminLTE layout.
+* Experimental: Shiny for Python spike under `python/` (not on CRAN). Reuses
+  `inst/scss` + `inst/js` via `glass_theme()` for `shiny.ui` page themes.
 
 # shinyglass 0.1.0
 
