@@ -46,9 +46,9 @@ shinyApp(ui, server)
 ## Shiny for Python (experimental)
 
 Package under
-[`python/`](https://ericrayanderson.github.io/shinyglass/python/) (not
-on CRAN). Shares `inst/scss` + `inst/js`; wheels vendor precompiled CSS
-so default themes need **no libsass** at runtime.
+[`python/`](https://github.com/ericrayanderson/shinyglass/tree/main/python)
+(not on CRAN). Shares `inst/scss` + `inst/js`; wheels vendor precompiled
+CSS so default themes need **no libsass** at runtime.
 
 ``` bash
 cd python
@@ -70,7 +70,7 @@ app = App(app_ui, None)
 ```
 
 See
-[`python/README.md`](https://ericrayanderson.github.io/shinyglass/python/README.md)
+[`python/README.md`](https://github.com/ericrayanderson/shinyglass/blob/main/python/README.md)
 for wheel builds and CI isolation tests.
 
 # Package index
