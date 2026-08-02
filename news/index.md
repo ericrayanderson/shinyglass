@@ -1,5 +1,7 @@
 # Changelog
 
+## shinyglass (development version)
+
 ## shinyglass 0.1.1
 
 - Fix:
