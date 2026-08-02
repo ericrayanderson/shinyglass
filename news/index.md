@@ -16,6 +16,10 @@
   stronger glass overlay — translucent header/sidebar, soft-tinted
   value/info boxes, and clearer menu active states — without breaking
   AdminLTE layout.
+- Experimental: Shiny for Python spike under `python/` (not on CRAN).
+  Reuses `inst/scss` + `inst/js` via
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+  for `shiny.ui` page themes.
 
 ## shinyglass 0.1.0
 

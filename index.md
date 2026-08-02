@@ -42,3 +42,32 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
+## Shiny for Python (experimental)
+
+A spike under
+[`python/`](https://ericrayanderson.github.io/shinyglass/python/) reuses
+the same `inst/scss` + `inst/js` assets (Option 2 layout; not shipped on
+CRAN).
+
+``` bash
+cd python
+pip install -e ".[dev]"
+shiny run examples/app_sidebar.py
+```
+
+``` python
+from shiny import App, ui
+from shinyglass import glass_theme
+
+app_ui = ui.page_sidebar(
+    ui.sidebar("Filters"),
+    ui.card("Hello glass"),
+    theme=glass_theme(preset="light"),
+)
+app = App(app_ui, None)
+```
+
+See
+[`python/README.md`](https://ericrayanderson.github.io/shinyglass/python/README.md)
+for details.
