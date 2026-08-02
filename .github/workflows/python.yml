@@ -67,20 +67,21 @@ jobs:
           SHINYGLASS_PKG_ROOT: ${{ github.workspace }}
 
       - name: Install wheel in clean venv without monorepo
+        working-directory: python
         run: |
+          set -euo pipefail
           python -m venv /tmp/sg-venv
           /tmp/sg-venv/bin/pip install --upgrade pip
+          # cwd is python/ (working-directory above)
           /tmp/sg-venv/bin/pip install dist/*.whl pytest
-          # Move to a directory that has no inst/scss so monorepo fallback cannot work
+          # Isolate tests away from monorepo inst/
+          rm -rf /tmp/sg-clean
           mkdir -p /tmp/sg-clean
-          cp -r python/tests /tmp/sg-clean/tests
+          cp -r tests /tmp/sg-clean/tests
           cd /tmp/sg-clean
-          # Prove package_root cannot see the checkout
           /tmp/sg-venv/bin/python - <<'PY'
           import os
-          from pathlib import Path
           os.environ.pop("SHINYGLASS_PKG_ROOT", None)
-          # Change cwd away from monorepo
           os.chdir("/tmp/sg-clean")
           from shinyglass._assets import asset_source, has_vendored_static, package_root
           from shinyglass import glass_theme
@@ -94,4 +95,3 @@ jobs:
           print("isolated wheel OK", len(css), "css bytes")
           PY
           /tmp/sg-venv/bin/pytest -q tests
-        working-directory: python
