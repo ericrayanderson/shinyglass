@@ -13,3 +13,11 @@ inst/examples/screenshot*.png
 visual-test-output/
 docs/
 inst/external/
+# Python spike
+python/**/__pycache__/
+python/**/*.egg-info/
+python/.pytest_cache/
+python/.venv/
+python/dist/
+python/build/
+*.pyc

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shinyglass"
+version = "0.1.0.9000"
+description = "Liquid Glass themes for Shiny for Python (spike; shares SCSS/JS with the R package)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-only"
+authors = [
+  { name = "Eric Anderson", email = "eric.ray.anderson@gmail.com" },
+]
+keywords = ["shiny", "theme", "bootstrap", "glass", "bslib"]
+dependencies = [
+  "shiny>=1.0",
+  "htmltools>=0.5",
+  "libsass>=0.22",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/ericrayanderson/shinyglass"
+Repository = "https://github.com/ericrayanderson/shinyglass"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shinyglass"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/shinyglass",
+  "README.md",
+  "examples",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
