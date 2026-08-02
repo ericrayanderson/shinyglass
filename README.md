@@ -38,8 +38,10 @@ shinyApp(ui, server)
 
 ## Shiny for Python (experimental)
 
-Package under [`python/`](python/) (not on CRAN). Shares `inst/scss` + `inst/js`;
-wheels vendor precompiled CSS so default themes need **no libsass** at runtime.
+Package under
+[`python/`](https://github.com/ericrayanderson/shinyglass/tree/main/python)
+(not on CRAN). Shares `inst/scss` + `inst/js`; wheels vendor precompiled CSS so
+default themes need **no libsass** at runtime.
 
 ```bash
 cd python
@@ -60,4 +62,6 @@ app_ui = ui.page_sidebar(
 app = App(app_ui, None)
 ```
 
-See [`python/README.md`](python/README.md) for wheel builds and CI isolation tests.
+See
+[`python/README.md`](https://github.com/ericrayanderson/shinyglass/blob/main/python/README.md)
+for wheel builds and CI isolation tests.

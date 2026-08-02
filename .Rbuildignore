@@ -31,3 +31,4 @@
 # Shiny for Python spike (Option 2) — not part of the CRAN tarball
 ^python$
 ^check$
+^CRAN-SUBMISSION$

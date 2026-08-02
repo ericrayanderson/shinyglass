@@ -1,3 +1,10 @@
+## Resubmission
+
+This is a resubmission of 0.1.1. The previous submission was not accepted
+because README.md used relative file URIs (`python/`, `python/README.md`) that
+point outside the CRAN tarball (the `python/` tree is in `.Rbuildignore`).
+Those links are now absolute GitHub URLs.
+
 ## Submission
 
 This is a patch update from 0.1.0 to 0.1.1.
