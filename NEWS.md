@@ -1,4 +1,4 @@
-# shinyglass (development version)
+# shinyglass 0.1.1
 
 * Fix: `bslib::sidebar()` / `page_sidebar()` layout no longer collapses to a
   full-width stack. Glass floating-sidebar rules now win over bslib's later
@@ -10,10 +10,6 @@
 * Improve: AdminLTE chrome (classic `shinydashboard` and `bs4Dash`) gets stronger
   glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and
   clearer menu active states — without breaking AdminLTE layout.
-* Experimental: Shiny for Python package under `python/` (not on CRAN). Reuses
-  `inst/scss` + `inst/js`. Wheels vendor precompiled theme CSS + JS under
-  `static/` so default presets work without runtime libsass; custom knobs use
-  optional `shinyglass[theme]`.
 
 # shinyglass 0.1.0
 
