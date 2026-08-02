@@ -1,0 +1,3 @@
+shinyglass static assets
+source=/workspace/shinyglass
+files=glass.scss,shiny-glass.js,theme-light.css,theme-dark.css,glass-rules-light.css,glass-rules-dark.css

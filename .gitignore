@@ -13,11 +13,13 @@ inst/examples/screenshot*.png
 visual-test-output/
 docs/
 inst/external/
-# Python spike
+# Python
 python/**/__pycache__/
 python/**/*.egg-info/
 python/.pytest_cache/
 python/.venv/
 python/dist/
 python/build/
+python/.ruff_cache/
 *.pyc
+# Keep vendored static CSS/JS in git; ignore only caches

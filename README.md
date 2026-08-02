@@ -38,12 +38,13 @@ shinyApp(ui, server)
 
 ## Shiny for Python (experimental)
 
-A spike under [`python/`](python/) reuses the same `inst/scss` + `inst/js` assets
-(Option 2 layout; not shipped on CRAN).
+Package under [`python/`](python/) (not on CRAN). Shares `inst/scss` + `inst/js`;
+wheels vendor precompiled CSS so default themes need **no libsass** at runtime.
 
 ```bash
 cd python
-pip install -e ".[dev]"
+pip install -e ".[dev,theme]"
+python scripts/vendor_assets.py   # → src/shinyglass/static/
 shiny run examples/app_sidebar.py
 ```
 
@@ -59,4 +60,4 @@ app_ui = ui.page_sidebar(
 app = App(app_ui, None)
 ```
 
-See [`python/README.md`](python/README.md) for details.
+See [`python/README.md`](python/README.md) for wheel builds and CI isolation tests.

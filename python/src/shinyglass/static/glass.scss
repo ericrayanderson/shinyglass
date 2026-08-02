@@ -1,0 +1,2238 @@
+
+// Readable ink on a solid UI fill (value chips, tinted buttons, …).
+// Intentionally NOT Bootstrap color-contrast(): that uses a 4.5:1 WCAG
+// gate and returns black for brand blues like #007AFF (white fails by a
+// hair). For short chip/button labels we use relative luminance instead.
+@function glass-on($fill, $light: #ffffff, $dark: #1d1d1f) {
+  @if type-of($fill) != color {
+    @return $light;
+  }
+  // Approx sRGB relative luminance (0–255 channel weights).
+  $y: (0.2126 * red($fill) + 0.7152 * green($fill) + 0.0722 * blue($fill)) / 255;
+  @if $y >= 0.55 {
+    @return $dark;
+  }
+  @return $light;
+}
+
+// Solid value chip (slider bubbles / range tooltips only — not general .bg-*)
+@mixin glass-value-chip($fill: $primary) {
+  background-color: $fill !important;
+  background: $fill !important;
+  color: glass-on($fill) !important;
+  text-shadow: none;
+  border: none !important;
+  border-radius: 0.55rem;
+  font-weight: 600;
+}
+
+:root {
+  --glass-bg: #{$glass-bg};
+  --glass-bg-hover: #{$glass-bg-hover};
+  --glass-border: #{$glass-border};
+  --glass-shadow: #{$glass-shadow};
+  --glass-elevated-shadow: #{$glass-elevated-shadow};
+  --glass-blur: #{$glass-blur};
+  --glass-saturate: #{$glass-saturate};
+  --glass-radius: #{$glass-radius};
+  --glass-highlight: #{$glass-highlight};
+  --glass-specular: #{$glass-specular};
+  --glass-menu-bg: #{$glass-menu-bg};
+  --glass-menu-color: #{$glass-menu-color};
+  --glass-float-margin: 0.85rem;
+  --glass-tint-r: 0;
+  --glass-tint-g: 122;
+  --glass-tint-b: 255;
+  --glass-tint-strength: 0;
+  --glass-specular-x: 28%;
+  --glass-specular-y: 10%;
+  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  // Contrast-safe ink for solid theme fills (widgets that inherit body color)
+  --glass-on-primary: #{glass-on($primary)};
+  --glass-on-success: #{glass-on($success)};
+  --glass-on-danger: #{glass-on($danger)};
+  --glass-on-warning: #{glass-on($warning)};
+  --glass-on-info: #{glass-on($info)};
+}
+
+[data-glass-preset="dark"] {
+  --glass-inner-glow: rgba(255, 255, 255, 0.06);
+}
+
+body {
+  background: $glass-page-bg !important;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 32%),
+    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 28%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+@mixin glass-surface($radius: var(--glass-radius)) {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: $radius;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    padding 0.25s ease,
+    margin 0.25s ease;
+
+  // pointer position from shiny-glass.js
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 120% 90% at var(--glass-specular-x, 28%) var(--glass-specular-y, 10%),
+      var(--glass-specular) 0%,
+      transparent 62%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.88;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 4px 20px var(--glass-inner-glow);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// inputs: no pseudo-elements (overflow must stay visible for menus)
+@mixin glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+@mixin glass-floating($radius: var(--glass-radius)) {
+  @include glass-surface($radius);
+  margin: var(--glass-float-margin);
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    0 4px 12px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.container-fluid > .row {
+  align-items: flex-start;
+}
+
+.bslib-gap-spacing,
+.layout-column-wrap,
+.layout-column-plot {
+  gap: 0.5rem;
+}
+
+.col-sm-8[role="main"],
+.col-sm-8 > .tab-content,
+.tab-content > .tab-pane.active {
+  background: transparent;
+}
+
+.glass-content-hero {
+  position: relative;
+  min-height: 18rem;
+  margin: 0 0 1rem;
+  border-radius: calc(var(--glass-radius) * 1.1);
+  overflow: hidden;
+
+  .shiny-plot-output,
+  .shiny-html-output {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+form.well,
+.col-sm-4.well {
+  @include glass-floating();
+  border: 1px solid var(--glass-border) !important;
+  background-color: var(--glass-bg) !important;
+  padding: 1.15rem 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  @include glass-floating();
+  overflow: visible; // allow select menus to layer above siblings
+  color: inherit;
+
+  .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--glass-border);
+  }
+}
+
+body.bslib-page-navbar > .navbar,
+.navbar.navbar-static-top,
+.navbar.navbar-default {
+  @include glass-floating(var(--glass-radius));
+  border-radius: var(--glass-radius) !important;
+  border: 1px solid var(--glass-border) !important;
+  margin: var(--glass-float-margin) var(--glass-float-margin) 0;
+  padding: 0.55rem 1rem;
+  position: sticky;
+  top: var(--glass-float-margin);
+  z-index: 1030;
+
+  .navbar-brand {
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .nav > li > a,
+  .nav-link {
+    border-radius: 0.75rem;
+    opacity: 0.75;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+
+  .nav > li.active > a,
+  .nav-link.active {
+    opacity: 1;
+    background: var(--glass-bg-hover);
+  }
+}
+
+// tabsetPanel pills
+.tabbable > .nav-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 0.3rem;
+  margin: 0 0 1rem var(--glass-float-margin);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+  position: relative;
+  z-index: 2;
+
+  > li {
+    margin-bottom: 0;
+    float: none;
+
+    > a {
+      border: none !important;
+      border-radius: 999px !important;
+      color: inherit;
+      opacity: 0.7;
+      padding: 0.45rem 1rem;
+      transition: opacity 0.2s ease, background 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+        background: var(--glass-bg-hover);
+      }
+    }
+
+    &.active > a {
+      opacity: 1;
+      background: var(--glass-bg-hover) !important;
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+    }
+  }
+}
+
+.col-sm-4.well .nav-pills > li > a {
+  border-radius: 0.75rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    background: var(--glass-bg-hover);
+  }
+}
+
+.col-sm-4.well .nav-pills > li.active > a {
+  opacity: 1;
+  background: var(--glass-bg-hover) !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
+
+// DT-style nav-tabs outside .tabbable
+.nav-tabs:not(.tabbable > .nav-tabs) {
+  border-bottom: 1px solid var(--glass-border);
+
+  .nav-link,
+  > li > a {
+    border: none;
+    border-radius: 0.75rem 0.75rem 0 0;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+
+  .nav-link.active,
+  > li.active > a {
+    opacity: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border-bottom: 2px solid $primary;
+  }
+}
+
+// body.glass-nav-compact / glass-nav-expanded (see shiny-glass.js)
+body.glass-nav-compact {
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  body.bslib-page-navbar > .navbar {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
+    transform: scale(0.97);
+    opacity: 0.94;
+
+    .navbar-brand {
+      font-size: 0.95rem;
+    }
+  }
+
+  .tabbable > .nav-tabs {
+    padding: 0.12rem;
+    transform: scale(0.96);
+    opacity: 0.92;
+
+    > li > a {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.92rem;
+    }
+  }
+
+  form.well,
+  .col-sm-4.well {
+    transform: scale(0.99);
+  }
+}
+
+body.glass-nav-expanded {
+  .tabbable > .nav-tabs,
+  .navbar.navbar-static-top,
+  .navbar.navbar-default {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@mixin glass-button-type {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin glass-button-tinted($color) {
+  @include glass-button-type();
+  $ink: glass-on($color);
+  color: $ink !important;
+  background: color-mix(in srgb, #{$color} 76%, transparent) !important;
+  border: 1px solid color-mix(in srgb, #{$color} 34%, rgba(255, 255, 255, 0.42)) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow:
+    0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+
+  &:hover,
+  &:focus {
+    color: $ink !important;
+    background: color-mix(in srgb, #{$color} 86%, transparent) !important;
+    border-color: color-mix(in srgb, #{$color} 42%, rgba(255, 255, 255, 0.48)) !important;
+    box-shadow:
+      0 6px 22px color-mix(in srgb, #{$color} 30%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 0.2rem color-mix(in srgb, #{$color} 22%, transparent),
+      0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.36);
+  }
+}
+
+@mixin glass-button-ghost($label-color: $primary) {
+  @include glass-button-type();
+  @include glass-input();
+  color: #{$label-color} !important;
+  background: var(--glass-bg) !important;
+
+  &:hover,
+  &:focus {
+    color: #{$label-color} !important;
+    background: var(--glass-bg-hover) !important;
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 4px 14px var(--glass-shadow);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: rgba($primary, 0.45) !important;
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.14),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.btn,
+.action-button {
+  @include glass-button-type();
+  border-radius: 0.75rem;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.42;
+    transform: none;
+  }
+}
+
+// default actionButton (not Bootstrap gray fill)
+.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.shiny-download-link),
+.action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+  @include glass-button-ghost($primary);
+}
+
+.btn-secondary,
+.btn-light {
+  @include glass-button-ghost($body-color);
+}
+
+.btn-primary,
+.action-button.btn-primary {
+  @include glass-button-tinted($primary);
+}
+
+.btn-success,
+.action-button.btn-success {
+  @include glass-button-tinted($success);
+}
+
+.btn-danger,
+.action-button.btn-danger {
+  @include glass-button-tinted($danger);
+}
+
+.btn-warning,
+.action-button.btn-warning {
+  @include glass-button-tinted($warning);
+  color: #1d1d1f !important;
+
+  &:hover,
+  &:focus {
+    color: #1d1d1f !important;
+  }
+}
+
+.btn-info,
+.action-button.btn-info {
+  @include glass-button-tinted($info);
+}
+
+.btn-outline-primary {
+  @include glass-button-ghost($primary);
+}
+
+.btn-outline-secondary,
+.btn-outline-light {
+  @include glass-button-ghost($body-color);
+}
+
+.btn-outline-success {
+  @include glass-button-ghost($success);
+}
+
+.btn-outline-danger {
+  @include glass-button-ghost($danger);
+}
+
+.btn-outline-warning {
+  @include glass-button-ghost($warning);
+}
+
+.btn-outline-info {
+  @include glass-button-ghost($info);
+}
+
+.btn-link {
+  @include glass-button-type();
+  color: $primary !important;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover,
+  &:focus {
+    color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+    text-decoration: none;
+  }
+}
+
+// downloadButton is often <a class="btn-default">
+a.shiny-download-link {
+  text-decoration: none !important;
+
+  &.btn {
+    @include glass-button-tinted($primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35em;
+
+    i[class*="fa-"] {
+      font-size: 0.9em;
+      opacity: 0.95;
+    }
+
+    &:active:not(.disabled):not([aria-disabled="true"]) {
+      transform: scale(0.97);
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+      transform: none;
+    }
+
+    &.btn-primary {
+      @include glass-button-tinted($primary);
+    }
+
+    &.btn-secondary,
+    &.btn-light {
+      @include glass-button-ghost($body-color);
+    }
+
+    &.btn-success {
+      @include glass-button-tinted($success);
+    }
+
+    &.btn-danger {
+      @include glass-button-tinted($danger);
+    }
+  }
+
+  &:not(.btn) {
+    @include glass-button-type();
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    color: $primary !important;
+    padding: 0.15rem 0.1rem;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, opacity 0.2s ease;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+      text-decoration: none !important;
+    }
+
+    &.disabled,
+    &[aria-disabled="true"] {
+      opacity: 0.42;
+      pointer-events: none;
+    }
+  }
+}
+
+[data-glass-preset="dark"] {
+  .btn-warning {
+    color: #1d1d1f !important;
+  }
+
+  .btn-default:not(.btn-primary):not(.shiny-download-link),
+  .action-button.btn-default:not(.btn-primary),
+  .btn-outline-primary,
+  a.shiny-download-link:not(.btn) {
+    color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+
+    &:hover,
+    &:focus {
+      color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
+    }
+  }
+}
+
+.form-control {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 2px 10px var(--glass-shadow);
+  }
+
+  &:focus {
+    background: var(--glass-bg-hover);
+    border-color: rgba($primary, 0.5);
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.15),
+      inset 0 1px 0 var(--glass-highlight),
+      0 4px 14px var(--glass-shadow);
+  }
+}
+
+.form-select {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+
+  // opaque so list items aren't see-through
+  &:focus,
+  &:active,
+  &[size]:not([size="1"]),
+  &[multiple] {
+    background-color: var(--glass-menu-bg) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 1060;
+    position: relative;
+  }
+
+  option,
+  optgroup {
+    background-color: var(--glass-menu-bg);
+    color: var(--glass-menu-color);
+  }
+}
+
+// .glass-select-open z-index (native + selectize)
+.card,
+form.well,
+.col-sm-4.well {
+  .shiny-input-container:has(.form-select),
+  .shiny-input-container:has(.selectize-control) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .shiny-input-container.glass-select-open,
+  .shiny-input-container:has(.form-select:focus),
+  .shiny-input-container:has(.form-select:active),
+  .shiny-input-container:has(.selectize-input.input-active) {
+    z-index: 1000;
+  }
+}
+
+.selectize-control.single .selectize-input,
+.selectize-control.multi .selectize-input {
+  @include glass-input();
+  border-radius: 0.75rem !important;
+  color: inherit;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 2px 10px var(--glass-shadow);
+  }
+
+  &.input-active {
+    background: var(--glass-bg-hover) !important;
+    border-color: rgba($primary, 0.45) !important;
+    box-shadow:
+      0 0 0 0.2rem rgba($primary, 0.12),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+}
+
+.selectize-dropdown {
+  background: var(--glass-bg-hover) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+  padding: 0.4rem;
+  z-index: 1060 !important;
+  overflow: hidden;
+
+  .option,
+  .create {
+    border-radius: 0.55rem;
+    color: var(--glass-menu-color, inherit);
+    padding: 0.45rem 0.65rem;
+  }
+
+  .active {
+    background: color-mix(in srgb, var(--glass-bg-hover) 65%, $primary 35%) !important;
+    color: inherit;
+  }
+
+  .optgroup-header {
+    color: inherit;
+    opacity: 0.65;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.65rem 0.15rem;
+  }
+}
+
+.input-group-text {
+  @include glass-input();
+  border-radius: 0.75rem;
+  color: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// Range value chips only — scoped so we don't restyle badges, progress,
+// alerts, or other Bootstrap solid/pastel surfaces.
+// Problem: chips paint primary fill but inherit body ink (dark text on blue).
+// ---------------------------------------------------------------------------
+
+// shiny::sliderInput (ion.rangeSlider)
+.irs {
+  .irs-bar,
+  .irs-bar-edge {
+    background: $primary;
+    border-color: $primary;
+  }
+
+  .irs-single,
+  .irs-from,
+  .irs-to {
+    @include glass-value-chip($primary);
+  }
+
+  .irs-handle {
+    border: 2px solid $primary;
+    background: var(--glass-menu-bg, #ffffff);
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    cursor: pointer;
+
+    > i:first-child {
+      background: color-mix(in srgb, $primary 55%, transparent);
+    }
+  }
+
+  .irs-line {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .irs-grid-text,
+  .irs-min,
+  .irs-max {
+    color: inherit;
+    opacity: 0.65;
+  }
+}
+
+// shinyWidgets / noUiSlider value tooltips (same failure mode as .irs-single)
+.noUi-tooltip,
+.noUi-horizontal .noUi-tooltip,
+.noUi-vertical .noUi-tooltip {
+  @include glass-value-chip($primary);
+}
+
+// bootstrap-slider tooltips when present
+.slider .tooltip.top .tooltip-inner,
+.slider .tooltip-inner {
+  @include glass-value-chip($primary);
+}
+
+// Native range thumbs only (no text labels to fix)
+.form-range {
+  &::-webkit-slider-thumb {
+    background-color: $primary;
+    border: 2px solid var(--glass-menu-bg, #ffffff);
+  }
+
+  &::-moz-range-thumb {
+    background-color: $primary;
+    border: 2px solid var(--glass-menu-bg, #ffffff);
+  }
+}
+
+.modal-content {
+  @include glass-surface(1.25rem);
+  // Keep dialogs readable over dense app chrome (teal delayed-data, etc.)
+  background: color-mix(in srgb, var(--glass-menu-bg) 82%, transparent) !important;
+  color: var(--glass-menu-color, inherit);
+}
+
+.dropdown-menu {
+  background-color: var(--glass-menu-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px var(--glass-shadow);
+  padding: 0.5rem;
+  z-index: 1060;
+
+  .dropdown-item {
+    border-radius: 0.5rem;
+    color: var(--glass-menu-color);
+
+    &:hover,
+    &:focus {
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+.alert {
+  @include glass-surface(1rem);
+  border-width: 1px;
+}
+
+.badge {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.progress {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: var(--glass-bg-hover);
+  --bs-table-hover-bg: var(--glass-bg-hover);
+}
+
+.value-box {
+  @include glass-surface();
+}
+
+.bslib-page-sidebar > .navbar {
+  @include glass-floating(var(--glass-radius));
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--glass-radius) !important;
+  color: inherit !important;
+  margin: var(--glass-float-margin) var(--glass-float-margin) 0;
+  padding: 0.55rem 1rem;
+  position: sticky;
+  top: var(--glass-float-margin);
+  z-index: 1030;
+
+  --#{$prefix}navbar-brand-color: inherit;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+// page_sidebar / layout_sidebar: glass sidebar floats beside main.
+// bslib ships its own `.bslib-sidebar-layout > .sidebar { position: relative;
+// width: 100% }` rules *after* theme CSS, so layout properties here need
+// !important to stick. When open, main is padded so content is never buried
+// under the floating chrome (matches the teal special-case pattern).
+.bslib-sidebar-layout {
+  --glass-sidebar-reserve: calc(
+    var(--glass-float-margin) + var(--_sidebar-width, 250px) + var(--glass-float-margin)
+  );
+
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+
+  > .main,
+  > .main.bslib-page-main {
+    background: transparent !important;
+    color: inherit;
+  }
+
+  > .sidebar {
+    @include glass-floating(var(--glass-radius));
+    background-color: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: inherit;
+    overflow: auto !important;
+
+    .sidebar-title {
+      border-bottom: 1px solid var(--glass-border);
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  > .collapse-toggle {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 999px !important;
+    box-shadow:
+      0 8px 24px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+    color: inherit;
+    z-index: 30 !important;
+
+    &:hover {
+      background: var(--glass-bg-hover) !important;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    // Single-column grid so main can full-bleed; sidebar is taken out of flow.
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: relative !important;
+
+    > .main,
+    > .main.bslib-page-main {
+      grid-column: 1 / -1 !important;
+      grid-row: 1 / 2 !important;
+      border-radius: 0 !important;
+      // Default open-state gutter; collapsed rules below override.
+      padding-top: var(--glass-float-margin) !important;
+      padding-bottom: var(--glass-float-margin) !important;
+      padding-right: var(--glass-float-margin) !important;
+      padding-left: var(--glass-sidebar-reserve) !important;
+      transition: padding var(--_transition-easing-x, ease) var(--_transition-duration, 0.3s);
+    }
+
+    > .sidebar {
+      // Beat bslib's later `position: relative; width: 100%` rules.
+      position: absolute !important;
+      top: var(--glass-float-margin) !important;
+      bottom: var(--glass-float-margin) !important;
+      left: var(--glass-float-margin) !important;
+      right: auto !important;
+      width: var(--_sidebar-width, 250px) !important;
+      max-width: calc(100% - var(--glass-float-margin) * 2) !important;
+      max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem) !important;
+      height: auto !important;
+      margin: 0 !important;
+      z-index: 20 !important;
+      border-radius: var(--glass-radius) !important;
+      grid-column: unset !important;
+      grid-row: unset !important;
+      transition:
+        transform 0.3s cubic-bezier(0.8, 0.78, 0.22, 1.07),
+        opacity 0.25s ease;
+    }
+
+    &.sidebar-right > .sidebar {
+      left: auto !important;
+      right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-right:not(.sidebar-collapsed) > .main,
+    &.sidebar-right:not(.sidebar-collapsed) > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: var(--glass-sidebar-reserve) !important;
+    }
+
+    &:not(.sidebar-collapsed) > .collapse-toggle {
+      left: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 250px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      ) !important;
+      right: auto !important;
+      top: calc(var(--glass-float-margin) + var(--_icon-size, 1rem) * 0.5) !important;
+    }
+
+    &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle {
+      left: auto !important;
+      right: calc(
+        var(--glass-float-margin) + var(--_sidebar-width, 250px) -
+          var(--_icon-button-size, 2rem) - var(--_icon-size, 1rem) * 0.5
+      ) !important;
+    }
+
+    &.sidebar-collapsed > .sidebar {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(calc(-100% - var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-right.sidebar-collapsed > .sidebar {
+      transform: translateX(calc(100% + var(--glass-float-margin) * 2));
+    }
+
+    &.sidebar-collapsed > .collapse-toggle {
+      left: var(--glass-float-margin) !important;
+      right: auto !important;
+      top: var(--glass-float-margin) !important;
+      color: inherit;
+    }
+
+    &.sidebar-right.sidebar-collapsed > .collapse-toggle {
+      left: auto !important;
+      right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-collapsed > .main,
+    &.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem)) !important;
+      padding-right: var(--glass-float-margin) !important;
+    }
+
+    &.sidebar-right.sidebar-collapsed > .main,
+    &.sidebar-right.sidebar-collapsed > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: calc(var(--glass-float-margin) + var(--_padding-icon, 3rem)) !important;
+    }
+  }
+}
+
+// Nested layout_sidebar (inside another sidebar layout / page main): keep
+// glass surface styling but use bslib's in-flow 2-column grid. Absolute float
+// + main reserve on nested layouts double-pads and leaves a large empty gutter.
+.bslib-sidebar-layout .bslib-sidebar-layout {
+  @include media-breakpoint-up(sm) {
+    // Restore two tracks: sidebar column + flexible main (bslib-like).
+    grid-template-columns:
+      Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px))
+      minmax(0, 1fr) !important;
+    position: relative !important;
+
+    > .sidebar {
+      position: relative !important;
+      top: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      right: auto !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      height: auto !important;
+      margin: 0.35rem 0 0.35rem 0.35rem !important;
+      z-index: 1 !important;
+      grid-column: 1 / 2 !important;
+      grid-row: 1 / 2 !important;
+      transform: none !important;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    > .main,
+    > .main.bslib-page-main {
+      grid-column: 2 / 3 !important;
+      grid-row: 1 / 2 !important;
+      padding: 0.35rem 0.5rem !important;
+    }
+
+    &.sidebar-right {
+      grid-template-columns:
+        minmax(0, 1fr)
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) !important;
+
+      > .sidebar {
+        grid-column: 2 / 3 !important;
+        margin: 0.35rem 0.35rem 0.35rem 0 !important;
+      }
+
+      > .main,
+      > .main.bslib-page-main {
+        grid-column: 1 / 2 !important;
+      }
+    }
+
+    // Collapse toggles sit on the grid edge rather than over absolute chrome.
+    > .collapse-toggle,
+    &:not(.sidebar-collapsed) > .collapse-toggle,
+    &.sidebar-right:not(.sidebar-collapsed) > .collapse-toggle,
+    &.sidebar-collapsed > .collapse-toggle,
+    &.sidebar-right.sidebar-collapsed > .collapse-toggle {
+      left: auto !important;
+      right: auto !important;
+      top: 0.5rem !important;
+      position: absolute !important;
+    }
+
+    &:not(.sidebar-right) > .collapse-toggle {
+      // Near the sidebar / main seam
+      left: calc(
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) -
+          var(--_icon-button-size, 2rem) * 0.5
+      ) !important;
+    }
+
+    &.sidebar-right > .collapse-toggle {
+      right: calc(
+        Min(calc(100% - var(--_padding-icon, 3rem)), var(--_sidebar-width, 250px)) -
+          var(--_icon-button-size, 2rem) * 0.5
+      ) !important;
+    }
+
+    &.sidebar-collapsed {
+      grid-template-columns: 0 minmax(0, 1fr) !important;
+
+      > .sidebar {
+        opacity: 0;
+        pointer-events: none;
+        transform: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-width: 0 !important;
+        overflow: hidden !important;
+      }
+
+      > .main,
+      > .main.bslib-page-main {
+        padding-left: calc(0.35rem + var(--_padding-icon, 3rem)) !important;
+        padding-right: 0.5rem !important;
+      }
+
+      > .collapse-toggle {
+        left: 0.35rem !important;
+        right: auto !important;
+      }
+    }
+
+    &.sidebar-right.sidebar-collapsed {
+      grid-template-columns: minmax(0, 1fr) 0 !important;
+
+      > .main,
+      > .main.bslib-page-main {
+        padding-left: 0.5rem !important;
+        padding-right: calc(0.35rem + var(--_padding-icon, 3rem)) !important;
+      }
+
+      > .collapse-toggle {
+        left: auto !important;
+        right: 0.35rem !important;
+      }
+    }
+  }
+}
+
+.shiny-plot-output,
+.shiny-image-output {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.65rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Frame html outputs that carry real content. Empty teal validation
+// placeholders (and similar) must not become thin glass bars.
+.shiny-html-output:not(:has(.Reactable)):is(
+  .shiny-table-output,
+  :has(table),
+  :has(.dataTables_wrapper),
+  :has(.html-widget),
+  :has(.plotly),
+  :has(img),
+  :has(pre),
+  :has(canvas),
+  :has(.form-group),
+  :has(.shiny-input-container),
+  :has(.shiny-plot-output),
+  :has(.shiny-image-output)
+) {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.65rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Explicitly neutralize empty / message-only html outputs
+.shiny-html-output:empty,
+.shiny-html-output:not(:has(*)),
+.teal_validated > .shiny-html-output,
+.teal-output-warning.shiny-html-output:empty {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+
+.shiny-plot-output img,
+.shiny-image-output img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: calc(var(--glass-radius) * 0.45);
+}
+
+// reactable has its own surface; don't double-frame the wrapper
+.shiny-html-output.reactable,
+.shiny-html-output:has(.Reactable) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 0.75rem;
+}
+
+.dataTables_wrapper {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate {
+    color: inherit;
+    margin-bottom: 0.5rem;
+  }
+
+  .dataTables_length select,
+  .dataTables_filter input {
+    @include glass-input();
+    border-radius: 0.65rem;
+    color: inherit;
+    margin: 0 0.35rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  table.dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100% !important;
+
+    thead th,
+    thead td {
+      background: var(--glass-bg-hover);
+      border-bottom: 1px solid var(--glass-border) !important;
+      color: inherit;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.65rem 0.85rem;
+    }
+
+    tbody tr {
+      background: transparent;
+      transition: background 0.15s ease;
+
+      > td {
+        border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+        color: inherit;
+        padding: 0.55rem 0.85rem;
+        vertical-align: middle;
+      }
+
+      &:nth-child(even) > td {
+        background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+      }
+
+      &:hover > td {
+        background: var(--glass-bg-hover);
+      }
+    }
+  }
+
+  .dataTables_paginate {
+    .paginate_button {
+      @include glass-input();
+      border-radius: 0.55rem !important;
+      color: inherit !important;
+      margin: 0 0.1rem;
+      padding: 0.3rem 0.65rem !important;
+
+      &:hover {
+        background: var(--glass-bg-hover) !important;
+        border-color: var(--glass-border) !important;
+        color: inherit !important;
+      }
+
+      &.current,
+      &.current:hover {
+        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
+        border-color: rgba($primary, 0.35) !important;
+        color: inherit !important;
+      }
+
+      &.disabled,
+      &.disabled:hover {
+        opacity: 0.45;
+      }
+    }
+  }
+}
+
+.stati {
+  @include glass-surface(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  margin: 0.65rem 0;
+
+  &:hover {
+    background: var(--glass-bg-hover) !important;
+    box-shadow:
+      0 12px 40px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight) !important;
+  }
+
+  .stati-content .stati-value,
+  .stati-content .stati-subtitle {
+    color: inherit !important;
+  }
+
+  i,
+  svg {
+    color: inherit !important;
+    opacity: 0.85;
+  }
+}
+
+// body prefix beats AdminLTE/www CSS load order
+body .box {
+  @include glass-floating(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit;
+  overflow: visible;
+
+  > .box-header,
+  &.box-primary > .box-header,
+  &.box-solid.box-primary > .box-header,
+  &.box-solid.box-success > .box-header,
+  &.box-solid.box-info > .box-header,
+  &.box-solid.box-warning > .box-header,
+  &.box-solid.box-danger > .box-header {
+    background: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
+    background-color: color-mix(in srgb, var(--glass-bg-hover) 75%, transparent) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    border-top-color: var(--glass-border) !important;
+    color: inherit !important;
+  }
+
+  &.box-primary,
+  &.box-info,
+  &.box-success,
+  &.box-warning,
+  &.box-danger,
+  &.box-solid.box-primary,
+  &.box-solid.box-info,
+  &.box-solid.box-success,
+  &.box-solid.box-warning,
+  &.box-solid.box-danger {
+    border-top-color: var(--glass-border) !important;
+    border-color: var(--glass-border) !important;
+  }
+
+  > .box-body {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit;
+  }
+}
+
+// valueBox / infoBox — glass surface + soft status tint (not solid AdminLTE fills)
+body .small-box,
+body .info-box,
+body .small-box.bg-aqua,
+body .small-box.bg-blue,
+body .small-box.bg-green,
+body .small-box.bg-yellow,
+body .small-box.bg-red,
+body .small-box.bg-navy,
+body .small-box.bg-teal,
+body .small-box.bg-purple,
+body .small-box.bg-maroon,
+body .small-box.bg-orange,
+body .info-box.bg-aqua,
+body .info-box.bg-blue,
+body .info-box.bg-green,
+body .info-box.bg-yellow,
+body .info-box.bg-red,
+body .info-box.bg-navy,
+body .info-box.bg-teal,
+body .info-box.bg-purple,
+body .info-box.bg-maroon,
+body .info-box.bg-orange,
+body .bg-navy,
+body .bg-teal,
+body .bg-green,
+body .bg-aqua {
+  @include glass-surface(calc(var(--glass-radius) * 0.9));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+  overflow: hidden;
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
+
+  .inner,
+  .small-box-footer,
+  .info-box-content,
+  .info-box-number,
+  .info-box-text,
+  .info-box-icon {
+    background: transparent !important;
+    color: inherit !important;
+  }
+
+  // Status accent: subtle wash + icon tint instead of solid AdminLTE swatches
+  &.bg-aqua,
+  &.bg-blue {
+    background: color-mix(in srgb, var(--bs-info, #5ac8fa) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-info, #5ac8fa) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-green {
+    background: color-mix(in srgb, var(--bs-success, #34c759) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-success, #34c759) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-yellow,
+  &.bg-orange {
+    background: color-mix(in srgb, var(--bs-warning, #ff9500) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-warning, #ff9500) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-red,
+  &.bg-maroon {
+    background: color-mix(in srgb, var(--bs-danger, #ff3b30) 18%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-danger, #ff3b30) 18%, var(--glass-bg)) !important;
+  }
+  &.bg-purple,
+  &.bg-navy {
+    background: color-mix(in srgb, var(--bs-primary, #007aff) 16%, var(--glass-bg)) !important;
+    background-color: color-mix(in srgb, var(--bs-primary, #007aff) 16%, var(--glass-bg)) !important;
+  }
+
+  .icon,
+  .icon-large,
+  .info-box-icon > i,
+  .info-box-icon > span {
+    color: inherit !important;
+    opacity: 0.35;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AdminLTE2 (shinydashboard) + AdminLTE3 (bs4Dash) chrome
+// Overlay-friendly: glass surfaces without rewriting AdminLTE layout.
+// High-specificity body/skin selectors beat AdminLTE skin-*.css.
+// ---------------------------------------------------------------------------
+
+// Page shell: let glass orbs / gradient show through
+body.skin-blue,
+body.skin-blue-light,
+body.skin-black,
+body.skin-black-light,
+body.skin-green,
+body.skin-green-light,
+body.skin-purple,
+body.skin-red,
+body.skin-yellow,
+body.hold-transition,
+body.layout-fixed,
+body.sidebar-mini,
+body.sidebar-collapse {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body .wrapper,
+body .content-wrapper,
+body .right-side,
+body .main-footer {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+// Header logo + navbar
+body .main-header .logo,
+body .main-header .navbar,
+body.skin-blue .main-header .logo,
+body.skin-blue .main-header .navbar,
+body.skin-blue-light .main-header .logo,
+body.skin-blue-light .main-header .navbar,
+body.skin-black .main-header .logo,
+body.skin-black .main-header .navbar,
+body.skin-black-light .main-header .logo,
+body.skin-black-light .main-header .navbar,
+body.skin-green .main-header .logo,
+body.skin-green .main-header .navbar,
+body.skin-purple .main-header .logo,
+body.skin-purple .main-header .navbar,
+body.skin-red .main-header .logo,
+body.skin-red .main-header .navbar,
+body.skin-yellow .main-header .logo,
+body.skin-yellow .main-header .navbar {
+  @include glass-surface(0);
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight) !important;
+}
+
+body .main-header {
+  max-height: none;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: 0 8px 28px var(--glass-shadow) !important;
+}
+
+body .main-header .logo,
+body .main-header .logo:hover {
+  color: inherit !important;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  border-right: 1px solid var(--glass-border) !important;
+}
+
+body .main-header .navbar .nav > li > a,
+body .main-header .navbar .sidebar-toggle {
+  color: inherit !important;
+  background: transparent !important;
+
+  &:hover,
+  &:focus {
+    background: var(--glass-bg-hover) !important;
+    color: inherit !important;
+  }
+}
+
+// Left sidebar (fixed AdminLTE column — translucent glass, not solid skin)
+body .main-sidebar,
+body .left-side,
+body.skin-blue .main-sidebar,
+body.skin-blue-light .main-sidebar,
+body.skin-black .main-sidebar,
+body.skin-black-light .main-sidebar,
+body.skin-green .main-sidebar,
+body.skin-purple .main-sidebar,
+body.skin-red .main-sidebar,
+body.skin-yellow .main-sidebar,
+body .main-sidebar .sidebar {
+  background: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  background-color: color-mix(in srgb, var(--glass-bg) 92%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  box-shadow:
+    8px 0 32px var(--glass-shadow),
+    inset 0 1px 0 var(--glass-highlight) !important;
+  color: inherit !important;
+}
+
+body .main-sidebar .user-panel,
+body .main-sidebar .user-panel > .info,
+body .main-sidebar .user-panel > .info > p,
+body .main-sidebar .user-panel > .info > a {
+  color: inherit !important;
+}
+
+// Menu links
+body .sidebar-menu > li > a,
+body .sidebar-menu > li > .treeview-menu > li > a,
+body.skin-blue .sidebar-menu > li > a,
+body.skin-black .sidebar-menu > li > a,
+body.skin-blue .sidebar a,
+body.skin-black .sidebar a {
+  color: inherit !important;
+  border-left-color: transparent !important;
+  opacity: 0.82;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+body .sidebar-menu > li:hover > a,
+body .sidebar-menu > li.active > a,
+body .sidebar-menu > li.menu-open > a,
+body.skin-blue .sidebar-menu > li:hover > a,
+body.skin-blue .sidebar-menu > li.active > a,
+body.skin-black .sidebar-menu > li:hover > a,
+body.skin-black .sidebar-menu > li.active > a {
+  background: var(--glass-bg-hover) !important;
+  background-color: var(--glass-bg-hover) !important;
+  color: inherit !important;
+  border-left-color: var(--bs-primary, #007aff) !important;
+  opacity: 1;
+}
+
+body .sidebar-menu > li > .treeview-menu {
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent) !important;
+  margin: 0 !important;
+}
+
+// Form controls inside AdminLTE sidebar
+body .main-sidebar .form-control,
+body .main-sidebar .selectize-input,
+body .main-sidebar .irs--shiny .irs-line {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit !important;
+}
+
+// Footer
+body .main-footer {
+  border-top: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+}
+
+// bs4Dash / AdminLTE3 extras
+body .navbar-white,
+body .navbar-light,
+body .navbar-dark,
+body .brand-link,
+body .main-header .navbar-nav .nav-link {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+body .brand-link {
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+body .control-sidebar,
+body .control-sidebar-dark,
+body .control-sidebar-light {
+  background: color-mix(in srgb, var(--glass-bg) 94%, transparent) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+  border-left: 1px solid var(--glass-border) !important;
+  color: inherit !important;
+}
+
+body .reactable,
+body .Reactable {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  color: inherit !important;
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.75rem;
+  overflow: visible;
+
+  .rt-table {
+    background: transparent !important;
+    color: inherit;
+    border-color: var(--glass-border) !important;
+  }
+
+  .rt-thead .rt-th {
+    background: var(--glass-bg-hover) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    border-left-color: color-mix(in srgb, var(--glass-border) 45%, transparent) !important;
+    color: inherit !important;
+    font-weight: 600;
+  }
+
+  .rt-tbody .rt-tr-group .rt-td {
+    background: transparent !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+    border-top-color: color-mix(in srgb, var(--glass-border) 35%, transparent) !important;
+    color: inherit !important;
+  }
+
+  .rt-tbody .rt-tr-group:nth-child(even) .rt-td,
+  .rt-tr-striped {
+    background: color-mix(in srgb, var(--glass-bg) 70%, transparent) !important;
+  }
+
+  .rt-tbody .rt-tr-group:hover .rt-td,
+  .rt-tr-highlight:hover {
+    background: var(--glass-bg-hover) !important;
+  }
+
+  .rt-td-inner,
+  .rt-th-inner,
+  .rt-text-content {
+    color: inherit !important;
+  }
+
+  .rt-filter,
+  .rt-search,
+  .rt-page-jump,
+  .rt-page-size-select {
+    @include glass-input();
+    background-color: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    color: inherit !important;
+  }
+
+  .rt-pagination {
+    color: inherit;
+    border-top-color: var(--glass-border) !important;
+
+    .rt-page-button {
+      @include glass-input();
+      border-radius: 0.55rem !important;
+      color: inherit !important;
+      margin: 0 0.1rem;
+
+      &.rt-page-button-current {
+        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
+        border-color: rgba($primary, 0.35) !important;
+      }
+    }
+  }
+}
+
+.billboarder-output,
+.apexchart-output,
+.leaflet.html-widget,
+.leaflet.html-widget-output {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.45rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  background: color-mix(in srgb, var(--glass-bg) 40%, #1a1a2e 60%);
+  font-family: inherit;
+}
+
+// .main-icon is position:absolute; need containing block on .title
+.title {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  padding-right: clamp(4.5rem, 12vw, 8.5rem);
+}
+
+.main-icon {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  font-size: clamp(6rem, 11vw, 9.5rem) !important;
+  line-height: 1 !important;
+  z-index: 0 !important;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.title .titre,
+.title .soustitre {
+  position: relative;
+  z-index: 1;
+}
+
+// neutralize unused debug CSS from bundled www/styles.css
+#magnifying-glass {
+  position: static !important;
+  font-size: inherit !important;
+  width: auto !important;
+  height: auto !important;
+  border: none !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+#magnifying-glass::before {
+  display: none !important;
+}
+
+// flex min-width:auto + long URLs otherwise expand past the column
+.row > [class*="col-"] {
+  min-width: 0;
+}
+
+.row:has(.stati) {
+  align-items: stretch;
+}
+
+.row:has(.stati) > [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+.stati {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.stati .stati-content,
+.stati .stati-value {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+.shiny-html-output[id$="user_avatar"] {
+  display: flex !important;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 7em;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  > img {
+    flex: 0 0 auto;
+    width: clamp(48px, 28%, 72px) !important;
+    height: auto !important;
+    max-width: 72px;
+    border-radius: 0.55rem;
+    object-fit: cover;
+  }
+
+  // dreamRs server uses display:table-cell on the text wrapper
+  > div {
+    display: block !important;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    padding-left: 0 !important;
+    vertical-align: unset !important;
+  }
+
+  a,
+  span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+  }
+}
+
+body .shiny-output-error,
+body .shiny-output-error-no-pat,
+body .shiny-output-error-validation {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  color: inherit !important;
+  line-height: 1.5 !important;
+  padding: 2rem 1.25rem !important;
+  text-align: center;
+}
+
+.plot-spin {
+  background: transparent !important;
+}
+
+.titre,
+.soustitre {
+  color: inherit !important;
+}
+
+body .controls-pane {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  color: inherit;
+}
+
+[data-glass-preset="dark"] {
+  body::before,
+  body::after {
+    opacity: 0.95;
+  }
+
+  .shiny-notification,
+  .selectize-dropdown {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .dataTables_wrapper {
+    table.dataTable tbody tr:nth-child(even) > td {
+      background: color-mix(in srgb, var(--glass-bg) 85%, transparent);
+    }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+      background-color: var(--glass-menu-bg);
+    }
+  }
+
+  .bslib-sidebar-layout > .sidebar,
+  .bslib-page-sidebar > .navbar {
+    box-shadow:
+      0 20px 56px var(--glass-elevated-shadow),
+      0 6px 16px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .stati,
+  .box,
+  .small-box,
+  .info-box,
+  .reactable,
+  .Reactable,
+  .shiny-output-error,
+  .shiny-output-error-no-pat {
+    box-shadow:
+      0 16px 48px var(--glass-elevated-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  body .reactable,
+  body .Reactable {
+    .rt-tbody .rt-tr-group:nth-child(even) .rt-td,
+    .rt-tr-striped {
+      background: color-mix(in srgb, var(--glass-bg) 85%, transparent) !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// teal / teal.slice / teal.widgets
+// Applied when options(teal.bs_theme = glass_theme()). Teal uses bslib
+// sidebars, filter-cards, and many empty shiny-html-output placeholders.
+// ---------------------------------------------------------------------------
+
+.teal-body,
+.teal-modules-wrapper {
+  background: transparent;
+}
+
+.teal-navbar.nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  margin: 0 0 0.85rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    0 12px 36px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
+
+  a,
+  .action-button,
+  .nav-link {
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    color: inherit;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// Teal filter sidebars expand very wide by default; pin them to a
+// floating column so main module tables are not buried underneath.
+.teal-body .bslib-sidebar-layout {
+  --teal-glass-sidebar-width: min(var(--_sidebar-width, 22rem), 26rem);
+
+  > .sidebar.teal-sidebar,
+  > .sidebar {
+    position: absolute !important;
+    top: var(--glass-float-margin) !important;
+    bottom: auto !important;
+    left: var(--glass-float-margin) !important;
+    right: auto !important;
+    width: var(--teal-glass-sidebar-width) !important;
+    max-width: calc(100% - var(--glass-float-margin) * 2) !important;
+    max-height: calc(100vh - var(--glass-float-margin) * 3 - 3.5rem) !important;
+    z-index: 25 !important;
+    overflow: auto !important;
+    // More opaque than generic glass so dense tables don't show through
+    background: color-mix(in srgb, var(--glass-menu-bg) 72%, transparent) !important;
+    background-color: color-mix(in srgb, var(--glass-menu-bg) 72%, transparent) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--glass-radius) !important;
+    box-shadow:
+      0 16px 48px var(--glass-elevated-shadow),
+      0 4px 12px var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight) !important;
+  }
+
+  &.sidebar-right > .sidebar.teal-sidebar,
+  &.sidebar-right > .sidebar {
+    left: auto !important;
+    right: var(--glass-float-margin) !important;
+  }
+
+  &:not(.sidebar-collapsed) > .main,
+  &:not(.sidebar-collapsed) > .main.bslib-page-main {
+    padding-left: calc(
+      var(--glass-float-margin) + var(--teal-glass-sidebar-width) + 0.85rem
+    ) !important;
+    padding-right: var(--glass-float-margin) !important;
+  }
+
+  &.sidebar-right:not(.sidebar-collapsed) > .main,
+  &.sidebar-right:not(.sidebar-collapsed) > .main.bslib-page-main {
+    padding-left: var(--glass-float-margin) !important;
+    padding-right: calc(
+      var(--glass-float-margin) + var(--teal-glass-sidebar-width) + 0.85rem
+    ) !important;
+  }
+
+  &.sidebar-collapsed > .sidebar.teal-sidebar,
+  &.sidebar-collapsed > .sidebar {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(calc(-100% - var(--glass-float-margin) * 2));
+  }
+
+  &.sidebar-right.sidebar-collapsed > .sidebar {
+    transform: translateX(calc(100% + var(--glass-float-margin) * 2));
+  }
+}
+
+.teal-filter-panel {
+  background: transparent !important;
+}
+
+.teal-active-data-summary-panel,
+.teal-active-data-summary,
+.filter-card {
+  @include glass-surface(calc(var(--glass-radius) * 0.75));
+  background: color-mix(in srgb, var(--glass-bg) 70%, var(--glass-menu-bg) 30%) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: inherit;
+  overflow: visible;
+  margin-bottom: 0.55rem;
+}
+
+.filter-card-header,
+.filter-card-title,
+.teal-active-data-summary-panel .accordion-button,
+.teal-filter-panel .accordion-button,
+.teal-body .accordion-button {
+  background: color-mix(in srgb, var(--glass-bg-hover) 70%, $primary 30%) !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+
+  &:not(.collapsed) {
+    background: color-mix(in srgb, var(--glass-bg-hover) 55%, $primary 45%) !important;
+    color: inherit !important;
+  }
+
+  &:focus {
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 0 0 0.15rem rgba($primary, 0.2);
+  }
+
+  &::after {
+    filter: none;
+    opacity: 0.75;
+  }
+}
+
+.teal-body .accordion-item,
+.teal-filter-panel .accordion-item {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--glass-radius) * 0.75);
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+
+  .accordion-body {
+    background: color-mix(in srgb, var(--glass-bg) 80%, transparent);
+    color: inherit;
+  }
+}
+
+.filter-card-body,
+.filter-card-summary {
+  color: inherit;
+  background: transparent;
+}
+
+.filter-card-summary-value,
+.data-filter-badge-count {
+  background: var(--glass-bg-hover);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  color: inherit;
+}
+
+// Module tree dropdown
+.teal-modules-tree {
+  background: transparent;
+  color: inherit;
+
+  a {
+    border-radius: 0.55rem;
+    color: inherit;
+
+    &:hover {
+      background: var(--glass-bg-hover);
+    }
+  }
+}
+
+// Nested layout inside teal main (standard-layout-wrapper) should not
+// re-float a second full-width sidebar over the module body.
+.teal-body .main .bslib-sidebar-layout,
+.teal-body .teal-widgets .bslib-sidebar-layout {
+  > .sidebar:not(.teal-sidebar) {
+    position: relative !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    inset: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  > .main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// teal delayed-data modal form chrome
+.modal-content {
+  .form-control,
+  .form-select,
+  .selectize-input {
+    background: color-mix(in srgb, var(--glass-menu-bg) 90%, transparent) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn,
+  .form-control,
+  .form-select,
+  .navbar,
+  .tabbable > .nav-tabs {
+    transition: none;
+  }
+
+  body.glass-nav-compact .navbar,
+  body.glass-nav-compact .tabbable > .nav-tabs,
+  body.glass-nav-expanded .navbar,
+  body.glass-nav-expanded .tabbable > .nav-tabs {
+    transform: none;
+    opacity: 1;
+  }
+}

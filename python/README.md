@@ -1,34 +1,33 @@
-# shinyglass (Python spike)
+# shinyglass (Python)
 
-Liquid Glass themes for **Shiny for Python**, reusing the same design assets as
-the R package:
+Liquid Glass themes for **Shiny for Python**, sharing design assets with the R
+package under [`inst/`](../inst/).
 
-| Asset | Location (monorepo) |
-| --- | --- |
-| SCSS | [`../inst/scss/glass.scss`](../inst/scss/glass.scss) |
-| JS | [`../inst/js/shiny-glass.js`](../inst/js/shiny-glass.js) |
+## Install
 
-This is **Option 2**: a `python/` tree beside the CRAN R package. It is ignored
-by `R CMD build` (see root `.Rbuildignore`).
-
-## Status
-
-Experimental spike. API mirrors R’s `glass_theme()` but packaging for PyPI
-(wheels that vendor CSS/JS) is not finished — for now, run from a git checkout
-of [ericrayanderson/shinyglass](https://github.com/ericrayanderson/shinyglass).
-
-## Install (editable, from monorepo)
+### From a git checkout (developers)
 
 ```bash
 cd python
-pip install -e ".[dev]"
+pip install -e ".[dev,theme]"
+python scripts/vendor_assets.py   # compile CSS/JS into src/shinyglass/static/
+pytest
 ```
 
-Requires the R package tree at the repo root (`inst/scss`, `inst/js`). Override
-with:
+### From a built wheel
 
 ```bash
-export SHINYGLASS_PKG_ROOT=/path/to/shinyglass
+cd python
+python scripts/vendor_assets.py
+python -m build --wheel
+pip install dist/shinyglass-*.whl
+```
+
+Default themes use **precompiled CSS** — **libsass is not required** at runtime.
+For custom `primary` / `blur` / `radius`, install the optional extra:
+
+```bash
+pip install "shinyglass[theme]"   # pulls libsass
 ```
 
 ## Usage
@@ -51,9 +50,9 @@ app = App(app_ui, None)
 | Argument | Default | |
 | --- | --- | --- |
 | `preset` | `"light"` | `"light"` or `"dark"` |
-| `primary` | `"#007AFF"` | Accent |
-| `blur` | `28` | Backdrop blur (px) |
-| `saturation` | `200` | Backdrop saturate (%) |
+| `primary` | `"#007AFF"` | Accent (custom → needs `[theme]`) |
+| `blur` | `28` | Backdrop blur px |
+| `saturation` | `200` | Backdrop saturate % |
 | `radius` | `"1.25rem"` | Corner radius |
 
 ## Demo
@@ -63,23 +62,33 @@ cd python
 shiny run examples/app_sidebar.py
 ```
 
-## Tests
+## Layout (Option 2)
+
+| Path | Role |
+| --- | --- |
+| `../inst/scss/glass.scss` | Shared source of truth |
+| `../inst/js/shiny-glass.js` | Shared JS |
+| `src/shinyglass/static/` | **Vendored** copy + precompiled `theme-*.css` (ships in wheel) |
+| `scripts/vendor_assets.py` | Build step: copy + compile |
+| `hatch_build.py` | Hatch hook re-vendors when monorepo `inst/` is present |
+
+Asset resolution order at runtime:
+
+1. Package `static/` (wheel / vendored)
+2. Monorepo `inst/` via `SHINYGLASS_PKG_ROOT` or path walk (editable dev)
+
+## Tests & CI
 
 ```bash
-cd python
 pytest
 ```
 
-## How it works
+GitHub Actions (`.github/workflows/python.yml`):
 
-1. Resolve `inst/scss/glass.scss` + `inst/js/` from the monorepo root.
-2. Build a `shiny.ui.Theme` (Bootstrap 5) with the same Sass tokens as R.
-3. Inject `glass.scss` via `.add_rules()` (compiled with **libsass** at runtime).
-4. Attach `shiny-glass.js` and `data-glass-preset` through a small `Theme`
-   subclass (same idea as R’s `htmlDependency` bundle).
+1. Editable install + vendor + pytest  
+2. Build wheel, install in a **clean venv** with no monorepo `inst/`, re-run tests  
 
-## Not in this spike
+## Not yet
 
-- PyPI wheel that vendors precompiled CSS (no monorepo checkout)
-- Full demo gallery parity with R `inst/examples`
-- Express-only helpers (Core `theme=` works; Express uses `ui.page_opts`)
+- Published PyPI release (version still `0.1.0.9000` dev)
+- Full R demo gallery parity
