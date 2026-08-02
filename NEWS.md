@@ -1,3 +1,5 @@
+# shinyglass (development version)
+
 # shinyglass 0.1.1
 
 * Fix: `bslib::sidebar()` / `page_sidebar()` layout no longer collapses to a
