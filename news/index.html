@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,11 +34,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.1.1" id="shinyglass-011">shinyglass 0.1.1<a class="anchor" aria-label="anchor" href="#shinyglass-011"></a></h2>
 <ul><li>Fix: <code><a href="https://rstudio.github.io/bslib/reference/sidebar.html" class="external-link">bslib::sidebar()</a></code> / <code>page_sidebar()</code> layout no longer collapses to a full-width stack. Glass floating-sidebar rules now win over bslib’s later <code>position</code>/<code>width</code> cascade, and open sidebars reserve space in main so value boxes and cards stay fully visible beside the chrome (not under it).</li>
 <li>Fix: nested <code>layout_sidebar()</code> no longer double-floats. Inner sidebars keep glass styling but use bslib’s in-flow grid so content is not pushed into a large empty gutter beside a second absolute panel.</li>
 <li>Improve: AdminLTE chrome (classic <code>shinydashboard</code> and <code>bs4Dash</code>) gets stronger glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and clearer menu active states — without breaking AdminLTE layout.</li>
-<li>Experimental: Shiny for Python package under <code>python/</code> (not on CRAN). Reuses <code>inst/scss</code> + <code>inst/js</code>. Wheels vendor precompiled theme CSS + JS under <code>static/</code> so default presets work without runtime libsass; custom knobs use optional <code>shinyglass[theme]</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="shinyglass-010">shinyglass 0.1.0<a class="anchor" aria-label="anchor" href="#shinyglass-010"></a></h2><p class="text-muted">CRAN release: 2026-07-28</p>
