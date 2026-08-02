@@ -2,15 +2,26 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Literal
 
 from htmltools import HTMLDependency
 from shiny.ui import Theme
 
-from ._assets import js_dir, scss_path
+from ._assets import (
+    has_vendored_static,
+    js_dir,
+    precompiled_theme_css,
+    scss_path,
+)
 from ._version import __version__
 
 Preset = Literal["light", "dark"]
+
+_DEFAULT_PRIMARY = "#007AFF"
+_DEFAULT_BLUR = 28
+_DEFAULT_SATURATION = 200
+_DEFAULT_RADIUS = "1.25rem"
 
 _FONT_STACK = (
     "-apple-system, BlinkMacSystemFont, "
@@ -80,15 +91,62 @@ def _tokens(preset: Preset) -> dict[str, str]:
     }
 
 
-class GlassTheme(Theme):
-    """``ui.Theme`` subclass that also ships shiny-glass.js + preset marker."""
+def _is_default_knobs(
+    primary: str,
+    blur: float | int,
+    saturation: float | int,
+    radius: str,
+) -> bool:
+    return (
+        primary == _DEFAULT_PRIMARY
+        and float(blur) == float(_DEFAULT_BLUR)
+        and float(saturation) == float(_DEFAULT_SATURATION)
+        and radius == _DEFAULT_RADIUS
+    )
 
-    def __init__(self, preset: Preset, *args, **kwargs):
+
+def _libsass_available() -> bool:
+    try:
+        import sass  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
+class GlassTheme(Theme):
+    """``ui.Theme`` subclass that also ships shiny-glass.js + preset marker.
+
+    When ``precompiled_css`` is set, Bootstrap+glass CSS is loaded from that
+    file (no runtime libsass). Otherwise Sass is compiled like the R package.
+    """
+
+    def __init__(
+        self,
+        preset: Preset,
+        *args,
+        precompiled_css: Path | None = None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self._glass_preset = preset
+        self._precompiled_css = precompiled_css
 
     def _html_dependencies(self) -> list[HTMLDependency]:
-        deps = list(super()._html_dependencies())
+        if self._precompiled_css is not None:
+            css_path = Path(self._precompiled_css)
+            deps: list[HTMLDependency] = [
+                HTMLDependency(
+                    name=f"shinyglass-theme-{self._glass_preset}",
+                    version=__version__,
+                    source={"subdir": str(css_path.parent)},
+                    stylesheet={"href": css_path.name},
+                    all_files=False,
+                )
+            ]
+        else:
+            deps = list(super()._html_dependencies())
+
         js_src = str(js_dir())
         deps.append(
             HTMLDependency(
@@ -112,21 +170,31 @@ class GlassTheme(Theme):
         )
         return deps
 
+    def to_css(self, compile_args=None) -> str:
+        if self._precompiled_css is not None:
+            return Path(self._precompiled_css).read_text(encoding="utf-8")
+        return super().to_css(compile_args=compile_args)
+
 
 def glass_theme(
     preset: Preset = "light",
-    primary: str = "#007AFF",
-    blur: float | int = 28,
-    saturation: float | int = 200,
-    radius: str = "1.25rem",
+    primary: str = _DEFAULT_PRIMARY,
+    blur: float | int = _DEFAULT_BLUR,
+    saturation: float | int = _DEFAULT_SATURATION,
+    radius: str = _DEFAULT_RADIUS,
     *,
     base: str | None = None,
+    _allow_compile: bool = False,
 ) -> GlassTheme:
     """Liquid Glass theme for Shiny for Python.
 
     Mirrors the R ``shinyglass::glass_theme()`` API. Pass the result to
     ``theme=`` on any ``shiny.ui.page_*`` function (or Express
     ``ui.page_opts(theme=...)``).
+
+    With default knobs and vendored assets, uses **precompiled CSS** (no
+    runtime libsass). Custom ``primary`` / ``blur`` / etc. require the
+    optional ``shinyglass[theme]`` extra (libsass), or a monorepo checkout.
 
     Parameters
     ----------
@@ -142,17 +210,38 @@ def glass_theme(
         Default border radius for glass surfaces (CSS length).
     base
         Shiny ``Theme`` preset base. Defaults to ``"bootstrap"`` (light) or
-        ``"darkly"`` (dark).
+        ``"darkly"`` (dark). Ignored when loading precompiled CSS.
     """
     if preset not in ("light", "dark"):
         raise ValueError('preset must be "light" or "dark"')
 
+    use_precompiled = (
+        not _allow_compile
+        and _is_default_knobs(primary, blur, saturation, radius)
+        and has_vendored_static()
+        and base is None
+    )
+
+    if use_precompiled:
+        css_path = precompiled_theme_css(preset)
+        return GlassTheme(
+            preset,
+            "bootstrap",  # unused when precompiled; required by Theme.__init__
+            name=f"shinyglass-{preset}",
+            precompiled_css=css_path,
+        )
+
+    # Runtime Sass compile path (custom knobs, vendor script, or no static/)
+    if not _libsass_available():
+        raise ImportError(
+            "Custom shinyglass themes (or missing precompiled CSS) require "
+            'libsass. Install with: pip install "shinyglass[theme]" '
+            "or pip install libsass"
+        )
+
     tokens = _tokens(preset)
     base_preset = base or ("darkly" if preset == "dark" else "bootstrap")
     scss = scss_path()
-    if not scss.is_file():
-        raise FileNotFoundError(scss)
-
     glass_rules = scss.read_text(encoding="utf-8")
 
     theme = GlassTheme(
@@ -160,9 +249,9 @@ def glass_theme(
         base_preset,
         name=f"shinyglass-{preset}",
         include_paths=[str(scss.parent)],
+        precompiled_css=None,
     )
 
-    # Bootstrap / Shiny Sass variables (underscore form → kebab-case).
     theme = theme.add_defaults(
         primary=primary,
         success="#34C759",
@@ -185,7 +274,6 @@ def glass_theme(
         btn_padding_y=".55rem",
         btn_padding_x="1.2rem",
         btn_border_width="1px",
-        # Glass design tokens
         glass_bg=tokens["glass_bg"],
         glass_bg_hover=tokens["glass_bg_hover"],
         glass_border=tokens["glass_border"],
@@ -204,6 +292,5 @@ def glass_theme(
         glass_orb_3=tokens["orb_3"],
     )
 
-    # Stubs first, then full glass.scss (same rules as R bs_add_rules).
     theme = theme.add_rules(_BOOTSTRAP_STUBS, glass_rules)
     return theme

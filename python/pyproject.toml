@@ -1,11 +1,11 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "libsass>=0.22", "shiny>=1.0", "htmltools>=0.5"]
 build-backend = "hatchling.build"
 
 [project]
 name = "shinyglass"
 version = "0.1.0.9000"
-description = "Liquid Glass themes for Shiny for Python (spike; shares SCSS/JS with the R package)"
+description = "Liquid Glass themes for Shiny for Python"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "GPL-3.0-only"
@@ -16,11 +16,12 @@ keywords = ["shiny", "theme", "bootstrap", "glass", "bslib"]
 dependencies = [
   "shiny>=1.0",
   "htmltools>=0.5",
-  "libsass>=0.22",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0"]
+# Runtime Sass for custom primary/blur/radius (defaults use precompiled CSS)
+theme = ["libsass>=0.22"]
+dev = ["pytest>=7.0", "libsass>=0.22", "build", "matplotlib"]
 
 [project.urls]
 Homepage = "https://github.com/ericrayanderson/shinyglass"
@@ -32,9 +33,16 @@ packages = ["src/shinyglass"]
 [tool.hatch.build.targets.sdist]
 include = [
   "src/shinyglass",
+  "scripts",
+  "hatch_build.py",
   "README.md",
   "examples",
+  "tests",
+  "pyproject.toml",
 ]
+
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
