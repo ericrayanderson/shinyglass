@@ -2,9 +2,12 @@
 
 * Fix: demo app "Show smooth" now draws a density curve (the checkbox was
   previously ignored by the plot).
-* Fix: checked checkboxes and radios use a **white** check/dot on the accent
-  fill (Bootstrap was compiling a near-black stroke that was hard to see on
-  primary blue).
+* Fix: **active-on-accent contrast** — Bootstrap’s `color-contrast(#007AFF)`
+  resolves `$component-active-color` to **black**, so checked checkboxes,
+  radios, indeterminate marks, switches, and other primary-fill UI compiled
+  with dark strokes/knobs on blue. `glass_theme()` now forces light ink
+  (`$component-active-color` and related form vars) and SCSS safety-nets
+  white checks/dots/switch knobs on accent fills.
 
 # shinyglass 0.2.0
 

@@ -715,9 +715,16 @@ a.shiny-download-link {
   }
 }
 
-// Checkboxes / radios: glass unchecked surface; white mark on accent when checked.
-// Bootstrap sometimes compiles the check SVG with a dark stroke (body-color),
-// which is nearly invisible on $primary — force a light check/dot.
+// ---------------------------------------------------------------------------
+// Active-on-accent ink (checks, radios, switches, indeterminate)
+//
+// Bootstrap sets $component-active-color via color-contrast($primary). For
+// system blue (#007AFF) that contrast pick is often *black*, so SVG check
+// strokes / switch knobs compile dark-on-blue. glass_theme() also forces
+// $component-active-color to white; these rules are the CSS safety net
+// (including dual-pack / late cascade cases).
+// ---------------------------------------------------------------------------
+
 .form-check-input {
   width: 1.1em;
   height: 1.1em;
@@ -743,7 +750,8 @@ a.shiny-download-link {
       inset 0 1px 0 var(--glass-highlight);
   }
 
-  &:checked {
+  &:checked,
+  &:indeterminate {
     background-color: #{$primary} !important;
     border-color: #{$primary} !important;
     box-shadow:
@@ -754,6 +762,11 @@ a.shiny-download-link {
   &:checked[type="checkbox"] {
     // white checkmark
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+  }
+
+  &:indeterminate[type="checkbox"] {
+    // white dash
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e") !important;
   }
 
   &:checked[type="radio"] {
@@ -767,10 +780,30 @@ a.shiny-download-link {
   }
 }
 
+// Toggle switches: white knob on accent track when on (layout left to Bootstrap)
+.form-switch .form-check-input {
+  &:checked {
+    background-color: #{$primary} !important;
+    border-color: #{$primary} !important;
+    // white knob — overrides BS color-contrast black fill on primary
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+  }
+}
+
 // Legacy BS3 shiny markup still used in some apps
 .checkbox input[type="checkbox"],
 .radio input[type="radio"] {
   accent-color: #{$primary};
+}
+
+// Active list/nav/pagination text on primary fill should stay light
+.page-item.active .page-link,
+.list-group-item.active,
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link,
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff !important;
 }
 
 .form-select {

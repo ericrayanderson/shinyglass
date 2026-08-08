@@ -87,6 +87,54 @@ test_that("compiled CSS ships dual light/dark variable packs", {
   expect_match(css, "stroke='%23fff'|stroke=\"%23fff\"|stroke='%23FFF'")
 })
 
+test_that("active-on-primary ink is light, not color-contrast black", {
+  skip_if_not_installed("bslib")
+  # Bootstrap color-contrast(#007AFF) is black; glass_theme must override.
+  th <- glass_theme(primary = "#007AFF")
+  vars <- bslib::bs_get_variables(
+    th,
+    c(
+      "component-active-color",
+      "form-check-input-checked-color",
+      "form-check-input-indeterminate-color",
+      "form-switch-checked-color",
+      "pagination-active-color",
+      "component-active-bg"
+    )
+  )
+  expect_equal(toupper(vars[["component-active-color"]]), "#FFFFFF")
+  expect_equal(toupper(vars[["form-check-input-checked-color"]]), "#FFFFFF")
+  expect_equal(toupper(vars[["form-check-input-indeterminate-color"]]), "#FFFFFF")
+  expect_equal(toupper(vars[["form-switch-checked-color"]]), "#FFFFFF")
+  expect_equal(toupper(vars[["pagination-active-color"]]), "#FFFFFF")
+  expect_equal(toupper(vars[["component-active-bg"]]), "#007AFF")
+
+  deps <- bslib::bs_theme_dependencies(th)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+
+  # Checked / indeterminate / switch should not keep black SVG marks on primary
+  # (our CSS safety net + Sass vars). Allow black only outside checked states.
+  checked_black <- grepl(
+    "form-check-input:checked[^}]*stroke='%23000'|form-switch[^\"]*fill='%23000'",
+    css
+  )
+  expect_false(checked_black)
+  expect_match(css, "form-switch")
+  expect_match(css, "indeterminate")
+})
+
 test_that("update_glass_theme sends shinyglass custom message", {
   skip_if_not_installed("shiny")
   msgs <- list()
