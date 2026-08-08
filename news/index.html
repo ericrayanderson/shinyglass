@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,6 +16,11 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../index.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
+    <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -37,7 +42,31 @@
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.1" id="shinyglass-011">shinyglass 0.1.1<a class="anchor" aria-label="anchor" href="#shinyglass-011"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
+<ul><li>Light and dark glass surfaces are now dual <strong>CSS custom-property packs</strong> on <code>[data-glass-preset]</code>. Switching preset no longer requires recompiling Sass or reloading the page. Apps that overrode Sass-only <code>$glass-*</code> tokens should target <code>--glass-*</code> CSS variables (or <code>[data-glass-preset="dark"]</code>) instead.</li>
+<li>
+<code><a href="../reference/glass_theme.html">glass_theme()</a></code> always builds on the Bootstrap 5 base theme (not Bootswatch <code>darkly</code> for dark). Dark appearance comes from the CSS variable pack so light↔︎dark can toggle live. Visuals should match 0.1.x closely; if you relied on darkly-specific chrome outside glass surfaces, re-check dark mode.</li>
+<li>Private escape hatch <code>window.__shinyglassDisableTint</code> still works, but the supported API is <code>glass_theme(tint = FALSE)</code> / <code>update_glass_theme(tint = …)</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
+<ul><li>Runtime light/dark switching via <code>document.documentElement.dataset.glassPreset</code> without a full reload.</li>
+<li>
+<code>glass_theme(preset = "auto")</code> follows <code>prefers-color-scheme</code> and updates when the OS theme changes.</li>
+<li>[update_glass_theme()] to change <code>preset</code> and <code>tint</code> from the server.</li>
+<li>Behavior knobs on [glass_theme()]: <code>tint</code>, <code>specular</code>, and <code>nav_morph</code> (all default <code>TRUE</code>, matching 0.1.x JS behavior).</li>
+<li>Client helper <code>window.shinyglass.setPreset()</code> / <code>.getPreset()</code> / <code>.setTint()</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
+<ul><li>Demo and bslib dashboard examples include light / dark / auto controls.</li>
+<li>Unit tests cover dual CSS packs, head script knobs, and <code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> messaging.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.1" id="shinyglass-011">shinyglass 0.1.1<a class="anchor" aria-label="anchor" href="#shinyglass-011"></a></h2><p class="text-muted">CRAN release: 2026-08-02</p>
 <ul><li>Fix: <code><a href="https://rstudio.github.io/bslib/reference/sidebar.html" class="external-link">bslib::sidebar()</a></code> / <code>page_sidebar()</code> layout no longer collapses to a full-width stack. Glass floating-sidebar rules now win over bslib’s later <code>position</code>/<code>width</code> cascade, and open sidebars reserve space in main so value boxes and cards stay fully visible beside the chrome (not under it).</li>
 <li>Fix: nested <code>layout_sidebar()</code> no longer double-floats. Inner sidebars keep glass styling but use bslib’s in-flow grid so content is not pushed into a large empty gutter beside a second absolute panel.</li>
 <li>Improve: AdminLTE chrome (classic <code>shinydashboard</code> and <code>bs4Dash</code>) gets stronger glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and clearer menu active states — without breaking AdminLTE layout.</li>

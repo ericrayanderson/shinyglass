@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="index.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/theming.html">Theming and light/dark</a></li>
+    <li><a class="dropdown-item" href="articles/compatibility.html">Ecosystem compatibility</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
@@ -55,50 +62,72 @@
 <!-- badges: start -->
 
 <p><a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme with translucent surfaces, backdrop blur, and system typography. Pass it as <code>theme = glass_theme()</code> to <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, or other page functions that accept a bslib theme.</p>
+<p>Light and dark packs switch at <strong>runtime</strong> (no page reload). Use <code>preset = "auto"</code> to follow the OS, or call <code><a href="reference/update_glass_theme.html">update_glass_theme()</a></code> from the server.</p>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
 <div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"shinyglass"</span><span class="op">)</span></span>
+<span><span class="co"># development:</span></span>
+<span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span><span class="op">)</span>,  <span class="co"># or glass_theme(preset = "dark")</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Liquid Glass"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"dark"</span>, <span class="st">"Dark mode"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dark</span>, <span class="fu"><a href="reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#007AFF"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
+</div>
+<div class="section level2">
+<h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
+</h2>
+<p>Hosted on shinyapps.io (may take a few seconds to wake on the free tier):</p>
+<!-- Update URLs after running inst/scripts/deploy-shinyapps-demos.R -->
+<ul>
+<li>Demo + theme toggle — <em>deploy <code>shinyglass-demo</code></em>
+</li>
+<li>bslib dashboard — <em>deploy <code>shinyglass-dashboard</code></em>
+</li>
+<li>Inputs gallery — <em>deploy <code>shinyglass-inputs</code></em>
+</li>
+<li>Olympic medals (dreamRs) — <em>deploy <code>shinyglass-olympics</code></em>
+</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># from a package checkout, after rsconnect::setAccountInfo(...):</span></span>
+<span><span class="co"># source("inst/scripts/deploy-shinyapps-demos.R")</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="local-examples">Local examples<a class="anchor" aria-label="anchor" href="#local-examples"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"inputs-gallery.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="shiny-for-python-experimental">Shiny for Python (experimental)<a class="anchor" aria-label="anchor" href="#shiny-for-python-experimental"></a>
 </h2>
-<p>Package under <a href="https://github.com/ericrayanderson/shinyglass/tree/main/python" class="external-link"><code>python/</code></a> (not on CRAN). Shares <code>inst/scss</code> + <code>inst/js</code>; wheels vendor precompiled CSS so default themes need <strong>no libsass</strong> at runtime.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="bu">cd</span> python</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-e</span> <span class="st">".[dev,theme]"</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="ex">python</span> scripts/vendor_assets.py   <span class="co"># → src/shinyglass/static/</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="ex">shiny</span> run examples/app_sidebar.py</span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="im">from</span> shinyglass <span class="im">import</span> glass_theme</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_sidebar(</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    ui.sidebar(<span class="st">"Filters"</span>),</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    ui.card(<span class="st">"Hello glass"</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    theme<span class="op">=</span>glass_theme(preset<span class="op">=</span><span class="st">"light"</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>app <span class="op">=</span> App(app_ui, <span class="va">None</span>)</span></code></pre></div>
-<p>See <a href="https://github.com/ericrayanderson/shinyglass/blob/main/python/README.md" class="external-link"><code>python/README.md</code></a> for wheel builds and CI isolation tests.</p>
+<p>A parallel package lives under <a href="https://github.com/ericrayanderson/shinyglass/tree/main/python" class="external-link"><code>python/</code></a> (not on CRAN/PyPI yet). See that README for wheel builds.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

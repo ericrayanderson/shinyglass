@@ -1,0 +1,38 @@
+# Ecosystem compatibility
+
+shinyglass is a **theme layer**, not a universal skin. It targets
+Bootstrap 5 / bslib surfaces first, then overlays denser dashboard
+stacks where practical.
+
+## Support matrix (as of 0.2)
+
+| Stack | Status | Notes |
+|----|----|----|
+| `fluidPage` / `navbarPage` | Supported | Drop-in `theme = glass_theme()` |
+| bslib `page_sidebar` / `layout_sidebar` | Supported | Floating glass sidebar; nested layouts stay in-flow (0.1.1+) |
+| bslib cards, value boxes, navsets | Supported |  |
+| DT | Supported | Wrapper + paging chrome |
+| reactable | Supported | Avoids double-framing the html-output |
+| leaflet | Supported | Map container transparency |
+| shinyWidgets (common inputs) | Good | Slider tooltips / noUiSlider chips |
+| shinydashboard / bs4Dash (AdminLTE) | Overlay | Glass header/sidebar/boxes; layout stays AdminLTE |
+| teal | Good | Use `options(teal.bs_theme = glass_theme())` |
+| plotly / other htmlwidgets | Partial | Framed when nested in known output wrappers |
+| Bootstrap 3-only apps | Limited | Theme is BS5 via bslib |
+
+## Layout contract
+
+- Open bslib sidebars **reserve** space in main so content is not buried
+  under the floating chrome.
+- Nested `layout_sidebar()` does **not** double-float.
+- AdminLTE left sidebars keep fixed AdminLTE geometry; glass is visual
+  overlay only.
+
+## Tips
+
+- Prefer bslib page functions when you can — glass was designed around
+  them.
+- For dark mode in dense AdminLTE apps, re-check value/info box contrast
+  after switching preset at runtime.
+- `preset = "auto"` is ideal for demos; pin `"light"` or `"dark"` for
+  screenshots and tests.

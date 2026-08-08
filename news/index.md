@@ -2,7 +2,49 @@
 
 ## shinyglass (development version)
 
+## shinyglass 0.2.0
+
+### Breaking changes
+
+- Light and dark glass surfaces are now dual **CSS custom-property
+  packs** on `[data-glass-preset]`. Switching preset no longer requires
+  recompiling Sass or reloading the page. Apps that overrode Sass-only
+  `$glass-*` tokens should target `--glass-*` CSS variables (or
+  `[data-glass-preset="dark"]`) instead.
+- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+  always builds on the Bootstrap 5 base theme (not Bootswatch `darkly`
+  for dark). Dark appearance comes from the CSS variable pack so
+  light↔︎dark can toggle live. Visuals should match 0.1.x closely; if you
+  relied on darkly-specific chrome outside glass surfaces, re-check dark
+  mode.
+- Private escape hatch `window.__shinyglassDisableTint` still works, but
+  the supported API is `glass_theme(tint = FALSE)` /
+  `update_glass_theme(tint = …)`.
+
+### New features
+
+- Runtime light/dark switching via
+  `document.documentElement.dataset.glassPreset` without a full reload.
+- `glass_theme(preset = "auto")` follows `prefers-color-scheme` and
+  updates when the OS theme changes.
+- \[update_glass_theme()\] to change `preset` and `tint` from the
+  server.
+- Behavior knobs on \[glass_theme()\]: `tint`, `specular`, and
+  `nav_morph` (all default `TRUE`, matching 0.1.x JS behavior).
+- Client helper `window.shinyglass.setPreset()` / `.getPreset()` /
+  `.setTint()`.
+
+### Improvements
+
+- Demo and bslib dashboard examples include light / dark / auto
+  controls.
+- Unit tests cover dual CSS packs, head script knobs, and
+  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+  messaging.
+
 ## shinyglass 0.1.1
+
+CRAN release: 2026-08-02
 
 - Fix:
   [`bslib::sidebar()`](https://rstudio.github.io/bslib/reference/sidebar.html)

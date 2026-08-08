@@ -20,15 +20,19 @@ translucent surfaces, backdrop blur, and system typography.
       plotOutput("plot")
     )
 
-Light and dark presets are available via `glass_theme(preset = "dark")`.
-Accent color, blur, saturation, and corner radius are configurable.
+Light and dark presets are available via `glass_theme(preset = "dark")`,
+or `preset = "auto"` to follow the OS. Switch at runtime with
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md).
+Accent color, blur, saturation, corner radius, and JS behaviors (`tint`,
+`specular`, `nav_morph`) are configurable.
 
 For [teal](https://insightsengineering.github.io/teal/) apps, set
 `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
 
 ## See also
 
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 
 ## Author
 
