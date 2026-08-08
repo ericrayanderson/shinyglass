@@ -396,17 +396,22 @@
   });
 
   // compact navbar on scroll down; expand on scroll up
+  // Note: htmlDependency scripts often load in <head> before <body> exists —
+  // never touch document.body until DOM is ready.
   (function () {
     var threshold = 56;
     var lastScrollY = window.scrollY || 0;
     var ticking = false;
 
     function updateNavMorph() {
+      var body = document.body;
+      if (!body) return;
+
       if (
         !navMorphEnabled() ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
-        document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
+        body.classList.remove("glass-nav-compact", "glass-nav-expanded");
         ticking = false;
         return;
       }
@@ -414,7 +419,6 @@
       var y = Math.max(0, window.scrollY);
       var scrollingDown = y > lastScrollY + 2;
       var scrollingUp = y < lastScrollY - 2;
-      var body = document.body;
 
       if (y <= threshold) {
         body.classList.remove("glass-nav-compact");
@@ -442,7 +446,11 @@
       { passive: true }
     );
 
-    updateNavMorph();
+    if (document.body) {
+      updateNavMorph();
+    } else if (document.addEventListener) {
+      document.addEventListener("DOMContentLoaded", updateNavMorph);
+    }
   })();
 
   // force glass colors past inline widget styles
