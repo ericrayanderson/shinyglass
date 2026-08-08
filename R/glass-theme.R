@@ -95,6 +95,14 @@ glass_theme <- function(
     "btn-padding-y" = ".55rem",
     "btn-padding-x" = "1.2rem",
     "btn-border-width" = "1px",
+    # Bootstrap's color-contrast(#007AFF) resolves to black, so checked
+    # checkboxes, radios, switches, and other "active on primary" marks
+    # compile with dark strokes on blue. Force light ink on accent fills.
+    "component-active-color" = "#ffffff",
+    "form-check-input-checked-color" = "#ffffff",
+    "form-check-input-indeterminate-color" = "#ffffff",
+    "form-switch-checked-color" = "#ffffff",
+    "pagination-active-color" = "#ffffff",
     ...
   )
 
