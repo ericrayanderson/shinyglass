@@ -9,12 +9,23 @@
 
 Light and dark packs switch at **runtime** (no page reload). Use `preset = "auto"` to follow the OS, or call `update_glass_theme()` from the server.
 
-[Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass)
+[Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass) · **[Live demos](#live-demos)**
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark">
 </p>
+
+## Live demos
+
+Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a few seconds to wake):
+
+| App | What it shows |
+|-----|----------------|
+| [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **Light / Dark / Auto** buttons (`update_glass_theme()`) |
+| [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT |
+| [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
+| [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
 
 ## Install
 
@@ -48,18 +59,9 @@ shinyApp(ui, server)
 
 See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/theming.html) for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
 
-## Live demos
-
-Hosted on [shinyapps.io](https://www.shinyapps.io/) (may take a few seconds to wake on the free tier):
-
-- [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
-- [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
-- [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/)
-- [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) (dreamRs, glass port)
-
 ```r
-# re-deploy from a package checkout (requires rsconnect account):
-# remotes::install_github("ericrayanderson/shinyglass")  # must be GitHub, not local
+# re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):
+# remotes::install_github("ericrayanderson/shinyglass")
 # Rscript inst/scripts/deploy-shinyapps-demos.R
 ```
 

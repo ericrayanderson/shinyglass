@@ -196,7 +196,9 @@ for (key in app_keys) {
     appName = spec$appName,
     forceUpdate = TRUE,
     lint = FALSE,
-    launch.browser = FALSE
+    launch.browser = FALSE,
+    # Anyone with the URL can view (not account-only).
+    appVisibility = "public"
   )
   if (!is.null(account) && nzchar(account)) {
     deploy_args$account <- account
