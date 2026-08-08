@@ -63,9 +63,43 @@
 
 <p><a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme with translucent surfaces, backdrop blur, and system typography. Pass it as <code>theme = glass_theme()</code> to <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, or other page functions that accept a bslib theme.</p>
 <p>Light and dark packs switch at <strong>runtime</strong> (no page reload). Use <code>preset = "auto"</code> to follow the OS, or call <code><a href="reference/update_glass_theme.html">update_glass_theme()</a></code> from the server.</p>
-<p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a></p>
+<p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a> · <strong><a href="#live-demos">Live demos</a></strong></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
+<div class="section level2">
+<h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
+</h2>
+<p>Public apps on <a href="https://www.shinyapps.io/" class="external-link">shinyapps.io</a> (free tier may take a few seconds to wake):</p>
+<table class="table">
+<colgroup>
+<col width="23%">
+<col width="76%">
+</colgroup>
+<thead><tr>
+<th>App</th>
+<th>What it shows</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Demo + theme toggle</a></td>
+<td>Core glass UI + <strong>Light / Dark / Auto</strong> buttons (<code><a href="reference/update_glass_theme.html">update_glass_theme()</a></code>)</td>
+</tr>
+<tr>
+<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">bslib dashboard</a></td>
+<td>
+<code>page_sidebar</code>, value boxes, plots, DT</td>
+</tr>
+<tr>
+<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-inputs/" class="external-link">Inputs gallery</a></td>
+<td>Built-in Shiny inputs under glass</td>
+</tr>
+<tr>
+<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-olympics/" class="external-link">Olympic medals</a></td>
+<td>denser dreamRs-style dashboard (glass port)</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
@@ -96,21 +130,9 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
 <p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
-</div>
-<div class="section level2">
-<h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
-</h2>
-<p>Hosted on <a href="https://www.shinyapps.io/" class="external-link">shinyapps.io</a> (may take a few seconds to wake on the free tier):</p>
-<ul>
-<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Demo + theme toggle</a></li>
-<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">bslib dashboard</a></li>
-<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-inputs/" class="external-link">Inputs gallery</a></li>
-<li>
-<a href="https://ericrayanderson.shinyapps.io/shinyglass-olympics/" class="external-link">Olympic medals</a> (dreamRs, glass port)</li>
-</ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># re-deploy from a package checkout (requires rsconnect account):</span></span>
-<span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")  # must be GitHub, not local</span></span>
+<code class="sourceCode R"><span><span class="co"># re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):</span></span>
+<span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span>
 <span><span class="co"># Rscript inst/scripts/deploy-shinyapps-demos.R</span></span></code></pre></div>
 </div>
 <div class="section level2">

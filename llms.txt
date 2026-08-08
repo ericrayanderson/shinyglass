@@ -17,12 +17,25 @@ Light and dark packs switch at **runtime** (no page reload). Use
 from the server.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
-[GitHub](https://github.com/ericrayanderson/shinyglass)
+[GitHub](https://github.com/ericrayanderson/shinyglass) · **[Live
+demos](#live-demos)**
 
 ![Glass dashboard,
 light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Glass
 dashboard,
 dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
+
+## Live demos
+
+Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may
+take a few seconds to wake):
+
+| App | What it shows |
+|----|----|
+| [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **Light / Dark / Auto** buttons ([`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)) |
+| [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT |
+| [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
+| [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
 
 ## Install
 
@@ -60,25 +73,10 @@ See the [theming
 article](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
 for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
 
-## Live demos
-
-Hosted on [shinyapps.io](https://www.shinyapps.io/) (may take a few
-seconds to wake on the free tier):
-
-- [Demo + theme
-  toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
-- [bslib
-  dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
-- [Inputs
-  gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/)
-- [Olympic
-  medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/)
-  (dreamRs, glass port)
-
 ``` r
 
-# re-deploy from a package checkout (requires rsconnect account):
-# remotes::install_github("ericrayanderson/shinyglass")  # must be GitHub, not local
+# re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):
+# remotes::install_github("ericrayanderson/shinyglass")
 # Rscript inst/scripts/deploy-shinyapps-demos.R
 ```
 
