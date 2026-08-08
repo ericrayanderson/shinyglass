@@ -62,18 +62,24 @@ for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
 
 ## Live demos
 
-Hosted on shinyapps.io (may take a few seconds to wake on the free
-tier):
+Hosted on [shinyapps.io](https://www.shinyapps.io/) (may take a few
+seconds to wake on the free tier):
 
-- Demo + theme toggle — *deploy `shinyglass-demo`*
-- bslib dashboard — *deploy `shinyglass-dashboard`*
-- Inputs gallery — *deploy `shinyglass-inputs`*
-- Olympic medals (dreamRs) — *deploy `shinyglass-olympics`*
+- [Demo + theme
+  toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
+- [bslib
+  dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
+- [Inputs
+  gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/)
+- [Olympic
+  medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/)
+  (dreamRs, glass port)
 
 ``` r
 
-# from a package checkout, after rsconnect::setAccountInfo(...):
-# source("inst/scripts/deploy-shinyapps-demos.R")
+# re-deploy from a package checkout (requires rsconnect account):
+# remotes::install_github("ericrayanderson/shinyglass")  # must be GitHub, not local
+# Rscript inst/scripts/deploy-shinyapps-demos.R
 ```
 
 ## Local examples

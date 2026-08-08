@@ -100,21 +100,18 @@
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
 </h2>
-<p>Hosted on shinyapps.io (may take a few seconds to wake on the free tier):</p>
-<!-- Update URLs after running inst/scripts/deploy-shinyapps-demos.R -->
+<p>Hosted on <a href="https://www.shinyapps.io/" class="external-link">shinyapps.io</a> (may take a few seconds to wake on the free tier):</p>
 <ul>
-<li>Demo + theme toggle — <em>deploy <code>shinyglass-demo</code></em>
-</li>
-<li>bslib dashboard — <em>deploy <code>shinyglass-dashboard</code></em>
-</li>
-<li>Inputs gallery — <em>deploy <code>shinyglass-inputs</code></em>
-</li>
-<li>Olympic medals (dreamRs) — <em>deploy <code>shinyglass-olympics</code></em>
-</li>
+<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Demo + theme toggle</a></li>
+<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">bslib dashboard</a></li>
+<li><a href="https://ericrayanderson.shinyapps.io/shinyglass-inputs/" class="external-link">Inputs gallery</a></li>
+<li>
+<a href="https://ericrayanderson.shinyapps.io/shinyglass-olympics/" class="external-link">Olympic medals</a> (dreamRs, glass port)</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># from a package checkout, after rsconnect::setAccountInfo(...):</span></span>
-<span><span class="co"># source("inst/scripts/deploy-shinyapps-demos.R")</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># re-deploy from a package checkout (requires rsconnect account):</span></span>
+<span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")  # must be GitHub, not local</span></span>
+<span><span class="co"># Rscript inst/scripts/deploy-shinyapps-demos.R</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="local-examples">Local examples<a class="anchor" aria-label="anchor" href="#local-examples"></a>
