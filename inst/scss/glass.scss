@@ -26,19 +26,13 @@
   font-weight: 600;
 }
 
+// Shared compile-time knobs (blur / radius / primary ink). Preset-specific
+// surfaces live in dual packs below so light↔dark can switch at runtime via
+// document.documentElement.dataset.glassPreset without recompiling Sass.
 :root {
-  --glass-bg: #{$glass-bg};
-  --glass-bg-hover: #{$glass-bg-hover};
-  --glass-border: #{$glass-border};
-  --glass-shadow: #{$glass-shadow};
-  --glass-elevated-shadow: #{$glass-elevated-shadow};
   --glass-blur: #{$glass-blur};
   --glass-saturate: #{$glass-saturate};
   --glass-radius: #{$glass-radius};
-  --glass-highlight: #{$glass-highlight};
-  --glass-specular: #{$glass-specular};
-  --glass-menu-bg: #{$glass-menu-bg};
-  --glass-menu-color: #{$glass-menu-color};
   --glass-float-margin: 0.85rem;
   --glass-tint-r: 0;
   --glass-tint-g: 122;
@@ -46,7 +40,6 @@
   --glass-tint-strength: 0;
   --glass-specular-x: 28%;
   --glass-specular-y: 10%;
-  --glass-inner-glow: rgba(255, 255, 255, 0.15);
   // Contrast-safe ink for solid theme fills (widgets that inherit body color)
   --glass-on-primary: #{glass-on($primary)};
   --glass-on-success: #{glass-on($success)};
@@ -55,12 +48,64 @@
   --glass-on-info: #{glass-on($info)};
 }
 
-[data-glass-preset="dark"] {
+// Light pack (default when data-glass-preset is missing or "light")
+:root,
+:root[data-glass-preset="light"] {
+  --glass-body-bg: #f5f5f7;
+  --glass-body-color: #1d1d1f;
+  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-bg-hover: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-shadow: rgba(0, 0, 0, 0.12);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.75);
+  --glass-specular: rgba(255, 255, 255, 0.45);
+  --glass-menu-bg: #ffffff;
+  --glass-menu-color: #1d1d1f;
+  --glass-page-bg: linear-gradient(145deg, #eef0f8 0%, #f5f5f7 35%, #e8e4f0 70%, #dfe8f5 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.28);
+  --glass-orb-2: rgba(175, 82, 222, 0.22);
+  --glass-orb-3: rgba(255, 149, 0, 0.16);
+  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  --bs-body-bg: var(--glass-body-bg);
+  --bs-body-color: var(--glass-body-color);
+  --bs-secondary-color: rgba(29, 29, 31, 0.75);
+  --bs-tertiary-color: rgba(29, 29, 31, 0.5);
+  --bs-emphasis-color: #1d1d1f;
+  --bs-border-color: rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
+
+:root[data-glass-preset="dark"] {
+  --glass-body-bg: #000000;
+  --glass-body-color: #f5f5f7;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --glass-shadow: rgba(0, 0, 0, 0.42);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.58);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --glass-specular: rgba(255, 255, 255, 0.12);
+  --glass-menu-bg: #1c1c1e;
+  --glass-menu-color: #f5f5f7;
+  --glass-page-bg: linear-gradient(145deg, #0c0c14 0%, #000000 40%, #140a1a 75%, #0a1020 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.36);
+  --glass-orb-2: rgba(191, 90, 242, 0.30);
+  --glass-orb-3: rgba(255, 159, 10, 0.22);
   --glass-inner-glow: rgba(255, 255, 255, 0.06);
+  --bs-body-bg: var(--glass-body-bg);
+  --bs-body-color: var(--glass-body-color);
+  --bs-secondary-color: rgba(245, 245, 247, 0.75);
+  --bs-tertiary-color: rgba(245, 245, 247, 0.5);
+  --bs-emphasis-color: #f5f5f7;
+  --bs-border-color: rgba(255, 255, 255, 0.16);
+  color-scheme: dark;
 }
 
 body {
-  background: $glass-page-bg !important;
+  background: var(--glass-page-bg) !important;
+  background-color: var(--glass-body-bg) !important;
+  color: var(--glass-body-color) !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,10 +117,10 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 58%),
-    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 52%),
-    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 48%),
-    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 45%);
+    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -85,8 +130,8 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 32%),
-    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 28%);
+    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 32%),
+    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 28%);
   opacity: 0.85;
   pointer-events: none;
 }
@@ -488,7 +533,8 @@ body.glass-nav-expanded {
 
 .btn-secondary,
 .btn-light {
-  @include glass-button-ghost($body-color);
+  // Runtime-switchable body ink (not Sass $body-color)
+  @include glass-button-ghost(var(--glass-body-color));
 }
 
 .btn-primary,
@@ -528,7 +574,7 @@ body.glass-nav-expanded {
 
 .btn-outline-secondary,
 .btn-outline-light {
-  @include glass-button-ghost($body-color);
+  @include glass-button-ghost(var(--glass-body-color));
 }
 
 .btn-outline-success {
@@ -593,7 +639,7 @@ a.shiny-download-link {
 
     &.btn-secondary,
     &.btn-light {
-      @include glass-button-ghost($body-color);
+      @include glass-button-ghost(var(--glass-body-color));
     }
 
     &.btn-success {
@@ -1511,8 +1557,25 @@ body .bg-aqua {
   .info-box-icon > i,
   .info-box-icon > span {
     color: inherit !important;
-    opacity: 0.35;
+    opacity: 0.4;
   }
+
+  // Icon gutter: keep a soft glass plate so status icons read on both presets
+  .icon,
+  .info-box-icon {
+    background: color-mix(in srgb, var(--glass-bg-hover) 55%, transparent) !important;
+  }
+}
+
+// bs4Dash smallBox / valueBox extras — even chrome across status classes
+body .small-box .icon > i,
+body .info-box .info-box-icon > i {
+  transition: opacity 0.2s ease;
+}
+
+body .small-box:hover .icon > i,
+body .info-box:hover .info-box-icon > i {
+  opacity: 0.55;
 }
 
 // ---------------------------------------------------------------------------

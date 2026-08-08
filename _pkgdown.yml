@@ -25,12 +25,19 @@ home:
 
 navbar:
   structure:
-    left:  [intro, reference, news]
+    left:  [intro, articles, reference, news]
     right: [search, github]
   components:
     intro:
       text: Get started
       href: index.html
+    articles:
+      text: Articles
+      menu:
+        - text: Theming and light/dark
+          href: articles/theming.html
+        - text: Ecosystem compatibility
+          href: articles/compatibility.html
     reference:
       text: Reference
       href: reference/index.html
@@ -44,9 +51,16 @@ navbar:
 
 reference:
 - title: Theme
-  desc: Create a Liquid Glass theme for your Shiny app.
+  desc: Create and update a Liquid Glass theme for your Shiny app.
   contents:
   - glass_theme
+  - update_glass_theme
+
+articles:
+- title: Guides
+  contents:
+  - theming
+  - compatibility
 
 authors:
   Eric Anderson:

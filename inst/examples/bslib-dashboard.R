@@ -20,8 +20,8 @@ if (!requireNamespace("DT", quietly = TRUE)) {
 library(ggplot2)
 
 glass_preset <- match.arg(
-  Sys.getenv("SHINYGLASS_PRESET", "light"),
-  c("light", "dark")
+  Sys.getenv("SHINYGLASS_PRESET", "auto"),
+  c("light", "dark", "auto")
 )
 
 accent_colors <- c(
@@ -42,7 +42,7 @@ ui <- page_sidebar(
     selectInput(
       "preset",
       "Theme preset",
-      choices = c("Light" = "light", "Dark" = "dark"),
+      choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
       selected = glass_preset
     ),
     selectInput(
@@ -116,7 +116,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$preset, {
-    session$sendCustomMessage("glassPreset", input$preset)
+    update_glass_theme(session, preset = input$preset)
   }, ignoreInit = TRUE)
 
   output$metric_n <- renderText({
@@ -133,7 +133,8 @@ server <- function(input, output, session) {
   })
 
   plot_bg <- reactive({
-    if (input$preset == "dark") "#14141a" else "#f8f9fc"
+    # "auto" uses a neutral light panel; pure dark when forced dark.
+    if (identical(input$preset, "dark")) "#14141a" else "#f8f9fc"
   })
 
   plot_fg <- reactive({

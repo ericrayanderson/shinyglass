@@ -5,16 +5,20 @@
 \title{Liquid Glass theme for Shiny}
 \usage{
 glass_theme(
-  preset = c("light", "dark"),
+  preset = c("light", "dark", "auto"),
   primary = "#007AFF",
   blur = 28,
   saturation = 200,
   radius = "1.25rem",
+  tint = TRUE,
+  specular = TRUE,
+  nav_morph = TRUE,
   ...
 )
 }
 \arguments{
-\item{preset}{\code{"light"} or \code{"dark"}. Switches the full color system.}
+\item{preset}{\code{"light"}, \code{"dark"}, or \code{"auto"}. \code{"auto"} follows
+\code{prefers-color-scheme} and updates when the OS theme changes.}
 
 \item{primary}{Accent color for buttons, links, and focus rings.
 Defaults to system blue (\verb{#007AFF}).}
@@ -24,6 +28,12 @@ Defaults to system blue (\verb{#007AFF}).}
 \item{saturation}{Backdrop saturation percentage.}
 
 \item{radius}{Default border radius for glass surfaces (CSS length).}
+
+\item{tint}{Content-aware ambient tint from plots/images (JS).}
+
+\item{specular}{Pointer-driven specular highlight on glass surfaces (JS).}
+
+\item{nav_morph}{Compact navbar on scroll down; expand on scroll up (JS).}
 
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }
@@ -36,21 +46,37 @@ surfaces, backdrop blur, soft depth, and system typography. Pass the result
 to \verb{theme =} on \code{fluidPage()}, \code{navbarPage()}, \code{bslib::page_sidebar()}, or
 any other page function that accepts a bslib theme.
 }
+\details{
+Light and dark surface tokens are compiled into dual CSS custom-property
+packs. Switching \code{preset} at runtime (via \code{\link[=update_glass_theme]{update_glass_theme()}} or
+\code{preset = "auto"}) updates \code{document.documentElement.dataset.glassPreset}
+without recompiling Sass or reloading the page.
+}
 \examples{
 theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
+auto <- glass_theme(preset = "auto", tint = FALSE)
 
 if (interactive()) {
   library(shiny)
 
   ui <- fluidPage(
-    theme = glass_theme(),
+    theme = glass_theme(preset = "auto"),
     titlePanel("Liquid Glass"),
+    actionButton("toggle", "Toggle light / dark"),
     selectInput("color", "Color", c("Blue", "Purple", "Orange")),
     plotOutput("plot")
   )
 
-  shinyApp(ui, function(...) {})
+  server <- function(input, output, session) {
+    mode <- reactiveVal("light")
+    observeEvent(input$toggle, {
+      mode(if (identical(mode(), "light")) "dark" else "light")
+      update_glass_theme(session, preset = mode())
+    })
+  }
+
+  shinyApp(ui, server)
 }
 
 }

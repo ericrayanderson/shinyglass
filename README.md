@@ -2,9 +2,12 @@
 
 <!-- badges: start -->
 [![License: GPL-3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
+[![R-CMD-check](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). `glass_theme()` returns a [bslib](https://rstudio.github.io/bslib/) theme with translucent surfaces, backdrop blur, and system typography. Pass it as `theme = glass_theme()` to `fluidPage()`, `navbarPage()`, or other page functions that accept a bslib theme.
+
+Light and dark packs switch at **runtime** (no page reload). Use `preset = "auto"` to follow the OS, or call `update_glass_theme()` from the server.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass)
 
@@ -13,55 +16,63 @@
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark">
 </p>
 
+## Install
+
+```r
+install.packages("shinyglass")
+# development:
+# remotes::install_github("ericrayanderson/shinyglass")
+```
+
 ## Quick start
 
 ```r
-# install.packages("remotes")
-remotes::install_github("ericrayanderson/shinyglass")
-
 library(shiny)
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(),  # or glass_theme(preset = "dark")
+  theme = glass_theme(preset = "auto"),
   titlePanel("Liquid Glass"),
+  actionButton("dark", "Dark mode"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) {
+  observeEvent(input$dark, update_glass_theme(session, preset = "dark"))
   output$plot <- renderPlot(barplot(seq_len(input$n), col = "#007AFF", border = NA))
 }
 
 shinyApp(ui, server)
 ```
 
+See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/theming.html) for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
+
+## Live demos
+
+Hosted on shinyapps.io (may take a few seconds to wake on the free tier):
+
+<!-- Update URLs after running inst/scripts/deploy-shinyapps-demos.R -->
+- Demo + theme toggle — *deploy `shinyglass-demo`*
+- bslib dashboard — *deploy `shinyglass-dashboard`*
+- Inputs gallery — *deploy `shinyglass-inputs`*
+- Olympic medals (dreamRs) — *deploy `shinyglass-olympics`*
+
+```r
+# from a package checkout, after rsconnect::setAccountInfo(...):
+# source("inst/scripts/deploy-shinyapps-demos.R")
+```
+
+## Local examples
+
+```r
+shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
+```
+
 ## Shiny for Python (experimental)
 
-Package under
+A parallel package lives under
 [`python/`](https://github.com/ericrayanderson/shinyglass/tree/main/python)
-(not on CRAN). Shares `inst/scss` + `inst/js`; wheels vendor precompiled CSS so
-default themes need **no libsass** at runtime.
-
-```bash
-cd python
-pip install -e ".[dev,theme]"
-python scripts/vendor_assets.py   # → src/shinyglass/static/
-shiny run examples/app_sidebar.py
-```
-
-```python
-from shiny import App, ui
-from shinyglass import glass_theme
-
-app_ui = ui.page_sidebar(
-    ui.sidebar("Filters"),
-    ui.card("Hello glass"),
-    theme=glass_theme(preset="light"),
-)
-app = App(app_ui, None)
-```
-
-See
-[`python/README.md`](https://github.com/ericrayanderson/shinyglass/blob/main/python/README.md)
-for wheel builds and CI isolation tests.
+(not on CRAN/PyPI yet). See that README for wheel builds.

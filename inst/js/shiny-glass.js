@@ -3,6 +3,124 @@
 
   var TINT_THROTTLE_MS = 400;
   var tintTimer = null;
+  var schemeMql = null;
+  var schemeListener = null;
+
+  function rootEl() {
+    return document.documentElement;
+  }
+
+  function flagEnabled(name, defaultOn) {
+    var v = rootEl().dataset[name];
+    if (v === undefined || v === "") return defaultOn;
+    return v === "true" || v === "1";
+  }
+
+  function tintEnabled() {
+    if (window.__shinyglassDisableTint) return false;
+    return flagEnabled("glassTint", true);
+  }
+
+  function specularEnabled() {
+    return flagEnabled("glassSpecular", true);
+  }
+
+  function navMorphEnabled() {
+    return flagEnabled("glassNavMorph", true);
+  }
+
+  function resolvePreset(mode) {
+    mode = mode || rootEl().dataset.glassMode || "light";
+    if (mode === "auto") {
+      try {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      } catch (e) {
+        return "light";
+      }
+    }
+    return mode === "dark" ? "dark" : "light";
+  }
+
+  function detachSchemeListener() {
+    if (schemeMql && schemeListener) {
+      try {
+        if (schemeMql.removeEventListener) {
+          schemeMql.removeEventListener("change", schemeListener);
+        } else if (schemeMql.removeListener) {
+          schemeMql.removeListener(schemeListener);
+        }
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    schemeMql = null;
+    schemeListener = null;
+  }
+
+  function attachSchemeListener() {
+    detachSchemeListener();
+    try {
+      schemeMql = window.matchMedia("(prefers-color-scheme: dark)");
+      schemeListener = function () {
+        if ((rootEl().dataset.glassMode || "") === "auto") {
+          applyPreset("auto", { fromOs: true });
+        }
+      };
+      if (schemeMql.addEventListener) {
+        schemeMql.addEventListener("change", schemeListener);
+      } else if (schemeMql.addListener) {
+        schemeMql.addListener(schemeListener);
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function applyPreset(mode, opts) {
+    opts = opts || {};
+    var root = rootEl();
+    if (mode === "light" || mode === "dark" || mode === "auto") {
+      root.dataset.glassMode = mode;
+    } else {
+      mode = root.dataset.glassMode || "light";
+    }
+
+    var resolved = resolvePreset(mode);
+    var prev = root.dataset.glassPreset;
+    root.dataset.glassPreset = resolved;
+
+    if (mode === "auto") {
+      attachSchemeListener();
+    } else {
+      detachSchemeListener();
+    }
+
+    if (prev !== resolved) {
+      clearTint();
+      scheduleTintUpdate();
+    }
+
+    try {
+      root.dispatchEvent(
+        new CustomEvent("shinyglass:preset", {
+          detail: { mode: mode, preset: resolved, fromOs: !!opts.fromOs },
+        })
+      );
+    } catch (e) {
+      /* IE / very old — ignore */
+    }
+  }
+
+  function setTintEnabled(on) {
+    rootEl().dataset.glassTint = on ? "true" : "false";
+    if (!on) {
+      clearTint();
+    } else {
+      scheduleTintUpdate();
+    }
+  }
 
   function blend(a, b, t) {
     return Math.round(a + (b - a) * t);
@@ -130,7 +248,7 @@
   }
 
   function clearTint() {
-    var root = document.documentElement;
+    var root = rootEl();
     root.classList.remove("glass-tint-active");
     root.style.removeProperty("--glass-tint-strength");
     [
@@ -151,7 +269,7 @@
       return;
     }
 
-    var root = document.documentElement;
+    var root = rootEl();
     var preset = root.dataset.glassPreset || "light";
     var strength = preset === "dark" ? 0.48 : 0.55;
     var secondary = shiftHue(rgb);
@@ -174,20 +292,44 @@
       );
       root.style.setProperty(
         "--glass-border",
-        "rgba(" + blend(rgb.r, 255, 0.42) + ", " + blend(rgb.g, 255, 0.42) + ", " + blend(rgb.b, 255, 0.42) + ", 0.28)"
+        "rgba(" +
+          blend(rgb.r, 255, 0.42) +
+          ", " +
+          blend(rgb.g, 255, 0.42) +
+          ", " +
+          blend(rgb.b, 255, 0.42) +
+          ", 0.28)"
       );
     } else {
       root.style.setProperty(
         "--glass-bg",
-        "rgba(" + blend(255, rgb.r, 0.22) + ", " + blend(255, rgb.g, 0.22) + ", " + blend(255, rgb.b, 0.22) + ", 0.30)"
+        "rgba(" +
+          blend(255, rgb.r, 0.22) +
+          ", " +
+          blend(255, rgb.g, 0.22) +
+          ", " +
+          blend(255, rgb.b, 0.22) +
+          ", 0.30)"
       );
       root.style.setProperty(
         "--glass-bg-hover",
-        "rgba(" + blend(255, rgb.r, 0.30) + ", " + blend(255, rgb.g, 0.30) + ", " + blend(255, rgb.b, 0.30) + ", 0.42)"
+        "rgba(" +
+          blend(255, rgb.r, 0.30) +
+          ", " +
+          blend(255, rgb.g, 0.30) +
+          ", " +
+          blend(255, rgb.b, 0.30) +
+          ", 0.42)"
       );
       root.style.setProperty(
         "--glass-border",
-        "rgba(" + blend(255, rgb.r, 0.45) + ", " + blend(255, rgb.g, 0.45) + ", " + blend(255, rgb.b, 0.45) + ", 0.58)"
+        "rgba(" +
+          blend(255, rgb.r, 0.45) +
+          ", " +
+          blend(255, rgb.g, 0.45) +
+          ", " +
+          blend(255, rgb.b, 0.45) +
+          ", 0.58)"
       );
     }
 
@@ -210,17 +352,32 @@
   }
 
   function updateContentTint() {
-    if (window.__shinyglassDisableTint) return;
+    if (!tintEnabled()) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     var rgb = averageSamples(collectSamples());
     applyTint(rgb);
   }
 
   function scheduleTintUpdate() {
-    if (window.__shinyglassDisableTint) return;
+    if (!tintEnabled()) return;
     if (tintTimer) clearTimeout(tintTimer);
     tintTimer = setTimeout(updateContentTint, TINT_THROTTLE_MS);
   }
+
+  // Public API for advanced users / tests
+  window.shinyglass = window.shinyglass || {};
+  window.shinyglass.setPreset = function (mode) {
+    applyPreset(mode);
+  };
+  window.shinyglass.getPreset = function () {
+    return rootEl().dataset.glassPreset || "light";
+  };
+  window.shinyglass.getMode = function () {
+    return rootEl().dataset.glassMode || "light";
+  };
+  window.shinyglass.setTint = function (on) {
+    setTintEnabled(!!on);
+  };
 
   // raise native <select> above later card content
   $(document).on("focus mousedown", ".card .form-select, form.well .form-select", function () {
@@ -245,7 +402,10 @@
     var ticking = false;
 
     function updateNavMorph() {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (
+        !navMorphEnabled() ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
         document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
         ticking = false;
         return;
@@ -318,6 +478,7 @@
     document.addEventListener(
       "mousemove",
       function (e) {
+        if (!specularEnabled()) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         var el = e.target.closest(specularSelector);
         if (!el) return;
@@ -350,12 +511,25 @@
     $(this).closest(".shiny-input-container").removeClass("glass-select-open");
   });
 
-  // re-tint when plots/images update
+  function handleShinyglassMessage(msg) {
+    if (msg == null) return;
+    // Legacy: glassPreset sent a bare string
+    if (typeof msg === "string") {
+      applyPreset(msg);
+      return;
+    }
+    if (typeof msg === "object") {
+      if (msg.preset != null) applyPreset(msg.preset);
+      if (msg.tint != null) setTintEnabled(!!msg.tint);
+    }
+  }
+
+  // Structured message from update_glass_theme()
   if (typeof Shiny !== "undefined") {
+    Shiny.addCustomMessageHandler("shinyglass", handleShinyglassMessage);
+    // Back-compat with older glassPreset handler name
     Shiny.addCustomMessageHandler("glassPreset", function (preset) {
-      document.documentElement.dataset.glassPreset = preset || "light";
-      clearTint();
-      scheduleTintUpdate();
+      applyPreset(preset || "light");
     });
   }
 
@@ -363,6 +537,10 @@
   $(document).on("shiny:value shiny:visualchange", scheduleTintUpdate);
 
   $(function () {
+    // Ensure mode/preset are coherent if head script ran or was skipped
+    var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
+    applyPreset(mode);
+
     scheduleTintUpdate();
     applyWidgetGlassOverrides();
 

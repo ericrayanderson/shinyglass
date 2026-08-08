@@ -5,12 +5,21 @@
 #' to `theme =` on `fluidPage()`, `navbarPage()`, `bslib::page_sidebar()`, or
 #' any other page function that accepts a bslib theme.
 #'
-#' @param preset `"light"` or `"dark"`. Switches the full color system.
+#' Light and dark surface tokens are compiled into dual CSS custom-property
+#' packs. Switching `preset` at runtime (via [update_glass_theme()] or
+#' `preset = "auto"`) updates `document.documentElement.dataset.glassPreset`
+#' without recompiling Sass or reloading the page.
+#'
+#' @param preset `"light"`, `"dark"`, or `"auto"`. `"auto"` follows
+#'   `prefers-color-scheme` and updates when the OS theme changes.
 #' @param primary Accent color for buttons, links, and focus rings.
 #'   Defaults to system blue (`#007AFF`).
 #' @param blur Backdrop blur radius in pixels.
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).
+#' @param tint Content-aware ambient tint from plots/images (JS).
+#' @param specular Pointer-driven specular highlight on glass surfaces (JS).
+#' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for Shiny page functions.
@@ -18,34 +27,57 @@
 #' @examples
 #' theme <- glass_theme()
 #' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
+#' auto <- glass_theme(preset = "auto", tint = FALSE)
 #'
 #' if (interactive()) {
 #'   library(shiny)
 #'
 #'   ui <- fluidPage(
-#'     theme = glass_theme(),
+#'     theme = glass_theme(preset = "auto"),
 #'     titlePanel("Liquid Glass"),
+#'     actionButton("toggle", "Toggle light / dark"),
 #'     selectInput("color", "Color", c("Blue", "Purple", "Orange")),
 #'     plotOutput("plot")
 #'   )
 #'
-#'   shinyApp(ui, function(...) {})
+#'   server <- function(input, output, session) {
+#'     mode <- reactiveVal("light")
+#'     observeEvent(input$toggle, {
+#'       mode(if (identical(mode(), "light")) "dark" else "light")
+#'       update_glass_theme(session, preset = mode())
+#'     })
+#'   }
+#'
+#'   shinyApp(ui, server)
 #' }
 #'
 #' @export
 glass_theme <- function(
-    preset = c("light", "dark"),
+    preset = c("light", "dark", "auto"),
     primary = "#007AFF",
     blur = 28,
     saturation = 200,
     radius = "1.25rem",
+    tint = TRUE,
+    specular = TRUE,
+    nav_morph = TRUE,
     ...) {
   preset <- match.arg(preset)
-  tokens <- .glass_tokens(preset, blur, saturation, radius)
+  stopifnot(
+    is.logical(tint), length(tint) == 1L, !is.na(tint),
+    is.logical(specular), length(specular) == 1L, !is.na(specular),
+    is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph)
+  )
+
+  # Sass still needs a single pack of $glass-* defaults at compile time.
+  # Runtime light/dark comes from dual CSS variable packs in glass.scss.
+  # Always use the Bootstrap base (not darkly) so switching preset does not
+  # fight Bootswatch dark chrome.
+  tokens <- .glass_tokens("light", blur, saturation, radius)
 
   theme <- bslib::bs_theme(
     version = 5,
-    preset = if (preset == "dark") "darkly" else "bootstrap",
+    preset = "bootstrap",
     primary = primary,
     "body-bg" = tokens$body_bg,
     "body-color" = tokens$body_color,
@@ -68,6 +100,7 @@ glass_theme <- function(
 
   theme <- bslib::bs_add_variables(
     theme,
+    # Shared knobs still used by Sass ($glass-blur, etc.)
     "glass-bg" = tokens$glass_bg,
     "glass-bg-hover" = tokens$glass_bg_hover,
     "glass-border" = tokens$glass_border,
@@ -92,16 +125,22 @@ glass_theme <- function(
   pkg_version <- as.character(utils::packageVersion("shinyglass"))
   js_src <- system.file("js", package = "shinyglass")
 
+  # Early head script: set data-glass-preset before first paint.
+  # "auto" resolves prefers-color-scheme on the client.
+  head_script <- .glass_preset_head_script(
+    preset = preset,
+    tint = tint,
+    specular = specular,
+    nav_morph = nav_morph
+  )
+
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
   # warn when dependencies are resolved via bs_theme_dependencies().
   preset_dep <- htmltools::htmlDependency(
     name = "shinyglass-preset",
     version = pkg_version,
     src = js_src,
-    head = sprintf(
-      "<script>document.documentElement.dataset.glassPreset=%s;</script>",
-      shQuote(preset, type = "cmd")
-    ),
+    head = head_script,
     all_files = FALSE
   )
 
@@ -117,6 +156,62 @@ glass_theme <- function(
     sass::sass_layer(html = preset_dep),
     sass::sass_layer(html = glass_js)
   )
+}
+
+#' Update glass theme options in a running app
+#'
+#' Send a message to the browser to change the Liquid Glass preset or
+#' content-tint behavior without reloading the page. Requires a page that
+#' used [glass_theme()] (so `shiny-glass.js` is loaded).
+#'
+#' @param session A Shiny session object (usually the `session` argument of
+#'   the server function).
+#' @param preset Optional. `"light"`, `"dark"`, or `"auto"`.
+#' @param tint Optional logical. Enable or disable content-aware ambient tint.
+#'
+#' @return `session`, invisibly.
+#'
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   library(shinyglass)
+#'
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     actionButton("dark", "Dark"),
+#'     actionButton("light", "Light")
+#'   )
+#'
+#'   server <- function(input, output, session) {
+#'     observeEvent(input$dark, update_glass_theme(session, preset = "dark"))
+#'     observeEvent(input$light, update_glass_theme(session, preset = "light"))
+#'   }
+#'
+#'   shinyApp(ui, server)
+#' }
+#'
+#' @export
+update_glass_theme <- function(session, preset = NULL, tint = NULL) {
+  if (missing(session) || is.null(session)) {
+    stop("`session` is required.", call. = FALSE)
+  }
+  if (!is.null(preset)) {
+    preset <- match.arg(preset, c("light", "dark", "auto"))
+  }
+  if (!is.null(tint)) {
+    stopifnot(is.logical(tint), length(tint) == 1L, !is.na(tint))
+  }
+  if (is.null(preset) && is.null(tint)) {
+    return(invisible(session))
+  }
+
+  payload <- list()
+  if (!is.null(preset)) payload$preset <- preset
+  if (!is.null(tint)) payload$tint <- tint
+
+  # Prefer structured message; JS also accepts legacy glassPreset string.
+  session$sendCustomMessage("shinyglass", payload)
+  invisible(session)
 }
 
 .glass_font_stack <- function() {
@@ -172,4 +267,39 @@ glass_theme <- function(
       orb_3 = "rgba(255, 159, 10, 0.22)"
     )
   }
+}
+
+.glass_preset_head_script <- function(preset, tint, specular, nav_morph) {
+  # Inline early so first paint uses the right pack. Keep this free of
+  # external deps (runs before shiny-glass.js).
+  sprintf(
+    paste0(
+      "<script>(function(){",
+      "var p=%s;",
+      "var root=document.documentElement;",
+      "root.dataset.glassMode=p;",
+      "function resolve(mode){",
+      "if(mode==='auto'){",
+      "try{",
+      "return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';",
+      "}catch(e){return 'light';}",
+      "}",
+      "return mode==='dark'?'dark':'light';",
+      "}",
+      "root.dataset.glassPreset=resolve(p);",
+      "root.dataset.glassTint=%s;",
+      "root.dataset.glassSpecular=%s;",
+      "root.dataset.glassNavMorph=%s;",
+      "})();</script>"
+    ),
+    jsonlite_quote(preset),
+    if (isTRUE(tint)) "\"true\"" else "\"false\"",
+    if (isTRUE(specular)) "\"true\"" else "\"false\"",
+    if (isTRUE(nav_morph)) "\"true\"" else "\"false\""
+  )
+}
+
+# Avoid depending on jsonlite just to quote a short string.
+jsonlite_quote <- function(x) {
+  paste0('"', gsub("([\\\\\"])", "\\\\\\1", as.character(x)), '"')
 }

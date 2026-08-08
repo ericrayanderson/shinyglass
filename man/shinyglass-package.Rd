@@ -25,15 +25,17 @@ ui <- fluidPage(
 )
 }\if{html}{\out{</div>}}
 
-Light and dark presets are available via \code{glass_theme(preset = "dark")}.
-Accent color, blur, saturation, and corner radius are configurable.
+Light and dark presets are available via \code{glass_theme(preset = "dark")},
+or \code{preset = "auto"} to follow the OS. Switch at runtime with
+\code{\link[=update_glass_theme]{update_glass_theme()}}. Accent color, blur, saturation, corner radius,
+and JS behaviors (\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
 
 For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \code{options(teal.bs_theme = glass_theme())} before calling \code{teal::init()}.
 }
 
 \seealso{
-\code{\link[=glass_theme]{glass_theme()}}
+\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}
 }
 \author{
 \strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com}

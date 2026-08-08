@@ -18,13 +18,15 @@
 #' )
 #' ```
 #'
-#' Light and dark presets are available via `glass_theme(preset = "dark")`.
-#' Accent color, blur, saturation, and corner radius are configurable.
+#' Light and dark presets are available via `glass_theme(preset = "dark")`,
+#' or `preset = "auto"` to follow the OS. Switch at runtime with
+#' [update_glass_theme()]. Accent color, blur, saturation, corner radius,
+#' and JS behaviors (`tint`, `specular`, `nav_morph`) are configurable.
 #'
 #' For [teal](https://insightsengineering.github.io/teal/) apps, set
 #' `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
 #'
-#' @seealso [glass_theme()]
+#' @seealso [glass_theme()], [update_glass_theme()]
 #'
 #' @keywords internal
 "_PACKAGE"
