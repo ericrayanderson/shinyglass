@@ -40,7 +40,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-</div>
+<ul><li>Fix: demo app “Show smooth” now draws a density curve (the checkbox was previously ignored by the plot).</li>
+<li>Fix: <strong>active-on-accent contrast</strong> — Bootstrap’s <code>color-contrast(<a href="https://github.com/ericrayanderson/shinyglass/issues/007" class="external-link">#007</a>AFF)</code> resolves <code>$component-active-color</code> to <strong>black</strong>, so checked checkboxes, radios, indeterminate marks, switches, and other primary-fill UI compiled with dark strokes/knobs on blue. <code><a href="../reference/glass_theme.html">glass_theme()</a></code> now forces light ink (<code>$component-active-color</code> and related form vars) and SCSS safety-nets white checks/dots/switch knobs on accent fills.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2>
 <div class="section level3">
