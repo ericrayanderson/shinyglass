@@ -2,12 +2,15 @@
 # Deploy curated shinyglass demos to shinyapps.io.
 #
 # Prerequisites (one-time on your machine — do not commit secrets):
-#   install.packages("rsconnect")
+#   install.packages(c("rsconnect", "remotes"))
 #   rsconnect::setAccountInfo(
 #     name   = "<account>",
 #     token  = "<token>",
 #     secret = "<secret>"
 #   )
+#   # shinyglass MUST be installed from GitHub (not a local path) so renv can
+#   # snapshot it:
+#   remotes::install_github("ericrayanderson/shinyglass", upgrade = "never")
 #
 # Usage (from package root):
 #   Rscript inst/scripts/deploy-shinyapps-demos.R
@@ -48,6 +51,25 @@ if (!is.na(script_path) && nzchar(script_path)) {
   pkg_root <- normalizePath(".", winslash = "/")
 }
 
+# Fail fast if shinyglass is a local-path install (renv cannot snapshot those).
+sg_desc <- utils::packageDescription("shinyglass")
+if (is.list(sg_desc)) {
+  remote_type <- sg_desc$RemoteType
+  if (is.null(remote_type) || !remote_type %in% c("github", "gitlab", "bitbucket", "url", "standard")) {
+    # CRAN install has no RemoteType — OK. Local/path installs often have
+    # RemoteType "local" or empty with RemoteUrl file://
+    if (identical(remote_type, "local") ||
+      grepl("^file:", sg_desc$RemoteUrl %||% "")) {
+      stop(
+        "shinyglass is installed from a local path; renv cannot snapshot it.\n",
+        "Reinstall from GitHub first:\n",
+        "  remotes::install_github(\"ericrayanderson/shinyglass\", upgrade = \"never\", force = TRUE)",
+        call. = FALSE
+      )
+    }
+  }
+}
+
 catalog <- list(
   demo = list(
     appName = "shinyglass-demo",
@@ -71,7 +93,11 @@ catalog <- list(
     appName = "shinyglass-olympics",
     source = file.path(pkg_root, "inst", "shinyapps", "olympic-medals"),
     kind = "dreamrs",
-    entry = "app-glass.R"
+    entry = "app-glass.R",
+    imports = c(
+      "shiny", "shinyWidgets", "ggplot2", "ggthemes", "bslib", "dplyr",
+      "data.table", "reactable", "tidyr", "ggtext", "shinyglass"
+    )
   )
 )
 
@@ -84,38 +110,20 @@ if (length(unknown)) {
   )
 }
 
-# Copy local shinyglass source so uncommitted/dev APIs deploy (not CRAN/GitHub).
-vendor_shinyglass <- function(app_dir) {
-  dest <- file.path(app_dir, "shinyglass")
-  if (dir.exists(dest)) {
-    unlink(dest, recursive = TRUE)
-  }
-  dir.create(dest, recursive = TRUE, showWarnings = FALSE)
-  for (part in c("DESCRIPTION", "NAMESPACE", "R", "inst")) {
-    src <- file.path(pkg_root, part)
-    if (!file.exists(src)) {
-      stop("Missing package part for vendoring: ", src, call. = FALSE)
-    }
-    if (file.info(src)$isdir) {
-      file.copy(src, dest, recursive = TRUE)
-    } else {
-      file.copy(src, file.path(dest, part))
-    }
-  }
-  # Drop heavy non-runtime trees that may exist under inst/
-  for (drop in c(
-    file.path(dest, "inst", "shinyapps"),
-    file.path(dest, "inst", "scripts"),
-    file.path(dest, "inst", "examples")
-  )) {
-    if (dir.exists(drop)) {
-      unlink(drop, recursive = TRUE)
-    }
-  }
-  dest
+write_demo_description <- function(app_dir, imports) {
+  writeLines(
+    c(
+      "Package: shinyglassdemo",
+      "Title: shinyglass demo",
+      "Version: 0.0.0.9000",
+      paste0("Imports: ", paste(imports, collapse = ", ")),
+      "Remotes: github::ericrayanderson/shinyglass"
+    ),
+    file.path(app_dir, "DESCRIPTION")
+  )
 }
 
-stage_single <- function(src_file, app_dir, imports = c("shiny", "bslib", "ggplot2", "shinyglass")) {
+stage_single <- function(src_file, app_dir, imports) {
   if (!file.exists(src_file)) {
     stop("Missing example: ", src_file, call. = FALSE)
   }
@@ -130,20 +138,10 @@ stage_single <- function(src_file, app_dir, imports = c("shiny", "bslib", "ggplo
     ),
     file.path(app_dir, "app.R")
   )
-  vendor_shinyglass(app_dir)
-  writeLines(
-    c(
-      "Package: shinyglassdemo",
-      "Title: shinyglass demo",
-      "Version: 0.0.0.9000",
-      paste0("Imports: ", paste(imports, collapse = ", ")),
-      "Remotes: local::./shinyglass"
-    ),
-    file.path(app_dir, "DESCRIPTION")
-  )
+  write_demo_description(app_dir, imports)
 }
 
-stage_dreamrs <- function(app_src, entry, app_dir) {
+stage_dreamrs <- function(app_src, entry, app_dir, imports) {
   if (!dir.exists(app_src)) {
     stop(
       "Missing dreamRs app dir: ", app_src,
@@ -168,21 +166,10 @@ stage_dreamrs <- function(app_src, entry, app_dir) {
     stop("Missing entry ", entry, " in ", app_dir, call. = FALSE)
   }
   file.copy(entry_path, file.path(app_dir, "app.R"), overwrite = TRUE)
-  vendor_shinyglass(app_dir)
-  writeLines(
-    c(
-      "Package: shinyglassolympics",
-      "Title: shinyglass olympics demo",
-      "Version: 0.0.0.9000",
-      paste0(
-        "Imports: shiny, bslib, ggplot2, shinyWidgets, reactable, dplyr, ",
-        "data.table, tidyr, ggtext, ggthemes, shinyglass"
-      ),
-      "Remotes: local::./shinyglass"
-    ),
-    file.path(app_dir, "DESCRIPTION")
-  )
+  write_demo_description(app_dir, imports)
 }
+
+`%||%` <- function(x, y) if (is.null(x) || !length(x) || (is.character(x) && !nzchar(x[[1]]))) y else x
 
 staging <- file.path(tempdir(), "shinyglass-deploy")
 dir.create(staging, showWarnings = FALSE, recursive = TRUE)
@@ -192,10 +179,11 @@ for (key in app_keys) {
   spec <- catalog[[key]]
   app_dir <- file.path(staging, spec$appName)
   message("Staging ", spec$appName, " …")
+  imports <- spec$imports %||% c("shiny", "bslib", "shinyglass")
   if (identical(spec$kind, "single")) {
-    stage_single(spec$source, app_dir, imports = spec$imports)
+    stage_single(spec$source, app_dir, imports)
   } else {
-    stage_dreamrs(spec$source, spec$entry, app_dir)
+    stage_dreamrs(spec$source, spec$entry, app_dir, imports)
   }
 
   if (dry_run) {
