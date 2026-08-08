@@ -12,8 +12,8 @@ library(bslib)
 library(shinyglass)
 
 glass_preset <- match.arg(
-  Sys.getenv("SHINYGLASS_PRESET", "light"),
-  c("light", "dark")
+  Sys.getenv("SHINYGLASS_PRESET", "auto"),
+  c("light", "dark", "auto")
 )
 
 ui <- page_sidebar(
@@ -22,43 +22,48 @@ ui <- page_sidebar(
   fillable = TRUE,
   sidebar = sidebar(
     title = "About",
-    width = 300,
+    width = 280,
+    open = "desktop",
     p(
       class = "text-muted",
       "Every built-in Shiny input and button, styled with ",
-      code("glass_theme()"), ". Change controls on the right — values update live below."
+      code("glass_theme()"), ". Change controls — values update live below."
     ),
     selectInput(
       "preset",
       "Theme preset",
-      choices = c("Light" = "light", "Dark" = "dark"),
-      selected = glass_preset
+      choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
+      selected = glass_preset,
+      width = "100%"
     ),
     tags$hr(),
     tags$small(
       class = "text-muted",
-      "Set SHINYGLASS_PRESET=dark before launch to start in dark mode."
+      "Sidebar starts closed on phones; use the toggle to open filters."
     )
   ),
+  # Stack cards on phones (min ~16rem) instead of fixed 50/50 columns
   layout_column_wrap(
-    width = 1 / 2,
+    width = "16rem",
     heights_equal = "row",
+    gap = "0.75rem",
     card(
       card_header("Text & numbers"),
-      textInput("text", "textInput", "Hello glass"),
-      passwordInput("password", "passwordInput", "secret"),
-      textAreaInput("textarea", "textAreaInput", "Multi-line\ntext", rows = 3),
-      numericInput("numeric", "numericInput", 42, min = 0, max = 100)
+      textInput("text", "textInput", "Hello glass", width = "100%"),
+      passwordInput("password", "passwordInput", "secret", width = "100%"),
+      textAreaInput("textarea", "textAreaInput", "Multi-line\ntext", rows = 3, width = "100%"),
+      numericInput("numeric", "numericInput", 42, min = 0, max = 100, width = "100%")
     ),
     card(
       card_header("Slider"),
-      sliderInput("slider", "sliderInput", 0, 100, 50, step = 5),
+      sliderInput("slider", "sliderInput", 0, 100, 50, step = 5, width = "100%"),
       sliderInput(
         "slider_range",
         "sliderInput (range)",
         min = 0,
         max = 100,
-        value = c(25, 75)
+        value = c(25, 75),
+        width = "100%"
       )
     ),
     card(
@@ -67,20 +72,23 @@ ui <- page_sidebar(
         "select",
         "selectInput",
         c("Apple" = "apple", "Banana" = "banana", "Cherry" = "cherry"),
-        selected = "banana"
+        selected = "banana",
+        width = "100%"
       ),
       selectizeInput(
         "selectize",
         "selectizeInput",
         c("Red" = "red", "Green" = "green", "Blue" = "blue"),
         selected = "blue",
-        multiple = TRUE
+        multiple = TRUE,
+        width = "100%"
       ),
       selectizeInput(
         "selectize_single",
         "selectizeInput (single)",
         state.name,
-        selected = "California"
+        selected = "California",
+        width = "100%"
       )
     ),
     card(
@@ -91,51 +99,59 @@ ui <- page_sidebar(
         "checkboxGroupInput",
         c("Email" = "email", "SMS" = "sms", "Push" = "push"),
         selected = c("email", "push"),
-        inline = TRUE
+        inline = FALSE
       ),
       radioButtons(
         "radio",
         "radioButtons",
         c("Small" = "sm", "Medium" = "md", "Large" = "lg"),
         selected = "md",
-        inline = TRUE
+        inline = FALSE
       )
     ),
     card(
       card_header("Variable selectors"),
-      varSelectInput("var_select", "varSelectInput", mtcars, selected = "mpg"),
+      varSelectInput("var_select", "varSelectInput", mtcars, selected = "mpg", width = "100%"),
       varSelectizeInput(
         "var_selectize",
         "varSelectizeInput",
         iris,
         selected = "Species",
-        multiple = TRUE
+        multiple = TRUE,
+        width = "100%"
       )
     ),
     card(
       card_header("Dates"),
-      dateInput("date", "dateInput", Sys.Date()),
+      dateInput("date", "dateInput", Sys.Date(), width = "100%"),
       dateRangeInput(
         "date_range",
         "dateRangeInput",
         start = Sys.Date() - 7,
-        end = Sys.Date()
+        end = Sys.Date(),
+        width = "100%"
       )
     ),
     card(
       card_header("File upload"),
-      fileInput("file", "fileInput", accept = c(".txt", ".csv", ".pdf"))
+      fileInput("file", "fileInput", accept = c(".txt", ".csv", ".pdf"), width = "100%")
     ),
     card(
       card_header("Buttons & links"),
-      actionButton("action", "actionButton", class = "btn-primary"),
-      actionLink("action_link", "actionLink"),
+      div(
+        class = "d-flex flex-wrap gap-2 align-items-center",
+        actionButton("action", "actionButton", class = "btn-primary"),
+        actionLink("action_link", "actionLink")
+      ),
       tags$form(
         textInput("submit_text", NULL, "Form field", width = "100%"),
         submitButton("submitButton")
       ),
-      downloadButton("download", "downloadButton"),
-      downloadLink("download_link", "downloadLink")
+      div(
+        class = "d-flex flex-wrap gap-2 align-items-center mt-2",
+        downloadButton("download", "downloadButton"),
+        downloadLink("download_link", "downloadLink")
+      )
     ),
     card(
       card_header("Live values"),
@@ -147,7 +163,7 @@ ui <- page_sidebar(
 
 server <- function(input, output, session) {
   observeEvent(input$preset, {
-    session$sendCustomMessage("glassPreset", input$preset)
+    update_glass_theme(session, preset = input$preset)
   }, ignoreInit = TRUE)
 
   observeEvent(input$action, {

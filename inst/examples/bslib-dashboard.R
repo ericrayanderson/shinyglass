@@ -36,34 +36,41 @@ ui <- page_sidebar(
   theme = glass_theme(preset = glass_preset, primary = "#007AFF"),
   class = "bslib-page-dashboard",
   fillable = TRUE,
+  # Closed on phones by default so content is usable; open on desktop
   sidebar = sidebar(
     title = "Dashboard",
     width = 280,
+    open = "desktop",
     selectInput(
       "preset",
       "Theme preset",
       choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
-      selected = glass_preset
+      selected = glass_preset,
+      width = "100%"
     ),
     selectInput(
       "accent",
       "Accent color",
       choices = accent_colors,
-      selected = "#007AFF"
+      selected = "#007AFF",
+      width = "100%"
     ),
     selectInput(
       "species",
       "Focus species",
       choices = c("All", "setosa", "versicolor", "virginica"),
-      selected = "All"
+      selected = "All",
+      width = "100%"
     ),
-    sliderInput("bins", "Histogram bins", 8, 40, 18),
+    sliderInput("bins", "Histogram bins", 8, 40, 18, width = "100%"),
     checkboxInput("show_curve", "Show density curve", TRUE),
-    actionButton("refresh", "Refresh metrics", class = "btn-primary")
+    actionButton("refresh", "Refresh metrics", class = "btn-primary", width = "100%")
   ),
+  # Stack value boxes on narrow screens (min width ~10rem)
   layout_column_wrap(
-    width = 1 / 3,
+    width = "10rem",
     fill = FALSE,
+    gap = "0.65rem",
     value_box(
       title = "Observations",
       value = textOutput("metric_n"),
@@ -80,20 +87,25 @@ ui <- page_sidebar(
       theme = "info"
     )
   ),
+  # Full-width stack below md; two columns from md up
   layout_columns(
-    col_widths = c(6, 6),
+    col_widths = breakpoints(
+      xs = c(12, 12),
+      md = c(6, 6)
+    ),
+    gap = "0.75rem",
     navset_card_tab(
       id = "tabs",
       nav_panel(
         "Distribution",
         card_body(
-          plotOutput("dist_plot", height = "320px")
+          plotOutput("dist_plot", height = "280px")
         )
       ),
       nav_panel(
         "Scatter",
         card_body(
-          plotOutput("scatter_plot", height = "320px")
+          plotOutput("scatter_plot", height = "280px")
         )
       )
     ),
@@ -138,7 +150,7 @@ server <- function(input, output, session) {
   })
 
   plot_fg <- reactive({
-    if (input$preset == "dark") "#f5f5f7" else "black"
+    if (identical(input$preset, "dark")) "#f5f5f7" else "black"
   })
 
   output$dist_plot <- renderPlot({
@@ -147,7 +159,7 @@ server <- function(input, output, session) {
     p <- ggplot(df, aes(x = Sepal.Length)) +
       geom_histogram(bins = input$bins, fill = accent, color = NA, alpha = 0.9) +
       labs(title = "Sepal length distribution", x = NULL, y = "Count") +
-      theme_minimal(base_size = 13) +
+      theme_minimal(base_size = 12) +
       theme(
         panel.background = element_rect(fill = plot_bg(), color = NA),
         plot.background = element_rect(fill = plot_bg(), color = NA),
@@ -164,16 +176,16 @@ server <- function(input, output, session) {
       )
     }
     print(p)
-  }, height = 320)
+  }, height = 280, res = 96)
 
   output$scatter_plot <- renderPlot({
     df <- filtered_data()
     accent <- input$accent
     ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 2.8, alpha = 0.85) +
+      geom_point(size = 2.4, alpha = 0.85) +
       scale_color_manual(values = c("#007AFF", "#AF52DE", "#FF9500")) +
       labs(title = "Sepal dimensions", x = "Length", y = "Width") +
-      theme_minimal(base_size = 13) +
+      theme_minimal(base_size = 12) +
       theme(
         panel.background = element_rect(fill = plot_bg(), color = NA),
         plot.background = element_rect(fill = plot_bg(), color = NA),
@@ -181,16 +193,22 @@ server <- function(input, output, session) {
         axis.text = element_text(color = plot_fg()),
         plot.title = element_text(color = plot_fg()),
         legend.text = element_text(color = plot_fg()),
-        legend.title = element_text(color = plot_fg())
+        legend.title = element_text(color = plot_fg()),
+        legend.position = "bottom"
       )
-  }, height = 320)
+  }, height = 280, res = 96)
 
   output$data_table <- DT::renderDT({
     DT::datatable(
       filtered_data(),
-      fillContainer = TRUE,
+      fillContainer = FALSE,
       rownames = FALSE,
-      options = list(pageLength = 8, dom = "tip")
+      options = list(
+        pageLength = 6,
+        dom = "tip",
+        scrollX = TRUE,
+        autoWidth = TRUE
+      )
     )
   })
 }

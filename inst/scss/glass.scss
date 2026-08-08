@@ -2299,3 +2299,179 @@ body .controls-pane {
     opacity: 1;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Mobile / narrow viewports
+// Soften floating chrome, prevent horizontal scroll, keep tables usable.
+// ---------------------------------------------------------------------------
+@media (max-width: 575.98px) {
+  :root {
+    --glass-float-margin: 0.5rem;
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  // Tighter page chrome
+  .container,
+  .container-fluid {
+    padding-left: 0.65rem !important;
+    padding-right: 0.65rem !important;
+  }
+
+  body.bslib-page-navbar > .navbar,
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  .bslib-page-sidebar > .navbar {
+    margin-left: var(--glass-float-margin) !important;
+    margin-right: var(--glass-float-margin) !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .card,
+  form.well,
+  .col-sm-4.well {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  // Stacked bslib sidebar (below sm we do not absolute-float): full-width glass
+  .bslib-sidebar-layout {
+    > .sidebar {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: var(--glass-float-margin) !important;
+      // CSS min() — quote so Sass does not unit-check vh vs rem
+      max-height: #{'min(70vh, 28rem)'} !important;
+    }
+
+    > .main,
+    > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: var(--glass-float-margin) !important;
+      min-width: 0 !important;
+    }
+
+    > .collapse-toggle {
+      // Keep toggle tappable above content
+      z-index: 40 !important;
+    }
+  }
+
+  // Value boxes / grids: never force cramped multi-columns
+  .bslib-value-box {
+    min-width: 0 !important;
+  }
+
+  .bslib-grid,
+  .bslib-grid.grid {
+    min-width: 0 !important;
+  }
+
+  // Tables: swipe horizontally instead of blowing the page width
+  .dataTables_wrapper,
+  .reactable,
+  .Reactable,
+  .table-responsive {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table.dataTable,
+  .reactable table {
+    width: 100% !important;
+  }
+
+  // Plots / images fill the card, not the viewport
+  .shiny-plot-output,
+  .shiny-image-output {
+    max-width: 100% !important;
+  }
+
+  .shiny-plot-output img,
+  .shiny-image-output img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  // Inputs and buttons: full-width friendly
+  .shiny-input-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .form-control,
+  .form-select,
+  .selectize-control,
+  .selectize-input {
+    max-width: 100% !important;
+  }
+
+  .btn,
+  .action-button {
+    max-width: 100%;
+  }
+
+  // Inline radio/checkbox groups wrap instead of overflowing
+  .shiny-options-group,
+  .checkbox-inline,
+  .radio-inline,
+  .form-check-inline {
+    flex-wrap: wrap !important;
+  }
+
+  // Date range: stack start/end fields
+  .shiny-date-range-input .input-daterange {
+    flex-direction: column !important;
+    gap: 0.5rem;
+  }
+
+  .shiny-date-range-input .input-daterange input {
+    width: 100% !important;
+    border-radius: 0.75rem !important;
+  }
+
+  // File input button row
+  .input-group {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  // Modal full-bleed on phones
+  .modal-dialog {
+    margin: 0.5rem !important;
+    max-width: calc(100% - 1rem) !important;
+  }
+
+  // Verbatim / pre blocks scroll
+  pre,
+  .shiny-text-output,
+  .shiny-verbatim {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+// Mid-size phones / small tablets in portrait: still soften sidebar reserve
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .bslib-sidebar-layout {
+    --glass-sidebar-reserve: calc(
+      var(--glass-float-margin) + #{'min(var(--_sidebar-width, 250px), 42vw)'} +
+        var(--glass-float-margin)
+    );
+
+    > .sidebar {
+      width: #{'min(var(--_sidebar-width, 250px), 42vw)'} !important;
+    }
+  }
+}
