@@ -49,10 +49,19 @@ server <- function(input, output, session) {
 
   output$dist_plot <- renderPlot({
     x <- faithful$waiting
-    ggplot(data.frame(x = x), aes(x)) +
+    df <- data.frame(x = x)
+    p <- ggplot(df, aes(x)) +
       geom_histogram(bins = input$bins, fill = "#007AFF", color = "white") +
       labs(title = "Faithful Waiting Times", x = "Waiting (minutes)", y = NULL) +
       theme_minimal(base_size = 13)
+    if (isTRUE(input$smooth)) {
+      p <- p + geom_density(
+        aes(y = after_stat(count)),
+        color = "#AF52DE",
+        linewidth = 1.15
+      )
+    }
+    p
   }, height = 260, res = 96)
 }
 

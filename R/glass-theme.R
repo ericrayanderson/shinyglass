@@ -95,6 +95,8 @@ glass_theme <- function(
     "btn-padding-y" = ".55rem",
     "btn-padding-x" = "1.2rem",
     "btn-border-width" = "1px",
+    # White check / radio mark on accent fill (avoids dark stroke on $primary)
+    "form-check-input-checked-color" = "#ffffff",
     ...
   )
 

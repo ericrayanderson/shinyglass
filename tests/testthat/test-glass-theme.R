@@ -82,6 +82,9 @@ test_that("compiled CSS ships dual light/dark variable packs", {
   expect_match(css, "position:relative\\s*!important")
   expect_match(css, "main-sidebar")
   expect_match(css, "small-box")
+  # White checkmark on checked checkboxes (not body-color / black stroke)
+  expect_match(css, "form-check-input")
+  expect_match(css, "stroke='%23fff'|stroke=\"%23fff\"|stroke='%23FFF'")
 })
 
 test_that("update_glass_theme sends shinyglass custom message", {
