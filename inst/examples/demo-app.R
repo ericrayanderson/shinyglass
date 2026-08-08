@@ -17,11 +17,22 @@ ui <- fluidPage(
       checkboxInput("smooth", "Show smooth", TRUE),
       actionButton("go", "Go", class = "btn-primary"),
       hr(),
+      # onclick applies instantly on the client; server update_glass_theme()
+      # keeps session state in sync (needed on hosts that rewrite Shiny messaging).
       div(
         class = "d-flex flex-wrap gap-2",
-        actionButton("theme_light", "Light"),
-        actionButton("theme_dark", "Dark"),
-        actionButton("theme_auto", "Auto (OS)")
+        actionButton(
+          "theme_light", "Light",
+          onclick = "window.shinyglass&&window.shinyglass.setPreset('light')"
+        ),
+        actionButton(
+          "theme_dark", "Dark",
+          onclick = "window.shinyglass&&window.shinyglass.setPreset('dark')"
+        ),
+        actionButton(
+          "theme_auto", "Auto (OS)",
+          onclick = "window.shinyglass&&window.shinyglass.setPreset('auto')"
+        )
       )
     ),
     card(

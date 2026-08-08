@@ -529,67 +529,98 @@
   // (shinyapps.io does this and drops registered handlers).
   function consumeCustomEnvelope(envelope) {
     if (!envelope || typeof envelope !== "object") return;
-    if (Object.prototype.hasOwnProperty.call(envelope, "shinyglass")) {
+    if (envelope.shinyglass != null) {
       handleShinyglassMessage(envelope.shinyglass);
     }
-    if (Object.prototype.hasOwnProperty.call(envelope, "glassPreset")) {
+    if (envelope.glassPreset != null) {
       applyPreset(envelope.glassPreset || "light");
     }
   }
 
   function installOnCustomMessageHook() {
-    if (typeof Shiny === "undefined") return;
+    if (typeof Shiny === "undefined" || !Shiny) return;
     var prev = Shiny.oncustommessage;
+    // Already our hook and still installed
     if (prev && prev.__shinyglassHooked) return;
     var hooked = function (message) {
       try {
         consumeCustomEnvelope(message);
-      } catch (e) {
+      } catch (e1) {
         /* ignore */
       }
       if (typeof prev === "function" && !prev.__shinyglassHooked) {
-        return prev.apply(this, arguments);
+        try {
+          return prev.apply(this, arguments);
+        } catch (e2) {
+          /* ignore host handler errors */
+        }
       }
     };
     hooked.__shinyglassHooked = true;
+    // Keep reference to whatever we wrapped so we can re-chain if host
+    // overwrites us again.
+    hooked.__shinyglassPrev = prev;
     Shiny.oncustommessage = hooked;
   }
 
-  // Structured message from update_glass_theme()
-  if (typeof Shiny !== "undefined") {
-    Shiny.addCustomMessageHandler("shinyglass", handleShinyglassMessage);
-    // Back-compat with older glassPreset handler name
-    Shiny.addCustomMessageHandler("glassPreset", function (preset) {
-      applyPreset(preset || "light");
-    });
-    installOnCustomMessageHook();
-  }
+  // --- Message routing (order matters: never throw before jQuery binds) ---
 
-  // shiny:message fires for every server message (including custom). This is
-  // the most reliable path when hosts replace oncustommessage after load.
-  $(document).on("shiny:message", function (event) {
+  // 1) shiny:message — fires for every server payload (most reliable)
+  $(document).on("shiny:message.shinyglass", function (event) {
     try {
       var msg = event && event.message;
       if (!msg) return;
-      // Full websocket payload: { custom: { shinyglass: {...} }, ... }
       if (msg.custom) consumeCustomEnvelope(msg.custom);
-      // Some paths may deliver the custom map directly
       consumeCustomEnvelope(msg);
     } catch (e) {
       /* ignore */
     }
   });
 
-  // Re-install hook after other scripts (shinyapps client) may overwrite it
-  $(document).on("shiny:connected", function () {
-    installOnCustomMessageHook();
+  // 2) tint / widget updates
+  $(document).on("shiny:value.shinyglass shiny:visualchange.shinyglass", scheduleTintUpdate);
+
+  // 3) Re-install host hooks when session connects
+  $(document).on("shiny:connected.shinyglass", function () {
+    try {
+      installOnCustomMessageHook();
+      if (typeof Shiny !== "undefined" && Shiny.addCustomMessageHandler) {
+        Shiny.addCustomMessageHandler("shinyglass", handleShinyglassMessage);
+        Shiny.addCustomMessageHandler("glassPreset", function (preset) {
+          applyPreset(preset || "light");
+        });
+      }
+    } catch (e) {
+      /* ignore */
+    }
     scheduleTintUpdate();
   });
+
+  // 4) Standard Shiny handler map + oncustommessage wrap (best-effort)
+  try {
+    if (typeof Shiny !== "undefined" && Shiny.addCustomMessageHandler) {
+      Shiny.addCustomMessageHandler("shinyglass", handleShinyglassMessage);
+      Shiny.addCustomMessageHandler("glassPreset", function (preset) {
+        applyPreset(preset || "light");
+      });
+    }
+    installOnCustomMessageHook();
+  } catch (e) {
+    /* ignore — jQuery shiny:message path still works */
+  }
+
+  // 5) shinyapps.io may overwrite oncustommessage after our script; re-hook
   setTimeout(installOnCustomMessageHook, 0);
   setTimeout(installOnCustomMessageHook, 250);
-  setTimeout(installOnCustomMessageHook, 1500);
-
-  $(document).on("shiny:value shiny:visualchange", scheduleTintUpdate);
+  setTimeout(installOnCustomMessageHook, 1000);
+  setTimeout(installOnCustomMessageHook, 3000);
+  // Keep watching for a short window after load (host scripts race)
+  var hookAttempts = 0;
+  var hookTimer = setInterval(function () {
+    installOnCustomMessageHook();
+    hookAttempts += 1;
+    if (hookAttempts >= 20) clearInterval(hookTimer);
+  }, 500);
 
   $(function () {
     // Ensure mode/preset are coherent if head script ran or was skipped
