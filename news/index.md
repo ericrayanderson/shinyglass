@@ -1,18 +1,5 @@
 # Changelog
 
-## shinyglass (development version)
-
-- Fix: demo app “Show smooth” now draws a density curve (the checkbox
-  was previously ignored by the plot).
-- Fix: **active-on-accent contrast** — Bootstrap’s
-  `color-contrast(`[`#007`](https://github.com/ericrayanderson/shinyglass/issues/007)`AFF)`
-  resolves `$component-active-color` to **black**, so checked
-  checkboxes, radios, indeterminate marks, switches, and other
-  primary-fill UI compiled with dark strokes/knobs on blue.
-  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  now forces light ink (`$component-active-color` and related form vars)
-  and SCSS safety-nets white checks/dots/switch knobs on accent fills.
-
 ## shinyglass 0.2.0
 
 ### Breaking changes
@@ -38,20 +25,48 @@
   `document.documentElement.dataset.glassPreset` without a full reload.
 - `glass_theme(preset = "auto")` follows `prefers-color-scheme` and
   updates when the OS theme changes.
-- \[update_glass_theme()\] to change `preset` and `tint` from the
-  server.
+- \[update_glass_theme()\] to change `preset`, `tint`, and **`primary`**
+  (live accent via `--glass-accent` / `--bs-primary`) from the server.
+  Recolors primary buttons, Shiny
+  [`checkboxInput()`](https://rdrr.io/pkg/shiny/man/checkboxInput.html)
+  / radios / switches, ion.rangeSlider bars, value chips, and active
+  nav/list items without a Sass recompile.
+- \[glass_theme_toggle()\] / \[observe_glass_theme_toggle()\] drop-in
+  Light / Dark / Auto buttons.
 - Behavior knobs on \[glass_theme()\]: `tint`, `specular`, and
   `nav_morph` (all default `TRUE`, matching 0.1.x JS behavior).
-- Client helper `window.shinyglass.setPreset()` / `.getPreset()` /
-  `.setTint()`.
+- Client helpers: `window.shinyglass.setPreset()` / `.getPreset()` /
+  `.setTint()` / `.setPrimary()` / `.getPrimary()`.
 
 ### Improvements
 
-- Demo and bslib dashboard examples include light / dark / auto
-  controls.
-- Unit tests cover dual CSS packs, head script knobs, and
+- Active-on-accent contrast: force light ink on primary fills (checks,
+  radios, indeterminate marks, switches, pagination, list-group active).
+  Fixes Bootstrap
+  `color-contrast(`[`#007`](https://github.com/ericrayanderson/shinyglass/issues/007)`AFF) → black`.
+- Accent rules target Shiny markup (`.shiny-input-checkbox`) as well as
+  Bootstrap `.form-check-input`.
+- Plot / image outputs get a softer glass frame (lighter nesting inside
+  cards).
+- `prefers-reduced-motion: reduce` disables nav morph, specular, tint
+  sampling, and decorative transitions (JS + CSS).
+- Demo and bslib dashboard examples: theme toggle helper; dashboard
+  accent select calls `update_glass_theme(primary = …)`.
+- Vignettes cover migration, primary updates, toggle helper, and reduced
+  motion.
+- Unit tests cover dual CSS packs, head script knobs, active-color vars,
+  and
   [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
   messaging.
+
+### Bug fixes
+
+- Demo app “Show smooth” draws a density curve (checkbox was previously
+  ignored).
+- Theme message routing hardened for hosts that rewrite Shiny custom
+  messages (e.g. shinyapps.io).
+- `shiny-glass.js` no longer crashes when the script loads in `<head>`
+  before `document.body` exists.
 
 ## shinyglass 0.1.1
 

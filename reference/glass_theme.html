@@ -118,7 +118,8 @@ Defaults to system blue (<code>#007AFF</code>).</p></dd>
     <p>Light and dark surface tokens are compiled into dual CSS custom-property
 packs. Switching <code>preset</code> at runtime (via <code><a href="update_glass_theme.html">update_glass_theme()</a></code> or
 <code>preset = "auto"</code>) updates <code>document.documentElement.dataset.glassPreset</code>
-without recompiling Sass or reloading the page.</p>
+without recompiling Sass or reloading the page. Accent color can also be
+updated live with <code><a href="update_glass_theme.html">update_glass_theme()</a></code> <code>primary=</code> (CSS variables).</p>
     </div>
 
     <div class="section level2">
@@ -133,17 +134,14 @@ without recompiling Sass or reloading the page.</p>
 <span class="r-in"><span>  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    theme <span class="op">=</span> <span class="fu">glass_theme</span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Liquid Glass"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"toggle"</span>, <span class="st">"Toggle light / dark"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"color"</span>, <span class="st">"Color"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Blue"</span>, <span class="st">"Purple"</span>, <span class="st">"Orange"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="va">mode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveVal.html" class="external-link">reactiveVal</a></span><span class="op">(</span><span class="st">"light"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">toggle</span>, <span class="op">{</span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/mode.html" class="external-link">mode</a></span><span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mode.html" class="external-link">mode</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"light"</span><span class="op">)</span><span class="op">)</span> <span class="st">"dark"</span> <span class="kw">else</span> <span class="st">"light"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mode.html" class="external-link">mode</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="co"># Client onclick already switches; keep session in sync:</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></span>

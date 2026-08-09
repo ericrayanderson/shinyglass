@@ -79,7 +79,9 @@ packs. Switching `preset` at runtime (via
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 or `preset = "auto"`) updates
 `document.documentElement.dataset.glassPreset` without recompiling Sass
-or reloading the page.
+or reloading the page. Accent color can also be updated live with
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+`primary=` (CSS variables).
 
 ## Examples
 
@@ -94,17 +96,14 @@ if (interactive()) {
   ui <- fluidPage(
     theme = glass_theme(preset = "auto"),
     titlePanel("Liquid Glass"),
-    actionButton("toggle", "Toggle light / dark"),
+    glass_theme_toggle(),
     selectInput("color", "Color", c("Blue", "Purple", "Orange")),
     plotOutput("plot")
   )
 
   server <- function(input, output, session) {
-    mode <- reactiveVal("light")
-    observeEvent(input$toggle, {
-      mode(if (identical(mode(), "light")) "dark" else "light")
-      update_glass_theme(session, preset = mode())
-    })
+    # Client onclick already switches; keep session in sync:
+    observe_glass_theme_toggle(input, session)
   }
 
   shinyApp(ui, server)

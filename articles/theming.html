@@ -123,23 +123,68 @@ recompile and no full page reload.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
 <span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"dark"</span>, <span class="st">"Dark"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"light"</span>, <span class="st">"Light"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"Auto"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span>selected <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"accent"</span>, <span class="st">"Accent"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    Blue <span class="op">=</span> <span class="st">"#007AFF"</span>, Purple <span class="op">=</span> <span class="st">"#AF52DE"</span>, Orange <span class="op">=</span> <span class="st">"#FF9500"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dark</span>, <span class="fu"><a href="../reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">light</span>, <span class="fu"><a href="../reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="st">"light"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">auto</span>, <span class="fu"><a href="../reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">accent</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, primary <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">accent</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, ignoreInit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> can also set <code>tint</code>
-(content-aware ambient color from plots and images).</p>
+<p><code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> accepts:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Argument</th>
+<th>Effect</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>preset</code></td>
+<td>
+<code>"light"</code> / <code>"dark"</code> /
+<code>"auto"</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>tint</code></td>
+<td>Content-aware ambient color from plots/images</td>
+</tr>
+<tr class="odd">
+<td><code>primary</code></td>
+<td>Live accent via CSS variables (<code>--bs-primary</code>, …)</td>
+</tr>
+</tbody>
+</table>
+<p><code>primary</code> updates Bootstrap accent CSS variables so
+buttons, checked controls, and other accent surfaces follow without a
+reload. A few Sass-baked one-offs may still need a full reload to pick
+up a new color.</p>
+</div>
+<div class="section level2">
+<h2 id="theme-toggle-helper">Theme toggle helper<a class="anchor" aria-label="anchor" href="#theme-toggle-helper"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span><span class="op">)</span>,           <span class="co"># Light / Dark / Auto buttons</span></span>
+<span>  <span class="co"># ...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Buttons call <code>window.shinyglass.setPreset()</code> immediately
+and also fire Shiny inputs (<code>glass_toggle_light</code>, …) so the
+server can stay in sync.</p>
 </div>
 <div class="section level2">
 <h2 id="behavior-knobs">Behavior knobs<a class="anchor" aria-label="anchor" href="#behavior-knobs"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span></span>
 <span>  preset <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  primary <span class="op">=</span> <span class="st">"#AF52DE"</span>,</span>
@@ -157,41 +202,64 @@ Advanced escape hatch:
 tint.</p>
 </div>
 <div class="section level2">
-<h2 id="css-variables-migration">CSS variables (migration)<a class="anchor" aria-label="anchor" href="#css-variables-migration"></a>
+<h2 id="css-variables-migration-from-0-1-x">CSS variables (migration from 0.1.x)<a class="anchor" aria-label="anchor" href="#css-variables-migration-from-0-1-x"></a>
 </h2>
-<p>Prefer CSS custom properties over Sass <code>$glass-*</code> tokens
-when customizing:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="in">:root</span> {</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">28</span><span class="dt">px</span><span class="op">;</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>}</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Breaking in 0.2.0:</strong> light/dark surfaces are dual CSS
+packs, not a Bootswatch <code>darkly</code> rebuild. Prefer CSS custom
+properties over Sass <code>$glass-*</code> tokens when customizing:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="in">:root</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">28</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="va">--bs-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span>       <span class="co">/* also updated by update_glass_theme(primary=) */</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="va">--glass-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>}</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>}</span></code></pre></div>
+<p>Apps that overrode Sass-only <code>$glass-*</code> tokens should
+target <code>--glass-*</code> or <code>[data-glass-preset="dark"]</code>
+instead.</p>
 </div>
 <div class="section level2">
 <h2 id="client-helpers">Client helpers<a class="anchor" aria-label="anchor" href="#client-helpers"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="teal">Teal<a class="anchor" aria-label="anchor" href="#teal"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>teal.bs_theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># then teal::init(...) as usual</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reduced-motion">Reduced motion<a class="anchor" aria-label="anchor" href="#reduced-motion"></a>
 </h2>
-<p>When the user prefers reduced motion, navbar morph and specular
-tracking are disabled, and content tint is skipped.</p>
+<p>When the user prefers reduced motion
+(<code>prefers-reduced-motion: reduce</code>):</p>
+<ul>
+<li>Navbar morph transforms are disabled (JS + CSS)</li>
+<li>Pointer specular tracking is skipped</li>
+<li>Content tint sampling is skipped</li>
+<li>Decorative transitions on cards/inputs/nav are removed</li>
+</ul>
+<p>This is automatic — no app code required.</p>
+</div>
+<div class="section level2">
+<h2 id="active-on-accent-contrast">Active-on-accent contrast<a class="anchor" aria-label="anchor" href="#active-on-accent-contrast"></a>
+</h2>
+<p>Bootstrap’s <code>color-contrast()</code> often picks
+<strong>black</strong> ink for system blue <code>#007AFF</code>.
+<code><a href="../reference/glass_theme.html">glass_theme()</a></code> forces light ink on primary fills so checked
+checkboxes, radios, switches, and active pagination stay readable.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

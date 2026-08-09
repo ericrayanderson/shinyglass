@@ -39,11 +39,6 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li>Fix: demo app “Show smooth” now draws a density curve (the checkbox was previously ignored by the plot).</li>
-<li>Fix: <strong>active-on-accent contrast</strong> — Bootstrap’s <code>color-contrast(<a href="https://github.com/ericrayanderson/shinyglass/issues/007" class="external-link">#007</a>AFF)</code> resolves <code>$component-active-color</code> to <strong>black</strong>, so checked checkboxes, radios, indeterminate marks, switches, and other primary-fill UI compiled with dark strokes/knobs on blue. <code><a href="../reference/glass_theme.html">glass_theme()</a></code> now forces light ink (<code>$component-active-color</code> and related form vars) and SCSS safety-nets white checks/dots/switch knobs on accent fills.</li>
-</ul></div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
@@ -57,14 +52,28 @@
 <ul><li>Runtime light/dark switching via <code>document.documentElement.dataset.glassPreset</code> without a full reload.</li>
 <li>
 <code>glass_theme(preset = "auto")</code> follows <code>prefers-color-scheme</code> and updates when the OS theme changes.</li>
-<li>[update_glass_theme()] to change <code>preset</code> and <code>tint</code> from the server.</li>
+<li>[update_glass_theme()] to change <code>preset</code>, <code>tint</code>, and <strong><code>primary</code></strong> (live accent via <code>--glass-accent</code> / <code>--bs-primary</code>) from the server. Recolors primary buttons, Shiny <code><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput()</a></code> / radios / switches, ion.rangeSlider bars, value chips, and active nav/list items without a Sass recompile.</li>
+<li>[glass_theme_toggle()] / [observe_glass_theme_toggle()] drop-in Light / Dark / Auto buttons.</li>
 <li>Behavior knobs on [glass_theme()]: <code>tint</code>, <code>specular</code>, and <code>nav_morph</code> (all default <code>TRUE</code>, matching 0.1.x JS behavior).</li>
-<li>Client helper <code>window.shinyglass.setPreset()</code> / <code>.getPreset()</code> / <code>.setTint()</code>.</li>
+<li>Client helpers: <code>window.shinyglass.setPreset()</code> / <code>.getPreset()</code> / <code>.setTint()</code> / <code>.setPrimary()</code> / <code>.getPrimary()</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
-<ul><li>Demo and bslib dashboard examples include light / dark / auto controls.</li>
-<li>Unit tests cover dual CSS packs, head script knobs, and <code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> messaging.</li>
+<ul><li>Active-on-accent contrast: force light ink on primary fills (checks, radios, indeterminate marks, switches, pagination, list-group active). Fixes Bootstrap <code>color-contrast(<a href="https://github.com/ericrayanderson/shinyglass/issues/007" class="external-link">#007</a>AFF) → black</code>.</li>
+<li>Accent rules target Shiny markup (<code>.shiny-input-checkbox</code>) as well as Bootstrap <code>.form-check-input</code>.</li>
+<li>Plot / image outputs get a softer glass frame (lighter nesting inside cards).</li>
+<li>
+<code>prefers-reduced-motion: reduce</code> disables nav morph, specular, tint sampling, and decorative transitions (JS + CSS).</li>
+<li>Demo and bslib dashboard examples: theme toggle helper; dashboard accent select calls <code>update_glass_theme(primary = …)</code>.</li>
+<li>Vignettes cover migration, primary updates, toggle helper, and reduced motion.</li>
+<li>Unit tests cover dual CSS packs, head script knobs, active-color vars, and <code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> messaging.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
+<ul><li>Demo app “Show smooth” draws a density curve (checkbox was previously ignored).</li>
+<li>Theme message routing hardened for hosts that rewrite Shiny custom messages (e.g. shinyapps.io).</li>
+<li>
+<code>shiny-glass.js</code> no longer crashes when the script loads in <code>&lt;head&gt;</code> before <code>document.body</code> exists.</li>
 </ul></div>
 </div>
     <div class="section level2">
