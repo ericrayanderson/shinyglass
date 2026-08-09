@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![License: GPL-3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.r-project.org/Licenses/GPL-3)
 [![R-CMD-check](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ericrayanderson/shinyglass/actions/workflows/R-CMD-check.yaml)
+[![visual-qa](https://github.com/ericrayanderson/shinyglass/actions/workflows/visual-qa.yaml/badge.svg)](https://github.com/ericrayanderson/shinyglass/actions/workflows/visual-qa.yaml)
 <!-- badges: end -->
 
 [Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) themes for [Shiny](https://shiny.posit.co/). `glass_theme()` returns a [bslib](https://rstudio.github.io/bslib/) theme with translucent surfaces, backdrop blur, and system typography. Pass it as `theme = glass_theme()` to `fluidPage()`, `navbarPage()`, or other page functions that accept a bslib theme.
@@ -16,6 +17,11 @@ Light and dark packs switch at **runtime** (no page reload). Use `preset = "auto
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark">
 </p>
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png" width="48%" alt="plotly + gt, light">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png" width="48%" alt="plotly + gt, dark">
+</p>
+
 ## Live demos
 
 Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a few seconds to wake):
@@ -25,6 +31,7 @@ Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a f
 | [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **Light / Dark / Auto** buttons (`update_glass_theme()`) |
 | [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT |
 | [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
+| [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
 
 ## Install

@@ -8,18 +8,21 @@ node and glass styles only hit a wrapper (or dark-mode packs miss a surface).
 From the package root:
 
 ```r
-# full matrix (demo + dashboard + inputs × light + dark)
+# full matrix (demo + dashboard + inputs + plotly_gt × light + dark)
 Rscript inst/scripts/audit-glass-contrast.R
 
 # dark-only dashboard (fast DT pagination check)
 Rscript inst/scripts/audit-glass-contrast.R --apps=dashboard --presets=dark
 
-# write machine-readable report
-Rscript inst/scripts/audit-glass-contrast.R --json=/tmp/glass-audit.json
+# write machine-readable report (also refresh the committed baseline)
+Rscript inst/scripts/audit-glass-contrast.R --json=inst/scripts/audit-baseline.json
 ```
 
-Exit code **1** on any `FAIL`. Warnings (contrast between 3:1 and 4.5:1) do not
-fail the run.
+CI runs this on every PR/push via `.github/workflows/visual-qa.yaml`.
+
+Committed baseline: `inst/scripts/audit-baseline.json` (refresh after intentional
+theme changes). Exit code **1** on any `FAIL`. Warnings (contrast between 3:1
+and 4.5:1, e.g. white on `#007AFF` ≈ 4.02:1) do not fail the run.
 
 What it checks:
 

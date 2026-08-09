@@ -1,0 +1,4760 @@
+{
+  "min_contrast": 3,
+  "summary": {
+    "fail": 0,
+    "warn": 26,
+    "pass": 193,
+    "skip": 152
+  },
+  "findings": [
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-dt-page-link",
+      "message": "glass.scss must style .dataTables_paginate .page-link (visible DT surface)",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-page-item-active",
+      "message": "glass.scss must style .page-item.active .page-link",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-disabled-page",
+      "message": "glass.scss must style disabled pagination chips",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-value-box-ink",
+      "message": "glass.scss must set value-box / solid fill ink",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-form-check",
+      "message": "glass.scss must style form-check-input checked states",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Liquid Glass\nForm Controls\nSpecies\nsetos",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(245, 245, 247)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Auto (OS)\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Auto (OS)",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .navbar",
+      "meta": {
+        "selector": ".navbar"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Form Controls\nSpecies\nsetosa\nBins\n1\n50\n2",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(206, 228, 254, 0.3)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Plot",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(206, 228, 254, 0.3)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input ok",
+      "meta": {
+        "selector": ".selectize-input",
+        "text": "setosa",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(206, 228, 254, 0.3)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown ok",
+      "meta": {
+        "selector": ".selectize-dropdown",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"20\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "20",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Liquid Glass\nForm Controls\nSpecies\nsetos",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(245, 245, 247)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Auto (OS)\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Auto (OS)",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .navbar",
+      "meta": {
+        "selector": ".navbar"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Form Controls\nSpecies\nsetosa\nBins\n1\n50\n2",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Plot",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input ok",
+      "meta": {
+        "selector": ".selectize-input",
+        "text": "setosa",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown ok",
+      "meta": {
+        "selector": ".selectize-dropdown",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"20\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "20",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Glass Dashboard\n\nObservations\n\n150\n\nSpec",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(245, 245, 247)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Refresh metrics\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Refresh metrics",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Glass Dashboard",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Species\n\n3",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(25, 135, 84)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Avg sepal length\n\n5.8 cm",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(13, 202, 240)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Distribution\nScatter",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Iris data\nSepal.Length\tSepal.Width\tPetal",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Light",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "Apple Blue",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[2] ok",
+      "meta": {
+        "selector": ".selectize-input[2]",
+        "text": "All",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[2] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[2]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"18\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "18",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[0] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[0]",
+        "text": "Previous",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[1] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[1]",
+        "text": "1",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"2\"",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[2]",
+        "text": "2",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[3] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[3]",
+        "text": "3",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[4] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[4]",
+        "text": "4",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[5] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[5]",
+        "text": "5",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[6] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[6]",
+        "text": "…",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[7] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[7]",
+        "text": "25",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"2\"",
+      "meta": {
+        "selector": ".page-item.active .page-link",
+        "text": "2",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".page-item.disabled .page-link ok",
+      "meta": {
+        "selector": ".page-item.disabled .page-link",
+        "text": "…",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".bg-primary",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".bg-success ok",
+      "meta": {
+        "selector": ".bg-success",
+        "text": "Species\n\n3",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(25, 135, 84)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".bg-info ok",
+      "meta": {
+        "selector": ".bg-info",
+        "text": "Avg sepal length\n\n5.8 cm",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(13, 202, 240)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".nav-tabs .nav-link.active ok",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active",
+        "text": "Distribution",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(210, 231, 254, 0.3)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Glass Dashboard\n\nObservations\n\n150\n\nSpec",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 0, 0)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Refresh metrics\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Refresh metrics",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Glass Dashboard",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Species\n\n3",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(25, 135, 84)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Avg sepal length\n\n5.8 cm",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(13, 202, 240)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Distribution\nScatter",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Iris data\nSepal.Length\tSepal.Width\tPetal",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Dark",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "Apple Blue",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[2] ok",
+      "meta": {
+        "selector": ".selectize-input[2]",
+        "text": "All",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[2] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[2]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"18\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "18",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[0] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[0]",
+        "text": "Previous",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[1] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[1]",
+        "text": "1",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"2\"",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[2]",
+        "text": "2",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[3] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[3]",
+        "text": "3",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[4] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[4]",
+        "text": "4",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[5] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[5]",
+        "text": "5",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[6] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[6]",
+        "text": "…",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dataTables_paginate .page-link[7] ok",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link[7]",
+        "text": "25",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"2\"",
+      "meta": {
+        "selector": ".page-item.active .page-link",
+        "text": "2",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".page-item.disabled .page-link ok",
+      "meta": {
+        "selector": ".page-item.disabled .page-link",
+        "text": "…",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Observations\n\n150\"",
+      "meta": {
+        "selector": ".bg-primary",
+        "text": "Observations\n\n150",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".bg-success ok",
+      "meta": {
+        "selector": ".bg-success",
+        "text": "Species\n\n3",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(25, 135, 84)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".bg-info ok",
+      "meta": {
+        "selector": ".bg-info",
+        "text": "Avg sepal length\n\n5.8 cm",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(13, 202, 240)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".nav-tabs .nav-link.active ok",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active",
+        "text": "Distribution",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(22, 61, 107, 0.12)"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Shiny Inputs Gallery\nText & numbers\ntext",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(245, 245, 247)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"actionButton\"",
+      "meta": {
+        "selector": ".btn-primary[0]",
+        "text": "actionButton",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"submitButton\"",
+      "meta": {
+        "selector": ".btn-primary[1]",
+        "text": "submitButton",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[0] ok",
+      "meta": {
+        "selector": ".form-control[0]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[1] ok",
+      "meta": {
+        "selector": ".form-control[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[2] ok",
+      "meta": {
+        "selector": ".form-control[2]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[3] ok",
+      "meta": {
+        "selector": ".form-control[3]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[4] ok",
+      "meta": {
+        "selector": ".form-control[4]",
+        "text": "Blue",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[5] ok",
+      "meta": {
+        "selector": ".form-control[5]",
+        "text": "Blue",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[6] ok",
+      "meta": {
+        "selector": ".form-control[6]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[7] ok",
+      "meta": {
+        "selector": ".form-control[7]",
+        "text": "California",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Shiny Inputs Gallery",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Text & numbers\ntextInput\npasswordInput\nt",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Slider\nsliderInput\n0\n100\n50\n0\n10\n20\n30\n4",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Select menus\nselectInput\nBanana\nApple\nBa",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Checkboxes & radios\n checkboxInput\ncheck",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Variable selectors\nvarSelectInput\nmpg\nva",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[5] ok",
+      "meta": {
+        "selector": ".card[5]",
+        "text": "Dates\ndateInput\ndateRangeInput\nto",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[6] ok",
+      "meta": {
+        "selector": ".card[6]",
+        "text": "File upload\nfileInput\nBrowse...",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[7] ok",
+      "meta": {
+        "selector": ".card[7]",
+        "text": "Buttons & links\nactionButton\nactionLink\n",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Banana",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.42)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "Blue",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[2] ok",
+      "meta": {
+        "selector": ".selectize-input[2]",
+        "text": "California",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[3] ok",
+      "meta": {
+        "selector": ".selectize-input[3]",
+        "text": "mpg",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[4] ok",
+      "meta": {
+        "selector": ".selectize-input[4]",
+        "text": "Species",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[5] ok",
+      "meta": {
+        "selector": ".selectize-input[5]",
+        "text": "Light",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "Apple\nBanana\nCherry",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[2] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[2]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[3] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[3]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[4] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[4]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[5] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[5]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"50\"",
+      "meta": {
+        "selector": ".irs-single[0]",
+        "text": "50",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-single[1] ok",
+      "meta": {
+        "selector": ".irs-single[1]",
+        "text": "",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar[0] ok",
+      "meta": {
+        "selector": ".irs-bar[0]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar[1] ok",
+      "meta": {
+        "selector": ".irs-bar[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Shiny Inputs Gallery\nText & numbers\ntext",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 0, 0)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"actionButton\"",
+      "meta": {
+        "selector": ".btn-primary[0]",
+        "text": "actionButton",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"submitButton\"",
+      "meta": {
+        "selector": ".btn-primary[1]",
+        "text": "submitButton",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[0] ok",
+      "meta": {
+        "selector": ".form-control[0]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[1] ok",
+      "meta": {
+        "selector": ".form-control[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[2] ok",
+      "meta": {
+        "selector": ".form-control[2]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[3] ok",
+      "meta": {
+        "selector": ".form-control[3]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[4] ok",
+      "meta": {
+        "selector": ".form-control[4]",
+        "text": "Blue",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[5] ok",
+      "meta": {
+        "selector": ".form-control[5]",
+        "text": "Blue",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[6] ok",
+      "meta": {
+        "selector": ".form-control[6]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[7] ok",
+      "meta": {
+        "selector": ".form-control[7]",
+        "text": "California",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Shiny Inputs Gallery",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Text & numbers\ntextInput\npasswordInput\nt",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "Slider\nsliderInput\n0\n100\n50\n0\n10\n20\n30\n4",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Select menus\nselectInput\nBanana\nApple\nBa",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Checkboxes & radios\n checkboxInput\ncheck",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Variable selectors\nvarSelectInput\nmpg\nva",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[5] ok",
+      "meta": {
+        "selector": ".card[5]",
+        "text": "Dates\ndateInput\ndateRangeInput\nto",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[6] ok",
+      "meta": {
+        "selector": ".card[6]",
+        "text": "File upload\nfileInput\nBrowse...",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[7] ok",
+      "meta": {
+        "selector": ".card[7]",
+        "text": "Buttons & links\nactionButton\nactionLink\n",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Banana",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "Blue",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[2] ok",
+      "meta": {
+        "selector": ".selectize-input[2]",
+        "text": "California",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[3] ok",
+      "meta": {
+        "selector": ".selectize-input[3]",
+        "text": "mpg",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[4] ok",
+      "meta": {
+        "selector": ".selectize-input[4]",
+        "text": "Species",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[5] ok",
+      "meta": {
+        "selector": ".selectize-input[5]",
+        "text": "Dark",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "Apple\nBanana\nCherry",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[2] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[2]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[3] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[3]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[4] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[4]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[5] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[5]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"50\"",
+      "meta": {
+        "selector": ".irs-single[0]",
+        "text": "50",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-single[1] ok",
+      "meta": {
+        "selector": ".irs-single[1]",
+        "text": "",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar[0] ok",
+      "meta": {
+        "selector": ".irs-bar[0]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar[1] ok",
+      "meta": {
+        "selector": ".irs-bar[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 122, 255)"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "plotly + gt + glass\nplotly\n5\n6\n7\n8\n2\n2.5",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(245, 245, 247)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Refresh plot\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Refresh plot",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "plotly + gt + glass",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "plotly\n5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\n",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "gt\nMean iris measures\n150 rows\nSpecies\tS",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Light",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "All",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .irs-single",
+      "meta": {
+        "selector": ".irs-single"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .irs-bar",
+      "meta": {
+        "selector": ".irs-bar"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".js-plotly-plot ok",
+      "meta": {
+        "selector": ".js-plotly-plot",
+        "text": "5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\nversico",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.153137)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar ok",
+      "meta": {
+        "selector": ".modebar",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[0] ok",
+      "meta": {
+        "selector": ".modebar-btn[0]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[1] ok",
+      "meta": {
+        "selector": ".modebar-btn[1]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[2] ok",
+      "meta": {
+        "selector": ".modebar-btn[2]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[3] ok",
+      "meta": {
+        "selector": ".modebar-btn[3]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[4] ok",
+      "meta": {
+        "selector": ".modebar-btn[4]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[5] ok",
+      "meta": {
+        "selector": ".modebar-btn[5]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[6] ok",
+      "meta": {
+        "selector": ".modebar-btn[6]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[7] ok",
+      "meta": {
+        "selector": ".modebar-btn[7]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_table ok",
+      "meta": {
+        "selector": ".gt_table",
+        "text": "Mean iris measures\n150 rows\nSpecies\tSepa",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.28)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[0] ok",
+      "meta": {
+        "selector": ".gt_col_heading[0]",
+        "text": "Species",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.42)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[1] ok",
+      "meta": {
+        "selector": ".gt_col_heading[1]",
+        "text": "Sepal L",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.42)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[2] ok",
+      "meta": {
+        "selector": ".gt_col_heading[2]",
+        "text": "Sepal W",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.42)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[3] ok",
+      "meta": {
+        "selector": ".gt_col_heading[3]",
+        "text": "Petal L",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.42)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[0] ok",
+      "meta": {
+        "selector": ".gt_row[0]",
+        "text": "setosa",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[1] ok",
+      "meta": {
+        "selector": ".gt_row[1]",
+        "text": "5.01",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[2] ok",
+      "meta": {
+        "selector": ".gt_row[2]",
+        "text": "3.43",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[3] ok",
+      "meta": {
+        "selector": ".gt_row[3]",
+        "text": "1.46",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[4] ok",
+      "meta": {
+        "selector": ".gt_row[4]",
+        "text": "versicolor",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.194902)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[5] ok",
+      "meta": {
+        "selector": ".gt_row[5]",
+        "text": "5.94",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.194902)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[6] ok",
+      "meta": {
+        "selector": ".gt_row[6]",
+        "text": "2.77",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.194902)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[7] ok",
+      "meta": {
+        "selector": ".gt_row[7]",
+        "text": "4.26",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.194902)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "plotly + gt + glass\nplotly\n5\n6\n7\n8\n2\n2.5",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Refresh plot\"",
+      "meta": {
+        "selector": ".btn-primary",
+        "text": "Refresh plot",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-secondary",
+      "meta": {
+        "selector": ".btn-secondary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-control",
+      "meta": {
+        "selector": ".form-control"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-check-input:checked",
+      "meta": {
+        "selector": ".form-check-input:checked"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "plotly + gt + glass",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "plotly\n5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\n",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "gt\nMean iris measures\n150 rows\nSpecies\tS",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.08)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[0] ok",
+      "meta": {
+        "selector": ".selectize-input[0]",
+        "text": "Dark",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[1] ok",
+      "meta": {
+        "selector": ".selectize-input[1]",
+        "text": "All",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[0] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[0]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[1] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .irs-single",
+      "meta": {
+        "selector": ".irs-single"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .irs-bar",
+      "meta": {
+        "selector": ".irs-bar"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .shiny-notification",
+      "meta": {
+        "selector": ".shiny-notification"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".js-plotly-plot ok",
+      "meta": {
+        "selector": ".js-plotly-plot",
+        "text": "5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\nversico",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.0431373)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar ok",
+      "meta": {
+        "selector": ".modebar",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[0] ok",
+      "meta": {
+        "selector": ".modebar-btn[0]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[1] ok",
+      "meta": {
+        "selector": ".modebar-btn[1]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[2] ok",
+      "meta": {
+        "selector": ".modebar-btn[2]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[3] ok",
+      "meta": {
+        "selector": ".modebar-btn[3]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[4] ok",
+      "meta": {
+        "selector": ".modebar-btn[4]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[5] ok",
+      "meta": {
+        "selector": ".modebar-btn[5]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[6] ok",
+      "meta": {
+        "selector": ".modebar-btn[6]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modebar-btn[7] ok",
+      "meta": {
+        "selector": ".modebar-btn[7]",
+        "text": "",
+        "color": "rgb(0, 122, 255)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_table ok",
+      "meta": {
+        "selector": ".gt_table",
+        "text": "Mean iris measures\n150 rows\nSpecies\tSepa",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(28, 28, 30)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[0] ok",
+      "meta": {
+        "selector": ".gt_col_heading[0]",
+        "text": "Species",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.14)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[1] ok",
+      "meta": {
+        "selector": ".gt_col_heading[1]",
+        "text": "Sepal L",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.14)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[2] ok",
+      "meta": {
+        "selector": ".gt_col_heading[2]",
+        "text": "Sepal W",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.14)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_col_heading[3] ok",
+      "meta": {
+        "selector": ".gt_col_heading[3]",
+        "text": "Petal L",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.14)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[0] ok",
+      "meta": {
+        "selector": ".gt_row[0]",
+        "text": "setosa",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[1] ok",
+      "meta": {
+        "selector": ".gt_row[1]",
+        "text": "5.01",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[2] ok",
+      "meta": {
+        "selector": ".gt_row[2]",
+        "text": "3.43",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[3] ok",
+      "meta": {
+        "selector": ".gt_row[3]",
+        "text": "1.46",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[4] ok",
+      "meta": {
+        "selector": ".gt_row[4]",
+        "text": "versicolor",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.0666667)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[5] ok",
+      "meta": {
+        "selector": ".gt_row[5]",
+        "text": "5.94",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.0666667)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[6] ok",
+      "meta": {
+        "selector": ".gt_row[6]",
+        "text": "2.77",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.0666667)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".gt_row[7] ok",
+      "meta": {
+        "selector": ".gt_row[7]",
+        "text": "4.26",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.0666667)"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup"
+      }
+    }
+  ]
+}

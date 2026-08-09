@@ -22,7 +22,8 @@ home:
         text: |
           [Source code](https://github.com/ericrayanderson/shinyglass)
           [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
-          [Live demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
+          [Live demos](https://ericrayanderson.shinyapps.io/shinyglass-demo/) ·
+          [plotly+gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/)
 
 navbar:
   structure:

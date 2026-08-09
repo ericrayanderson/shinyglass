@@ -22,7 +22,9 @@ if (!requireNamespace("gt", quietly = TRUE)) {
 library(plotly)
 library(gt)
 
-has_waiter <- requireNamespace("waiter", quietly = TRUE)
+# Screenshots / CI can set SHINYGLASS_NO_WAITER=1 to skip the full-page overlay.
+has_waiter <- requireNamespace("waiter", quietly = TRUE) &&
+  !identical(Sys.getenv("SHINYGLASS_NO_WAITER", ""), "1")
 if (has_waiter) {
   library(waiter)
 }
@@ -140,6 +142,8 @@ server <- function(input, output, session) {
       data = df,
       FUN = function(x) round(mean(x), 2)
     )
+    # Leave font color unset so glass CSS can apply --glass-body-color
+    # (gt rejects CSS keyword "inherit" as a color name).
     gt(summary) |>
       tab_header(
         title = "Mean iris measures",
@@ -157,9 +161,10 @@ server <- function(input, output, session) {
         heading.background.color = "transparent",
         column_labels.background.color = "transparent",
         row.striping.background_color = "transparent",
-        table.font.color = "inherit",
         table.border.top.color = "transparent",
-        table.border.bottom.color = "transparent"
+        table.border.bottom.color = "transparent",
+        table.border.left.color = "transparent",
+        table.border.right.color = "transparent"
       )
   })
 }

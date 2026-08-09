@@ -32,8 +32,25 @@ resolve_pkg_root <- function() {
     this_file <- sub("^--file=", "", file_arg[1])
     return(normalizePath(file.path(dirname(this_file), "..", ".."), winslash = "/"))
   }
-  if (file.exists("inst/scripts/tier-ab-utils.R")) {
-    return(normalizePath(".", winslash = "/"))
+  # runApp("inst/examples/....R") often sets wd to the examples/ dir
+  candidates <- c(
+    ".",
+    "..",
+    file.path("..", ".."),
+    if (requireNamespace("shinyglass", quietly = TRUE)) {
+      system.file(package = "shinyglass")
+    } else {
+      character()
+    }
+  )
+  for (cand in candidates) {
+    if (!nzchar(cand) || !dir.exists(cand)) next
+    utils_path <- file.path(cand, "inst", "scripts", "tier-ab-utils.R")
+    # installed package: scripts live under package root without extra inst/
+    utils_path2 <- file.path(cand, "scripts", "tier-ab-utils.R")
+    if (file.exists(utils_path) || file.exists(utils_path2)) {
+      return(normalizePath(cand, winslash = "/"))
+    }
   }
   NA_character_
 }
@@ -41,6 +58,9 @@ resolve_pkg_root <- function() {
 pkg_root <- resolve_pkg_root()
 if (!is.na(pkg_root)) {
   utils_path <- file.path(pkg_root, "inst", "scripts", "tier-ab-utils.R")
+  if (!file.exists(utils_path)) {
+    utils_path <- file.path(pkg_root, "scripts", "tier-ab-utils.R")
+  }
   if (file.exists(utils_path)) source(utils_path)
 }
 

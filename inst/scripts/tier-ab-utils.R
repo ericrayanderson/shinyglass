@@ -46,34 +46,46 @@ compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#0
     )
   }
 
-  defaults <- list(
-    primary = primary,
-    success = "#34C759",
-    danger = "#FF3B30",
-    warning = "#FF9500",
-    info = "#5AC8FA",
-    "body-color" = tokens$body_color,
-    prefix = "bs-",
-    "glass-bg" = tokens$glass_bg,
-    "glass-bg-hover" = tokens$glass_bg_hover,
-    "glass-border" = tokens$glass_border,
-    "glass-shadow" = tokens$glass_shadow,
-    "glass-elevated-shadow" = tokens$glass_elevated_shadow,
-    "glass-blur" = "28px",
-    "glass-saturate" = "200%",
-    "glass-radius" = "1.25rem",
-    "glass-highlight" = tokens$glass_highlight,
-    "glass-specular" = tokens$glass_specular,
-    "glass-menu-bg" = tokens$glass_menu_bg,
-    "glass-menu-color" = tokens$glass_menu_color,
-    "glass-page-bg" = tokens$page_bg,
-    "glass-orb-1" = tokens$orb_1,
-    "glass-orb-2" = tokens$orb_2,
-    "glass-orb-3" = tokens$orb_3
+  # glass.scss needs full Bootstrap theme-color map for glass-on() ink vars
+  defaults_scss <- paste(
+    c(
+      sprintf("$primary: %s !default;", primary),
+      "$secondary: #6c757d !default;",
+      "$success: #34C759 !default;",
+      "$danger: #FF3B30 !default;",
+      "$warning: #FF9500 !default;",
+      "$info: #5AC8FA !default;",
+      "$light: #f8f9fa !default;",
+      "$dark: #212529 !default;",
+      sprintf("$body-color: %s !default;", tokens$body_color),
+      "$prefix: bs- !default;",
+      "$theme-colors: (\"primary\": $primary, \"secondary\": $secondary, \"success\": $success, \"info\": $info, \"warning\": $warning, \"danger\": $danger, \"light\": $light, \"dark\": $dark) !default;",
+      sprintf("$glass-bg: %s !default;", tokens$glass_bg),
+      sprintf("$glass-bg-hover: %s !default;", tokens$glass_bg_hover),
+      sprintf("$glass-border: %s !default;", tokens$glass_border),
+      sprintf("$glass-shadow: %s !default;", tokens$glass_shadow),
+      sprintf("$glass-elevated-shadow: %s !default;", tokens$glass_elevated_shadow),
+      "$glass-blur: 28px !default;",
+      "$glass-saturate: 200% !default;",
+      "$glass-radius: 1.25rem !default;",
+      sprintf("$glass-highlight: %s !default;", tokens$glass_highlight),
+      sprintf("$glass-specular: %s !default;", tokens$glass_specular),
+      sprintf("$glass-menu-bg: %s !default;", tokens$glass_menu_bg),
+      sprintf("$glass-menu-color: %s !default;", tokens$glass_menu_color),
+      sprintf("$glass-page-bg: %s !default;", tokens$page_bg),
+      sprintf("$glass-orb-1: %s !default;", tokens$orb_1),
+      sprintf("$glass-orb-2: %s !default;", tokens$orb_2),
+      sprintf("$glass-orb-3: %s !default;", tokens$orb_3)
+    ),
+    collapse = "\n"
   )
 
   scss <- system.file("scss", "glass.scss", package = "shinyglass")
   if (!nzchar(scss) || !file.exists(scss)) {
+    # source tree when package not installed
+    scss <- file.path(Sys.getenv("SHINYGLASS_PKG_ROOT", "."), "inst", "scss", "glass.scss")
+  }
+  if (!file.exists(scss)) {
     stop("glass.scss not found in shinyglass package", call. = FALSE)
   }
 
@@ -94,7 +106,7 @@ compile_glass_overlay_css <- function(preset = c("light", "dark"), primary = "#0
 }
 "
 
-  sass::sass(list(defaults, bootstrap_stubs, sass::sass_file(scss)))
+  sass::sass(list(defaults_scss, bootstrap_stubs, sass::sass_file(scss)))
 }
 
 # CSS + JS dependency without BS5 reboot (for AdminLTE/bs4Dash).

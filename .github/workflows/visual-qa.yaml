@@ -1,0 +1,85 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: visual-qa
+
+permissions:
+  contents: read
+
+jobs:
+  testthat:
+    runs-on: ubuntu-latest
+    name: testthat + glass compile
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::testthat, any::pkgload, local::.
+          needs: check
+
+      - name: testthat
+        run: |
+          Rscript -e 'testthat::test_local(load_package = "source")'
+
+  contrast-audit:
+    runs-on: ubuntu-latest
+    name: glass contrast audit
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      SHINYGLASS_NO_WAITER: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          # Core audit apps + optional plotly/gt when available from RSPM
+          extra-packages: |
+            any::testthat
+            any::pkgload
+            any::chromote
+            any::processx
+            any::curl
+            any::jsonlite
+            any::shiny
+            any::bslib
+            any::ggplot2
+            any::DT
+            any::plotly
+            any::gt
+            any::waiter
+            local::.
+          needs: check
+
+      - name: Install Chrome for chromote
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Dual-theme contrast audit
+        run: |
+          Rscript inst/scripts/audit-glass-contrast.R \
+            --apps=demo,dashboard,inputs,plotly_gt \
+            --presets=light,dark \
+            --json=audit-ci-report.json
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: glass-contrast-audit
+          path: audit-ci-report.json
+          if-no-files-found: ignore

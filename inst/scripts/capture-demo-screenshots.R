@@ -11,9 +11,31 @@ wait_for_shiny <- function(
     session,
     timeout = 45,
     min_rows = 1L,
-    mode = c("default", "querychat"),
+    mode = c("default", "querychat", "plotly_gt"),
     filtered = FALSE) {
   mode <- match.arg(mode)
+  if (identical(mode, "plotly_gt")) {
+    js <- sprintf("
+      new Promise((resolve) => {
+        const deadline = Date.now() + %d;
+        const check = () => {
+          const plot = document.querySelector('.js-plotly-plot .main-svg, .js-plotly-plot .plotly');
+          const gt = document.querySelector('.gt_table');
+          const bound = document.querySelectorAll('.shiny-bound-output').length > 0;
+          if (bound && plot && gt) { resolve(true); return; }
+          if (Date.now() > deadline) { resolve(false); return; }
+          setTimeout(check, 300);
+        };
+        check();
+      });
+    ", timeout * 1000L)
+    return(session$Runtime$evaluate(
+      expression = js,
+      awaitPromise = TRUE,
+      returnByValue = TRUE,
+      timeout = (timeout + 5) * 1000
+    ))
+  }
   metric_sel <- if (mode == "querychat") {
     "#metric_n, #metric_species, #metric_petal"
   } else {
@@ -201,7 +223,7 @@ capture_app <- function(
     hide_sidebar_toggle = TRUE,
     hide_sidebar_panel = FALSE,
     disable_tint = FALSE,
-    wait_mode = c("default", "querychat"),
+    wait_mode = c("default", "querychat", "plotly_gt"),
     prep = NULL) {
   wait_mode <- match.arg(wait_mode)
   url <- sprintf("http://127.0.0.1:%d", port)
@@ -257,14 +279,18 @@ capture_app <- function(
   on.exit(b$close(), add = TRUE)
   b$set_viewport_size(width = width, height = height)
   b$go_to(url)
-  initial_wait <- if (wait_mode == "querychat") 4 else 2
+  initial_wait <- if (wait_mode == "querychat") 4 else if (wait_mode == "plotly_gt") 3 else 2
   Sys.sleep(initial_wait)
   if (isTRUE(disable_tint)) {
     disable_content_tint(b)
     Sys.sleep(0.25)
   }
   tryCatch(
-    wait_for_shiny(b, timeout = if (wait_mode == "querychat") 60 else 45, mode = wait_mode),
+    wait_for_shiny(
+      b,
+      timeout = if (wait_mode %in% c("querychat", "plotly_gt")) 60 else 45,
+      mode = wait_mode
+    ),
     error = function(e) NULL
   )
 
@@ -368,3 +394,31 @@ capture_app(
   hide_sidebar_panel = TRUE,
   wait_mode = "querychat"
 )
+
+# plotly + gt ecosystem demo (sidebar on; no waiter overlay for clean shots)
+if (requireNamespace("plotly", quietly = TRUE) && requireNamespace("gt", quietly = TRUE)) {
+  capture_app(
+    file.path(examples_dir, "plotly-gt-demo.R"),
+    file.path(fig_dir, "plotly-gt.png"),
+    port = 3854L,
+    height = 900L,
+    width = 1400L,
+    env = c(SHINYGLASS_PRESET = "light", SHINYGLASS_NO_WAITER = "1"),
+    hide_sidebar_panel = FALSE,
+    hide_sidebar_toggle = TRUE,
+    wait_mode = "plotly_gt"
+  )
+  capture_app(
+    file.path(examples_dir, "plotly-gt-demo.R"),
+    file.path(fig_dir, "plotly-gt-dark.png"),
+    port = 3855L,
+    height = 900L,
+    width = 1400L,
+    env = c(SHINYGLASS_PRESET = "dark", SHINYGLASS_NO_WAITER = "1"),
+    hide_sidebar_panel = FALSE,
+    hide_sidebar_toggle = TRUE,
+    wait_mode = "plotly_gt"
+  )
+} else {
+  message("Skipping plotly-gt screenshots (install plotly + gt to enable).")
+}

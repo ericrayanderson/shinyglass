@@ -33,7 +33,7 @@ has_flag <- function(flag) any(args == flag)
 
 dry_run <- has_flag("--dry-run")
 account <- get_flag("--account", NULL)
-apps_arg <- get_flag("--apps", "demo,dashboard,inputs,olympics")
+apps_arg <- get_flag("--apps", "demo,dashboard,inputs,olympics,plotly_gt")
 app_keys <- trimws(strsplit(apps_arg, ",", fixed = TRUE)[[1]])
 
 if (!requireNamespace("rsconnect", quietly = TRUE)) {
@@ -98,6 +98,12 @@ catalog <- list(
       "shiny", "shinyWidgets", "ggplot2", "ggthemes", "bslib", "dplyr",
       "data.table", "reactable", "tidyr", "ggtext", "shinyglass"
     )
+  ),
+  plotly_gt = list(
+    appName = "shinyglass-plotly-gt",
+    source = file.path(pkg_root, "inst", "examples", "plotly-gt-demo.R"),
+    kind = "single",
+    imports = c("shiny", "bslib", "plotly", "gt", "waiter", "shinyglass")
   )
 )
 
