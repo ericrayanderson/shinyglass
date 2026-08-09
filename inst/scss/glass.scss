@@ -2470,7 +2470,8 @@ body .controls-pane {
 
   html,
   body {
-    overflow-x: clip;
+    // hidden (not clip) so wide DT/table children cannot grow page scrollWidth
+    overflow-x: hidden;
     max-width: 100vw;
   }
 
@@ -2501,8 +2502,10 @@ body .controls-pane {
   // Stacked bslib sidebar (below sm we do not absolute-float): full-width glass
   .bslib-sidebar-layout {
     > .sidebar {
-      max-width: 100% !important;
-      width: 100% !important;
+      // width + horizontal margin would overflow 100vw; inset via margin only
+      box-sizing: border-box !important;
+      width: auto !important;
+      max-width: none !important;
       margin: var(--glass-float-margin) !important;
       // CSS min() — quote so Sass does not unit-check vh vs rem
       max-height: #{'min(70vh, 28rem)'} !important;
@@ -2531,21 +2534,41 @@ body .controls-pane {
     min-width: 0 !important;
   }
 
-  // Tables: swipe horizontally instead of blowing the page width
+  // Tables: swipe inside the card; never expand the page
   .dataTables_wrapper,
+  .dataTables_scroll,
+  .dataTables_scrollHead,
+  .dataTables_scrollBody,
+  .reactable,
+  .Reactable,
+  .table-responsive,
+  .card,
+  .bslib-card {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .dataTables_wrapper,
+  .dataTables_scroll,
+  .dataTables_scrollBody,
   .reactable,
   .Reactable,
   .table-responsive {
     display: block;
     width: 100% !important;
-    max-width: 100% !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
   }
 
-  table.dataTable,
-  .reactable table {
-    width: 100% !important;
+  // DT clones a wide inner table for sticky headers; keep it in the scrollport
+  .dataTables_scrollHeadInner,
+  .dataTables_scrollHeadInner table,
+  .dataTables_scrollBody table {
+    max-width: none !important; // allow internal scroll width
+  }
+
+  .dataTables_wrapper {
+    overflow: auto !important; // beat desktop `overflow: visible` glass frame
   }
 
   // Plots / images fill the card, not the viewport
