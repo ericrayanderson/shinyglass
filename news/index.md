@@ -52,6 +52,11 @@
 - Selectize fields: force body/menu ink on inputs and multi-select tags
   (selectize default near-black item text failed dark mode); opaque
   `--glass-menu-bg` fills in dark; dropdown options use menu colors.
+- Ecosystem chrome: **plotly** modebar + frame, **gt** tables,
+  **waiter** / shinybusy overlays, **shinyalert**/SweetAlert2 popups,
+  denser **shinydashboardPlus** controlbar/dropdowns/user menu, light
+  **rhandsontable** / echarts/highcharter hosts. Examples:
+  `plotly-gt-demo.R`, `shinydashboardPlus-glass-demo.R`.
 - Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to
   **3** so `color-contrast()` picks white on brand blues/purples (white
   on `#007AFF` is ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` /

@@ -107,7 +107,7 @@ dashboard stacks where practical.</p>
 <tr class="even">
 <td>DT</td>
 <td>Supported</td>
-<td>Wrapper + paging chrome</td>
+<td>Visible <code>.page-link</code> chips (not li-only)</td>
 </tr>
 <tr class="odd">
 <td>reactable</td>
@@ -115,9 +115,20 @@ dashboard stacks where practical.</p>
 <td>Avoids double-framing the html-output</td>
 </tr>
 <tr class="even">
+<td><strong>gt</strong></td>
+<td>Supported</td>
+<td>Table / heading / stripe / summary chrome</td>
+</tr>
+<tr class="odd">
 <td>leaflet</td>
 <td>Supported</td>
 <td>Map container transparency</td>
+</tr>
+<tr class="even">
+<td><strong>plotly</strong></td>
+<td>Good</td>
+<td>Glass frame + modebar; set <code>paper_bgcolor</code> transparent in
+R for best dark</td>
 </tr>
 <tr class="odd">
 <td>shinyWidgets (common inputs)</td>
@@ -125,9 +136,12 @@ dashboard stacks where practical.</p>
 <td>Slider tooltips / noUiSlider chips</td>
 </tr>
 <tr class="even">
-<td>shinydashboard / bs4Dash (AdminLTE)</td>
+<td>shinydashboard / <strong>bs4Dash</strong> /
+<strong>shinydashboardPlus</strong>
+</td>
 <td>Overlay</td>
-<td>Glass header/sidebar/boxes; layout stays AdminLTE</td>
+<td>Glass header/sidebar/boxes/controlbar/dropdowns; layout stays
+AdminLTE</td>
 </tr>
 <tr class="odd">
 <td>teal</td>
@@ -136,11 +150,28 @@ dashboard stacks where practical.</p>
 </td>
 </tr>
 <tr class="even">
-<td>plotly / other htmlwidgets</td>
-<td>Partial</td>
-<td>Framed when nested in known output wrappers</td>
+<td>
+<strong>waiter</strong> / shinybusy / loaders</td>
+<td>Good</td>
+<td>Blurred overlays, not solid white scrims</td>
 </tr>
 <tr class="odd">
+<td>
+<strong>shinyalert</strong> / SweetAlert2</td>
+<td>Good</td>
+<td>Popup uses glass menu surface</td>
+</tr>
+<tr class="even">
+<td>rhandsontable</td>
+<td>Partial</td>
+<td>Frame + cell ink; core grid still third-party</td>
+</tr>
+<tr class="odd">
+<td>echarts4r / highcharter / apex</td>
+<td>Partial</td>
+<td>Host wrapper glass; chart internals set in R</td>
+</tr>
+<tr class="even">
 <td>Bootstrap 3-only apps</td>
 <td>Limited</td>
 <td>Theme is BS5 via bslib</td>
@@ -161,11 +192,27 @@ overlay only.</li>
 </ul>
 </div>
 <div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plotly + gt (+ waiter if installed)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"plotly-gt-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># denser AdminLTE (requires shinydashboardPlus)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"shinydashboardPlus-glass-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Dual-theme contrast audit (optional ecosystem apps skip if packages
+missing):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>Rscript inst<span class="sc">/</span>scripts<span class="sc">/</span>audit<span class="sc">-</span>glass<span class="sc">-</span>contrast.R <span class="sc">--</span>apps<span class="ot">=</span>demo,dashboard,inputs,plotly_gt</span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="tips">Tips<a class="anchor" aria-label="anchor" href="#tips"></a>
 </h2>
 <ul>
 <li>Prefer bslib page functions when you can — glass was designed around
 them.</li>
+<li>For plotly dark mode, pass transparent <code>paper_bgcolor</code> /
+<code>plot_bgcolor</code> in <code><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout()</a></code> (see
+<code>plotly-gt-demo.R</code>); CSS handles the modebar.</li>
 <li>For dark mode in dense AdminLTE apps, re-check value/info box
 contrast after switching preset at runtime.</li>
 <li>

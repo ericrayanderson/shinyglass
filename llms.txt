@@ -91,6 +91,8 @@ for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
 shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
 shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
+# plotly + gt (+ waiter if installed):
+# shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"))
 ```
 
 ## Shiny for Python (experimental)
