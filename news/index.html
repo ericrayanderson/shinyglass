@@ -59,7 +59,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
-<ul><li>Active-on-accent contrast: force light ink on primary fills (checks, radios, indeterminate marks, switches, pagination, list-group active). Fixes Bootstrap <code>color-contrast(<a href="https://github.com/ericrayanderson/shinyglass/issues/007" class="external-link">#007</a>AFF) → black</code>.</li>
+<ul><li>Active-on-accent contrast: lower Bootstrap <code>$min-contrast-ratio</code> to <strong>3</strong> so <code>color-contrast()</code> picks white on brand blues/purples (white on <code>#007AFF</code> is ~4.02:1 and failed the old 4.5 gate). Solid <code>.bg-*</code> / <code>.text-bg-*</code> fills (including <code>bslib::value_box(theme=)</code>) get luminance-based ink via <code>glass-on()</code> / <code>--glass-on-*</code> — not body color on solid primary. Safety nets remain for checks, radios, switches, pagination, and list-group active.</li>
 <li>Accent rules target Shiny markup (<code>.shiny-input-checkbox</code>) as well as Bootstrap <code>.form-check-input</code>.</li>
 <li>Plot / image outputs get a softer glass frame (lighter nesting inside cards).</li>
 <li>
