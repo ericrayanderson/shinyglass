@@ -17,23 +17,7 @@ ui <- fluidPage(
       checkboxInput("smooth", "Show smooth", TRUE),
       actionButton("go", "Go", class = "btn-primary"),
       hr(),
-      # onclick applies instantly on the client; server update_glass_theme()
-      # keeps session state in sync (needed on hosts that rewrite Shiny messaging).
-      div(
-        class = "d-flex flex-wrap gap-2",
-        actionButton(
-          "theme_light", "Light",
-          onclick = "window.shinyglass&&window.shinyglass.setPreset('light')"
-        ),
-        actionButton(
-          "theme_dark", "Dark",
-          onclick = "window.shinyglass&&window.shinyglass.setPreset('dark')"
-        ),
-        actionButton(
-          "theme_auto", "Auto (OS)",
-          onclick = "window.shinyglass&&window.shinyglass.setPreset('auto')"
-        )
-      )
+      glass_theme_toggle(selected = "auto")
     ),
     card(
       card_header("Plot"),
@@ -43,9 +27,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$theme_light, update_glass_theme(session, preset = "light"))
-  observeEvent(input$theme_dark, update_glass_theme(session, preset = "dark"))
-  observeEvent(input$theme_auto, update_glass_theme(session, preset = "auto"))
+  observe_glass_theme_toggle(input, session)
 
   output$dist_plot <- renderPlot({
     x <- faithful$waiting

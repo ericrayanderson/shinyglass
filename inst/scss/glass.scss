@@ -16,15 +16,25 @@
 }
 
 // Solid value chip (slider bubbles / range tooltips only — not general .bg-*)
+// $fill may be a Sass color or a CSS value string (e.g. $glass-accent).
 @mixin glass-value-chip($fill: $primary) {
-  background-color: $fill !important;
-  background: $fill !important;
+  background-color: #{$fill} !important;
+  background: #{$fill} !important;
   color: glass-on($fill) !important;
   text-shadow: none;
   border: none !important;
   border-radius: 0.55rem;
   font-weight: 600;
 }
+
+// Runtime accent: prefer JS --glass-accent, then Bootstrap --bs-primary, then
+// compile-time $primary. Do not pass through Sass color functions that need a
+// concrete color. Used by update_glass_theme(primary=) / setPrimary().
+$glass-accent: var(--glass-accent, var(--bs-primary, #{$primary}));
+
+// Shiny checkboxInput() uses .shiny-input-checkbox (not .form-check-input).
+// Include bslib shiny selectors so accent + white marks hit real apps.
+$glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-container .checkbox input, .shiny-input-container .checkbox-inline input, .shiny-input-container .radio input, .shiny-input-container .radio-inline input";
 
 // Shared compile-time knobs (blur / radius / primary ink). Preset-specific
 // surfaces live in dual packs below so light↔dark can switch at runtime via
@@ -40,6 +50,8 @@
   --glass-tint-strength: 0;
   --glass-specular-x: 28%;
   --glass-specular-y: 10%;
+  // Default accent; head script / setPrimary() override at runtime.
+  --glass-accent: #{$primary};
   // Contrast-safe ink for solid theme fills (widgets that inherit body color)
   --glass-on-primary: #{glass-on($primary)};
   --glass-on-success: #{glass-on($success)};
@@ -716,16 +728,17 @@ a.shiny-download-link {
 }
 
 // ---------------------------------------------------------------------------
-// Active-on-accent ink (checks, radios, switches, indeterminate)
+// Active-on-accent ink (checks, radios, switches, indeterminate, btn-check)
 //
 // Bootstrap sets $component-active-color via color-contrast($primary). For
 // system blue (#007AFF) that contrast pick is often *black*, so SVG check
 // strokes / switch knobs compile dark-on-blue. glass_theme() also forces
-// $component-active-color to white; these rules are the CSS safety net
-// (including dual-pack / late cascade cases).
+// $component-active-color to white; these rules are the CSS safety net.
+// Accent fill uses --glass-accent so update_glass_theme(primary=) recolors
+// at runtime. Selectors cover BS form-check-input AND Shiny checkboxInput.
 // ---------------------------------------------------------------------------
 
-.form-check-input {
+#{$glass-check-input} {
   width: 1.1em;
   height: 1.1em;
   margin-top: 0.2em;
@@ -740,22 +753,23 @@ a.shiny-download-link {
 
   &:hover {
     background-color: var(--glass-bg-hover);
-    border-color: color-mix(in srgb, #{$primary} 45%, var(--glass-border));
+    border-color: color-mix(in srgb, #{$glass-accent} 45%, var(--glass-border));
   }
 
   &:focus {
-    border-color: rgba($primary, 0.55);
+    border-color: color-mix(in srgb, #{$glass-accent} 55%, transparent);
     box-shadow:
-      0 0 0 0.2rem rgba($primary, 0.18),
+      0 0 0 0.2rem color-mix(in srgb, #{$glass-accent} 18%, transparent),
       inset 0 1px 0 var(--glass-highlight);
   }
 
   &:checked,
   &:indeterminate {
-    background-color: #{$primary} !important;
-    border-color: #{$primary} !important;
+    // background shorthand beats Bootstrap longhands that bake $primary hex
+    background-color: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
     box-shadow:
-      0 2px 10px color-mix(in srgb, #{$primary} 35%, transparent),
+      0 2px 10px color-mix(in srgb, #{$glass-accent} 35%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.35);
   }
 
@@ -783,8 +797,8 @@ a.shiny-download-link {
 // Toggle switches: white knob on accent track when on (layout left to Bootstrap)
 .form-switch .form-check-input {
   &:checked {
-    background-color: #{$primary} !important;
-    border-color: #{$primary} !important;
+    background-color: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
     // white knob — overrides BS color-contrast black fill on primary
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
   }
@@ -793,7 +807,15 @@ a.shiny-download-link {
 // Legacy BS3 shiny markup still used in some apps
 .checkbox input[type="checkbox"],
 .radio input[type="radio"] {
-  accent-color: #{$primary};
+  accent-color: #{$glass-accent};
+}
+
+// btn-check + primary (and similar) must keep light label ink
+.btn-check:checked + .btn-primary,
+.btn-check:active + .btn-primary,
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary {
+  color: #fff !important;
 }
 
 // Active list/nav/pagination text on primary fill should stay light
@@ -804,6 +826,8 @@ a.shiny-download-link {
 .dropdown-item.active,
 .dropdown-item:active {
   color: #fff !important;
+  background-color: #{$glass-accent} !important;
+  border-color: #{$glass-accent} !important;
 }
 
 .form-select {
@@ -893,7 +917,7 @@ form.well,
   }
 
   .active {
-    background: color-mix(in srgb, var(--glass-bg-hover) 65%, $primary 35%) !important;
+    background: color-mix(in srgb, var(--glass-bg-hover) 65%, #{$glass-accent} 35%) !important;
     color: inherit;
   }
 
@@ -918,28 +942,29 @@ form.well,
 // Problem: chips paint primary fill but inherit body ink (dark text on blue).
 // ---------------------------------------------------------------------------
 
-// shiny::sliderInput (ion.rangeSlider)
+// shiny::sliderInput (ion.rangeSlider) — include .irs--shiny skin which
+// ships hardcoded primary fills after our generic .irs rules.
 .irs {
   .irs-bar,
   .irs-bar-edge {
-    background: $primary;
-    border-color: $primary;
+    background: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
   }
 
   .irs-single,
   .irs-from,
   .irs-to {
-    @include glass-value-chip($primary);
+    @include glass-value-chip($glass-accent);
   }
 
   .irs-handle {
-    border: 2px solid $primary;
+    border: 2px solid #{$glass-accent} !important;
     background: var(--glass-menu-bg, #ffffff);
     box-shadow: 0 2px 8px var(--glass-shadow);
     cursor: pointer;
 
     > i:first-child {
-      background: color-mix(in srgb, $primary 55%, transparent);
+      background: color-mix(in srgb, #{$glass-accent} 55%, transparent);
     }
   }
 
@@ -956,28 +981,47 @@ form.well,
   }
 }
 
+// Skin-specific overrides (ion.rangeSlider "shiny" skin)
+.irs--shiny {
+  .irs-bar,
+  .irs-bar-edge {
+    background: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
+  }
+
+  .irs-from,
+  .irs-to,
+  .irs-single {
+    @include glass-value-chip($glass-accent);
+  }
+
+  .irs-handle {
+    border-color: #{$glass-accent} !important;
+  }
+}
+
 // shinyWidgets / noUiSlider value tooltips (same failure mode as .irs-single)
 .noUi-tooltip,
 .noUi-horizontal .noUi-tooltip,
 .noUi-vertical .noUi-tooltip {
-  @include glass-value-chip($primary);
+  @include glass-value-chip($glass-accent);
 }
 
 // bootstrap-slider tooltips when present
 .slider .tooltip.top .tooltip-inner,
 .slider .tooltip-inner {
-  @include glass-value-chip($primary);
+  @include glass-value-chip($glass-accent);
 }
 
 // Native range thumbs only (no text labels to fix)
 .form-range {
   &::-webkit-slider-thumb {
-    background-color: $primary;
+    background-color: #{$glass-accent};
     border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 
   &::-moz-range-thumb {
-    background-color: $primary;
+    background-color: #{$glass-accent};
     border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 }
@@ -1346,6 +1390,18 @@ form.well,
   overflow: hidden;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+// Nested plots inside cards: lighter frame so they don't double-glass
+.card .shiny-plot-output,
+.card .shiny-image-output,
+.bslib-card .shiny-plot-output,
+.bslib-card .shiny-image-output {
+  background: color-mix(in srgb, var(--glass-bg) 55%, transparent);
+  box-shadow:
+    0 2px 12px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
+    inset 0 1px 0 var(--glass-highlight);
+  border-color: color-mix(in srgb, var(--glass-border) 70%, transparent);
 }
 
 // Frame html outputs that carry real content. Empty teal validation
@@ -2374,20 +2430,32 @@ body .controls-pane {
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .btn,
+  .well,
   .form-control,
   .form-select,
+  .form-check-input,
+  .btn,
+  .action-button,
   .navbar,
-  .tabbable > .nav-tabs {
-    transition: none;
+  .tabbable > .nav-tabs,
+  .bslib-sidebar-layout > .sidebar,
+  .shiny-plot-output,
+  .dataTables_wrapper,
+  .value-box,
+  .small-box,
+  .info-box {
+    transition: none !important;
+    animation: none !important;
   }
 
   body.glass-nav-compact .navbar,
-  body.glass-nav-compact .tabbable > .nav-tabs,
+  body.glass-nav-compact .navbar.navbar-static-top,
+  body.glass-nav-compact .navbar.navbar-default,
   body.glass-nav-expanded .navbar,
+  body.glass-nav-compact .tabbable > .nav-tabs,
   body.glass-nav-expanded .tabbable > .nav-tabs {
-    transform: none;
-    opacity: 1;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 
@@ -2564,5 +2632,43 @@ body .controls-pane {
     > .sidebar {
       width: #{'min(var(--_sidebar-width, 250px), 42vw)'} !important;
     }
+  }
+}
+
+// Theme toggle helper (glass_theme_toggle())
+.glass-theme-toggle .btn {
+  min-width: 4.5rem;
+}
+
+// Runtime accent: primary buttons follow --glass-accent.
+// Must use the `background` shorthand with !important to beat
+// glass-button-tinted($primary)'s earlier `background: color-mix(...) !important`.
+.btn-primary,
+.action-button.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{$glass-accent};
+  --bs-btn-border-color: #{$glass-accent};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: color-mix(in srgb, #{$glass-accent} 88%, #000 12%);
+  --bs-btn-hover-border-color: color-mix(in srgb, #{$glass-accent} 88%, #000 12%);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: color-mix(in srgb, #{$glass-accent} 80%, #000 20%);
+  --bs-btn-active-border-color: color-mix(in srgb, #{$glass-accent} 80%, #000 20%);
+  color: #fff !important;
+  background: #{$glass-accent} !important;
+  border-color: #{$glass-accent} !important;
+
+  &:hover,
+  &:focus {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+    border-color: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+  }
+
+  &:active,
+  &.active {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$glass-accent} 80%, #000 20%) !important;
+    border-color: color-mix(in srgb, #{$glass-accent} 80%, #000 20%) !important;
   }
 }

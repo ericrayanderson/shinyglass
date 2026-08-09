@@ -50,7 +50,8 @@ any other page function that accepts a bslib theme.
 Light and dark surface tokens are compiled into dual CSS custom-property
 packs. Switching \code{preset} at runtime (via \code{\link[=update_glass_theme]{update_glass_theme()}} or
 \code{preset = "auto"}) updates \code{document.documentElement.dataset.glassPreset}
-without recompiling Sass or reloading the page.
+without recompiling Sass or reloading the page. Accent color can also be
+updated live with \code{\link[=update_glass_theme]{update_glass_theme()}} \verb{primary=} (CSS variables).
 }
 \examples{
 theme <- glass_theme()
@@ -63,17 +64,14 @@ if (interactive()) {
   ui <- fluidPage(
     theme = glass_theme(preset = "auto"),
     titlePanel("Liquid Glass"),
-    actionButton("toggle", "Toggle light / dark"),
+    glass_theme_toggle(),
     selectInput("color", "Color", c("Blue", "Purple", "Orange")),
     plotOutput("plot")
   )
 
   server <- function(input, output, session) {
-    mode <- reactiveVal("light")
-    observeEvent(input$toggle, {
-      mode(if (identical(mode(), "light")) "dark" else "light")
-      update_glass_theme(session, preset = mode())
-    })
+    # Client onclick already switches; keep session in sync:
+    observe_glass_theme_toggle(input, session)
   }
 
   shinyApp(ui, server)

@@ -8,7 +8,8 @@
 #' Light and dark surface tokens are compiled into dual CSS custom-property
 #' packs. Switching `preset` at runtime (via [update_glass_theme()] or
 #' `preset = "auto"`) updates `document.documentElement.dataset.glassPreset`
-#' without recompiling Sass or reloading the page.
+#' without recompiling Sass or reloading the page. Accent color can also be
+#' updated live with [update_glass_theme()] `primary=` (CSS variables).
 #'
 #' @param preset `"light"`, `"dark"`, or `"auto"`. `"auto"` follows
 #'   `prefers-color-scheme` and updates when the OS theme changes.
@@ -35,17 +36,14 @@
 #'   ui <- fluidPage(
 #'     theme = glass_theme(preset = "auto"),
 #'     titlePanel("Liquid Glass"),
-#'     actionButton("toggle", "Toggle light / dark"),
+#'     glass_theme_toggle(),
 #'     selectInput("color", "Color", c("Blue", "Purple", "Orange")),
 #'     plotOutput("plot")
 #'   )
 #'
 #'   server <- function(input, output, session) {
-#'     mode <- reactiveVal("light")
-#'     observeEvent(input$toggle, {
-#'       mode(if (identical(mode(), "light")) "dark" else "light")
-#'       update_glass_theme(session, preset = mode())
-#'     })
+#'     # Client onclick already switches; keep session in sync:
+#'     observe_glass_theme_toggle(input, session)
 #'   }
 #'
 #'   shinyApp(ui, server)
@@ -68,6 +66,7 @@ glass_theme <- function(
     is.logical(specular), length(specular) == 1L, !is.na(specular),
     is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph)
   )
+  primary <- .glass_normalize_color(primary)
 
   # Sass still needs a single pack of $glass-* defaults at compile time.
   # Runtime light/dark comes from dual CSS variable packs in glass.scss.
@@ -139,7 +138,8 @@ glass_theme <- function(
     preset = preset,
     tint = tint,
     specular = specular,
-    nav_morph = nav_morph
+    nav_morph = nav_morph,
+    primary = primary
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -168,14 +168,19 @@ glass_theme <- function(
 
 #' Update glass theme options in a running app
 #'
-#' Send a message to the browser to change the Liquid Glass preset or
-#' content-tint behavior without reloading the page. Requires a page that
-#' used [glass_theme()] (so `shiny-glass.js` is loaded).
+#' Send a message to the browser to change the Liquid Glass preset, accent
+#' color, or content-tint behavior without reloading the page. Requires a page
+#' that used [glass_theme()] (so `shiny-glass.js` is loaded).
+#'
+#' `primary` updates CSS variables (`--bs-primary`, `--bs-primary-rgb`,
+#' `--glass-primary`) so buttons, checks, and other accent surfaces follow the
+#' new color. Sass-baked one-off colors may not all switch until a full reload.
 #'
 #' @param session A Shiny session object (usually the `session` argument of
 #'   the server function).
 #' @param preset Optional. `"light"`, `"dark"`, or `"auto"`.
 #' @param tint Optional logical. Enable or disable content-aware ambient tint.
+#' @param primary Optional accent color (hex like `"#AF52DE"` or `rgb()`).
 #'
 #' @return `session`, invisibly.
 #'
@@ -186,20 +191,22 @@ glass_theme <- function(
 #'
 #'   ui <- fluidPage(
 #'     theme = glass_theme(),
-#'     actionButton("dark", "Dark"),
-#'     actionButton("light", "Light")
+#'     glass_theme_toggle(),
+#'     selectInput("accent", "Accent", c("#007AFF", "#AF52DE", "#FF9500"))
 #'   )
 #'
 #'   server <- function(input, output, session) {
-#'     observeEvent(input$dark, update_glass_theme(session, preset = "dark"))
-#'     observeEvent(input$light, update_glass_theme(session, preset = "light"))
+#'     observe_glass_theme_toggle(input, session)
+#'     observeEvent(input$accent, {
+#'       update_glass_theme(session, primary = input$accent)
+#'     }, ignoreInit = TRUE)
 #'   }
 #'
 #'   shinyApp(ui, server)
 #' }
 #'
 #' @export
-update_glass_theme <- function(session, preset = NULL, tint = NULL) {
+update_glass_theme <- function(session, preset = NULL, tint = NULL, primary = NULL) {
   if (missing(session) || is.null(session)) {
     stop("`session` is required.", call. = FALSE)
   }
@@ -209,17 +216,115 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL) {
   if (!is.null(tint)) {
     stopifnot(is.logical(tint), length(tint) == 1L, !is.na(tint))
   }
-  if (is.null(preset) && is.null(tint)) {
+  if (!is.null(primary)) {
+    primary <- .glass_normalize_color(primary)
+  }
+  if (is.null(preset) && is.null(tint) && is.null(primary)) {
     return(invisible(session))
   }
 
   payload <- list()
   if (!is.null(preset)) payload$preset <- preset
   if (!is.null(tint)) payload$tint <- tint
+  if (!is.null(primary)) payload$primary <- primary
 
   # Prefer structured message; JS also accepts legacy glassPreset string.
   session$sendCustomMessage("shinyglass", payload)
   invisible(session)
+}
+
+#' Light / dark / auto theme toggle buttons
+#'
+#' Drop-in button group for switching the glass preset. Each button sets the
+#' preset on the client immediately (`window.shinyglass.setPreset`) and also
+#' has a Shiny input id so [observe_glass_theme_toggle()] can keep the server
+#' in sync (important on hosts that rewrite custom messages).
+#'
+#' @param inputId Base id. Buttons are `{inputId}_light`, `{inputId}_dark`,
+#'   and `{inputId}_auto`.
+#' @param selected Initially highlighted mode (`"light"`, `"dark"`, or
+#'   `"auto"`). Cosmetic only; the page theme still comes from [glass_theme()].
+#' @param labels Named character vector for button labels. Names must be
+#'   `light`, `dark`, and/or `auto`.
+#' @param class Extra CSS classes for the wrapper.
+#'
+#' @return An [htmltools::tag()] button group.
+#'
+#' @seealso [observe_glass_theme_toggle()], [update_glass_theme()]
+#'
+#' @export
+glass_theme_toggle <- function(
+    inputId = "glass_toggle",
+    selected = c("auto", "light", "dark"),
+    labels = c(light = "Light", dark = "Dark", auto = "Auto (OS)"),
+    class = "d-flex flex-wrap gap-2 glass-theme-toggle") {
+  selected <- match.arg(selected)
+  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  modes <- c("light", "dark", "auto")
+  if (is.null(names(labels)) || !all(modes %in% names(labels))) {
+    stop("`labels` must be a named vector with names light, dark, auto.", call. = FALSE)
+  }
+
+  btns <- lapply(modes, function(mode) {
+    id <- paste0(inputId, "_", mode)
+    btn_class <- "btn-sm"
+    if (identical(mode, selected)) {
+      btn_class <- paste(btn_class, "btn-primary")
+    }
+    shiny::actionButton(
+      inputId = id,
+      label = unname(labels[[mode]]),
+      class = btn_class,
+      onclick = sprintf(
+        "window.shinyglass&&window.shinyglass.setPreset(%s)",
+        jsonlite_quote(mode)
+      )
+    )
+  })
+
+  htmltools::div(
+    class = class,
+    role = "group",
+    `aria-label` = "Glass theme preset",
+    btns
+  )
+}
+
+#' Observe [glass_theme_toggle()] buttons on the server
+#'
+#' Wires the three toggle inputs to [update_glass_theme()] so session state
+#' stays aligned with the client (needed on some hosts that rewrite Shiny
+#' messaging).
+#'
+#' @param input The server `input` object.
+#' @param session The server `session` object.
+#' @param inputId Same base id passed to [glass_theme_toggle()].
+#'
+#' @return `NULL`, invisibly. Called for side effects (registers observers).
+#'
+#' @export
+observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle") {
+  if (missing(input) || missing(session)) {
+    stop("`input` and `session` are required.", call. = FALSE)
+  }
+  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+
+  shiny::observeEvent(
+    input[[paste0(inputId, "_light")]],
+    update_glass_theme(session, preset = "light"),
+    ignoreInit = TRUE
+  )
+  shiny::observeEvent(
+    input[[paste0(inputId, "_dark")]],
+    update_glass_theme(session, preset = "dark"),
+    ignoreInit = TRUE
+  )
+  shiny::observeEvent(
+    input[[paste0(inputId, "_auto")]],
+    update_glass_theme(session, preset = "auto"),
+    ignoreInit = TRUE
+  )
+  invisible(NULL)
 }
 
 .glass_font_stack <- function() {
@@ -235,6 +340,21 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL) {
     "sans-serif",
     sep = ", "
   )
+}
+
+.glass_normalize_color <- function(primary) {
+  stopifnot(is.character(primary), length(primary) == 1L, !is.na(primary))
+  primary <- trimws(primary)
+  if (!nzchar(primary)) {
+    stop("`primary` must be a non-empty color string.", call. = FALSE)
+  }
+  # Accept #RGB, #RRGGBB, or rgb()/rgba() — leave other CSS colors to the browser.
+  if (grepl("^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", primary) ||
+    grepl("^rgba?\\(", primary, ignore.case = TRUE)) {
+    return(primary)
+  }
+  # Named colors / other CSS — still pass through for flexibility
+  primary
 }
 
 .glass_tokens <- function(preset, blur, saturation, radius) {
@@ -277,9 +397,15 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL) {
   }
 }
 
-.glass_preset_head_script <- function(preset, tint, specular, nav_morph) {
+.glass_preset_head_script <- function(preset, tint, specular, nav_morph, primary = "#007AFF") {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
+  rgb <- .glass_hex_to_rgb(primary)
+  rgb_css <- if (is.null(rgb)) {
+    "null"
+  } else {
+    sprintf("{r:%d,g:%d,b:%d}", rgb$r, rgb$g, rgb$b)
+  }
   sprintf(
     paste0(
       "<script>(function(){",
@@ -298,12 +424,43 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL) {
       "root.dataset.glassTint=%s;",
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
+      "var prim=%s;",
+      "var rgb=%s;",
+      "if(prim){root.dataset.glassPrimary=prim;",
+      "root.style.setProperty('--bs-primary',prim);",
+      "root.style.setProperty('--glass-primary',prim);",
+      "root.style.setProperty('--glass-accent',prim);",
+      "if(rgb){root.style.setProperty('--bs-primary-rgb',rgb.r+', '+rgb.g+', '+rgb.b);}",
+      "}",
       "})();</script>"
     ),
     jsonlite_quote(preset),
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
-    if (isTRUE(nav_morph)) "\"true\"" else "\"false\""
+    if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
+    jsonlite_quote(primary),
+    rgb_css
+  )
+}
+
+.glass_hex_to_rgb <- function(color) {
+  color <- trimws(as.character(color))
+  if (grepl("^#([0-9A-Fa-f]{3})$", color)) {
+    h <- substring(color, 2)
+    h <- paste0(
+      substr(h, 1, 1), substr(h, 1, 1),
+      substr(h, 2, 2), substr(h, 2, 2),
+      substr(h, 3, 3), substr(h, 3, 3)
+    )
+    color <- paste0("#", h)
+  }
+  if (!grepl("^#([0-9A-Fa-f]{6})$", color)) {
+    return(NULL)
+  }
+  list(
+    r = strtoi(substr(color, 2, 3), 16L),
+    g = strtoi(substr(color, 4, 5), 16L),
+    b = strtoi(substr(color, 6, 7), 16L)
   )
 }
 
