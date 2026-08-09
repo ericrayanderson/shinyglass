@@ -25,7 +25,18 @@ capture_demo <- function(preset = c("light", "dark"), out_path, port) {
   lines <- readLines(app_src, warn = FALSE)
 
   if (identical(preset, "dark")) {
-    lines <- sub("glass_theme\\(\\)", "glass_theme(preset = \"dark\")", lines)
+    lines <- sub(
+      "glass_theme\\((?:preset\\s*=\\s*\"[^\"]*\"\\s*)?\\)",
+      "glass_theme(preset = \"dark\")",
+      lines,
+      perl = TRUE
+    )
+    lines <- sub(
+      "glass_theme_toggle\\(selected\\s*=\\s*\"[^\"]*\"\\)",
+      "glass_theme_toggle(selected = \"dark\")",
+      lines,
+      perl = TRUE
+    )
   }
 
   boot <- c(
