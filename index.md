@@ -25,6 +25,11 @@ light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/fig
 dashboard,
 dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
 
+![plotly + gt,
+light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png)![plotly +
+gt,
+dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png)
+
 ## Live demos
 
 Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may
@@ -35,6 +40,7 @@ take a few seconds to wake):
 | [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **Light / Dark / Auto** buttons ([`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)) |
 | [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT |
 | [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
+| [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
 
 ## Install

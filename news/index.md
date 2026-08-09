@@ -57,6 +57,11 @@
   denser **shinydashboardPlus** controlbar/dropdowns/user menu, light
   **rhandsontable** / echarts/highcharter hosts. Examples:
   `plotly-gt-demo.R`, `shinydashboardPlus-glass-demo.R`.
+- Live demo
+  [shinyglass-plotly-gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/);
+  README light/dark screenshots for plotly+gt.
+- CI workflow `visual-qa` (testthat + dual-theme contrast audit) and
+  committed `inst/scripts/audit-baseline.json`.
 - Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to
   **3** so `color-contrast()` picks white on brand blues/purples (white
   on `#007AFF` is ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` /
