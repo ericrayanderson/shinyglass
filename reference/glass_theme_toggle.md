@@ -2,7 +2,7 @@
 
 Drop-in button group for switching the glass preset. Each button sets
 the preset on the client immediately (`window.shinyglass.setPreset`) and
-also has a Shiny input id so
+also has a 'shiny' input id so
 [`observe_glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_theme_toggle.md)
 can keep the server in sync (important on hosts that rewrite custom
 messages).

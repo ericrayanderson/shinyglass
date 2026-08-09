@@ -1,4 +1,4 @@
-# Liquid Glass Design Themes for Shiny Applications
+# Liquid Glass Design Themes for 'shiny' Applications
 
 Drop-in Liquid Glass themes for [shiny](https://shiny.posit.co/). Call
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
@@ -36,8 +36,9 @@ For [teal](https://insightsengineering.github.io/teal/) apps, set
 
 ## Author
 
-**Maintainer**: Eric Anderson <eric.ray.anderson@gmail.com>
+**Maintainer**: Eric Anderson <eric.ray.anderson@gmail.com> \[copyright
+holder\]
 
 Authors:
 
-- Eric Anderson <eric.ray.anderson@gmail.com>
+- Eric Anderson <eric.ray.anderson@gmail.com> \[copyright holder\]

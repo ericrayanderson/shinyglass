@@ -1,4 +1,4 @@
-# Liquid Glass theme for Shiny
+# Liquid Glass theme for 'shiny'
 
 Create a
 [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
@@ -70,7 +70,7 @@ glass_theme(
 
 A
 [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
-object suitable for Shiny page functions.
+object suitable for 'shiny' page functions.
 
 ## Details
 

@@ -3,7 +3,7 @@
 Wires the three toggle inputs to
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 so session state stays aligned with the client (needed on some hosts
-that rewrite Shiny messaging).
+that rewrite 'shiny' messaging).
 
 ## Usage
 

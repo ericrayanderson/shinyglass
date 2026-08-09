@@ -3,7 +3,7 @@
 ## Authors
 
 - **[Eric Anderson](https://github.com/ericrayanderson)**. Author,
-  maintainer.
+  maintainer, copyright holder.
 
 ## Citation
 

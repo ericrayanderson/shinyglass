@@ -47,8 +47,10 @@ take a few seconds to wake):
 
 ``` r
 
+# once on CRAN:
 install.packages("shinyglass")
-# development:
+
+# development version:
 # remotes::install_github("ericrayanderson/shinyglass")
 ```
 
