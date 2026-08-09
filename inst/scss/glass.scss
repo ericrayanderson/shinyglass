@@ -1,8 +1,10 @@
 
-// Readable ink on a solid UI fill (value chips, tinted buttons, …).
-// Intentionally NOT Bootstrap color-contrast(): that uses a 4.5:1 WCAG
-// gate and returns black for brand blues like #007AFF (white fails by a
-// hair). For short chip/button labels we use relative luminance instead.
+// Readable ink on a solid UI fill (value chips, tinted buttons, value boxes).
+// Intentionally NOT Bootstrap color-contrast(): that uses a 4.5:1 WCAG AA
+// gate and returns black for brand blues like #007AFF (white is ~4.02:1).
+// glass_theme() also lowers $min-contrast-ratio to 3 so Bootstrap's own
+// color-contrast() prefers white on those brands; this luminance helper is
+// the CSS/runtime path for solid .bg-* fills and short chrome labels.
 @function glass-on($fill, $light: #ffffff, $dark: #1d1d1f) {
   @if type-of($fill) != color {
     @return $light;
@@ -52,12 +54,56 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-specular-y: 10%;
   // Default accent; head script / setPrimary() override at runtime.
   --glass-accent: #{$primary};
-  // Contrast-safe ink for solid theme fills (widgets that inherit body color)
+  // Contrast-safe ink for solid theme fills (widgets that inherit body color).
+  // --glass-on-primary is updated live by setPrimary(); others are compile-time.
   --glass-on-primary: #{glass-on($primary)};
+  --glass-on-secondary: #{glass-on($secondary)};
   --glass-on-success: #{glass-on($success)};
   --glass-on-danger: #{glass-on($danger)};
   --glass-on-warning: #{glass-on($warning)};
   --glass-on-info: #{glass-on($info)};
+  --glass-on-light: #{glass-on($light)};
+  --glass-on-dark: #{glass-on($dark)};
+}
+
+// ---------------------------------------------------------------------------
+// Solid theme-color fills carry luminance-appropriate ink
+//
+// Bootstrap splits utilities:
+//   .bg-*       → background only (body ink inherits → black on #007AFF)
+//   .text-bg-*  → background + color-contrast() (fixed by min-contrast-ratio)
+//
+// bslib::value_box(theme = "primary") emits `.bg-primary` only — never
+// text-bg-primary — so value boxes keep body color on solid blue. Same failure
+// mode as any card/alert/box that uses .bg-primary as a full surface fill.
+//
+// Fix at the utility layer: every solid theme fill sets color + card/value-box
+// CSS vars to glass-on() ink (or the runtime --glass-on-* var for primary).
+// ---------------------------------------------------------------------------
+@each $name, $color in $theme-colors {
+  $ink: glass-on($color);
+  $ink-var: var(--glass-on-#{$name}, #{$ink});
+
+  .bg-#{$name},
+  .text-bg-#{$name} {
+    color: $ink-var !important;
+    // bslib cards / value boxes read these for nested titles and values
+    --bs-card-color: #{$ink-var};
+    --bs-card-title-color: #{$ink-var};
+    --bs-card-subtitle-color: #{$ink-var};
+    --bslib-color-fg: #{$ink-var};
+    --bslib-value-box-color: #{$ink-var};
+  }
+
+  // Nested shiny text outputs inherit the fill ink
+  .bg-#{$name} .value-box-title,
+  .bg-#{$name} .value-box-value,
+  .bg-#{$name} .shiny-text-output,
+  .text-bg-#{$name} .value-box-title,
+  .text-bg-#{$name} .value-box-value,
+  .text-bg-#{$name} .shiny-text-output {
+    color: inherit !important;
+  }
 }
 
 // Light pack (default when data-glass-preset is missing or "light")

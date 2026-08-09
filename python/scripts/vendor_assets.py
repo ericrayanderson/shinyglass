@@ -68,10 +68,17 @@ def _compile_glass_rules(scss_text: str, tokens: dict[str, str], blur: int, satu
     defaults = "\n".join(
         [
             f"$primary: #007AFF !default;",
+            f"$secondary: #6c757d !default;",
             f"$success: #34C759 !default;",
             f"$danger: #FF3B30 !default;",
             f"$warning: #FF9500 !default;",
             f"$info: #5AC8FA !default;",
+            f"$light: #f8f9fa !default;",
+            f"$dark: #212529 !default;",
+            # Map used by solid-fill ink @each loop in glass.scss
+            f"$theme-colors: (\"primary\": $primary, \"secondary\": $secondary, "
+            f"\"success\": $success, \"info\": $info, \"warning\": $warning, "
+            f"\"danger\": $danger, \"light\": $light, \"dark\": $dark) !default;",
             f"$body-color: {tokens['body_color']} !default;",
             f"$prefix: bs- !default;",
             f"$glass-bg: {tokens['glass_bg']} !default;",
