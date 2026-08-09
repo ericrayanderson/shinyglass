@@ -293,19 +293,17 @@ test_that("compiled CSS covers plotly, gt, waiter, and AdminLTE-plus chrome", {
   expect_match(css, "handsontable")
 })
 
-test_that("audit-glass-contrast harness files ship in the package", {
-  audit_r <- system.file("scripts", "audit-glass-contrast.R", package = "shinyglass")
-  audit_js <- system.file("scripts", "audit-glass-contrast.js", package = "shinyglass")
-  qa_md <- system.file("scripts", "VISUAL-QA.md", package = "shinyglass")
-  # Installed package path may be empty under load_all; fall back to source tree
-  if (!nzchar(audit_r)) {
-    root <- testthat::test_path("../..")
-    audit_r <- file.path(root, "inst", "scripts", "audit-glass-contrast.R")
-    audit_js <- file.path(root, "inst", "scripts", "audit-glass-contrast.js")
-    qa_md <- file.path(root, "inst", "scripts", "VISUAL-QA.md")
-  }
-  expect_true(file.exists(audit_r))
-  expect_true(file.exists(audit_js))
+test_that("audit-glass-contrast harness exists in the source tree", {
+  # inst/scripts is intentionally .Rbuildignore'd for CRAN (devtools-only QA).
+  # Assert the harness when developing from a full git checkout.
+  root <- testthat::test_path("../..")
+  audit_r <- file.path(root, "inst", "scripts", "audit-glass-contrast.R")
+  audit_js <- file.path(root, "inst", "scripts", "audit-glass-contrast.js")
+  qa_md <- file.path(root, "inst", "scripts", "VISUAL-QA.md")
+  skip_if_not(
+    file.exists(audit_r) && file.exists(audit_js),
+    "inst/scripts not present (CRAN tarball / installed package)"
+  )
   expect_true(file.exists(qa_md))
   js <- paste(readLines(audit_js, warn = FALSE), collapse = "\n")
   expect_match(js, "runGlassAudit")

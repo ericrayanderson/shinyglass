@@ -1,7 +1,7 @@
 Package: shinyglass
 Type: Package
 Title: Liquid Glass Design Themes for 'shiny' Applications
-Version: 0.2.0.9000
+Version: 0.2.0
 Authors@R: person("Eric", "Anderson", role = c("aut", "cre"),
     email = "eric.ray.anderson@gmail.com")
 Description: Drop-in Liquid Glass themes for 'shiny'. Call
@@ -16,6 +16,7 @@ URL: https://ericrayanderson.github.io/shinyglass/,
     https://github.com/ericrayanderson/shinyglass
 BugReports: https://github.com/ericrayanderson/shinyglass/issues
 Encoding: UTF-8
+Language: en-US
 VignetteBuilder: knitr
 Imports:
     bslib (>= 0.5.0),

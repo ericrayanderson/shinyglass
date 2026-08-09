@@ -21,11 +21,13 @@
 ^man/figures/bslib-dashboard.*\.png$
 ^man/figures/querychat-demo.*\.png$
 ^man/figures/dreamrs-.*\.png$
+^man/figures/plotly-gt.*\.png$
 # Examples that need vendor data/scripts or screenshot-only deps
 ^inst/examples/dreamrs-
 ^inst/examples/superzip-glass\.R$
 ^inst/examples/shinywidgets-gallery-glass\.R$
 ^inst/examples/bs4dash-glass-demo\.R$
+^inst/examples/shinydashboardPlus-glass-demo\.R$
 ^inst/examples/teal-glass-demo\.R$
 ^inst/examples/querychat-demo\.R$
 # Shiny for Python spike (Option 2) — not part of the CRAN tarball
