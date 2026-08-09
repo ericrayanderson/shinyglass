@@ -59,7 +59,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>
-<ul><li>Active-on-accent contrast: lower Bootstrap <code>$min-contrast-ratio</code> to <strong>3</strong> so <code>color-contrast()</code> picks white on brand blues/purples (white on <code>#007AFF</code> is ~4.02:1 and failed the old 4.5 gate). Solid <code>.bg-*</code> / <code>.text-bg-*</code> fills (including <code>bslib::value_box(theme=)</code>) get luminance-based ink via <code>glass-on()</code> / <code>--glass-on-*</code> — not body color on solid primary. Safety nets remain for checks, radios, switches, pagination, and list-group active.</li>
+<ul><li>DataTables / Bootstrap pagination chips: style the visible <code>.page-link</code> surface (DT uses <code>&lt;li.paginate_button&gt;&lt;a.page-link&gt;</code>). Fixes solid black page numbers and light-grey ellipsis chips in dark mode on the dashboard demo / README screenshots.</li>
+<li>Visual QA harness: <code>inst/scripts/audit-glass-contrast.R</code> (+ <code>.js</code>) runs a dual-theme computed-style audit (low contrast, solid-black chips, Bootstrap light greys in dark, dark ink on accent, DT pagination structure) across demo / dashboard / inputs-gallery. Checklist and definition of done in <code>inst/scripts/VISUAL-QA.md</code>.</li>
+<li>Selectize fields: force body/menu ink on inputs and multi-select tags (selectize default near-black item text failed dark mode); opaque <code>--glass-menu-bg</code> fills in dark; dropdown options use menu colors.</li>
+<li>Active-on-accent contrast: lower Bootstrap <code>$min-contrast-ratio</code> to <strong>3</strong> so <code>color-contrast()</code> picks white on brand blues/purples (white on <code>#007AFF</code> is ~4.02:1 and failed the old 4.5 gate). Solid <code>.bg-*</code> / <code>.text-bg-*</code> fills (including <code>bslib::value_box(theme=)</code>) get luminance-based ink via <code>glass-on()</code> / <code>--glass-on-*</code> — not body color on solid primary. Safety nets remain for checks, radios, switches, pagination, and list-group active.</li>
 <li>Accent rules target Shiny markup (<code>.shiny-input-checkbox</code>) as well as Bootstrap <code>.form-check-input</code>.</li>
 <li>Plot / image outputs get a softer glass frame (lighter nesting inside cards).</li>
 <li>

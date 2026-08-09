@@ -78,6 +78,10 @@ for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
 # re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):
 # remotes::install_github("ericrayanderson/shinyglass")
 # Rscript inst/scripts/deploy-shinyapps-demos.R
+#
+# visual QA (contrast + DT/selectize structure, light+dark matrix):
+# Rscript inst/scripts/audit-glass-contrast.R
+# see inst/scripts/VISUAL-QA.md
 ```
 
 ## Local examples

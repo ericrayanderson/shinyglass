@@ -40,6 +40,18 @@
 
 ### Improvements
 
+- DataTables / Bootstrap pagination chips: style the visible
+  `.page-link` surface (DT uses `<li.paginate_button><a.page-link>`).
+  Fixes solid black page numbers and light-grey ellipsis chips in dark
+  mode on the dashboard demo / README screenshots.
+- Visual QA harness: `inst/scripts/audit-glass-contrast.R` (+ `.js`)
+  runs a dual-theme computed-style audit (low contrast, solid-black
+  chips, Bootstrap light greys in dark, dark ink on accent, DT
+  pagination structure) across demo / dashboard / inputs-gallery.
+  Checklist and definition of done in `inst/scripts/VISUAL-QA.md`.
+- Selectize fields: force body/menu ink on inputs and multi-select tags
+  (selectize default near-black item text failed dark mode); opaque
+  `--glass-menu-bg` fills in dark; dropdown options use menu colors.
 - Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to
   **3** so `color-contrast()` picks white on brand blues/purples (white
   on `#007AFF` is ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` /
