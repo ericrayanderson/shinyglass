@@ -16,9 +16,10 @@
 }
 
 // Solid value chip (slider bubbles / range tooltips only — not general .bg-*)
+// $fill may be a Sass color or a CSS value string (e.g. $glass-accent).
 @mixin glass-value-chip($fill: $primary) {
-  background-color: $fill !important;
-  background: $fill !important;
+  background-color: #{$fill} !important;
+  background: #{$fill} !important;
   color: glass-on($fill) !important;
   text-shadow: none;
   border: none !important;
@@ -26,19 +27,22 @@
   font-weight: 600;
 }
 
+// Runtime accent: prefer JS --glass-accent, then Bootstrap --bs-primary, then
+// compile-time $primary. Do not pass through Sass color functions that need a
+// concrete color. Used by update_glass_theme(primary=) / setPrimary().
+$glass-accent: var(--glass-accent, var(--bs-primary, #{$primary}));
+
+// Shiny checkboxInput() uses .shiny-input-checkbox (not .form-check-input).
+// Include bslib shiny selectors so accent + white marks hit real apps.
+$glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-container .checkbox input, .shiny-input-container .checkbox-inline input, .shiny-input-container .radio input, .shiny-input-container .radio-inline input";
+
+// Shared compile-time knobs (blur / radius / primary ink). Preset-specific
+// surfaces live in dual packs below so light↔dark can switch at runtime via
+// document.documentElement.dataset.glassPreset without recompiling Sass.
 :root {
-  --glass-bg: #{$glass-bg};
-  --glass-bg-hover: #{$glass-bg-hover};
-  --glass-border: #{$glass-border};
-  --glass-shadow: #{$glass-shadow};
-  --glass-elevated-shadow: #{$glass-elevated-shadow};
   --glass-blur: #{$glass-blur};
   --glass-saturate: #{$glass-saturate};
   --glass-radius: #{$glass-radius};
-  --glass-highlight: #{$glass-highlight};
-  --glass-specular: #{$glass-specular};
-  --glass-menu-bg: #{$glass-menu-bg};
-  --glass-menu-color: #{$glass-menu-color};
   --glass-float-margin: 0.85rem;
   --glass-tint-r: 0;
   --glass-tint-g: 122;
@@ -46,7 +50,8 @@
   --glass-tint-strength: 0;
   --glass-specular-x: 28%;
   --glass-specular-y: 10%;
-  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  // Default accent; head script / setPrimary() override at runtime.
+  --glass-accent: #{$primary};
   // Contrast-safe ink for solid theme fills (widgets that inherit body color)
   --glass-on-primary: #{glass-on($primary)};
   --glass-on-success: #{glass-on($success)};
@@ -55,12 +60,64 @@
   --glass-on-info: #{glass-on($info)};
 }
 
-[data-glass-preset="dark"] {
+// Light pack (default when data-glass-preset is missing or "light")
+:root,
+:root[data-glass-preset="light"] {
+  --glass-body-bg: #f5f5f7;
+  --glass-body-color: #1d1d1f;
+  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-bg-hover: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-shadow: rgba(0, 0, 0, 0.12);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.75);
+  --glass-specular: rgba(255, 255, 255, 0.45);
+  --glass-menu-bg: #ffffff;
+  --glass-menu-color: #1d1d1f;
+  --glass-page-bg: linear-gradient(145deg, #eef0f8 0%, #f5f5f7 35%, #e8e4f0 70%, #dfe8f5 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.28);
+  --glass-orb-2: rgba(175, 82, 222, 0.22);
+  --glass-orb-3: rgba(255, 149, 0, 0.16);
+  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  --bs-body-bg: var(--glass-body-bg);
+  --bs-body-color: var(--glass-body-color);
+  --bs-secondary-color: rgba(29, 29, 31, 0.75);
+  --bs-tertiary-color: rgba(29, 29, 31, 0.5);
+  --bs-emphasis-color: #1d1d1f;
+  --bs-border-color: rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
+
+:root[data-glass-preset="dark"] {
+  --glass-body-bg: #000000;
+  --glass-body-color: #f5f5f7;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --glass-shadow: rgba(0, 0, 0, 0.42);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.58);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --glass-specular: rgba(255, 255, 255, 0.12);
+  --glass-menu-bg: #1c1c1e;
+  --glass-menu-color: #f5f5f7;
+  --glass-page-bg: linear-gradient(145deg, #0c0c14 0%, #000000 40%, #140a1a 75%, #0a1020 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.36);
+  --glass-orb-2: rgba(191, 90, 242, 0.30);
+  --glass-orb-3: rgba(255, 159, 10, 0.22);
   --glass-inner-glow: rgba(255, 255, 255, 0.06);
+  --bs-body-bg: var(--glass-body-bg);
+  --bs-body-color: var(--glass-body-color);
+  --bs-secondary-color: rgba(245, 245, 247, 0.75);
+  --bs-tertiary-color: rgba(245, 245, 247, 0.5);
+  --bs-emphasis-color: #f5f5f7;
+  --bs-border-color: rgba(255, 255, 255, 0.16);
+  color-scheme: dark;
 }
 
 body {
-  background: $glass-page-bg !important;
+  background: var(--glass-page-bg) !important;
+  background-color: var(--glass-body-bg) !important;
+  color: var(--glass-body-color) !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,10 +129,10 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 58%),
-    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 52%),
-    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 48%),
-    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, #{$glass-orb-2}) 0%, transparent 45%);
+    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 48%),
+    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -85,8 +142,8 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, #{$glass-orb-1}) 0%, transparent 32%),
-    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, #{$glass-orb-3}) 0%, transparent 28%);
+    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 32%),
+    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 28%);
   opacity: 0.85;
   pointer-events: none;
 }
@@ -488,7 +545,8 @@ body.glass-nav-expanded {
 
 .btn-secondary,
 .btn-light {
-  @include glass-button-ghost($body-color);
+  // Runtime-switchable body ink (not Sass $body-color)
+  @include glass-button-ghost(var(--glass-body-color));
 }
 
 .btn-primary,
@@ -528,7 +586,7 @@ body.glass-nav-expanded {
 
 .btn-outline-secondary,
 .btn-outline-light {
-  @include glass-button-ghost($body-color);
+  @include glass-button-ghost(var(--glass-body-color));
 }
 
 .btn-outline-success {
@@ -593,7 +651,7 @@ a.shiny-download-link {
 
     &.btn-secondary,
     &.btn-light {
-      @include glass-button-ghost($body-color);
+      @include glass-button-ghost(var(--glass-body-color));
     }
 
     &.btn-success {
@@ -667,6 +725,109 @@ a.shiny-download-link {
       inset 0 1px 0 var(--glass-highlight),
       0 4px 14px var(--glass-shadow);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Active-on-accent ink (checks, radios, switches, indeterminate, btn-check)
+//
+// Bootstrap sets $component-active-color via color-contrast($primary). For
+// system blue (#007AFF) that contrast pick is often *black*, so SVG check
+// strokes / switch knobs compile dark-on-blue. glass_theme() also forces
+// $component-active-color to white; these rules are the CSS safety net.
+// Accent fill uses --glass-accent so update_glass_theme(primary=) recolors
+// at runtime. Selectors cover BS form-check-input AND Shiny checkboxInput.
+// ---------------------------------------------------------------------------
+
+#{$glass-check-input} {
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: 0.2em;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    background-color: var(--glass-bg-hover);
+    border-color: color-mix(in srgb, #{$glass-accent} 45%, var(--glass-border));
+  }
+
+  &:focus {
+    border-color: color-mix(in srgb, #{$glass-accent} 55%, transparent);
+    box-shadow:
+      0 0 0 0.2rem color-mix(in srgb, #{$glass-accent} 18%, transparent),
+      inset 0 1px 0 var(--glass-highlight);
+  }
+
+  &:checked,
+  &:indeterminate {
+    // background shorthand beats Bootstrap longhands that bake $primary hex
+    background-color: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
+    box-shadow:
+      0 2px 10px color-mix(in srgb, #{$glass-accent} 35%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  &:checked[type="checkbox"] {
+    // white checkmark
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+  }
+
+  &:indeterminate[type="checkbox"] {
+    // white dash
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e") !important;
+  }
+
+  &:checked[type="radio"] {
+    // white center dot
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e") !important;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+// Toggle switches: white knob on accent track when on (layout left to Bootstrap)
+.form-switch .form-check-input {
+  &:checked {
+    background-color: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
+    // white knob — overrides BS color-contrast black fill on primary
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+  }
+}
+
+// Legacy BS3 shiny markup still used in some apps
+.checkbox input[type="checkbox"],
+.radio input[type="radio"] {
+  accent-color: #{$glass-accent};
+}
+
+// btn-check + primary (and similar) must keep light label ink
+.btn-check:checked + .btn-primary,
+.btn-check:active + .btn-primary,
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary {
+  color: #fff !important;
+}
+
+// Active list/nav/pagination text on primary fill should stay light
+.page-item.active .page-link,
+.list-group-item.active,
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link,
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff !important;
+  background-color: #{$glass-accent} !important;
+  border-color: #{$glass-accent} !important;
 }
 
 .form-select {
@@ -756,7 +917,7 @@ form.well,
   }
 
   .active {
-    background: color-mix(in srgb, var(--glass-bg-hover) 65%, $primary 35%) !important;
+    background: color-mix(in srgb, var(--glass-bg-hover) 65%, #{$glass-accent} 35%) !important;
     color: inherit;
   }
 
@@ -781,28 +942,29 @@ form.well,
 // Problem: chips paint primary fill but inherit body ink (dark text on blue).
 // ---------------------------------------------------------------------------
 
-// shiny::sliderInput (ion.rangeSlider)
+// shiny::sliderInput (ion.rangeSlider) — include .irs--shiny skin which
+// ships hardcoded primary fills after our generic .irs rules.
 .irs {
   .irs-bar,
   .irs-bar-edge {
-    background: $primary;
-    border-color: $primary;
+    background: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
   }
 
   .irs-single,
   .irs-from,
   .irs-to {
-    @include glass-value-chip($primary);
+    @include glass-value-chip($glass-accent);
   }
 
   .irs-handle {
-    border: 2px solid $primary;
+    border: 2px solid #{$glass-accent} !important;
     background: var(--glass-menu-bg, #ffffff);
     box-shadow: 0 2px 8px var(--glass-shadow);
     cursor: pointer;
 
     > i:first-child {
-      background: color-mix(in srgb, $primary 55%, transparent);
+      background: color-mix(in srgb, #{$glass-accent} 55%, transparent);
     }
   }
 
@@ -819,28 +981,47 @@ form.well,
   }
 }
 
+// Skin-specific overrides (ion.rangeSlider "shiny" skin)
+.irs--shiny {
+  .irs-bar,
+  .irs-bar-edge {
+    background: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
+  }
+
+  .irs-from,
+  .irs-to,
+  .irs-single {
+    @include glass-value-chip($glass-accent);
+  }
+
+  .irs-handle {
+    border-color: #{$glass-accent} !important;
+  }
+}
+
 // shinyWidgets / noUiSlider value tooltips (same failure mode as .irs-single)
 .noUi-tooltip,
 .noUi-horizontal .noUi-tooltip,
 .noUi-vertical .noUi-tooltip {
-  @include glass-value-chip($primary);
+  @include glass-value-chip($glass-accent);
 }
 
 // bootstrap-slider tooltips when present
 .slider .tooltip.top .tooltip-inner,
 .slider .tooltip-inner {
-  @include glass-value-chip($primary);
+  @include glass-value-chip($glass-accent);
 }
 
 // Native range thumbs only (no text labels to fix)
 .form-range {
   &::-webkit-slider-thumb {
-    background-color: $primary;
+    background-color: #{$glass-accent};
     border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 
   &::-moz-range-thumb {
-    background-color: $primary;
+    background-color: #{$glass-accent};
     border: 2px solid var(--glass-menu-bg, #ffffff);
   }
 }
@@ -1211,6 +1392,18 @@ form.well,
   box-sizing: border-box;
 }
 
+// Nested plots inside cards: lighter frame so they don't double-glass
+.card .shiny-plot-output,
+.card .shiny-image-output,
+.bslib-card .shiny-plot-output,
+.bslib-card .shiny-image-output {
+  background: color-mix(in srgb, var(--glass-bg) 55%, transparent);
+  box-shadow:
+    0 2px 12px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
+    inset 0 1px 0 var(--glass-highlight);
+  border-color: color-mix(in srgb, var(--glass-border) 70%, transparent);
+}
+
 // Frame html outputs that carry real content. Empty teal validation
 // placeholders (and similar) must not become thin glass bars.
 .shiny-html-output:not(:has(.Reactable)):is(
@@ -1511,8 +1704,25 @@ body .bg-aqua {
   .info-box-icon > i,
   .info-box-icon > span {
     color: inherit !important;
-    opacity: 0.35;
+    opacity: 0.4;
   }
+
+  // Icon gutter: keep a soft glass plate so status icons read on both presets
+  .icon,
+  .info-box-icon {
+    background: color-mix(in srgb, var(--glass-bg-hover) 55%, transparent) !important;
+  }
+}
+
+// bs4Dash smallBox / valueBox extras — even chrome across status classes
+body .small-box .icon > i,
+body .info-box .info-box-icon > i {
+  transition: opacity 0.2s ease;
+}
+
+body .small-box:hover .icon > i,
+body .info-box:hover .info-box-icon > i {
+  opacity: 0.55;
 }
 
 // ---------------------------------------------------------------------------
@@ -2220,19 +2430,245 @@ body .controls-pane {
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .btn,
+  .well,
   .form-control,
   .form-select,
+  .form-check-input,
+  .btn,
+  .action-button,
   .navbar,
-  .tabbable > .nav-tabs {
-    transition: none;
+  .tabbable > .nav-tabs,
+  .bslib-sidebar-layout > .sidebar,
+  .shiny-plot-output,
+  .dataTables_wrapper,
+  .value-box,
+  .small-box,
+  .info-box {
+    transition: none !important;
+    animation: none !important;
   }
 
   body.glass-nav-compact .navbar,
-  body.glass-nav-compact .tabbable > .nav-tabs,
+  body.glass-nav-compact .navbar.navbar-static-top,
+  body.glass-nav-compact .navbar.navbar-default,
   body.glass-nav-expanded .navbar,
+  body.glass-nav-compact .tabbable > .nav-tabs,
   body.glass-nav-expanded .tabbable > .nav-tabs {
-    transform: none;
-    opacity: 1;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Mobile / narrow viewports
+// Soften floating chrome, prevent horizontal scroll, keep tables usable.
+// ---------------------------------------------------------------------------
+@media (max-width: 575.98px) {
+  :root {
+    --glass-float-margin: 0.5rem;
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  // Tighter page chrome
+  .container,
+  .container-fluid {
+    padding-left: 0.65rem !important;
+    padding-right: 0.65rem !important;
+  }
+
+  body.bslib-page-navbar > .navbar,
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  .bslib-page-sidebar > .navbar {
+    margin-left: var(--glass-float-margin) !important;
+    margin-right: var(--glass-float-margin) !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .card,
+  form.well,
+  .col-sm-4.well {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  // Stacked bslib sidebar (below sm we do not absolute-float): full-width glass
+  .bslib-sidebar-layout {
+    > .sidebar {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: var(--glass-float-margin) !important;
+      // CSS min() — quote so Sass does not unit-check vh vs rem
+      max-height: #{'min(70vh, 28rem)'} !important;
+    }
+
+    > .main,
+    > .main.bslib-page-main {
+      padding-left: var(--glass-float-margin) !important;
+      padding-right: var(--glass-float-margin) !important;
+      min-width: 0 !important;
+    }
+
+    > .collapse-toggle {
+      // Keep toggle tappable above content
+      z-index: 40 !important;
+    }
+  }
+
+  // Value boxes / grids: never force cramped multi-columns
+  .bslib-value-box {
+    min-width: 0 !important;
+  }
+
+  .bslib-grid,
+  .bslib-grid.grid {
+    min-width: 0 !important;
+  }
+
+  // Tables: swipe horizontally instead of blowing the page width
+  .dataTables_wrapper,
+  .reactable,
+  .Reactable,
+  .table-responsive {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table.dataTable,
+  .reactable table {
+    width: 100% !important;
+  }
+
+  // Plots / images fill the card, not the viewport
+  .shiny-plot-output,
+  .shiny-image-output {
+    max-width: 100% !important;
+  }
+
+  .shiny-plot-output img,
+  .shiny-image-output img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  // Inputs and buttons: full-width friendly
+  .shiny-input-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .form-control,
+  .form-select,
+  .selectize-control,
+  .selectize-input {
+    max-width: 100% !important;
+  }
+
+  .btn,
+  .action-button {
+    max-width: 100%;
+  }
+
+  // Inline radio/checkbox groups wrap instead of overflowing
+  .shiny-options-group,
+  .checkbox-inline,
+  .radio-inline,
+  .form-check-inline {
+    flex-wrap: wrap !important;
+  }
+
+  // Date range: stack start/end fields
+  .shiny-date-range-input .input-daterange {
+    flex-direction: column !important;
+    gap: 0.5rem;
+  }
+
+  .shiny-date-range-input .input-daterange input {
+    width: 100% !important;
+    border-radius: 0.75rem !important;
+  }
+
+  // File input button row
+  .input-group {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  // Modal full-bleed on phones
+  .modal-dialog {
+    margin: 0.5rem !important;
+    max-width: calc(100% - 1rem) !important;
+  }
+
+  // Verbatim / pre blocks scroll
+  pre,
+  .shiny-text-output,
+  .shiny-verbatim {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+// Mid-size phones / small tablets in portrait: still soften sidebar reserve
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .bslib-sidebar-layout {
+    --glass-sidebar-reserve: calc(
+      var(--glass-float-margin) + #{'min(var(--_sidebar-width, 250px), 42vw)'} +
+        var(--glass-float-margin)
+    );
+
+    > .sidebar {
+      width: #{'min(var(--_sidebar-width, 250px), 42vw)'} !important;
+    }
+  }
+}
+
+// Theme toggle helper (glass_theme_toggle())
+.glass-theme-toggle .btn {
+  min-width: 4.5rem;
+}
+
+// Runtime accent: primary buttons follow --glass-accent.
+// Must use the `background` shorthand with !important to beat
+// glass-button-tinted($primary)'s earlier `background: color-mix(...) !important`.
+.btn-primary,
+.action-button.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{$glass-accent};
+  --bs-btn-border-color: #{$glass-accent};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: color-mix(in srgb, #{$glass-accent} 88%, #000 12%);
+  --bs-btn-hover-border-color: color-mix(in srgb, #{$glass-accent} 88%, #000 12%);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: color-mix(in srgb, #{$glass-accent} 80%, #000 20%);
+  --bs-btn-active-border-color: color-mix(in srgb, #{$glass-accent} 80%, #000 20%);
+  color: #fff !important;
+  background: #{$glass-accent} !important;
+  border-color: #{$glass-accent} !important;
+
+  &:hover,
+  &:focus {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+    border-color: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+  }
+
+  &:active,
+  &.active {
+    color: #fff !important;
+    background: color-mix(in srgb, #{$glass-accent} 80%, #000 20%) !important;
+    border-color: color-mix(in srgb, #{$glass-accent} 80%, #000 20%) !important;
   }
 }

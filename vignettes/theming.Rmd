@@ -50,20 +50,48 @@ full page reload.
 ```{r}
 ui <- fluidPage(
   theme = glass_theme(preset = "auto"),
-  actionButton("dark", "Dark"),
-  actionButton("light", "Light"),
-  actionButton("auto", "Auto")
+  glass_theme_toggle(selected = "auto"),
+  selectInput("accent", "Accent", c(
+    Blue = "#007AFF", Purple = "#AF52DE", Orange = "#FF9500"
+  ))
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$dark, update_glass_theme(session, preset = "dark"))
-  observeEvent(input$light, update_glass_theme(session, preset = "light"))
-  observeEvent(input$auto, update_glass_theme(session, preset = "auto"))
+  observe_glass_theme_toggle(input, session)
+  observeEvent(input$accent, {
+    update_glass_theme(session, primary = input$accent)
+  }, ignoreInit = TRUE)
 }
 ```
 
-`update_glass_theme()` can also set `tint` (content-aware ambient color from
-plots and images).
+`update_glass_theme()` accepts:
+
+| Argument | Effect |
+|----------|--------|
+| `preset` | `"light"` / `"dark"` / `"auto"` |
+| `tint` | Content-aware ambient color from plots/images |
+| `primary` | Live accent via CSS variables (`--bs-primary`, …) |
+
+`primary` updates Bootstrap accent CSS variables so buttons, checked
+controls, and other accent surfaces follow without a reload. A few
+Sass-baked one-offs may still need a full reload to pick up a new color.
+
+# Theme toggle helper
+
+```{r}
+ui <- fluidPage(
+  theme = glass_theme(preset = "auto"),
+  glass_theme_toggle(),           # Light / Dark / Auto buttons
+  # ...
+)
+
+server <- function(input, output, session) {
+  observe_glass_theme_toggle(input, session)
+}
+```
+
+Buttons call `window.shinyglass.setPreset()` immediately and also fire
+Shiny inputs (`glass_toggle_light`, …) so the server can stay in sync.
 
 # Behavior knobs
 
@@ -84,15 +112,19 @@ All three JS behaviors default to `TRUE` (same as 0.1.x). They respect
 `prefers-reduced-motion: reduce` where relevant. Advanced escape hatch:
 `window.__shinyglassDisableTint = true` still disables tint.
 
-# CSS variables (migration)
+# CSS variables (migration from 0.1.x)
 
-Prefer CSS custom properties over Sass `$glass-*` tokens when customizing:
+**Breaking in 0.2.0:** light/dark surfaces are dual CSS packs, not a
+Bootswatch `darkly` rebuild. Prefer CSS custom properties over Sass
+`$glass-*` tokens when customizing:
 
 ```css
 :root {
   /* shared knobs also set by glass_theme(blur=..., radius=...) */
   --glass-blur: 28px;
   --glass-radius: 1.25rem;
+  --bs-primary: #007AFF;       /* also updated by update_glass_theme(primary=) */
+  --glass-primary: #007AFF;
 }
 
 :root[data-glass-preset="dark"] {
@@ -101,6 +133,9 @@ Prefer CSS custom properties over Sass `$glass-*` tokens when customizing:
 }
 ```
 
+Apps that overrode Sass-only `$glass-*` tokens should target `--glass-*`
+or `[data-glass-preset="dark"]` instead.
+
 # Client helpers
 
 ```js
@@ -108,6 +143,8 @@ window.shinyglass.setPreset("dark"); // or "light" / "auto"
 window.shinyglass.getPreset();       // resolved "light" | "dark"
 window.shinyglass.getMode();         // requested mode incl. "auto"
 window.shinyglass.setTint(false);
+window.shinyglass.setPrimary("#AF52DE");
+window.shinyglass.getPrimary();
 ```
 
 # Teal
@@ -119,5 +156,17 @@ options(teal.bs_theme = glass_theme(preset = "auto"))
 
 # Reduced motion
 
-When the user prefers reduced motion, navbar morph and specular tracking are
-disabled, and content tint is skipped.
+When the user prefers reduced motion (`prefers-reduced-motion: reduce`):
+
+- Navbar morph transforms are disabled (JS + CSS)
+- Pointer specular tracking is skipped
+- Content tint sampling is skipped
+- Decorative transitions on cards/inputs/nav are removed
+
+This is automatic — no app code required.
+
+# Active-on-accent contrast
+
+Bootstrap’s `color-contrast()` often picks **black** ink for system blue
+`#007AFF`. `glass_theme()` forces light ink on primary fills so checked
+checkboxes, radios, switches, and active pagination stay readable.

@@ -143,15 +143,67 @@ test_that("update_glass_theme sends shinyglass custom message", {
       msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
     }
   )
-  update_glass_theme(session, preset = "dark", tint = FALSE)
+  update_glass_theme(session, preset = "dark", tint = FALSE, primary = "#AF52DE")
   expect_length(msgs, 1)
   expect_equal(msgs[[1]]$type, "shinyglass")
   expect_equal(msgs[[1]]$message$preset, "dark")
   expect_equal(msgs[[1]]$message$tint, FALSE)
+  expect_equal(msgs[[1]]$message$primary, "#AF52DE")
 })
 
 test_that("update_glass_theme validates preset", {
   session <- list(sendCustomMessage = function(...) NULL)
   expect_error(update_glass_theme(session, preset = "neon"), "arg|preset")
   expect_error(update_glass_theme(NULL, preset = "dark"))
+})
+
+test_that("glass_theme_toggle returns labeled buttons", {
+  skip_if_not_installed("shiny")
+  ui <- glass_theme_toggle(inputId = "gt", selected = "dark")
+  expect_s3_class(ui, "shiny.tag")
+  html <- as.character(ui)
+  expect_match(html, "gt_light")
+  expect_match(html, "gt_dark")
+  expect_match(html, "gt_auto")
+  expect_match(html, "setPreset")
+  expect_match(html, "glass-theme-toggle")
+  expect_match(html, "dark")
+})
+
+test_that("head script includes primary CSS variables", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(primary = "#AF52DE")
+  deps <- bslib::bs_theme_dependencies(th)
+  preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
+  expect_length(preset_deps, 1)
+  head <- preset_deps[[1]]$head
+  expect_match(head, "#AF52DE")
+  expect_match(head, "--bs-primary")
+  expect_match(head, "--bs-primary-rgb")
+})
+
+test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
+  skip_if_not_installed("bslib")
+  theme <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(theme)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "prefers-reduced-motion")
+  expect_match(css, "--glass-accent")
+  expect_match(css, "--bs-primary")
+  expect_match(css, "shiny-plot-output")
+  # Shiny checkboxInput markup (not only Bootstrap form-check-input)
+  expect_match(css, "shiny-input-checkbox")
+  expect_match(css, "glass-theme-toggle")
 })

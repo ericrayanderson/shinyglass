@@ -122,6 +122,84 @@
     }
   }
 
+  function parseCssColor(color) {
+    if (color == null) return null;
+    color = String(color).trim();
+    var m = color.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (m) {
+      var h = m[1];
+      if (h.length === 3) {
+        h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+      }
+      return {
+        hex: "#" + h.toLowerCase(),
+        r: parseInt(h.slice(0, 2), 16),
+        g: parseInt(h.slice(2, 4), 16),
+        b: parseInt(h.slice(4, 6), 16),
+      };
+    }
+    m = color.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (m) {
+      var r = parseInt(m[1], 10);
+      var g = parseInt(m[2], 10);
+      var b = parseInt(m[3], 10);
+      function toHex(n) {
+        var s = n.toString(16);
+        return s.length === 1 ? "0" + s : s;
+      }
+      return { hex: "#" + toHex(r) + toHex(g) + toHex(b), r: r, g: g, b: b };
+    }
+    return null;
+  }
+
+  function setPrimary(color) {
+    var parsed = parseCssColor(color);
+    if (!parsed) return;
+    var root = rootEl();
+    root.dataset.glassPrimary = parsed.hex;
+    // Own accent token (Bootstrap also maps --bs-primary; some builds
+    // re-declare --bs-primary on :root later — --glass-accent stays ours.)
+    // Set on both html and body so [data-bs-theme] packs can't shadow accent.
+    var targets = [root];
+    if (document.body) targets.push(document.body);
+    for (var i = 0; i < targets.length; i++) {
+      var el = targets[i];
+      el.style.setProperty("--glass-accent", parsed.hex);
+      el.style.setProperty("--bs-primary", parsed.hex);
+      el.style.setProperty("--glass-primary", parsed.hex);
+      el.style.setProperty(
+        "--bs-primary-rgb",
+        parsed.r + ", " + parsed.g + ", " + parsed.b
+      );
+      el.style.setProperty(
+        "--bs-primary-bg-subtle",
+        "rgba(" + parsed.r + ", " + parsed.g + ", " + parsed.b + ", 0.14)"
+      );
+      el.style.setProperty(
+        "--bs-primary-border-subtle",
+        "rgba(" + parsed.r + ", " + parsed.g + ", " + parsed.b + ", 0.42)"
+      );
+      el.style.setProperty("--bs-link-color", parsed.hex);
+      el.style.setProperty(
+        "--bs-link-color-rgb",
+        parsed.r + ", " + parsed.g + ", " + parsed.b
+      );
+      el.style.setProperty(
+        "--bs-focus-ring-color",
+        "rgba(" + parsed.r + ", " + parsed.g + ", " + parsed.b + ", 0.25)"
+      );
+    }
+    try {
+      root.dispatchEvent(
+        new CustomEvent("shinyglass:primary", {
+          detail: { primary: parsed.hex, rgb: parsed },
+        })
+      );
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
   function blend(a, b, t) {
     return Math.round(a + (b - a) * t);
   }
@@ -378,6 +456,12 @@
   window.shinyglass.setTint = function (on) {
     setTintEnabled(!!on);
   };
+  window.shinyglass.setPrimary = function (color) {
+    setPrimary(color);
+  };
+  window.shinyglass.getPrimary = function () {
+    return rootEl().dataset.glassPrimary || rootEl().style.getPropertyValue("--bs-primary") || "";
+  };
 
   // raise native <select> above later card content
   $(document).on("focus mousedown", ".card .form-select, form.well .form-select", function () {
@@ -529,6 +613,7 @@
     if (typeof msg === "object") {
       if (msg.preset != null) applyPreset(msg.preset);
       if (msg.tint != null) setTintEnabled(!!msg.tint);
+      if (msg.primary != null) setPrimary(msg.primary);
     }
   }
 
@@ -634,6 +719,11 @@
     // Ensure mode/preset are coherent if head script ran or was skipped
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
     applyPreset(mode);
+
+    // Re-apply primary from head/data if present
+    if (rootEl().dataset.glassPrimary) {
+      setPrimary(rootEl().dataset.glassPrimary);
+    }
 
     scheduleTintUpdate();
     applyWidgetGlassOverrides();

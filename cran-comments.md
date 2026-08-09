@@ -1,19 +1,20 @@
-## Resubmission
-
-This is a resubmission of 0.1.1. The previous submission was not accepted
-because README.md used relative file URIs (`python/`, `python/README.md`) that
-point outside the CRAN tarball (the `python/` tree is in `.Rbuildignore`).
-Those links are now absolute GitHub URLs.
-
 ## Submission
 
-This is a patch update from 0.1.0 to 0.1.1.
+This is an update from 0.1.1 to 0.2.0.
 
-* Fix bslib sidebar / page_sidebar layout under the glass theme so content is
-  not buried under the floating sidebar or incorrectly full-width stacked.
-* Fix nested layout_sidebar double-float gutter.
-* Improve AdminLTE (shinydashboard / bs4Dash) glass overlay for header,
-  sidebar, and value/info boxes.
+### User-facing changes
+
+* Runtime light/dark/auto theme switching without page reload (dual CSS
+  variable packs on `[data-glass-preset]`).
+* `update_glass_theme()` for preset, tint, and live primary accent.
+* `glass_theme_toggle()` helper buttons.
+* Active-on-accent contrast fix (white checks/knobs on primary blue).
+* Reduced-motion support; softer plot frames; demo fixes.
+
+### Breaking (documented in NEWS + vignette)
+
+* Dark mode no longer uses Bootswatch `darkly`; it uses the glass dark CSS pack.
+* Prefer CSS `--glass-*` variables over Sass-only `$glass-*` overrides.
 
 ## Test environments
 
@@ -23,10 +24,8 @@ This is a patch update from 0.1.0 to 0.1.1.
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-* NOTE: Days since last update: 5 (expected for a patch shortly after 0.1.0).
+0 errors | 0 warnings | 0 notes
 
 ## Downstream dependencies
 
-None.
+None known.

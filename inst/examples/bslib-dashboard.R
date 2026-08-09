@@ -131,6 +131,10 @@ server <- function(input, output, session) {
     update_glass_theme(session, preset = input$preset)
   }, ignoreInit = TRUE)
 
+  observeEvent(input$accent, {
+    update_glass_theme(session, primary = input$accent)
+  }, ignoreInit = TRUE)
+
   output$metric_n <- renderText({
     format(nrow(filtered_data()), big.mark = ",")
   })

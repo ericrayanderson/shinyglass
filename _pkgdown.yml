@@ -13,7 +13,7 @@ home:
   description: >
     Liquid Glass themes for R Shiny. One function, glass_theme(), for
     translucent surfaces, backdrop blur, and system typography on
-    Bootstrap-based apps.
+    Bootstrap-based apps. Runtime light/dark/auto switching included.
   sidebar:
     structure: [links, license, community, citation, authors, dev]
     components:
@@ -22,6 +22,7 @@ home:
         text: |
           [Source code](https://github.com/ericrayanderson/shinyglass)
           [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
+          [Live demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
 
 navbar:
   structure:
@@ -55,6 +56,8 @@ reference:
   contents:
   - glass_theme
   - update_glass_theme
+  - glass_theme_toggle
+  - observe_glass_theme_toggle
 
 articles:
 - title: Guides
