@@ -337,16 +337,27 @@ body.bslib-page-navbar > .navbar,
   position: sticky;
   top: var(--glass-float-margin);
   z-index: 1030;
+  // Match body / sidebar ink. Bootstrap often ships brand as #fff (dark
+  // navbar default), which disappears on light glass.
+  color: var(--glass-body-color) !important;
+  --#{$prefix}navbar-color: var(--glass-body-color);
+  --#{$prefix}navbar-hover-color: var(--glass-body-color);
+  --#{$prefix}navbar-active-color: var(--glass-body-color);
+  --#{$prefix}navbar-brand-color: var(--glass-body-color);
+  --#{$prefix}navbar-brand-hover-color: var(--glass-body-color);
 
-  .navbar-brand {
+  .navbar-brand,
+  .bslib-page-title {
     font-weight: 600;
     letter-spacing: -0.03em;
+    color: var(--glass-body-color) !important;
   }
 
   .nav > li > a,
   .nav-link {
     border-radius: 0.75rem;
     opacity: 0.75;
+    color: var(--glass-body-color) !important;
     transition: opacity 0.2s ease, background 0.2s ease;
 
     &:hover {
@@ -1186,15 +1197,27 @@ form.well,
   background: var(--glass-bg) !important;
   border: 1px solid var(--glass-border) !important;
   border-radius: var(--glass-radius) !important;
-  color: inherit !important;
+  color: var(--glass-body-color) !important;
   margin: var(--glass-float-margin) var(--glass-float-margin) 0;
   padding: 0.55rem 1rem;
   position: sticky;
   top: var(--glass-float-margin);
   z-index: 1030;
-
-  --#{$prefix}navbar-brand-color: inherit;
   border-bottom: 1px solid var(--glass-border) !important;
+
+  // Force light-glass brand ink (Bootstrap/bslib default brand is often #fff)
+  --#{$prefix}navbar-color: var(--glass-body-color);
+  --#{$prefix}navbar-hover-color: var(--glass-body-color);
+  --#{$prefix}navbar-active-color: var(--glass-body-color);
+  --#{$prefix}navbar-brand-color: var(--glass-body-color);
+  --#{$prefix}navbar-brand-hover-color: var(--glass-body-color);
+
+  .navbar-brand,
+  .bslib-page-title {
+    color: var(--glass-body-color) !important;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
 }
 
 // page_sidebar / layout_sidebar: glass sidebar floats beside main.
