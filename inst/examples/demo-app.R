@@ -15,7 +15,6 @@ ui <- fluidPage(
       selectInput("species", "Species", c("setosa", "versicolor", "virginica"), width = "100%"),
       sliderInput("bins", "Bins", 1, 50, 20, width = "100%"),
       checkboxInput("smooth", "Show smooth", TRUE),
-      actionButton("go", "Go", class = "btn-primary"),
       hr(),
       glass_theme_toggle(selected = "auto")
     ),
