@@ -274,6 +274,13 @@ def glass_theme(
         btn_padding_y=".55rem",
         btn_padding_x="1.2rem",
         btn_border_width="1px",
+        # Match R glass_theme(): white ink on brand blues via Bootstrap contrast gate
+        min_contrast_ratio=3,
+        component_active_color="#ffffff",
+        form_check_input_checked_color="#ffffff",
+        form_check_input_indeterminate_color="#ffffff",
+        form_switch_checked_color="#ffffff",
+        pagination_active_color="#ffffff",
         glass_bg=tokens["glass_bg"],
         glass_bg_hover=tokens["glass_bg_hover"],
         glass_border=tokens["glass_border"],

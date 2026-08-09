@@ -152,11 +152,18 @@
     return null;
   }
 
+  // Match glass-on() in glass.scss: light labels on saturated fills.
+  function onColorForFill(r, g, b) {
+    var y = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    return y >= 0.55 ? "#1d1d1f" : "#ffffff";
+  }
+
   function setPrimary(color) {
     var parsed = parseCssColor(color);
     if (!parsed) return;
     var root = rootEl();
     root.dataset.glassPrimary = parsed.hex;
+    var onPrimary = onColorForFill(parsed.r, parsed.g, parsed.b);
     // Own accent token (Bootstrap also maps --bs-primary; some builds
     // re-declare --bs-primary on :root later — --glass-accent stays ours.)
     // Set on both html and body so [data-bs-theme] packs can't shadow accent.
@@ -167,6 +174,7 @@
       el.style.setProperty("--glass-accent", parsed.hex);
       el.style.setProperty("--bs-primary", parsed.hex);
       el.style.setProperty("--glass-primary", parsed.hex);
+      el.style.setProperty("--glass-on-primary", onPrimary);
       el.style.setProperty(
         "--bs-primary-rgb",
         parsed.r + ", " + parsed.g + ", " + parsed.b

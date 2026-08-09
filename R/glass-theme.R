@@ -94,9 +94,14 @@ glass_theme <- function(
     "btn-padding-y" = ".55rem",
     "btn-padding-x" = "1.2rem",
     "btn-border-width" = "1px",
-    # Bootstrap's color-contrast(#007AFF) resolves to black, so checked
-    # checkboxes, radios, switches, and other "active on primary" marks
-    # compile with dark strokes on blue. Force light ink on accent fills.
+    # Bootstrap color-contrast() defaults to WCAG AA 4.5:1. White on system
+    # blue #007AFF is ~4.02:1, so the gate picks black for buttons, text-bg-*,
+    # active states, etc. 3:1 is WCAG UI-component minimum and lets white win
+    # on brand blues/purples while pastels (info cyan, warning yellow) still
+    # get dark ink. glass.scss glass-on() + solid .bg-* rules are the CSS
+    # safety net for value boxes (which use .bg-primary without text color).
+    "min-contrast-ratio" = 3,
+    # Explicit active-on-accent ink (SVG checks/switches/pagination).
     "component-active-color" = "#ffffff",
     "form-check-input-checked-color" = "#ffffff",
     "form-check-input-indeterminate-color" = "#ffffff",
@@ -357,6 +362,17 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
   primary
 }
 
+# Luminance-based ink for solid theme fills (matches glass-on() in SCSS).
+# Light labels on saturated brand colors; dark on pastels.
+.glass_on_color <- function(color, light = "#ffffff", dark = "#1d1d1f") {
+  rgb <- .glass_hex_to_rgb(color)
+  if (is.null(rgb)) {
+    return(light)
+  }
+  y <- (0.2126 * rgb$r + 0.7152 * rgb$g + 0.0722 * rgb$b) / 255
+  if (y >= 0.55) dark else light
+}
+
 .glass_tokens <- function(preset, blur, saturation, radius) {
   if (preset == "light") {
     list(
@@ -401,6 +417,7 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
+  on_primary <- .glass_on_color(primary)
   rgb_css <- if (is.null(rgb)) {
     "null"
   } else {
@@ -426,10 +443,12 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
       "root.dataset.glassNavMorph=%s;",
       "var prim=%s;",
       "var rgb=%s;",
+      "var onPrim=%s;",
       "if(prim){root.dataset.glassPrimary=prim;",
       "root.style.setProperty('--bs-primary',prim);",
       "root.style.setProperty('--glass-primary',prim);",
       "root.style.setProperty('--glass-accent',prim);",
+      "root.style.setProperty('--glass-on-primary',onPrim);",
       "if(rgb){root.style.setProperty('--bs-primary-rgb',rgb.r+', '+rgb.g+', '+rgb.b);}",
       "}",
       "})();</script>"
@@ -439,7 +458,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
     jsonlite_quote(primary),
-    rgb_css
+    rgb_css,
+    jsonlite_quote(on_primary)
   )
 }
 

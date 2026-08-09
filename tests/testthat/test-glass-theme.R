@@ -89,11 +89,12 @@ test_that("compiled CSS ships dual light/dark variable packs", {
 
 test_that("active-on-primary ink is light, not color-contrast black", {
   skip_if_not_installed("bslib")
-  # Bootstrap color-contrast(#007AFF) is black; glass_theme must override.
+  # Bootstrap color-contrast(#007AFF) is black at 4.5:1; glass_theme must fix.
   th <- glass_theme(primary = "#007AFF")
   vars <- bslib::bs_get_variables(
     th,
     c(
+      "min-contrast-ratio",
       "component-active-color",
       "form-check-input-checked-color",
       "form-check-input-indeterminate-color",
@@ -102,6 +103,9 @@ test_that("active-on-primary ink is light, not color-contrast black", {
       "component-active-bg"
     )
   )
+  # Core fix: lower Bootstrap's contrast gate so color-contrast() picks white
+  # on brand blues (white on #007AFF is ~4.02:1).
+  expect_equal(as.numeric(vars[["min-contrast-ratio"]]), 3)
   expect_equal(toupper(vars[["component-active-color"]]), "#FFFFFF")
   expect_equal(toupper(vars[["form-check-input-checked-color"]]), "#FFFFFF")
   expect_equal(toupper(vars[["form-check-input-indeterminate-color"]]), "#FFFFFF")
@@ -133,6 +137,30 @@ test_that("active-on-primary ink is light, not color-contrast black", {
   expect_false(checked_black)
   expect_match(css, "form-switch")
   expect_match(css, "indeterminate")
+
+  # text-bg-primary must compile light ink (not color-contrast black)
+  expect_true(grepl("text-bg-primary\\{[^}]*color:#fff", css))
+  # Solid .bg-primary / value boxes carry glass-on ink vars
+  expect_match(css, "--glass-on-primary")
+  expect_match(css, "bslib-value-box-color")
+})
+
+test_that("glass_on_color matches luminance threshold", {
+  # Saturated blue → white ink; light gold → dark ink
+  expect_equal(tolower(.glass_on_color("#007AFF")), "#ffffff")
+  expect_equal(tolower(.glass_on_color("#AF52DE")), "#ffffff")
+  expect_equal(tolower(.glass_on_color("#FFCC00")), "#1d1d1f")
+})
+
+test_that("head script sets glass-on-primary for solid fills", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(primary = "#007AFF")
+  deps <- bslib::bs_theme_dependencies(th)
+  preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
+  expect_length(preset_deps, 1)
+  head <- preset_deps[[1]]$head
+  expect_match(head, "--glass-on-primary")
+  expect_match(head, "#ffffff|#FFFFFF")
 })
 
 test_that("update_glass_theme sends shinyglass custom message", {

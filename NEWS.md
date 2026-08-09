@@ -32,9 +32,12 @@
 
 ## Improvements
 
-* Active-on-accent contrast: force light ink on primary fills (checks, radios,
-  indeterminate marks, switches, pagination, list-group active). Fixes
-  Bootstrap `color-contrast(#007AFF) → black`.
+* Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to **3** so
+  `color-contrast()` picks white on brand blues/purples (white on `#007AFF` is
+  ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` / `.text-bg-*` fills
+  (including `bslib::value_box(theme=)`) get luminance-based ink via
+  `glass-on()` / `--glass-on-*` — not body color on solid primary. Safety nets
+  remain for checks, radios, switches, pagination, and list-group active.
 * Accent rules target Shiny markup (`.shiny-input-checkbox`) as well as
   Bootstrap `.form-check-input`.
 * Plot / image outputs get a softer glass frame (lighter nesting inside cards).
