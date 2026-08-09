@@ -18,6 +18,6 @@ observe_glass_theme_toggle(input, session, inputId = "glass_toggle")
 }
 \description{
 Wires the three toggle inputs to \code{\link[=update_glass_theme]{update_glass_theme()}} so session state
-stays aligned with the client (needed on some hosts that rewrite Shiny
+stays aligned with the client (needed on some hosts that rewrite 'shiny'
 messaging).
 }

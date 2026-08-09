@@ -2,7 +2,7 @@
 % Please edit documentation in R/glass-theme.R
 \name{glass_theme}
 \alias{glass_theme}
-\title{Liquid Glass theme for Shiny}
+\title{Liquid Glass theme for 'shiny'}
 \usage{
 glass_theme(
   preset = c("light", "dark", "auto"),
@@ -38,7 +38,7 @@ Defaults to system blue (\verb{#007AFF}).}
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }
 \value{
-A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for Shiny page functions.
+A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for 'shiny' page functions.
 }
 \description{
 Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with a Liquid Glass look: translucent

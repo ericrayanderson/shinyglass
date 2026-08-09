@@ -4,7 +4,7 @@
 \name{shinyglass-package}
 \alias{shinyglass}
 \alias{shinyglass-package}
-\title{Liquid Glass Design Themes for Shiny Applications}
+\title{Liquid Glass Design Themes for 'shiny' Applications}
 \description{
 Drop-in Liquid Glass themes for \href{https://shiny.posit.co/}{shiny}. Call
 \code{\link[=glass_theme]{glass_theme()}} and pass the result to \verb{theme =} on \code{fluidPage()},
@@ -38,11 +38,11 @@ For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}
 }
 \author{
-\strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com}
+\strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Eric Anderson \email{eric.ray.anderson@gmail.com}
+  \item Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]
 }
 
 }

@@ -10,6 +10,7 @@ This is an update from 0.1.1 to 0.2.0.
 * `glass_theme_toggle()` / `observe_glass_theme_toggle()` helpers.
 * Active-on-accent contrast fix (white checks/knobs on brand primary).
 * DT/selectize glass chrome fixes; plotly/gt/AdminLTE overlay CSS.
+* Navbar brand ink matches glass body color; plotly axis titles not clipped.
 * Reduced-motion support; softer plot frames; demo fixes.
 
 ### Breaking (documented in NEWS + vignette)
@@ -22,7 +23,7 @@ This is an update from 0.1.1 to 0.2.0.
 * local macOS, R 4.6.x
 * GitHub Actions: ubuntu (release, devel), macOS (release), windows (release)
 * R CMD check --as-cran on the source tarball
-* visual-qa workflow: testthat + dual-theme contrast audit (optional apps)
+* visual-qa workflow: testthat + dual-theme contrast audit
 
 ## R CMD check results
 
@@ -32,6 +33,7 @@ This is an update from 0.1.1 to 0.2.0.
   Days since last update: 6
 
 This is expected for a follow-up release within two weeks of 0.1.1.
+There are no other notes.
 
 ## Downstream dependencies
 

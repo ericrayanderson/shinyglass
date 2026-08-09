@@ -37,8 +37,10 @@ Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a f
 ## Install
 
 ```r
+# once on CRAN:
 install.packages("shinyglass")
-# development:
+
+# development version:
 # remotes::install_github("ericrayanderson/shinyglass")
 ```
 

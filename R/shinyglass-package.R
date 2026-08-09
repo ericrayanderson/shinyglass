@@ -1,4 +1,4 @@
-#' Liquid Glass Design Themes for Shiny Applications
+#' Liquid Glass Design Themes for 'shiny' Applications
 #'
 #' Drop-in Liquid Glass themes for [shiny](https://shiny.posit.co/). Call
 #' [glass_theme()] and pass the result to `theme =` on `fluidPage()`,

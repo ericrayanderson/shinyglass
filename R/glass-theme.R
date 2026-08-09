@@ -1,4 +1,4 @@
-#' Liquid Glass theme for Shiny
+#' Liquid Glass theme for 'shiny'
 #'
 #' Create a [bslib::bs_theme()] styled with a Liquid Glass look: translucent
 #' surfaces, backdrop blur, soft depth, and system typography. Pass the result
@@ -23,7 +23,7 @@
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
-#' @return A [bslib::bs_theme()] object suitable for Shiny page functions.
+#' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
 #'
 #' @examples
 #' theme <- glass_theme()
@@ -242,7 +242,7 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL, primary = NU
 #'
 #' Drop-in button group for switching the glass preset. Each button sets the
 #' preset on the client immediately (`window.shinyglass.setPreset`) and also
-#' has a Shiny input id so [observe_glass_theme_toggle()] can keep the server
+#' has a 'shiny' input id so [observe_glass_theme_toggle()] can keep the server
 #' in sync (important on hosts that rewrite custom messages).
 #'
 #' @param inputId Base id. Buttons are `{inputId}_light`, `{inputId}_dark`,
@@ -298,7 +298,7 @@ glass_theme_toggle <- function(
 #' Observe [glass_theme_toggle()] buttons on the server
 #'
 #' Wires the three toggle inputs to [update_glass_theme()] so session state
-#' stays aligned with the client (needed on some hosts that rewrite Shiny
+#' stays aligned with the client (needed on some hosts that rewrite 'shiny'
 #' messaging).
 #'
 #' @param input The server `input` object.

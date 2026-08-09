@@ -29,7 +29,7 @@ An \code{\link[htmltools:tag]{htmltools::tag()}} button group.
 \description{
 Drop-in button group for switching the glass preset. Each button sets the
 preset on the client immediately (\code{window.shinyglass.setPreset}) and also
-has a Shiny input id so \code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}} can keep the server
+has a 'shiny' input id so \code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}} can keep the server
 in sync (important on hosts that rewrite custom messages).
 }
 \seealso{
