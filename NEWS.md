@@ -53,6 +53,8 @@
   README light/dark screenshots for plotly+gt.
 * CI workflow `visual-qa` (testthat + dual-theme contrast audit) and committed
   `inst/scripts/audit-baseline.json`.
+* Navbar brand / page title ink uses `--glass-body-color` (no more white brand
+  on light glass). Plotly hosts no longer clip x-axis titles.
 * Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to **3** so
   `color-contrast()` picks white on brand blues/purples (white on `#007AFF` is
   ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` / `.text-bg-*` fills
