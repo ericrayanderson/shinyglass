@@ -2207,10 +2207,20 @@ body .Reactable {
 .plotly.html-widget-output {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   background: color-mix(in srgb, var(--glass-bg) 55%, transparent) !important;
-  padding: 0.35rem;
+  // Extra bottom padding so axis titles / tick labels aren't clipped by the
+  // glass-surface overflow:hidden from the mixin.
+  padding: 0.45rem 0.45rem 0.85rem;
   margin-bottom: 0.75rem;
-  overflow: hidden;
+  overflow: visible !important;
   max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Inner plotly container can still size to the card; don't re-clip titles
+.js-plotly-plot .plotly,
+.js-plotly-plot .plot-container,
+.js-plotly-plot .svg-container {
+  overflow: visible !important;
 }
 
 // Don't double-frame when plotly sits inside a generic shiny-html-output

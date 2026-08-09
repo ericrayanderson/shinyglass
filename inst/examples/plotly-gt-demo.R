@@ -75,7 +75,8 @@ ui <- page_sidebar(
     card(
       full_screen = TRUE,
       card_header("plotly"),
-      plotlyOutput("scatter", height = "360px")
+      # Tall enough that plotly bottom margin + x-axis title fit inside the card
+      plotlyOutput("scatter", height = "400px")
     ),
     card(
       full_screen = TRUE,
@@ -130,9 +131,10 @@ server <- function(input, output, session) {
         xaxis = list(gridcolor = grid_col, zerolinecolor = grid_col, color = font_col),
         yaxis = list(gridcolor = grid_col, zerolinecolor = grid_col, color = font_col),
         legend = list(bgcolor = "rgba(0,0,0,0)", font = list(color = font_col)),
-        margin = list(l = 40, r = 20, t = 30, b = 40)
+        # Room for axis titles (b especially) — tight margins clip under glass
+        margin = list(l = 56, r = 24, t = 36, b = 64)
       ) |>
-      config(displaylogo = FALSE, modeBarButtonsToRemove = c("lasso2d", "select2d"))
+      config(displaylogo = FALSE, modeBarButtonsToRemove = c("lasso2d", "select2d"), responsive = TRUE)
   })
 
   output$iris_gt <- render_gt({
