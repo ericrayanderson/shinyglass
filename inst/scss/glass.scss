@@ -922,12 +922,40 @@ form.well,
 .selectize-control.multi .selectize-input {
   @include glass-input();
   border-radius: 0.75rem !important;
-  color: inherit;
+  // Selectize ships dark item ink (rgba(0,0,0,.83)); force body/glass ink.
+  color: var(--glass-body-color, inherit) !important;
+  background-color: var(--glass-bg) !important;
   min-height: calc(1.5em + 0.75rem + 2px);
   box-shadow: inset 0 1px 0 var(--glass-highlight);
 
+  input {
+    color: var(--glass-body-color, inherit) !important;
+  }
+
+  // Multi-select tags: selectize defaults to near-black text on pale chips.
+  > div,
+  .item {
+    color: var(--glass-body-color, inherit) !important;
+    background: var(--glass-bg-hover) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 0.45rem !important;
+  }
+
+  .item .remove,
+  .item a.remove {
+    color: var(--glass-body-color, inherit) !important;
+    border-left-color: var(--glass-border) !important;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+      background: transparent !important;
+    }
+  }
+
   &:hover {
-    background: var(--glass-bg-hover);
+    background: var(--glass-bg-hover) !important;
+    background-color: var(--glass-bg-hover) !important;
     box-shadow:
       inset 0 1px 0 var(--glass-highlight),
       0 2px 10px var(--glass-shadow);
@@ -935,6 +963,7 @@ form.well,
 
   &.input-active {
     background: var(--glass-bg-hover) !important;
+    background-color: var(--glass-bg-hover) !important;
     border-color: rgba($primary, 0.45) !important;
     box-shadow:
       0 0 0 0.2rem rgba($primary, 0.12),
@@ -942,8 +971,29 @@ form.well,
   }
 }
 
+// Dark: more opaque field fill so light ink stays readable on glass (not
+// thin white wash over black page → washed-out / low-contrast look).
+[data-glass-preset="dark"] {
+  .selectize-control.single .selectize-input,
+  .selectize-control.multi .selectize-input,
+  .form-select,
+  .form-control {
+    background-color: var(--glass-menu-bg) !important;
+    color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  }
+
+  .selectize-control.multi .selectize-input > div,
+  .selectize-control.multi .selectize-input .item {
+    background: color-mix(in srgb, var(--glass-menu-bg) 70%, #{$glass-accent} 30%) !important;
+    color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  }
+}
+
 .selectize-dropdown {
-  background: var(--glass-bg-hover) !important;
+  // Opaque enough that options never composite into unreadable mush
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color, inherit) !important;
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--glass-border) !important;
@@ -958,17 +1008,17 @@ form.well,
   .option,
   .create {
     border-radius: 0.55rem;
-    color: var(--glass-menu-color, inherit);
+    color: var(--glass-menu-color, inherit) !important;
     padding: 0.45rem 0.65rem;
   }
 
   .active {
-    background: color-mix(in srgb, var(--glass-bg-hover) 65%, #{$glass-accent} 35%) !important;
-    color: inherit;
+    background: color-mix(in srgb, var(--glass-menu-bg) 65%, #{$glass-accent} 35%) !important;
+    color: var(--glass-menu-color, inherit) !important;
   }
 
   .optgroup-header {
-    color: inherit;
+    color: var(--glass-menu-color, inherit);
     opacity: 0.65;
     font-weight: 600;
     font-size: 0.8rem;
@@ -1568,32 +1618,132 @@ form.well,
     }
   }
 
+  // DT Bootstrap 5 markup is <li.paginate_button.page-item><a.page-link>.
+  // Style the visible .page-link surface (not the li), otherwise Bootstrap's
+  // default page-link bg (light grey / pure black) shows through as solid
+  // chips that look wrong on glass — especially in dark mode.
   .dataTables_paginate {
-    .paginate_button {
+    .pagination {
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      margin: 0;
+    }
+
+    .paginate_button,
+    .page-item {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      opacity: 1 !important;
+    }
+
+    .page-link,
+    .paginate_button > a {
       @include glass-input();
       border-radius: 0.55rem !important;
       color: inherit !important;
-      margin: 0 0.1rem;
+      background-color: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+      margin: 0 !important;
       padding: 0.3rem 0.65rem !important;
+      line-height: 1.25;
+      min-width: 2rem;
+      text-align: center;
 
-      &:hover {
+      &:hover,
+      &:focus {
         background: var(--glass-bg-hover) !important;
+        background-color: var(--glass-bg-hover) !important;
         border-color: var(--glass-border) !important;
         color: inherit !important;
+        box-shadow:
+          inset 0 1px 0 var(--glass-highlight),
+          0 2px 8px var(--glass-shadow);
+        z-index: 1;
       }
 
-      &.current,
-      &.current:hover {
-        background: color-mix(in srgb, var(--glass-bg-hover) 60%, $primary 40%) !important;
-        border-color: rgba($primary, 0.35) !important;
-        color: inherit !important;
-      }
-
-      &.disabled,
-      &.disabled:hover {
-        opacity: 0.45;
+      &:focus-visible {
+        outline: none;
+        border-color: rgba($primary, 0.45) !important;
+        box-shadow:
+          0 0 0 0.15rem rgba($primary, 0.18),
+          inset 0 1px 0 var(--glass-highlight);
       }
     }
+
+    .paginate_button.current .page-link,
+    .paginate_button.current > a,
+    .page-item.active .page-link,
+    .paginate_button.active .page-link {
+      background: #{$glass-accent} !important;
+      background-color: #{$glass-accent} !important;
+      border-color: #{$glass-accent} !important;
+      color: #fff !important;
+      box-shadow:
+        0 4px 14px rgba($primary, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+
+      &:hover,
+      &:focus {
+        background: #{$glass-accent} !important;
+        background-color: #{$glass-accent} !important;
+        border-color: #{$glass-accent} !important;
+        color: #fff !important;
+      }
+    }
+
+    .paginate_button.disabled .page-link,
+    .paginate_button.disabled > a,
+    .page-item.disabled .page-link {
+      background: var(--glass-bg) !important;
+      background-color: var(--glass-bg) !important;
+      border-color: var(--glass-border) !important;
+      color: inherit !important;
+      opacity: 0.45;
+      pointer-events: none;
+      box-shadow: inset 0 1px 0 var(--glass-highlight);
+    }
+  }
+}
+
+// Bootstrap pagination outside DT (same glass chips)
+.pagination {
+  flex-wrap: wrap;
+  gap: 0.2rem;
+
+  .page-link {
+    @include glass-input();
+    border-radius: 0.55rem !important;
+    color: inherit !important;
+    background-color: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    margin: 0 !important;
+
+    &:hover,
+    &:focus {
+      background: var(--glass-bg-hover) !important;
+      background-color: var(--glass-bg-hover) !important;
+      border-color: var(--glass-border) !important;
+      color: inherit !important;
+      z-index: 1;
+    }
+  }
+
+  .page-item.active .page-link {
+    background: #{$glass-accent} !important;
+    background-color: #{$glass-accent} !important;
+    border-color: #{$glass-accent} !important;
+    color: #fff !important;
+  }
+
+  .page-item.disabled .page-link {
+    background: var(--glass-bg) !important;
+    background-color: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    color: inherit !important;
+    opacity: 0.45;
   }
 }
 

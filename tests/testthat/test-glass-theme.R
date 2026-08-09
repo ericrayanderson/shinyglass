@@ -235,3 +235,52 @@ test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
   expect_match(css, "shiny-input-checkbox")
   expect_match(css, "glass-theme-toggle")
 })
+
+test_that("compiled CSS styles DT/Bootstrap page-link surfaces (not li-only)", {
+  skip_if_not_installed("bslib")
+  # Regression guard for black DT chips: DT Bootstrap 5 uses
+  # <li.paginate_button.page-item><a.page-link>. Glass must paint .page-link.
+  theme <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(theme)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "dataTables_paginate")
+  expect_match(css, "page-link")
+  expect_match(css, "page-item\\.active|page-item.active")
+  expect_match(css, "page-item\\.disabled|paginate_button\\.disabled")
+  # Visible chip uses glass surface tokens
+  expect_true(grepl(
+    "dataTables_paginate[^}]*page-link|page-link[^}]*--glass-bg|page-link[^;]*var\\(--glass-bg\\)",
+    css
+  ))
+})
+
+test_that("audit-glass-contrast harness files ship in the package", {
+  audit_r <- system.file("scripts", "audit-glass-contrast.R", package = "shinyglass")
+  audit_js <- system.file("scripts", "audit-glass-contrast.js", package = "shinyglass")
+  qa_md <- system.file("scripts", "VISUAL-QA.md", package = "shinyglass")
+  # Installed package path may be empty under load_all; fall back to source tree
+  if (!nzchar(audit_r)) {
+    root <- testthat::test_path("../..")
+    audit_r <- file.path(root, "inst", "scripts", "audit-glass-contrast.R")
+    audit_js <- file.path(root, "inst", "scripts", "audit-glass-contrast.js")
+    qa_md <- file.path(root, "inst", "scripts", "VISUAL-QA.md")
+  }
+  expect_true(file.exists(audit_r))
+  expect_true(file.exists(audit_js))
+  expect_true(file.exists(qa_md))
+  js <- paste(readLines(audit_js, warn = FALSE), collapse = "\n")
+  expect_match(js, "runGlassAudit")
+  expect_match(js, "solid-black-chip|dt-pagination-structure")
+})

@@ -109,18 +109,25 @@ hide_sidebar_toggle <- function(session) {
 }
 
 hide_sidebar_panel <- function(session) {
+  # glass.scss uses !important on main padding-left (sidebar reserve). Setting
+  # style.paddingLeft without priority loses, leaving an empty left gutter
+  # under a full-width navbar. Collapse the layout the same way bslib does,
+  # then force symmetric float margins.
   session$Runtime$evaluate(expression = "
+    document.querySelectorAll('.bslib-sidebar-layout').forEach((layout) => {
+      layout.classList.add('sidebar-collapsed');
+    });
     document.querySelectorAll('.bslib-sidebar-layout > .sidebar').forEach((el) => {
-      el.style.display = 'none';
+      el.style.setProperty('display', 'none', 'important');
     });
     document.querySelectorAll('.collapse-toggle').forEach((el) => {
-      el.style.display = 'none';
+      el.style.setProperty('display', 'none', 'important');
     });
-    const main = document.querySelector('.bslib-page-main, .main');
-    if (main) {
-      main.style.paddingLeft = 'var(--glass-float-margin, 0.85rem)';
-      main.style.paddingRight = 'var(--glass-float-margin, 0.85rem)';
-    }
+    document.querySelectorAll('.bslib-page-main, .bslib-sidebar-layout > .main').forEach((main) => {
+      const m = 'var(--glass-float-margin, 0.85rem)';
+      main.style.setProperty('padding-left', m, 'important');
+      main.style.setProperty('padding-right', m, 'important');
+    });
     window.scrollTo(0, 0);
   ")
   Sys.sleep(0.5)
@@ -307,12 +314,16 @@ dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 
 examples_dir <- file.path(pkg_root, "inst", "examples")
 
+# Keep the sidebar visible: page_sidebar navbar is intentionally full-width
+# (page chrome). Hiding the sidebar left an empty left reserve under that bar
+# and made the README shots look like the app body was oddly inset.
 capture_app(
   file.path(examples_dir, "bslib-dashboard.R"),
   file.path(fig_dir, "bslib-dashboard.png"),
   port = 3850L,
   height = 880L,
-  hide_sidebar_panel = TRUE
+  hide_sidebar_panel = FALSE,
+  hide_sidebar_toggle = TRUE
 )
 capture_app(
   file.path(examples_dir, "bslib-dashboard.R"),
@@ -320,7 +331,8 @@ capture_app(
   port = 3851L,
   height = 880L,
   env = c(SHINYGLASS_PRESET = "dark"),
-  hide_sidebar_panel = TRUE
+  hide_sidebar_panel = FALSE,
+  hide_sidebar_toggle = TRUE
 )
 
 prep_querychat <- function(session) {
