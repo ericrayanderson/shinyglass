@@ -42,7 +42,9 @@ Optional app: `--apps=...,shinywidgets` if `shinyWidgets` is installed.
 | `demo-app` | ✓ | ✓ | Theme toggle Light → Dark → Auto |
 | `inputs-gallery` | ✓ | ✓ | Open selectize dropdown; move slider |
 | `bslib-dashboard` | ✓ | ✓ | DT page **2**; confirm page **1** active chip |
+| `plotly-gt-demo` | ✓ | ✓ | Modebar icons readable; gt header/rows (if plotly+gt installed) |
 | `shinywidgets-gallery-glass` | ✓ | ✓ | Flip a switch / open a picker (if installed) |
+| `shinydashboardPlus-glass-demo` | ✓ | ✓ | Controlbar + notification dropdown (if Plus installed) |
 
 ```r
 Sys.setenv(SHINYGLASS_PRESET = "dark")  # or "light"

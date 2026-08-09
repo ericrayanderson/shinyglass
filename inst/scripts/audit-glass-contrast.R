@@ -27,7 +27,7 @@ has_flag <- function(flag) any(args == flag)
 
 min_contrast <- as.numeric(get_flag("--min-contrast", "3"))
 if (is.na(min_contrast) || min_contrast <= 0) min_contrast <- 3
-apps_arg <- get_flag("--apps", "demo,dashboard,inputs")
+apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt")
 presets_arg <- get_flag("--presets", "light,dark")
 json_out <- get_flag("--json", NULL)
 port_base <- as.integer(get_flag("--port-base", "3910"))
@@ -138,6 +138,25 @@ catalog <- list(
     needs = c("shinyWidgets"),
     wait = c(".shiny-bound-input", "body"),
     interactions = list()
+  ),
+  plotly_gt = list(
+    label = "plotly-gt-demo",
+    path = file.path(pkg_root, "inst", "examples", "plotly-gt-demo.R"),
+    needs = c("plotly", "gt"),
+    wait = c(".js-plotly-plot", ".gt_table", ".shiny-bound-input"),
+    interactions = list(
+      list(
+        name = "hover-modebar",
+        js = "
+          (function() {
+            const btn = document.querySelector('.modebar-btn');
+            if (btn) { btn.dispatchEvent(new MouseEvent('mouseenter', {bubbles:true})); return true; }
+            return false;
+          })();
+        ",
+        wait_ms = 300
+      )
+    )
   )
 )
 
@@ -173,7 +192,15 @@ core_selectors <- c(
   ".bg-success",
   ".bg-info",
   ".nav-tabs .nav-link.active",
-  ".shiny-notification"
+  ".shiny-notification",
+  ".js-plotly-plot",
+  ".modebar",
+  ".modebar-btn",
+  ".gt_table",
+  ".gt_col_heading",
+  ".gt_row",
+  ".waiter-overlay",
+  ".swal2-popup"
 )
 
 audit_js_path <- file.path(pkg_root, "inst", "scripts", "audit-glass-contrast.js")

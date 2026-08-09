@@ -2197,6 +2197,365 @@ body .Reactable {
   font-family: inherit;
 }
 
+// ---------------------------------------------------------------------------
+// plotly — avoid white paper / opaque modebar floating on glass
+// Layout paper_bgcolor can still be set in R; CSS covers toolbar chrome.
+// ---------------------------------------------------------------------------
+
+.js-plotly-plot,
+.plotly.html-widget,
+.plotly.html-widget-output {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  background: color-mix(in srgb, var(--glass-bg) 55%, transparent) !important;
+  padding: 0.35rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+// Don't double-frame when plotly sits inside a generic shiny-html-output
+.shiny-html-output:has(> .js-plotly-plot),
+.shiny-html-output:has(> .plotly) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.js-plotly-plot .plotly,
+.js-plotly-plot .plot-container {
+  background: transparent !important;
+}
+
+// Modebar (zoom / pan / download) — translucent glass, body ink icons
+.js-plotly-plot .modebar-container,
+.js-plotly-plot .modebar {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: 0.65rem;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  padding: 0.15rem 0.25rem !important;
+}
+
+.js-plotly-plot .modebar-btn {
+  border-radius: 0.4rem !important;
+
+  &:hover {
+    background: var(--glass-bg-hover) !important;
+  }
+
+  path {
+    fill: var(--glass-body-color) !important;
+    opacity: 0.85;
+  }
+
+  &:hover path,
+  &.active path {
+    fill: #{$glass-accent} !important;
+    opacity: 1;
+  }
+}
+
+.js-plotly-plot .modebar-group {
+  background: transparent !important;
+  border: none !important;
+}
+
+// Hover tooltip / colorbar labels pick up page font when possible
+.js-plotly-plot .hovertext,
+.js-plotly-plot .hoverlayer {
+  font-family: inherit;
+}
+
+// ---------------------------------------------------------------------------
+// gt — Posit grammar-of-tables (light shells by default)
+// ---------------------------------------------------------------------------
+
+.gt_table {
+  @include glass-surface(calc(var(--glass-radius) * 0.75));
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  color: var(--glass-body-color, inherit) !important;
+  border-color: var(--glass-border) !important;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  max-width: 100%;
+
+  th,
+  td {
+    color: inherit !important;
+    border-color: color-mix(in srgb, var(--glass-border) 70%, transparent) !important;
+  }
+}
+
+.gt_heading,
+.gt_title,
+.gt_subtitle,
+.gt_caption {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--glass-body-color, inherit) !important;
+  border-color: var(--glass-border) !important;
+}
+
+.gt_col_headings,
+.gt_col_heading,
+.gt_column_spanner,
+.gt_column_spanner_outer,
+.gt_stub_head {
+  background: var(--glass-bg-hover) !important;
+  background-color: var(--glass-bg-hover) !important;
+  color: var(--glass-body-color, inherit) !important;
+  border-color: var(--glass-border) !important;
+  font-weight: 600;
+}
+
+.gt_row,
+.gt_stub,
+.gt_table_body {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.gt_row.gt_striped,
+.gt_striped {
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent) !important;
+}
+
+.gt_summary_row,
+.gt_grand_summary_row,
+.gt_group_heading,
+.gt_row_group_first {
+  background: color-mix(in srgb, var(--glass-bg-hover) 80%, transparent) !important;
+  color: inherit !important;
+  border-color: var(--glass-border) !important;
+  font-weight: 600;
+}
+
+.gt_sourcenote,
+.gt_footnote,
+.gt_footnotes,
+.gt_footnote_marks {
+  background: transparent !important;
+  color: inherit !important;
+  opacity: 0.85;
+  border-color: var(--glass-border) !important;
+}
+
+.gt_from_md,
+.gt_table a {
+  color: #{$glass-accent};
+}
+
+// Don't double-frame gt inside shiny-html-output
+.shiny-html-output:has(.gt_table) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+// ---------------------------------------------------------------------------
+// Loading overlays — waiter / shinybusy / shinycssloaders / generic busy
+// ---------------------------------------------------------------------------
+
+.waiter-overlay,
+#waiter-overlay,
+.waiter-overlay-content,
+div[id^="waiter-"] {
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+}
+
+.waiter-overlay,
+#waiter-overlay {
+  background: color-mix(in srgb, var(--glass-page-bg, #000) 55%, transparent) !important;
+}
+
+.waiter-overlay-content {
+  color: var(--glass-body-color, inherit) !important;
+}
+
+// shinybusy full-page / gif busy
+.shinybusy,
+.shinybusy-busy,
+.shinybusy-ready {
+  z-index: 9998 !important;
+}
+
+.shinybusy-overlay {
+  background: color-mix(in srgb, var(--glass-page-bg, #000) 45%, transparent) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+// shinycssloaders wrapper — keep spinner readable, don't paint solid white
+.load-container,
+.shinycssloaders-wrapper {
+  background: transparent !important;
+}
+
+// Base shiny busy indicator (1.7+)
+.shiny-busy-indicator,
+#shiny-notification-panel {
+  z-index: 2000;
+}
+
+// shinyalert / sweetalert2 skins (common bolt-ons)
+.swal2-popup,
+.shinyalert-popup {
+  @include glass-surface(1rem);
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+.swal2-title,
+.swal2-html-container,
+.swal2-content {
+  color: inherit !important;
+}
+
+.swal2-confirm.swal2-styled {
+  background: #{$glass-accent} !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+}
+
+// ---------------------------------------------------------------------------
+// shinydashboardPlus / denser AdminLTE extras
+// (base AdminLTE header/sidebar/boxes already above)
+// ---------------------------------------------------------------------------
+
+// User panel + treeview in Plus
+body .user-panel,
+body .user-panel .info a {
+  color: inherit !important;
+}
+
+body .user-panel .image img {
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 12px var(--glass-shadow);
+}
+
+// Right controlbar (Plus) already partly covered; strengthen content
+body .control-sidebar .nav-tabs,
+body .control-sidebar .nav-link {
+  background: transparent !important;
+  color: inherit !important;
+  border-color: var(--glass-border) !important;
+}
+
+body .control-sidebar .nav-link.active {
+  background: color-mix(in srgb, var(--glass-bg-hover) 55%, #{$glass-accent} 45%) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+
+// Navbar dropdowns (messages, notifications, user menu)
+body .main-header .dropdown-menu,
+body .navbar-nav > .user-menu > .dropdown-menu {
+  @include glass-surface(0.85rem);
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 16px 48px var(--glass-elevated-shadow) !important;
+}
+
+body .main-header .dropdown-item,
+body .navbar-nav .dropdown-menu > li > a {
+  color: var(--glass-menu-color) !important;
+
+  &:hover {
+    background: var(--glass-bg-hover) !important;
+  }
+}
+
+// box tools / card tools
+body .card-tools .btn,
+body .box-tools .btn,
+body .btn-tool {
+  @include glass-input();
+  color: inherit !important;
+  border-radius: 0.5rem !important;
+}
+
+// direct chat (Plus)
+body .direct-chat-messages {
+  background: color-mix(in srgb, var(--glass-bg) 50%, transparent) !important;
+}
+
+body .direct-chat-text {
+  background: var(--glass-bg-hover) !important;
+  color: inherit !important;
+  border-color: var(--glass-border) !important;
+}
+
+// star rating / description blocks
+body .description-block,
+body .product-info {
+  color: inherit !important;
+}
+
+// ---------------------------------------------------------------------------
+// rhandsontable — light glass frame; core grid CSS is third-party
+// ---------------------------------------------------------------------------
+
+.handsontable,
+.shiny-html-output:has(.handsontable) {
+  @include glass-surface(calc(var(--glass-radius) * 0.7));
+  overflow: auto;
+  max-width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.handsontable {
+  background: var(--glass-bg) !important;
+  color: var(--glass-body-color) !important;
+
+  th,
+  td {
+    background-color: transparent !important;
+    color: inherit !important;
+    border-color: color-mix(in srgb, var(--glass-border) 65%, transparent) !important;
+  }
+
+  th {
+    background: var(--glass-bg-hover) !important;
+    font-weight: 600;
+  }
+
+  .htDimmed {
+    color: inherit !important;
+    opacity: 0.65;
+  }
+}
+
+// echarts / highcharter / apex host wrappers (toolbar sits outside plot SVG)
+.echarts4r,
+.highchart,
+.apexcharts-canvas {
+  max-width: 100%;
+}
+
+.html-widget.echarts4r,
+.html-widget.highchart,
+.apexchart-wrapper {
+  @include glass-surface(calc(var(--glass-radius) * 0.85));
+  padding: 0.45rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
 // .main-icon is position:absolute; need containing block on .title
 .title {
   position: relative;
@@ -2393,6 +2752,30 @@ body .controls-pane {
     .rt-tr-striped {
       background: color-mix(in srgb, var(--glass-bg) 85%, transparent) !important;
     }
+  }
+
+  .js-plotly-plot .modebar-container,
+  .js-plotly-plot .modebar {
+    background: var(--glass-menu-bg) !important;
+  }
+
+  .gt_table {
+    background: var(--glass-menu-bg) !important;
+    background-color: var(--glass-menu-bg) !important;
+  }
+
+  .gt_row.gt_striped,
+  .gt_striped {
+    background: color-mix(in srgb, var(--glass-bg) 85%, transparent) !important;
+  }
+
+  .handsontable th {
+    background: color-mix(in srgb, var(--glass-menu-bg) 90%, transparent) !important;
+  }
+
+  .waiter-overlay,
+  #waiter-overlay {
+    background: color-mix(in srgb, #000 65%, transparent) !important;
   }
 }
 

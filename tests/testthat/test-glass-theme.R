@@ -266,6 +266,33 @@ test_that("compiled CSS styles DT/Bootstrap page-link surfaces (not li-only)", {
   ))
 })
 
+test_that("compiled CSS covers plotly, gt, waiter, and AdminLTE-plus chrome", {
+  skip_if_not_installed("bslib")
+  theme <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(theme)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "js-plotly-plot")
+  expect_match(css, "modebar")
+  expect_match(css, "gt_table")
+  expect_match(css, "gt_col_heading")
+  expect_match(css, "waiter-overlay")
+  expect_match(css, "swal2-popup")
+  expect_match(css, "user-panel")
+  expect_match(css, "handsontable")
+})
+
 test_that("audit-glass-contrast harness files ship in the package", {
   audit_r <- system.file("scripts", "audit-glass-contrast.R", package = "shinyglass")
   audit_js <- system.file("scripts", "audit-glass-contrast.js", package = "shinyglass")
