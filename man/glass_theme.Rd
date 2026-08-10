@@ -7,9 +7,10 @@
 glass_theme(
   preset = c("light", "dark", "auto"),
   primary = "#007AFF",
-  blur = 28,
-  saturation = 200,
-  radius = "1.25rem",
+  blur = 32,
+  saturation = 190,
+  radius = "1.5rem",
+  material = c("regular", "clear"),
   tint = TRUE,
   specular = TRUE,
   nav_morph = TRUE,
@@ -23,11 +24,16 @@ glass_theme(
 \item{primary}{Accent color for buttons, links, and focus rings.
 Defaults to system blue (\verb{#007AFF}).}
 
-\item{blur}{Backdrop blur radius in pixels.}
+\item{blur}{Backdrop blur radius in pixels. Default \code{32} matches the
+denser Tahoe-era material.}
 
 \item{saturation}{Backdrop saturation percentage.}
 
-\item{radius}{Default border radius for glass surfaces (CSS length).}
+\item{radius}{Default border radius for glass surfaces (CSS length).
+Prefer larger concentric radii (default \verb{1.5rem}).}
+
+\item{material}{\code{"regular"} (adaptive, most UI) or \code{"clear"} (more
+transparent; best over media-rich content with bold labels).}
 
 \item{tint}{Content-aware ambient tint from plots/images (JS).}
 
@@ -57,6 +63,7 @@ updated live with \code{\link[=update_glass_theme]{update_glass_theme()}} \verb{
 theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 auto <- glass_theme(preset = "auto", tint = FALSE)
+clear <- glass_theme(material = "clear")
 
 if (interactive()) {
   library(shiny)

@@ -45,13 +45,17 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-blur: #{$glass-blur};
   --glass-saturate: #{$glass-saturate};
   --glass-radius: #{$glass-radius};
-  --glass-float-margin: 0.85rem;
+  // Concentric radius scale (inner = outer - pad) for nested glass geometry
+  --glass-radius-sm: max(0.5rem, calc(var(--glass-radius) - 0.55rem));
+  --glass-radius-xs: max(0.35rem, calc(var(--glass-radius) - 0.9rem));
+  --glass-radius-control: max(0.85rem, calc(var(--glass-radius) - 0.35rem));
+  --glass-float-margin: 0.75rem;
   --glass-tint-r: 0;
   --glass-tint-g: 122;
   --glass-tint-b: 255;
   --glass-tint-strength: 0;
-  --glass-specular-x: 28%;
-  --glass-specular-y: 10%;
+  --glass-specular-x: 32%;
+  --glass-specular-y: 12%;
   // Default accent; head script / setPrimary() override at runtime.
   --glass-accent: #{$primary};
   // Contrast-safe ink for solid theme fills (widgets that inherit body color).
@@ -107,57 +111,93 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
 }
 
 // Light pack (default when data-glass-preset is missing or "light")
+// Tuned toward macOS Tahoe / iOS 26 Liquid Glass: softer wallpapers,
+// multi-layer material tokens (fill / rim / lip / specular / shadow),
+// separate chrome vs content fills (avoid glass-on-glass).
 :root,
 :root[data-glass-preset="light"] {
-  --glass-body-bg: #f5f5f7;
+  --glass-body-bg: #f2f2f7;
   --glass-body-color: #1d1d1f;
-  --glass-bg: rgba(255, 255, 255, 0.28);
-  --glass-bg-hover: rgba(255, 255, 255, 0.42);
-  --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-shadow: rgba(0, 0, 0, 0.12);
-  --glass-elevated-shadow: rgba(0, 0, 0, 0.18);
-  --glass-highlight: rgba(255, 255, 255, 0.75);
-  --glass-specular: rgba(255, 255, 255, 0.45);
-  --glass-menu-bg: #ffffff;
+  // Regular material: slightly clearer so underlying content "refracts"
+  --glass-bg: rgba(255, 255, 255, 0.26);
+  --glass-bg-hover: rgba(255, 255, 255, 0.40);
+  // Content surfaces: still glass, slightly denser than chrome (no solid milk)
+  --glass-bg-content: rgba(255, 255, 255, 0.38);
+  --glass-bg-content-hover: rgba(255, 255, 255, 0.50);
+  --glass-border: rgba(255, 255, 255, 0.62);
+  --glass-rim: rgba(255, 255, 255, 0.78);
+  --glass-lip: rgba(0, 0, 0, 0.06);
+  --glass-shadow: rgba(0, 0, 0, 0.10);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.88);
+  --glass-specular: rgba(255, 255, 255, 0.55);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.42);
+  --glass-menu-bg: rgba(255, 255, 255, 0.86);
   --glass-menu-color: #1d1d1f;
-  --glass-page-bg: linear-gradient(145deg, #eef0f8 0%, #f5f5f7 35%, #e8e4f0 70%, #dfe8f5 100%);
-  --glass-orb-1: rgba(0, 122, 255, 0.28);
-  --glass-orb-2: rgba(175, 82, 222, 0.22);
-  --glass-orb-3: rgba(255, 149, 0, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.15);
+  // Soft Tahoe-like wash (less candy multi-orb)
+  --glass-page-bg: linear-gradient(160deg, #eef1f8 0%, #f5f5f7 42%, #ebe8f4 78%, #e6eef8 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.18);
+  --glass-orb-2: rgba(175, 82, 222, 0.12);
+  --glass-orb-3: rgba(90, 200, 250, 0.14);
+  --glass-inner-glow: rgba(255, 255, 255, 0.22);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
-  --bs-secondary-color: rgba(29, 29, 31, 0.75);
-  --bs-tertiary-color: rgba(29, 29, 31, 0.5);
+  --bs-secondary-color: rgba(29, 29, 31, 0.72);
+  --bs-tertiary-color: rgba(29, 29, 31, 0.48);
   --bs-emphasis-color: #1d1d1f;
-  --bs-border-color: rgba(0, 0, 0, 0.1);
+  --bs-border-color: rgba(0, 0, 0, 0.08);
   color-scheme: light;
 }
 
 :root[data-glass-preset="dark"] {
   --glass-body-bg: #000000;
   --glass-body-color: #f5f5f7;
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-bg-hover: rgba(255, 255, 255, 0.14);
-  --glass-border: rgba(255, 255, 255, 0.22);
-  --glass-shadow: rgba(0, 0, 0, 0.42);
-  --glass-elevated-shadow: rgba(0, 0, 0, 0.58);
-  --glass-highlight: rgba(255, 255, 255, 0.16);
-  --glass-specular: rgba(255, 255, 255, 0.12);
-  --glass-menu-bg: #1c1c1e;
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-hover: rgba(255, 255, 255, 0.18);
+  // Dark content stays a translucent film — never solid greys
+  --glass-bg-content: rgba(255, 255, 255, 0.10);
+  --glass-bg-content-hover: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.26);
+  --glass-rim: rgba(255, 255, 255, 0.32);
+  --glass-lip: rgba(0, 0, 0, 0.35);
+  --glass-shadow: rgba(0, 0, 0, 0.48);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.62);
+  --glass-highlight: rgba(255, 255, 255, 0.22);
+  --glass-specular: rgba(255, 255, 255, 0.18);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.14);
+  --glass-menu-bg: rgba(44, 44, 46, 0.88);
   --glass-menu-color: #f5f5f7;
-  --glass-page-bg: linear-gradient(145deg, #0c0c14 0%, #000000 40%, #140a1a 75%, #0a1020 100%);
-  --glass-orb-1: rgba(10, 132, 255, 0.36);
-  --glass-orb-2: rgba(191, 90, 242, 0.30);
-  --glass-orb-3: rgba(255, 159, 10, 0.22);
-  --glass-inner-glow: rgba(255, 255, 255, 0.06);
+  --glass-page-bg: linear-gradient(160deg, #0a0a12 0%, #000000 45%, #100a16 80%, #060a14 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.28);
+  --glass-orb-2: rgba(191, 90, 242, 0.20);
+  --glass-orb-3: rgba(100, 210, 255, 0.16);
+  --glass-inner-glow: rgba(255, 255, 255, 0.08);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
-  --bs-secondary-color: rgba(245, 245, 247, 0.75);
-  --bs-tertiary-color: rgba(245, 245, 247, 0.5);
+  --bs-secondary-color: rgba(245, 245, 247, 0.72);
+  --bs-tertiary-color: rgba(245, 245, 247, 0.48);
   --bs-emphasis-color: #f5f5f7;
-  --bs-border-color: rgba(255, 255, 255, 0.16);
+  --bs-border-color: rgba(255, 255, 255, 0.14);
   color-scheme: dark;
+}
+
+// Clear material: permanently more transparent (media-rich heroes).
+// Needs bold labels; pair with dimming on media underneath when needed.
+:root[data-glass-material="clear"],
+:root[data-glass-material="clear"][data-glass-preset="light"] {
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-hover: rgba(255, 255, 255, 0.22);
+  --glass-bg-content: rgba(255, 255, 255, 0.28);
+  --glass-bg-content-hover: rgba(255, 255, 255, 0.40);
+  --glass-border: rgba(255, 255, 255, 0.48);
+}
+
+:root[data-glass-material="clear"][data-glass-preset="dark"] {
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.11);
+  --glass-bg-content: rgba(255, 255, 255, 0.08);
+  --glass-bg-content-hover: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.20);
 }
 
 body {
@@ -174,11 +214,11 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -2;
+  // Soft ambient field — wallpaper-like, not neon blobs
   background:
-    radial-gradient(ellipse 90% 70% at 12% 18%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 58%),
-    radial-gradient(ellipse 75% 55% at 88% 72%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 52%),
-    radial-gradient(ellipse 65% 45% at 52% 42%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 48%),
-    radial-gradient(ellipse 50% 40% at 75% 15%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 45%);
+    radial-gradient(ellipse 100% 80% at 8% 0%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 100% 100%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 70% 20%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 48%);
   pointer-events: none;
 }
 
@@ -188,46 +228,70 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 30% 85%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 32%),
-    radial-gradient(circle at 90% 35%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 28%);
-  opacity: 0.85;
+    radial-gradient(ellipse 55% 40% at 20% 90%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 85% 30%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 55%);
+  opacity: 0.65;
   pointer-events: none;
 }
 
+// Liquid Glass material layers (Regular):
+//   1. Illumination — translucent fill + backdrop blur/saturate
+//   2. Highlight  — ambient top sheen + pointer specular (::before)
+//   3. Shadow/rim — contact shadow + dual-edge lip for glass thickness (::after)
+// Chrome (sidebars, nav, floating wells) uses this mixin.
+// Content cards use glass-content-surface to avoid glass-on-glass stacking.
 @mixin glass-surface($radius: var(--glass-radius)) {
   position: relative;
   isolation: isolate;
-  background: var(--glass-bg);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--glass-highlight) 22%, transparent) 0%,
+      transparent 42%
+    ),
+    var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
+  border: 0.5px solid var(--glass-border);
   border-radius: $radius;
+  // Outer contact shadow + bright rim + dark inner lip (thickness)
   box-shadow:
-    0 8px 32px var(--glass-shadow),
-    inset 0 1px 0 var(--glass-highlight),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    0 1px 1px var(--glass-shadow),
+    0 8px 28px var(--glass-shadow),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 55%, transparent),
+    inset 0 0.5px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
   overflow: hidden;
   transition:
-    background 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s ease,
+    background 0.28s ease,
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
     padding 0.25s ease,
-    margin 0.25s ease;
+    margin 0.25s ease,
+    border-color 0.25s ease;
 
-  // pointer position from shiny-glass.js
+  // Highlight layer: ambient top-left cast + pointer-driven specular
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      ellipse 120% 90% at var(--glass-specular-x, 28%) var(--glass-specular-y, 10%),
-      var(--glass-specular) 0%,
-      transparent 62%
-    );
+    background:
+      radial-gradient(
+        ellipse 140% 100% at var(--glass-specular-x, 32%) var(--glass-specular-y, 12%),
+        var(--glass-specular) 0%,
+        transparent 55%
+      ),
+      linear-gradient(
+        125deg,
+        var(--glass-edge-sheen) 0%,
+        transparent 28%,
+        transparent 72%,
+        color-mix(in srgb, var(--glass-edge-sheen) 40%, transparent) 100%
+      );
     border-radius: inherit;
     pointer-events: none;
     z-index: -1;
-    opacity: 0.88;
+    opacity: 0.9;
     transition: opacity 0.2s ease;
   }
 
@@ -235,12 +299,68 @@ body::after {
     opacity: 1;
   }
 
+  // Rim / thickness layer
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    box-shadow: inset 0 4px 20px var(--glass-inner-glow);
+    box-shadow:
+      inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 70%, transparent),
+      inset 0 6px 24px var(--glass-inner-glow),
+      inset 0 -10px 28px color-mix(in srgb, var(--glass-lip) 55%, transparent);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+// Content surfaces: adaptive Regular fill, less "double glass" under chrome
+@mixin glass-content-surface($radius: var(--glass-radius)) {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--glass-highlight) 14%, transparent) 0%,
+      transparent 36%
+    ),
+    var(--glass-bg-content, var(--glass-bg));
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.72)) saturate(calc(var(--glass-saturate) * 0.9));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.72)) saturate(calc(var(--glass-saturate) * 0.9));
+  border: 0.5px solid var(--glass-border);
+  border-radius: $radius;
+  box-shadow:
+    0 6px 24px var(--glass-shadow),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 40%, transparent),
+    inset 0 0.5px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
+  overflow: hidden;
+  transition:
+    background 0.28s ease,
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 120% 90% at var(--glass-specular-x, 32%) var(--glass-specular-y, 12%),
+      color-mix(in srgb, var(--glass-specular) 70%, transparent) 0%,
+      transparent 58%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.75;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 50%, transparent);
     pointer-events: none;
     z-index: -1;
   }
@@ -248,22 +368,26 @@ body::after {
 
 // inputs: no pseudo-elements (overflow must stay visible for menus)
 @mixin glass-input {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
-  transition: background 0.25s ease, box-shadow 0.25s ease;
+  background: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--glass-radius-control);
+  box-shadow:
+    inset 0 0.5px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
+  transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
 }
 
 @mixin glass-floating($radius: var(--glass-radius)) {
   @include glass-surface($radius);
   margin: var(--glass-float-margin);
   box-shadow:
-    0 16px 48px var(--glass-elevated-shadow),
-    0 4px 12px var(--glass-shadow),
-    inset 0 1px 0 var(--glass-highlight),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    0 2px 4px var(--glass-shadow),
+    0 18px 52px var(--glass-elevated-shadow),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 50%, transparent),
+    inset 0 0.5px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
 }
 
 .container-fluid > .row {
@@ -309,7 +433,8 @@ form.well,
 }
 
 .card {
-  @include glass-floating();
+  @include glass-content-surface();
+  margin: var(--glass-float-margin);
   overflow: visible; // allow select menus to layer above siblings
   color: inherit;
 
@@ -521,30 +646,46 @@ body.glass-nav-expanded {
   @include glass-button-type();
   $ink: glass-on($color);
   color: $ink !important;
-  background: color-mix(in srgb, #{$color} 76%, transparent) !important;
-  border: 1px solid color-mix(in srgb, #{$color} 34%, rgba(255, 255, 255, 0.42)) !important;
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 28%, transparent) 0%,
+      transparent 45%
+    ),
+    color-mix(in srgb, #{$color} 78%, transparent) !important;
+  border: 0.5px solid color-mix(in srgb, #{$color} 38%, rgba(255, 255, 255, 0.5)) !important;
+  backdrop-filter: blur(16px) saturate(190%);
+  -webkit-backdrop-filter: blur(16px) saturate(190%);
   box-shadow:
-    0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+    0 3px 14px color-mix(in srgb, #{$color} 28%, transparent),
+    0 0 0 0.5px color-mix(in srgb, #ffffff 35%, transparent),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.08);
 
   &:hover,
   &:focus {
     color: $ink !important;
-    background: color-mix(in srgb, #{$color} 86%, transparent) !important;
-    border-color: color-mix(in srgb, #{$color} 42%, rgba(255, 255, 255, 0.48)) !important;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, #ffffff 34%, transparent) 0%,
+        transparent 48%
+      ),
+      color-mix(in srgb, #{$color} 88%, transparent) !important;
+    border-color: color-mix(in srgb, #{$color} 46%, rgba(255, 255, 255, 0.55)) !important;
     box-shadow:
-      0 6px 22px color-mix(in srgb, #{$color} 30%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.44);
+      0 5px 20px color-mix(in srgb, #{$color} 34%, transparent),
+      0 0 0 0.5px color-mix(in srgb, #ffffff 42%, transparent),
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -0.5px 0 rgba(0, 0, 0, 0.08);
   }
 
   &:focus-visible {
     outline: none;
     box-shadow:
-      0 0 0 0.2rem color-mix(in srgb, #{$color} 22%, transparent),
-      0 4px 18px color-mix(in srgb, #{$color} 24%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.36);
+      0 0 0 0.22rem color-mix(in srgb, #{$color} 24%, transparent),
+      0 3px 14px color-mix(in srgb, #{$color} 28%, transparent),
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.48);
   }
 }
 
@@ -575,16 +716,17 @@ body.glass-nav-expanded {
 .btn,
 .action-button {
   @include glass-button-type();
-  border-radius: 0.75rem;
+  // Concentric control radius — nearer pill than 0.1.x
+  border-radius: var(--glass-radius-control);
   transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease,
+    background 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.2s ease,
-    transform 0.2s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.2s ease;
 
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.96);
   }
 
   &:disabled,

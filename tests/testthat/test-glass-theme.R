@@ -47,6 +47,32 @@ test_that("glass_theme auto preset is marked in head", {
   expect_length(preset_deps, 1)
   expect_match(preset_deps[[1]]$head, 'var p="auto"')
 })
+
+test_that("glass_theme material clear is marked in head and CSS", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(material = "clear")
+  deps <- bslib::bs_theme_dependencies(th)
+  preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
+  expect_length(preset_deps, 1)
+  expect_match(preset_deps[[1]]$head, 'glassMaterial="clear"')
+
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "data-glass-material")
+  expect_match(css, "--glass-bg-content")
+  expect_match(css, "--glass-rim")
+})
 test_that("compiled CSS ships dual light/dark variable packs", {
   skip_if_not_installed("bslib")
   theme <- glass_theme()
