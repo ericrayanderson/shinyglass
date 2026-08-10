@@ -16,6 +16,7 @@ ui <- fluidPage(
       sliderInput("bins", "Bins", 1, 50, 20, width = "100%"),
       checkboxInput("smooth", "Show smooth", TRUE),
       hr(),
+      glass_intensity_slider("glass_intensity"),
       glass_theme_toggle(selected = "auto")
     ),
     card(
@@ -27,6 +28,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observe_glass_theme_toggle(input, session)
+  observe_glass_intensity(input, session, "glass_intensity")
 
   output$dist_plot <- renderPlot({
     x <- faithful$waiting

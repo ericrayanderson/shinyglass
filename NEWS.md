@@ -15,6 +15,13 @@
 
 ## New features
 
+* [glass_intensity_slider()] / [observe_glass_intensity()] — iOS 27-style
+  **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
+  starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and
+  `window.shinyglass.setIntensity()` update it live.
+* iOS 27 material polish: stronger darkened edges, brighter specular highlights,
+  intensity-scaled fill/blur for clearer layer separation and readability.
+
 * Runtime light/dark switching via `document.documentElement.dataset.glassPreset`
   without a full reload.
 * `glass_theme(preset = "auto")` follows `prefers-color-scheme` and updates when

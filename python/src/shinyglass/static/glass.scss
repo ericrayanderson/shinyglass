@@ -43,8 +43,11 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
 // document.documentElement.dataset.glassPreset without recompiling Sass.
 :root {
   --glass-blur: #{$glass-blur};
+  --glass-blur-base: #{$glass-blur};
   --glass-saturate: #{$glass-saturate};
   --glass-radius: #{$glass-radius};
+  // 0 = Ultra Clear, 1 = Tinted (iOS 27 Appearance > Liquid Glass)
+  --glass-intensity: 0.45;
   // Concentric radius scale (inner = outer - pad) for nested glass geometry
   --glass-radius-sm: max(0.5rem, calc(var(--glass-radius) - 0.55rem));
   --glass-radius-xs: max(0.35rem, calc(var(--glass-radius) - 0.9rem));
@@ -125,13 +128,15 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-content: rgba(255, 255, 255, 0.38);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.50);
   --glass-border: rgba(255, 255, 255, 0.62);
-  --glass-rim: rgba(255, 255, 255, 0.78);
-  --glass-lip: rgba(0, 0, 0, 0.06);
-  --glass-shadow: rgba(0, 0, 0, 0.10);
-  --glass-elevated-shadow: rgba(0, 0, 0, 0.16);
-  --glass-highlight: rgba(255, 255, 255, 0.88);
-  --glass-specular: rgba(255, 255, 255, 0.55);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.42);
+  --glass-rim: rgba(255, 255, 255, 0.82);
+  // iOS 27: darkened edge for depth/separation
+  --glass-lip: rgba(0, 0, 0, 0.10);
+  --glass-shadow: rgba(0, 0, 0, 0.11);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.92);
+  // Brighter specular (iOS 27)
+  --glass-specular: rgba(255, 255, 255, 0.68);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.50);
   --glass-menu-bg: rgba(255, 255, 255, 0.86);
   --glass-menu-color: #1d1d1f;
   // Soft Tahoe-like wash (less candy multi-orb)
@@ -158,13 +163,14 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-content: rgba(255, 255, 255, 0.10);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.26);
-  --glass-rim: rgba(255, 255, 255, 0.32);
-  --glass-lip: rgba(0, 0, 0, 0.35);
-  --glass-shadow: rgba(0, 0, 0, 0.48);
-  --glass-elevated-shadow: rgba(0, 0, 0, 0.62);
-  --glass-highlight: rgba(255, 255, 255, 0.22);
-  --glass-specular: rgba(255, 255, 255, 0.18);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.14);
+  --glass-rim: rgba(255, 255, 255, 0.38);
+  // Darker edge ring for layer separation in dark
+  --glass-lip: rgba(0, 0, 0, 0.48);
+  --glass-shadow: rgba(0, 0, 0, 0.50);
+  --glass-elevated-shadow: rgba(0, 0, 0, 0.66);
+  --glass-highlight: rgba(255, 255, 255, 0.28);
+  --glass-specular: rgba(255, 255, 255, 0.28);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.20);
   --glass-menu-bg: rgba(44, 44, 46, 0.88);
   --glass-menu-color: #f5f5f7;
   --glass-page-bg: linear-gradient(160deg, #0a0a12 0%, #000000 45%, #100a16 80%, #060a14 100%);
@@ -254,13 +260,14 @@ body::after {
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 0.5px solid var(--glass-border);
   border-radius: $radius;
-  // Outer contact shadow + bright rim + dark inner lip (thickness)
+  // iOS 27: contact shadow + bright rim + darkened edge ring for separation
   box-shadow:
-    0 1px 1px var(--glass-shadow),
-    0 8px 28px var(--glass-shadow),
-    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 55%, transparent),
+    0 1px 2px var(--glass-shadow),
+    0 10px 32px var(--glass-shadow),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 65%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--glass-lip) 35%, transparent),
     inset 0 0.5px 0 var(--glass-highlight),
-    inset 0 -0.5px 0 var(--glass-lip);
+    inset 0 -1px 0 var(--glass-lip);
   overflow: hidden;
   transition:
     background 0.28s ease,
@@ -306,9 +313,10 @@ body::after {
     inset: 0;
     border-radius: inherit;
     box-shadow:
-      inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 70%, transparent),
-      inset 0 6px 24px var(--glass-inner-glow),
-      inset 0 -10px 28px color-mix(in srgb, var(--glass-lip) 55%, transparent);
+      inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 80%, transparent),
+      inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 40%, transparent),
+      inset 0 8px 28px var(--glass-inner-glow),
+      inset 0 -12px 32px color-mix(in srgb, var(--glass-lip) 65%, transparent);
     pointer-events: none;
     z-index: -1;
   }
@@ -3179,6 +3187,187 @@ body .controls-pane {
   .form-select,
   .selectize-input {
     background: color-mix(in srgb, var(--glass-menu-bg) 90%, transparent) !important;
+  }
+}
+
+
+
+// ---------------------------------------------------------------------------
+// iOS 27-style Liquid Glass intensity slider (glass_intensity_slider())
+// Ultra Clear ←————→ Tinted
+// ---------------------------------------------------------------------------
+.glass-intensity-slider {
+  --glass-intensity-track-h: 1.65rem;
+  margin-bottom: 1rem;
+
+  > .control-label {
+    display: block;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.45rem;
+  }
+
+  .glass-intensity-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .glass-intensity-end {
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    opacity: 0.62;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .glass-intensity-end.is-active {
+    opacity: 1;
+    color: var(--glass-accent, #{$primary});
+  }
+
+  .glass-intensity-track {
+    position: relative;
+    flex: 1 1 auto;
+    height: var(--glass-intensity-track-h);
+    border-radius: 999px;
+    // Live glass material sample under the thumb
+    background:
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        color-mix(in srgb, var(--glass-accent, #{$primary}) 18%, rgba(255, 255, 255, 0.35)) 100%
+      );
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+    border: 0.5px solid var(--glass-border);
+    box-shadow:
+      inset 0 0.5px 0 var(--glass-highlight),
+      inset 0 -0.5px 0 var(--glass-lip),
+      0 4px 16px var(--glass-shadow);
+    overflow: hidden;
+  }
+
+  // Fill from left to thumb (tinted amount)
+  .glass-intensity-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(var(--glass-intensity, 0.45) * 100%);
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--glass-accent, #{$primary}) 12%, transparent),
+      color-mix(in srgb, var(--glass-accent, #{$primary}) 38%, rgba(255, 255, 255, 0.25))
+    );
+    pointer-events: none;
+    transition: width 0.05s linear;
+  }
+
+  input.glass-intensity-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0; // custom thumb via sibling; keep input for a11y hit target
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  // Visible thumb (glass pill)
+  .glass-intensity-thumb {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--glass-intensity, 0.45) * 100%);
+    width: 1.85rem;
+    height: 1.85rem;
+    margin-left: -0.925rem;
+    margin-top: -0.925rem;
+    border-radius: 999px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.72) 0%,
+        rgba(255, 255, 255, 0.38) 100%
+      );
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 0.5px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.18),
+      0 0 0 0.5px color-mix(in srgb, var(--glass-lip) 50%, transparent),
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    z-index: 1;
+    transition: left 0.05s linear, transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &.is-dragging .glass-intensity-thumb {
+    transform: scale(1.08);
+  }
+
+  .glass-intensity-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+  }
+
+  .glass-intensity-chip {
+    height: 2.1rem;
+    border-radius: 0.65rem;
+    border: 0.5px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    box-shadow:
+      inset 0 0.5px 0 var(--glass-highlight),
+      inset 0 -0.5px 0 var(--glass-lip);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    opacity: 0.75;
+    letter-spacing: -0.01em;
+  }
+
+  .glass-intensity-hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    opacity: 0.55;
+  }
+}
+
+:root[data-glass-preset="dark"] .glass-intensity-slider {
+  .glass-intensity-thumb {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.42) 0%,
+        rgba(255, 255, 255, 0.18) 100%
+      );
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .glass-intensity-track {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        color-mix(in srgb, var(--glass-accent, #{$primary}) 28%, rgba(255, 255, 255, 0.14)) 100%
+      );
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-intensity: 1 !important;
   }
 }
 

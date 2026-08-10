@@ -103,6 +103,7 @@ glass_theme(
   saturation = 190,
   radius = "1.5rem",
   material = "regular", # or "clear" over media-rich content
+  intensity = 0.45,     # 0 Ultra Clear → 1 Tinted (iOS 27)
   tint = TRUE,      # sample plot/image colors into glass surfaces
   specular = TRUE,  # pointer specular highlight
   nav_morph = TRUE  # compact navbar while scrolling down
@@ -111,6 +112,13 @@ glass_theme(
 
 `material = "regular"` is the adaptive Tahoe-style fill (default). Use
 `"clear"` when chrome sits over rich media and labels stay bold.
+
+Use [glass_intensity_slider()] for a live Ultra Clear → Tinted control (same
+idea as iOS 27 Settings → Appearance → Liquid Glass):
+
+```{r}
+glass_intensity_slider("glass_intensity", value = 0.45)
+```
 
 All three JS behaviors default to `TRUE` (same as 0.1.x). They respect
 `prefers-reduced-motion: reduce` where relevant. Advanced escape hatch:
