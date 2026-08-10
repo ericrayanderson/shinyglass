@@ -19,3 +19,12 @@ Create and update a Liquid Glass theme for your Shiny app.
   Observe
   [`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md)
   buttons on the server
+
+- [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+  : Liquid Glass intensity slider (iOS 27-style)
+
+- [`observe_glass_intensity()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_intensity.md)
+  :
+
+  Keep session intensity in sync with
+  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)

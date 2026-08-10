@@ -49,13 +49,17 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
-<ul><li>Runtime light/dark switching via <code>document.documentElement.dataset.glassPreset</code> without a full reload.</li>
-<li>
-<code>glass_theme(preset = "auto")</code> follows <code>prefers-color-scheme</code> and updates when the OS theme changes.</li>
-<li>[update_glass_theme()] to change <code>preset</code>, <code>tint</code>, and <strong><code>primary</code></strong> (live accent via <code>--glass-accent</code> / <code>--bs-primary</code>) from the server. Recolors primary buttons, Shiny <code><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput()</a></code> / radios / switches, ion.rangeSlider bars, value chips, and active nav/list items without a Sass recompile.</li>
-<li>[glass_theme_toggle()] / [observe_glass_theme_toggle()] drop-in Light / Dark / Auto buttons.</li>
-<li>Behavior knobs on [glass_theme()]: <code>tint</code>, <code>specular</code>, and <code>nav_morph</code> (all default <code>TRUE</code>, matching 0.1.x JS behavior).</li>
-<li>Client helpers: <code>window.shinyglass.setPreset()</code> / <code>.getPreset()</code> / <code>.setTint()</code> / <code>.setPrimary()</code> / <code>.getPrimary()</code>.</li>
+<ul><li><p>[glass_intensity_slider()] / [observe_glass_intensity()] — iOS 27-style <strong>Ultra Clear → Tinted</strong> control. <code>glass_theme(intensity = )</code> sets the starting value (<code>0</code>–<code>1</code>, default <code>0.45</code>); [update_glass_theme()] and <code>window.shinyglass.setIntensity()</code> update it live.</p></li>
+<li><p>Demo app <code>intensity-slider-demo.R</code> and shinyapps app <strong>shinyglass-intensity</strong>; dashboard demo ships the intensity slider in the sidebar.</p></li>
+<li><p>iOS 27 material polish: stronger darkened edges, brighter specular highlights, intensity-scaled fill/blur for clearer layer separation and readability.</p></li>
+<li><p>Dark-mode nav tab ink keeps WCAG UI 3:1 on glass (inactive tabs).</p></li>
+<li><p>Closer iOS 27 Liquid Glass: defined borders (not shadow-only), chromatic edge refraction cues, lighter dark-mode glass, thicker elevated chrome, ambient specular drift + pointer override, stronger diffusion blur defaults (<code>blur = 36</code>, <code>saturation = 200</code>).</p></li>
+<li><p>Runtime light/dark switching via <code>document.documentElement.dataset.glassPreset</code> without a full reload.</p></li>
+<li><p><code>glass_theme(preset = "auto")</code> follows <code>prefers-color-scheme</code> and updates when the OS theme changes.</p></li>
+<li><p>[update_glass_theme()] to change <code>preset</code>, <code>tint</code>, and <strong><code>primary</code></strong> (live accent via <code>--glass-accent</code> / <code>--bs-primary</code>) from the server. Recolors primary buttons, Shiny <code><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput()</a></code> / radios / switches, ion.rangeSlider bars, value chips, and active nav/list items without a Sass recompile.</p></li>
+<li><p>[glass_theme_toggle()] / [observe_glass_theme_toggle()] drop-in Light / Dark / Auto buttons.</p></li>
+<li><p>Behavior knobs on [glass_theme()]: <code>tint</code>, <code>specular</code>, and <code>nav_morph</code> (all default <code>TRUE</code>, matching 0.1.x JS behavior).</p></li>
+<li><p>Client helpers: <code>window.shinyglass.setPreset()</code> / <code>.getPreset()</code> / <code>.setTint()</code> / <code>.setPrimary()</code> / <code>.getPrimary()</code>.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>

@@ -68,6 +68,10 @@
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png" width="48%" alt="plotly + gt, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png" width="48%" alt="plotly + gt, dark"></p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png" width="48%" alt="Liquid Glass intensity slider, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark.png" width="48%" alt="Liquid Glass intensity slider, dark"></p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-clear.png" width="32%" alt="Ultra Clear intensity"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-tinted.png" width="32%" alt="Tinted intensity"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark-tinted.png" width="32%" alt="Tinted intensity, dark"></p>
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
 </h2>
@@ -84,12 +88,18 @@
 <tbody>
 <tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Demo + theme toggle</a></td>
-<td>Core glass UI + <strong>Light / Dark / Auto</strong> buttons (<code><a href="reference/update_glass_theme.html">update_glass_theme()</a></code>)</td>
+<td>Core glass UI + intensity slider + <strong>Light / Dark / Auto</strong>
+</td>
 </tr>
 <tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">bslib dashboard</a></td>
 <td>
-<code>page_sidebar</code>, value boxes, plots, DT</td>
+<code>page_sidebar</code>, value boxes, plots, DT + <strong>Liquid Glass intensity</strong>
+</td>
+</tr>
+<tr>
+<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-intensity/" class="external-link">Intensity slider</a></td>
+<td>iOS 27 <strong>Ultra Clear → Tinted</strong> control (<code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code>)</td>
 </tr>
 <tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-inputs/" class="external-link">Inputs gallery</a></td>
@@ -142,6 +152,7 @@
 <code class="sourceCode R"><span><span class="co"># re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):</span></span>
 <span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span>
 <span><span class="co"># Rscript inst/scripts/deploy-shinyapps-demos.R</span></span>
+<span><span class="co"># Rscript inst/scripts/deploy-shinyapps-demos.R --apps=demo,dashboard,intensity</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># visual QA (contrast + DT/selectize structure, light+dark matrix):</span></span>
 <span><span class="co"># Rscript inst/scripts/audit-glass-contrast.R</span></span>
@@ -153,6 +164,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"intensity-slider-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"inputs-gallery.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># plotly + gt (+ waiter if installed):</span></span>
 <span><span class="co"># shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"))</span></span></code></pre></div>

@@ -51,7 +51,13 @@ that used <code><a href="glass_theme.html">glass_theme()</a></code> (so <code>sh
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_glass_theme</span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="cn">NULL</span>, tint <span class="op">=</span> <span class="cn">NULL</span>, primary <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_glass_theme</span><span class="op">(</span></span>
+<span>  <span class="va">session</span>,</span>
+<span>  preset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  primary <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +79,11 @@ the server function).</p></dd>
 
 <dt id="arg-primary">primary<a class="anchor" aria-label="anchor" href="#arg-primary"></a></dt>
 <dd><p>Optional accent color (hex like <code>"#AF52DE"</code> or <code><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb()</a></code>).</p></dd>
+
+
+<dt id="arg-intensity">intensity<a class="anchor" aria-label="anchor" href="#arg-intensity"></a></dt>
+<dd><p>Optional numeric in \([0, 1]\): Ultra Clear (<code>0</code>) to
+Tinted (<code>1</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">

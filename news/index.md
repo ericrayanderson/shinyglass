@@ -21,20 +21,46 @@
 
 ### New features
 
+- \[glass_intensity_slider()\] / \[observe_glass_intensity()\] — iOS
+  27-style **Ultra Clear → Tinted** control. `glass_theme(intensity = )`
+  sets the starting value (`0`–`1`, default `0.45`);
+  \[update_glass_theme()\] and `window.shinyglass.setIntensity()` update
+  it live.
+
+- Demo app `intensity-slider-demo.R` and shinyapps app
+  **shinyglass-intensity**; dashboard demo ships the intensity slider in
+  the sidebar.
+
+- iOS 27 material polish: stronger darkened edges, brighter specular
+  highlights, intensity-scaled fill/blur for clearer layer separation
+  and readability.
+
+- Dark-mode nav tab ink keeps WCAG UI 3:1 on glass (inactive tabs).
+
+- Closer iOS 27 Liquid Glass: defined borders (not shadow-only),
+  chromatic edge refraction cues, lighter dark-mode glass, thicker
+  elevated chrome, ambient specular drift + pointer override, stronger
+  diffusion blur defaults (`blur = 36`, `saturation = 200`).
+
 - Runtime light/dark switching via
   `document.documentElement.dataset.glassPreset` without a full reload.
+
 - `glass_theme(preset = "auto")` follows `prefers-color-scheme` and
   updates when the OS theme changes.
+
 - \[update_glass_theme()\] to change `preset`, `tint`, and **`primary`**
   (live accent via `--glass-accent` / `--bs-primary`) from the server.
   Recolors primary buttons, Shiny
   [`checkboxInput()`](https://rdrr.io/pkg/shiny/man/checkboxInput.html)
   / radios / switches, ion.rangeSlider bars, value chips, and active
   nav/list items without a Sass recompile.
+
 - \[glass_theme_toggle()\] / \[observe_glass_theme_toggle()\] drop-in
   Light / Dark / Auto buttons.
+
 - Behavior knobs on \[glass_theme()\]: `tint`, `specular`, and
   `nav_morph` (all default `TRUE`, matching 0.1.x JS behavior).
+
 - Client helpers: `window.shinyglass.setPreset()` / `.getPreset()` /
   `.setTint()` / `.setPrimary()` / `.getPrimary()`.
 

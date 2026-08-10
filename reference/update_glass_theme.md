@@ -9,7 +9,13 @@ page that used
 ## Usage
 
 ``` r
-update_glass_theme(session, preset = NULL, tint = NULL, primary = NULL)
+update_glass_theme(
+  session,
+  preset = NULL,
+  tint = NULL,
+  primary = NULL,
+  intensity = NULL
+)
 ```
 
 ## Arguments
@@ -31,6 +37,10 @@ update_glass_theme(session, preset = NULL, tint = NULL, primary = NULL)
 
   Optional accent color (hex like `"#AF52DE"` or
   [`rgb()`](https://rdrr.io/r/grDevices/rgb.html)).
+
+- intensity:
+
+  Optional numeric in \\\[0, 1\]\\: Ultra Clear (`0`) to Tinted (`1`).
 
 ## Value
 

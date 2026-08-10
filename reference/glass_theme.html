@@ -57,10 +57,11 @@ any other page function that accepts a bslib theme.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">glass_theme</span><span class="op">(</span></span>
 <span>  preset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"light"</span>, <span class="st">"dark"</span>, <span class="st">"auto"</span><span class="op">)</span>,</span>
 <span>  primary <span class="op">=</span> <span class="st">"#007AFF"</span>,</span>
-<span>  blur <span class="op">=</span> <span class="fl">32</span>,</span>
-<span>  saturation <span class="op">=</span> <span class="fl">190</span>,</span>
+<span>  blur <span class="op">=</span> <span class="fl">36</span>,</span>
+<span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  radius <span class="op">=</span> <span class="st">"1.5rem"</span>,</span>
 <span>  material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regular"</span>, <span class="st">"clear"</span><span class="op">)</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="fl">0.45</span>,</span>
 <span>  tint <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -84,7 +85,7 @@ Defaults to system blue (<code>#007AFF</code>).</p></dd>
 
 <dt id="arg-blur">blur<a class="anchor" aria-label="anchor" href="#arg-blur"></a></dt>
 <dd><p>Backdrop blur radius in pixels. Default <code>32</code> matches the
-denser Tahoe-era material.</p></dd>
+iOS 27 diffusion-first material.</p></dd>
 
 
 <dt id="arg-saturation">saturation<a class="anchor" aria-label="anchor" href="#arg-saturation"></a></dt>
@@ -99,6 +100,12 @@ Prefer larger concentric radii (default <code>1.5rem</code>).</p></dd>
 <dt id="arg-material">material<a class="anchor" aria-label="anchor" href="#arg-material"></a></dt>
 <dd><p><code>"regular"</code> (adaptive, most UI) or <code>"clear"</code> (more
 transparent; best over media-rich content with bold labels).</p></dd>
+
+
+<dt id="arg-intensity">intensity<a class="anchor" aria-label="anchor" href="#arg-intensity"></a></dt>
+<dd><p>Liquid Glass intensity from <code>0</code> (Ultra Clear) to <code>1</code>
+(Tinted), matching iOS 27 Appearance -&gt; Liquid Glass. Default <code>0.45</code>.
+Use <code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code> for a live control.</p></dd>
 
 
 <dt id="arg-tint">tint<a class="anchor" aria-label="anchor" href="#arg-tint"></a></dt>

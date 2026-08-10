@@ -92,10 +92,11 @@ Shiny inputs (`glass_toggle_light`, …) so the server can stay in sync.
 glass_theme(
   preset = "auto",
   primary = "#AF52DE",
-  blur = 32,
-  saturation = 190,
+  blur = 36,
+  saturation = 200,
   radius = "1.5rem",
   material = "regular", # or "clear" over media-rich content
+  intensity = 0.45,     # 0 Ultra Clear → 1 Tinted (iOS 27)
   tint = TRUE,      # sample plot/image colors into glass surfaces
   specular = TRUE,  # pointer specular highlight
   nav_morph = TRUE  # compact navbar while scrolling down
@@ -104,6 +105,14 @@ glass_theme(
 
 `material = "regular"` is the adaptive Tahoe-style fill (default). Use
 `"clear"` when chrome sits over rich media and labels stay bold.
+
+Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted control
+(same idea as iOS 27 Settings → Appearance → Liquid Glass):
+
+``` r
+
+glass_intensity_slider("glass_intensity", value = 0.45)
+```
 
 All three JS behaviors default to `TRUE` (same as 0.1.x). They respect
 `prefers-reduced-motion: reduce` where relevant. Advanced escape hatch:
@@ -118,7 +127,7 @@ Bootswatch `darkly` rebuild. Prefer CSS custom properties over Sass
 ``` css
 :root {
   /* shared knobs also set by glass_theme(blur=..., radius=...) */
-  --glass-blur: 32px;
+  --glass-blur: 36px;
   --glass-radius: 1.25rem;
   --bs-primary: #007AFF;       /* also updated by update_glass_theme(primary=) */
   --glass-primary: #007AFF;

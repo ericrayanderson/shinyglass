@@ -188,10 +188,11 @@ server can stay in sync.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span></span>
 <span>  preset <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  primary <span class="op">=</span> <span class="st">"#AF52DE"</span>,</span>
-<span>  blur <span class="op">=</span> <span class="fl">32</span>,</span>
-<span>  saturation <span class="op">=</span> <span class="fl">190</span>,</span>
+<span>  blur <span class="op">=</span> <span class="fl">36</span>,</span>
+<span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  radius <span class="op">=</span> <span class="st">"1.5rem"</span>,</span>
 <span>  material <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># or "clear" over media-rich content</span></span>
+<span>  intensity <span class="op">=</span> <span class="fl">0.45</span>,     <span class="co"># 0 Ultra Clear → 1 Tinted (iOS 27)</span></span>
 <span>  tint <span class="op">=</span> <span class="cn">TRUE</span>,      <span class="co"># sample plot/image colors into glass surfaces</span></span>
 <span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># pointer specular highlight</span></span>
 <span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># compact navbar while scrolling down</span></span>
@@ -199,6 +200,10 @@ server can stay in sync.</p>
 <p><code>material = "regular"</code> is the adaptive Tahoe-style fill
 (default). Use <code>"clear"</code> when chrome sits over rich media and
 labels stay bold.</p>
+<p>Use [glass_intensity_slider()] for a live Ultra Clear → Tinted
+control (same idea as iOS 27 Settings → Appearance → Liquid Glass):</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span>, value <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span></span></code></pre></div>
 <p>All three JS behaviors default to <code>TRUE</code> (same as 0.1.x).
 They respect <code>prefers-reduced-motion: reduce</code> where relevant.
 Advanced escape hatch:
@@ -211,18 +216,18 @@ tint.</p>
 <p><strong>Breaking in 0.2.0:</strong> light/dark surfaces are dual CSS
 packs, not a Bootswatch <code>darkly</code> rebuild. Prefer CSS custom
 properties over Sass <code>$glass-*</code> tokens when customizing:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="in">:root</span> {</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">32</span><span class="dt">px</span><span class="op">;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="va">--bs-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span>       <span class="co">/* also updated by update_glass_theme(primary=) */</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="va">--glass-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>}</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="in">:root</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">36</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="va">--bs-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span>       <span class="co">/* also updated by update_glass_theme(primary=) */</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="va">--glass-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>}</span></code></pre></div>
 <p>Apps that overrode Sass-only <code>$glass-*</code> tokens should
 target <code>--glass-*</code> or <code>[data-glass-preset="dark"]</code>
 instead.</p>
@@ -230,17 +235,17 @@ instead.</p>
 <div class="section level2">
 <h2 id="client-helpers">Client helpers<a class="anchor" aria-label="anchor" href="#client-helpers"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="teal">Teal<a class="anchor" aria-label="anchor" href="#teal"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>teal.bs_theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># then teal::init(...) as usual</span></span></code></pre></div>
 </div>
