@@ -1,6 +1,6 @@
 #' Liquid Glass intensity slider (iOS 27-style)
 #'
-#' UI control matching iOS 27 **Settings → Appearance → Liquid Glass**: a
+#' UI control matching iOS 27 **Settings -> Appearance -> Liquid Glass**: a
 #' continuous slider from **Ultra Clear** (`0`) to **Tinted** (`1`) that
 #' live-updates the glass material without a page reload.
 #'
@@ -15,7 +15,7 @@
 #' @param value Initial intensity in \eqn{[0, 1]}. If `NULL`, uses the theme
 #'   default from [glass_theme()] / the client current intensity.
 #' @param min,max,step Range for the underlying range input. Defaults cover
-#'   the full Ultra Clear → Tinted spectrum.
+#'   the full Ultra Clear -> Tinted spectrum.
 #' @param min_label,max_label End-cap captions (iOS uses "Ultra Clear" /
 #'   "Tinted").
 #' @param preview Show three mini glass chips as a live material sample.
@@ -37,7 +37,7 @@
 #'
 #'   server <- function(input, output, session) {
 #'     observe_glass_theme_toggle(input, session)
-#'     # optional: mirror slider → server message (client already updates live)
+#'     # optional: mirror slider -> server message (client already updates live)
 #'     observe_glass_intensity(input, session, "glass_intensity")
 #'     output$p <- renderPlot(plot(rnorm(100), rnorm(100), pch = 16, col = "#007AFF"))
 #'   }
@@ -131,7 +131,7 @@ glass_intensity_slider <- function(
     chips,
     htmltools::tags$span(
       class = "glass-intensity-hint",
-      "Drag to match iOS 27 Liquid Glass — Ultra Clear through Tinted."
+      "Drag to match iOS 27 Liquid Glass - Ultra Clear through Tinted."
     )
   )
 }

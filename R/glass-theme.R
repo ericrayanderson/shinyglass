@@ -23,7 +23,7 @@
 #' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
 #'   transparent; best over media-rich content with bold labels).
 #' @param intensity Liquid Glass intensity from `0` (Ultra Clear) to `1`
-#'   (Tinted), matching iOS 27 Appearance → Liquid Glass. Default `0.45`.
+#'   (Tinted), matching iOS 27 Appearance -> Liquid Glass. Default `0.45`.
 #'   Use [glass_intensity_slider()] for a live control.
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
@@ -386,12 +386,12 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
   if (!nzchar(primary)) {
     stop("`primary` must be a non-empty color string.", call. = FALSE)
   }
-  # Accept #RGB, #RRGGBB, or rgb()/rgba() — leave other CSS colors to the browser.
+  # Accept #RGB, #RRGGBB, or rgb()/rgba() - leave other CSS colors to the browser.
   if (grepl("^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", primary) ||
     grepl("^rgba?\\(", primary, ignore.case = TRUE)) {
     return(primary)
   }
-  # Named colors / other CSS — still pass through for flexibility
+  # Named colors / other CSS - still pass through for flexibility
   primary
 }
 
