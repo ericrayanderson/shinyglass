@@ -12,6 +12,8 @@ This is an update from 0.1.1 to 0.2.0.
 * DT/selectize glass chrome fixes; plotly/gt/AdminLTE overlay CSS.
 * Navbar brand ink matches glass body color; plotly axis titles not clipped.
 * Reduced-motion support; softer plot frames; demo fixes.
+* Liquid Glass material fidelity (layered surfaces, chrome vs content,
+  `material = "regular"|"clear"`, updated blur/radius defaults).
 
 ### Breaking (documented in NEWS + vignette)
 

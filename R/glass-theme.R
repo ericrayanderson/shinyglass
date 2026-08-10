@@ -15,9 +15,13 @@
 #'   `prefers-color-scheme` and updates when the OS theme changes.
 #' @param primary Accent color for buttons, links, and focus rings.
 #'   Defaults to system blue (`#007AFF`).
-#' @param blur Backdrop blur radius in pixels.
+#' @param blur Backdrop blur radius in pixels. Default `32` matches the
+#'   denser Tahoe-era material.
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).
+#'   Prefer larger concentric radii (default `1.5rem`).
+#' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
+#'   transparent; best over media-rich content with bold labels).
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
@@ -29,6 +33,7 @@
 #' theme <- glass_theme()
 #' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 #' auto <- glass_theme(preset = "auto", tint = FALSE)
+#' clear <- glass_theme(material = "clear")
 #'
 #' if (interactive()) {
 #'   library(shiny)
@@ -53,14 +58,16 @@
 glass_theme <- function(
     preset = c("light", "dark", "auto"),
     primary = "#007AFF",
-    blur = 28,
-    saturation = 200,
-    radius = "1.25rem",
+    blur = 32,
+    saturation = 190,
+    radius = "1.5rem",
+    material = c("regular", "clear"),
     tint = TRUE,
     specular = TRUE,
     nav_morph = TRUE,
     ...) {
   preset <- match.arg(preset)
+  material <- match.arg(material)
   stopifnot(
     is.logical(tint), length(tint) == 1L, !is.na(tint),
     is.logical(specular), length(specular) == 1L, !is.na(specular),
@@ -81,9 +88,9 @@ glass_theme <- function(
     "body-bg" = tokens$body_bg,
     "body-color" = tokens$body_color,
     "font-family-sans-serif" = .glass_font_stack(),
-    "border-radius" = "1rem",
+    "border-radius" = "1.1rem",
     "border-radius-lg" = radius,
-    "border-radius-sm" = "0.75rem",
+    "border-radius-sm" = "0.85rem",
     "card-border-width" = "1px",
     "card-border-color" = tokens$glass_border,
     "input-border-color" = tokens$glass_border,
@@ -144,7 +151,8 @@ glass_theme <- function(
     tint = tint,
     specular = specular,
     nav_morph = nav_morph,
-    primary = primary
+    primary = primary,
+    material = material
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -376,44 +384,50 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
 .glass_tokens <- function(preset, blur, saturation, radius) {
   if (preset == "light") {
     list(
-      body_bg = "#f5f5f7",
+      body_bg = "#f2f2f7",
       body_color = "#1d1d1f",
-      glass_bg = "rgba(255, 255, 255, 0.28)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.42)",
-      glass_border = "rgba(255, 255, 255, 0.55)",
-      glass_shadow = "rgba(0, 0, 0, 0.12)",
-      glass_elevated_shadow = "rgba(0, 0, 0, 0.18)",
-      glass_highlight = "rgba(255, 255, 255, 0.75)",
-      glass_specular = "rgba(255, 255, 255, 0.45)",
-      glass_menu_bg = "#ffffff",
+      glass_bg = "rgba(255, 255, 255, 0.26)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.40)",
+      glass_border = "rgba(255, 255, 255, 0.62)",
+      glass_shadow = "rgba(0, 0, 0, 0.10)",
+      glass_elevated_shadow = "rgba(0, 0, 0, 0.16)",
+      glass_highlight = "rgba(255, 255, 255, 0.88)",
+      glass_specular = "rgba(255, 255, 255, 0.55)",
+      glass_menu_bg = "rgba(255, 255, 255, 0.86)",
       glass_menu_color = "#1d1d1f",
-      page_bg = "linear-gradient(145deg, #eef0f8 0%, #f5f5f7 35%, #e8e4f0 70%, #dfe8f5 100%)",
-      orb_1 = "rgba(0, 122, 255, 0.28)",
-      orb_2 = "rgba(175, 82, 222, 0.22)",
-      orb_3 = "rgba(255, 149, 0, 0.16)"
+      page_bg = "linear-gradient(160deg, #eef1f8 0%, #f5f5f7 42%, #ebe8f4 78%, #e6eef8 100%)",
+      orb_1 = "rgba(0, 122, 255, 0.18)",
+      orb_2 = "rgba(175, 82, 222, 0.12)",
+      orb_3 = "rgba(90, 200, 250, 0.14)"
     )
   } else {
     list(
       body_bg = "#000000",
       body_color = "#f5f5f7",
-      glass_bg = "rgba(255, 255, 255, 0.08)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.14)",
-      glass_border = "rgba(255, 255, 255, 0.22)",
-      glass_shadow = "rgba(0, 0, 0, 0.42)",
-      glass_elevated_shadow = "rgba(0, 0, 0, 0.58)",
-      glass_highlight = "rgba(255, 255, 255, 0.16)",
-      glass_specular = "rgba(255, 255, 255, 0.12)",
-      glass_menu_bg = "#1c1c1e",
+      glass_bg = "rgba(255, 255, 255, 0.12)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.18)",
+      glass_border = "rgba(255, 255, 255, 0.26)",
+      glass_shadow = "rgba(0, 0, 0, 0.48)",
+      glass_elevated_shadow = "rgba(0, 0, 0, 0.62)",
+      glass_highlight = "rgba(255, 255, 255, 0.22)",
+      glass_specular = "rgba(255, 255, 255, 0.18)",
+      glass_menu_bg = "rgba(44, 44, 46, 0.88)",
       glass_menu_color = "#f5f5f7",
-      page_bg = "linear-gradient(145deg, #0c0c14 0%, #000000 40%, #140a1a 75%, #0a1020 100%)",
-      orb_1 = "rgba(10, 132, 255, 0.36)",
-      orb_2 = "rgba(191, 90, 242, 0.30)",
-      orb_3 = "rgba(255, 159, 10, 0.22)"
+      page_bg = "linear-gradient(160deg, #0a0a12 0%, #000000 45%, #100a16 80%, #060a14 100%)",
+      orb_1 = "rgba(10, 132, 255, 0.28)",
+      orb_2 = "rgba(191, 90, 242, 0.20)",
+      orb_3 = "rgba(100, 210, 255, 0.16)"
     )
   }
 }
 
-.glass_preset_head_script <- function(preset, tint, specular, nav_morph, primary = "#007AFF") {
+.glass_preset_head_script <- function(
+    preset,
+    tint,
+    specular,
+    nav_morph,
+    primary = "#007AFF",
+    material = "regular") {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -423,6 +437,7 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
   } else {
     sprintf("{r:%d,g:%d,b:%d}", rgb$r, rgb$g, rgb$b)
   }
+  material <- if (identical(material, "clear")) "clear" else "regular"
   sprintf(
     paste0(
       "<script>(function(){",
@@ -438,6 +453,7 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
       "return mode==='dark'?'dark':'light';",
       "}",
       "root.dataset.glassPreset=resolve(p);",
+      "root.dataset.glassMaterial=%s;",
       "root.dataset.glassTint=%s;",
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
@@ -454,6 +470,7 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
       "})();</script>"
     ),
     jsonlite_quote(preset),
+    jsonlite_quote(material),
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
