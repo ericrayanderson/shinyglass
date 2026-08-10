@@ -562,7 +562,7 @@ body.bslib-page-navbar > .navbar,
   .nav > li > a,
   .nav-link {
     border-radius: 0.75rem;
-    opacity: 0.75;
+    opacity: 0.92;
     color: var(--glass-body-color) !important;
     transition: opacity 0.2s ease, background 0.2s ease;
 
@@ -604,8 +604,9 @@ body.bslib-page-navbar > .navbar,
     > a {
       border: none !important;
       border-radius: 999px !important;
-      color: inherit;
-      opacity: 0.7;
+      // Full body color + high opacity so dark glass still clears 3:1
+      color: var(--glass-body-color) !important;
+      opacity: 0.92;
       padding: 0.45rem 1rem;
       transition: opacity 0.2s ease, background 0.2s ease;
 
@@ -642,6 +643,20 @@ body.bslib-page-navbar > .navbar,
   box-shadow: inset 0 1px 0 var(--glass-highlight);
 }
 
+
+// bslib navset_card_* tabs (sampled by contrast audit as "Distribution")
+.card .nav-tabs .nav-link,
+.card-header .nav-link,
+.bslib-navs-card-title .nav-link {
+  color: var(--glass-body-color) !important;
+  opacity: 0.94 !important;
+
+  &.active {
+    opacity: 1 !important;
+    font-weight: 600;
+  }
+}
+
 // DT-style nav-tabs outside .tabbable
 .nav-tabs:not(.tabbable > .nav-tabs) {
   border-bottom: 1px solid var(--glass-border);
@@ -650,8 +665,8 @@ body.bslib-page-navbar > .navbar,
   > li > a {
     border: none;
     border-radius: 0.75rem 0.75rem 0 0;
-    color: inherit;
-    opacity: 0.7;
+    color: var(--glass-body-color) !important;
+    opacity: 0.92;
     transition: opacity 0.2s ease, background 0.2s ease;
 
     &:hover {
@@ -689,7 +704,7 @@ body.glass-nav-compact {
   .tabbable > .nav-tabs {
     padding: 0.12rem;
     transform: scale(0.96);
-    opacity: 0.92;
+    // Do not lower opacity on the bar (multiplies child ink contrast)
 
     > li > a {
       padding: 0.3rem 0.75rem;

@@ -59,6 +59,8 @@ reference:
   - update_glass_theme
   - glass_theme_toggle
   - observe_glass_theme_toggle
+  - glass_intensity_slider
+  - observe_glass_intensity
 
 articles:
 - title: Guides
