@@ -23,6 +23,7 @@
   dashboard demo ships the intensity slider in the sidebar.
 * iOS 27 material polish: stronger darkened edges, brighter specular highlights,
   intensity-scaled fill/blur for clearer layer separation and readability.
+* Dark-mode nav tab ink keeps WCAG UI 3:1 on glass (inactive tabs).
 * Closer iOS 27 Liquid Glass: defined borders (not shadow-only), chromatic edge
   refraction cues, lighter dark-mode glass, thicker elevated chrome, ambient
   specular drift + pointer override, stronger diffusion blur defaults
