@@ -50,7 +50,7 @@ take a few seconds to wake):
 |----|----|
 | [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + intensity slider + **Light / Dark / Auto** |
 | [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT + **Liquid Glass intensity** |
-| [Intensity slider](https://ericrayanderson.shinyapps.io/shinyglass-intensity/) | iOS 27 **Ultra Clear → Tinted** control ([`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)) |
+| [Intensity slider example](https://github.com/ericrayanderson/shinyglass/blob/main/inst/examples/intensity-slider-demo.R) | iOS 27 **Ultra Clear -\> Tinted** ([`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)); deploy via `--apps=intensity` |
 | [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
 | [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
