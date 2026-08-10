@@ -26,7 +26,7 @@ glass_intensity_slider(
 default from \code{\link[=glass_theme]{glass_theme()}} / the client current intensity.}
 
 \item{min, max, step}{Range for the underlying range input. Defaults cover
-the full Ultra Clear → Tinted spectrum.}
+the full Ultra Clear -> Tinted spectrum.}
 
 \item{min_label, max_label}{End-cap captions (iOS uses "Ultra Clear" /
 "Tinted").}
@@ -39,7 +39,7 @@ the full Ultra Clear → Tinted spectrum.}
 A Shiny UI tag hierarchy.
 }
 \description{
-UI control matching iOS 27 \strong{Settings → Appearance → Liquid Glass}: a
+UI control matching iOS 27 \strong{Settings -> Appearance -> Liquid Glass}: a
 continuous slider from \strong{Ultra Clear} (\code{0}) to \strong{Tinted} (\code{1}) that
 live-updates the glass material without a page reload.
 }
@@ -64,7 +64,7 @@ if (interactive()) {
 
   server <- function(input, output, session) {
     observe_glass_theme_toggle(input, session)
-    # optional: mirror slider → server message (client already updates live)
+    # optional: mirror slider -> server message (client already updates live)
     observe_glass_intensity(input, session, "glass_intensity")
     output$p <- renderPlot(plot(rnorm(100), rnorm(100), pch = 16, col = "#007AFF"))
   }

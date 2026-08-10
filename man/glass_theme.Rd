@@ -37,7 +37,7 @@ Prefer larger concentric radii (default \verb{1.5rem}).}
 transparent; best over media-rich content with bold labels).}
 
 \item{intensity}{Liquid Glass intensity from \code{0} (Ultra Clear) to \code{1}
-(Tinted), matching iOS 27 Appearance → Liquid Glass. Default \code{0.45}.
+(Tinted), matching iOS 27 Appearance -> Liquid Glass. Default \code{0.45}.
 Use \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for a live control.}
 
 \item{tint}{Content-aware ambient tint from plots/images (JS).}
