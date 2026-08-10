@@ -187,30 +187,30 @@
     if (preset === "dark") {
       return {
         clear: {
-          bgA: 0.05, bgHoverA: 0.09, contentA: 0.05, contentHoverA: 0.09,
-          borderA: 0.16, rimA: 0.24, lipA: 0.28, highlightA: 0.16, specularA: 0.2,
-          edgeSheenA: 0.12, innerGlowA: 0.05, menuA: 0.55, blurScale: 1.05
+          bgA: 0.07, bgHoverA: 0.12, contentA: 0.06, contentHoverA: 0.10,
+          borderA: 0.20, rimA: 0.30, lipA: 0.35, highlightA: 0.22, specularA: 0.28,
+          edgeSheenA: 0.16, innerGlowA: 0.07, menuA: 0.58, blurScale: 1.12
         },
         tinted: {
-          bgA: 0.22, bgHoverA: 0.3, contentA: 0.2, contentHoverA: 0.28,
-          borderA: 0.36, rimA: 0.48, lipA: 0.58, highlightA: 0.34, specularA: 0.36,
-          edgeSheenA: 0.26, innerGlowA: 0.12, menuA: 0.92, blurScale: 1.18
+          bgA: 0.24, bgHoverA: 0.32, contentA: 0.20, contentHoverA: 0.28,
+          borderA: 0.40, rimA: 0.52, lipA: 0.62, highlightA: 0.40, specularA: 0.44,
+          edgeSheenA: 0.30, innerGlowA: 0.14, menuA: 0.90, blurScale: 1.22
         },
         fill: { r: 255, g: 255, b: 255 },
-        menu: { r: 44, g: 44, b: 46 },
+        menu: { r: 58, g: 58, b: 60 },
         lip: { r: 0, g: 0, b: 0 }
       };
     }
     return {
       clear: {
-        bgA: 0.1, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
-        borderA: 0.42, rimA: 0.62, lipA: 0.05, highlightA: 0.75, specularA: 0.5,
-        edgeSheenA: 0.32, innerGlowA: 0.12, menuA: 0.62, blurScale: 1.05
+        bgA: 0.08, bgHoverA: 0.16, contentA: 0.14, contentHoverA: 0.22,
+        borderA: 0.48, rimA: 0.70, lipA: 0.06, highlightA: 0.82, specularA: 0.58,
+        edgeSheenA: 0.36, innerGlowA: 0.16, menuA: 0.64, blurScale: 1.12
       },
       tinted: {
-        bgA: 0.52, bgHoverA: 0.66, contentA: 0.62, contentHoverA: 0.74,
-        borderA: 0.78, rimA: 0.92, lipA: 0.14, highlightA: 0.96, specularA: 0.78,
-        edgeSheenA: 0.58, innerGlowA: 0.28, menuA: 0.94, blurScale: 1.18
+        bgA: 0.50, bgHoverA: 0.64, contentA: 0.58, contentHoverA: 0.70,
+        borderA: 0.82, rimA: 0.95, lipA: 0.15, highlightA: 0.98, specularA: 0.82,
+        edgeSheenA: 0.62, innerGlowA: 0.32, menuA: 0.94, blurScale: 1.22
       },
       fill: { r: 255, g: 255, b: 255 },
       menu: { r: 255, g: 255, b: 255 },
@@ -732,17 +732,27 @@
     var specularSelector =
       ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper, .stati, .box, .small-box, .info-box, .reactable, .Reactable, .value-box";
 
+    var pointerActiveTimer = null;
     document.addEventListener(
       "mousemove",
       function (e) {
         if (!specularEnabled()) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         var el = e.target.closest(specularSelector);
-        if (!el) return;
+        if (!el) {
+          rootEl().classList.remove("glass-pointer-active");
+          return;
+        }
         var rect = el.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         var x = ((e.clientX - rect.left) / rect.width) * 100;
         var y = ((e.clientY - rect.top) / rect.height) * 100;
+        // Pause ambient drift while pointer drives specular
+        rootEl().classList.add("glass-pointer-active");
+        if (pointerActiveTimer) clearTimeout(pointerActiveTimer);
+        pointerActiveTimer = setTimeout(function () {
+          rootEl().classList.remove("glass-pointer-active");
+        }, 1400);
         el.style.setProperty("--glass-specular-x", x + "%");
         el.style.setProperty("--glass-specular-y", y + "%");
       },
