@@ -21,6 +21,10 @@
   `window.shinyglass.setIntensity()` update it live.
 * iOS 27 material polish: stronger darkened edges, brighter specular highlights,
   intensity-scaled fill/blur for clearer layer separation and readability.
+* Closer iOS 27 Liquid Glass: defined borders (not shadow-only), chromatic edge
+  refraction cues, lighter dark-mode glass, thicker elevated chrome, ambient
+  specular drift + pointer override, stronger diffusion blur defaults
+  (`blur = 36`, `saturation = 200`).
 
 * Runtime light/dark switching via `document.documentElement.dataset.glassPreset`
   without a full reload.

@@ -7,8 +7,8 @@
 glass_theme(
   preset = c("light", "dark", "auto"),
   primary = "#007AFF",
-  blur = 32,
-  saturation = 190,
+  blur = 36,
+  saturation = 200,
   radius = "1.5rem",
   material = c("regular", "clear"),
   intensity = 0.45,
@@ -26,7 +26,7 @@ glass_theme(
 Defaults to system blue (\verb{#007AFF}).}
 
 \item{blur}{Backdrop blur radius in pixels. Default \code{32} matches the
-denser Tahoe-era material.}
+iOS 27 diffusion-first material.}
 
 \item{saturation}{Backdrop saturation percentage.}
 

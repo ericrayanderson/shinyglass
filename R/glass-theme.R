@@ -16,7 +16,7 @@
 #' @param primary Accent color for buttons, links, and focus rings.
 #'   Defaults to system blue (`#007AFF`).
 #' @param blur Backdrop blur radius in pixels. Default `32` matches the
-#'   denser Tahoe-era material.
+#'   iOS 27 diffusion-first material.
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).
 #'   Prefer larger concentric radii (default `1.5rem`).
@@ -61,8 +61,8 @@
 glass_theme <- function(
     preset = c("light", "dark", "auto"),
     primary = "#007AFF",
-    blur = 32,
-    saturation = 190,
+    blur = 36,
+    saturation = 200,
     radius = "1.5rem",
     material = c("regular", "clear"),
     intensity = 0.45,
@@ -411,8 +411,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     list(
       body_bg = "#f2f2f7",
       body_color = "#1d1d1f",
-      glass_bg = "rgba(255, 255, 255, 0.26)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.40)",
+      glass_bg = "rgba(255, 255, 255, 0.22)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.36)",
       glass_border = "rgba(255, 255, 255, 0.62)",
       glass_shadow = "rgba(0, 0, 0, 0.10)",
       glass_elevated_shadow = "rgba(0, 0, 0, 0.16)",
@@ -429,8 +429,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     list(
       body_bg = "#000000",
       body_color = "#f5f5f7",
-      glass_bg = "rgba(255, 255, 255, 0.12)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.18)",
+      glass_bg = "rgba(255, 255, 255, 0.14)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.22)",
       glass_border = "rgba(255, 255, 255, 0.26)",
       glass_shadow = "rgba(0, 0, 0, 0.48)",
       glass_elevated_shadow = "rgba(0, 0, 0, 0.62)",
