@@ -33,7 +33,7 @@ accent_colors <- c(
 
 ui <- page_sidebar(
   title = "Glass Dashboard",
-  theme = glass_theme(preset = glass_preset, primary = "#007AFF"),
+  theme = glass_theme(preset = glass_preset, primary = "#007AFF", intensity = 0.45),
   class = "bslib-page-dashboard",
   fillable = TRUE,
   # Closed on phones by default so content is usable; open on desktop
@@ -41,6 +41,12 @@ ui <- page_sidebar(
     title = "Dashboard",
     width = 280,
     open = "desktop",
+    glass_intensity_slider(
+      "glass_intensity",
+      label = "Liquid Glass",
+      value = 0.45,
+      preview = TRUE
+    ),
     selectInput(
       "preset",
       "Theme preset",
@@ -126,6 +132,8 @@ server <- function(input, output, session) {
     }
     df
   })
+
+  observe_glass_intensity(input, session, "glass_intensity")
 
   observeEvent(input$preset, {
     update_glass_theme(session, preset = input$preset)

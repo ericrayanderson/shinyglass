@@ -33,7 +33,7 @@ has_flag <- function(flag) any(args == flag)
 
 dry_run <- has_flag("--dry-run")
 account <- get_flag("--account", NULL)
-apps_arg <- get_flag("--apps", "demo,dashboard,inputs,olympics,plotly_gt")
+apps_arg <- get_flag("--apps", "demo,dashboard,intensity,inputs,olympics,plotly_gt")
 app_keys <- trimws(strsplit(apps_arg, ",", fixed = TRUE)[[1]])
 
 if (!requireNamespace("rsconnect", quietly = TRUE)) {
@@ -82,6 +82,12 @@ catalog <- list(
     source = file.path(pkg_root, "inst", "examples", "bslib-dashboard.R"),
     kind = "single",
     imports = c("shiny", "bslib", "ggplot2", "DT", "shinyglass")
+  ),
+  intensity = list(
+    appName = "shinyglass-intensity",
+    source = file.path(pkg_root, "inst", "examples", "intensity-slider-demo.R"),
+    kind = "single",
+    imports = c("shiny", "bslib", "ggplot2", "shinyglass")
   ),
   inputs = list(
     appName = "shinyglass-inputs",
