@@ -101,6 +101,8 @@
       clearTint();
       scheduleTintUpdate();
     }
+    // Intensity endpoints differ by preset
+    setIntensity(intensityState, { syncInputs: true });
 
     try {
       root.dispatchEvent(
@@ -156,6 +158,150 @@
   function onColorForFill(r, g, b) {
     var y = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
     return y >= 0.55 ? "#1d1d1f" : "#ffffff";
+  }
+
+
+  // iOS 27 Liquid Glass intensity: 0 = Ultra Clear, 1 = Tinted
+  var intensityState = 0.45;
+  var intensityBaseBlurPx = null;
+
+  function clamp01(t) {
+    t = Number(t);
+    if (!isFinite(t)) return 0.45;
+    if (t < 0) return 0;
+    if (t > 1) return 1;
+    return t;
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function rgba(r, g, b, a) {
+    return "rgba(" + Math.round(r) + ", " + Math.round(g) + ", " + Math.round(b) + ", " + a.toFixed(4) + ")";
+  }
+
+  // Endpoint packs for Ultra Clear (0) vs Tinted (1), per preset.
+  // iOS 27: clear stays readable via blur; tinted is denser fill + stronger edge.
+  function intensityEndpoints(preset) {
+    if (preset === "dark") {
+      return {
+        clear: {
+          bgA: 0.05, bgHoverA: 0.09, contentA: 0.05, contentHoverA: 0.09,
+          borderA: 0.16, rimA: 0.24, lipA: 0.28, highlightA: 0.16, specularA: 0.2,
+          edgeSheenA: 0.12, innerGlowA: 0.05, menuA: 0.55, blurScale: 1.05
+        },
+        tinted: {
+          bgA: 0.22, bgHoverA: 0.3, contentA: 0.2, contentHoverA: 0.28,
+          borderA: 0.36, rimA: 0.48, lipA: 0.58, highlightA: 0.34, specularA: 0.36,
+          edgeSheenA: 0.26, innerGlowA: 0.12, menuA: 0.92, blurScale: 1.18
+        },
+        fill: { r: 255, g: 255, b: 255 },
+        menu: { r: 44, g: 44, b: 46 },
+        lip: { r: 0, g: 0, b: 0 }
+      };
+    }
+    return {
+      clear: {
+        bgA: 0.1, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
+        borderA: 0.42, rimA: 0.62, lipA: 0.05, highlightA: 0.75, specularA: 0.5,
+        edgeSheenA: 0.32, innerGlowA: 0.12, menuA: 0.62, blurScale: 1.05
+      },
+      tinted: {
+        bgA: 0.52, bgHoverA: 0.66, contentA: 0.62, contentHoverA: 0.74,
+        borderA: 0.78, rimA: 0.92, lipA: 0.14, highlightA: 0.96, specularA: 0.78,
+        edgeSheenA: 0.58, innerGlowA: 0.28, menuA: 0.94, blurScale: 1.18
+      },
+      fill: { r: 255, g: 255, b: 255 },
+      menu: { r: 255, g: 255, b: 255 },
+      lip: { r: 0, g: 0, b: 0 }
+    };
+  }
+
+  function readBaseBlurPx() {
+    var root = rootEl();
+    if (intensityBaseBlurPx != null) return intensityBaseBlurPx;
+    var raw = getComputedStyle(root).getPropertyValue("--glass-blur-base").trim() ||
+      getComputedStyle(root).getPropertyValue("--glass-blur").trim() ||
+      "32px";
+    var n = parseFloat(raw);
+    if (!isFinite(n)) n = 32;
+    intensityBaseBlurPx = n;
+    root.style.setProperty("--glass-blur-base", n + "px");
+    return n;
+  }
+
+  function setIntensity(t, opts) {
+    opts = opts || {};
+    t = clamp01(t);
+    intensityState = t;
+    var root = rootEl();
+    root.dataset.glassIntensity = String(t);
+    root.style.setProperty("--glass-intensity", String(t));
+
+    // Accessibility: force fully tinted when reduced transparency is on
+    try {
+      if (window.matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        t = 1;
+      }
+    } catch (e) { /* ignore */ }
+
+    var preset = root.dataset.glassPreset || "light";
+    var ep = intensityEndpoints(preset);
+    var c = ep.clear;
+    var d = ep.tinted;
+    var fill = ep.fill;
+    var menu = ep.menu;
+    var lip = ep.lip;
+
+    function A(key) {
+      return lerp(c[key], d[key], t);
+    }
+
+    // Only set fills when content-aware tint is not actively overriding.
+    // Tint path re-invokes setIntensity after sampling (see applyTint).
+    if (!opts.fromTint && !root.classList.contains("glass-tint-active")) {
+      root.style.setProperty("--glass-bg", rgba(fill.r, fill.g, fill.b, A("bgA")));
+      root.style.setProperty("--glass-bg-hover", rgba(fill.r, fill.g, fill.b, A("bgHoverA")));
+      root.style.setProperty("--glass-bg-content", rgba(fill.r, fill.g, fill.b, A("contentA")));
+      root.style.setProperty("--glass-bg-content-hover", rgba(fill.r, fill.g, fill.b, A("contentHoverA")));
+      root.style.setProperty("--glass-border", rgba(fill.r, fill.g, fill.b, A("borderA")));
+      root.style.setProperty("--glass-rim", rgba(fill.r, fill.g, fill.b, A("rimA")));
+      root.style.setProperty("--glass-menu-bg", rgba(menu.r, menu.g, menu.b, A("menuA")));
+    }
+
+    root.style.setProperty("--glass-lip", rgba(lip.r, lip.g, lip.b, A("lipA")));
+    root.style.setProperty("--glass-highlight", rgba(255, 255, 255, A("highlightA")));
+    root.style.setProperty("--glass-specular", rgba(255, 255, 255, A("specularA")));
+    root.style.setProperty("--glass-edge-sheen", rgba(255, 255, 255, A("edgeSheenA")));
+    root.style.setProperty("--glass-inner-glow", rgba(255, 255, 255, A("innerGlowA")));
+
+    var blurPx = readBaseBlurPx() * A("blurScale");
+    root.style.setProperty("--glass-blur", blurPx.toFixed(1) + "px");
+
+    // Sync any intensity slider widgets
+    document.querySelectorAll(".glass-intensity-slider").forEach(function (wrap) {
+      wrap.style.setProperty("--glass-intensity", String(intensityState));
+      var input = wrap.querySelector("input.glass-intensity-range");
+      if (input && opts.syncInputs !== false) {
+        var v = String(intensityState);
+        if (input.value !== v) input.value = v;
+      }
+      var minL = wrap.querySelector(".glass-intensity-end--min");
+      var maxL = wrap.querySelector(".glass-intensity-end--max");
+      if (minL) minL.classList.toggle("is-active", intensityState < 0.35);
+      if (maxL) maxL.classList.toggle("is-active", intensityState > 0.65);
+    });
+
+    try {
+      root.dispatchEvent(
+        new CustomEvent("shinyglass:intensity", { detail: { intensity: intensityState } })
+      );
+    } catch (e) { /* ignore */ }
+  }
+
+  function getIntensity() {
+    return intensityState;
   }
 
   function setPrimary(color) {
@@ -340,6 +486,8 @@
     [
       "--glass-bg",
       "--glass-bg-hover",
+      "--glass-bg-content",
+      "--glass-bg-content-hover",
       "--glass-border",
       "--glass-orb-tint-1",
       "--glass-orb-tint-2",
@@ -347,6 +495,7 @@
     ].forEach(function (prop) {
       root.style.removeProperty(prop);
     });
+    setIntensity(intensityState, { syncInputs: true });
   }
 
   function applyTint(rgb) {
@@ -435,6 +584,8 @@
       "--glass-orb-tint-3",
       "rgba(" + tertiary.r + ", " + tertiary.g + ", " + tertiary.b + ", " + orb3 + ")"
     );
+    // Scale edge/blur with intensity while tint owns fill colors
+    setIntensity(intensityState, { fromTint: true, syncInputs: true });
   }
 
   function updateContentTint() {
@@ -469,6 +620,12 @@
   };
   window.shinyglass.getPrimary = function () {
     return rootEl().dataset.glassPrimary || rootEl().style.getPropertyValue("--bs-primary") || "";
+  };
+  window.shinyglass.setIntensity = function (t) {
+    setIntensity(t, { syncInputs: true });
+  };
+  window.shinyglass.getIntensity = function () {
+    return getIntensity();
   };
 
   // raise native <select> above later card content
@@ -622,6 +779,7 @@
       if (msg.preset != null) applyPreset(msg.preset);
       if (msg.tint != null) setTintEnabled(!!msg.tint);
       if (msg.primary != null) setPrimary(msg.primary);
+      if (msg.intensity != null) setIntensity(msg.intensity, { syncInputs: true });
     }
   }
 
@@ -723,6 +881,74 @@
     if (hookAttempts >= 20) clearInterval(hookTimer);
   }, 500);
 
+
+  function bindIntensitySliders() {
+    document.querySelectorAll(".glass-intensity-slider").forEach(function (wrap) {
+      if (wrap.__glassIntensityBound) return;
+      wrap.__glassIntensityBound = true;
+      var input = wrap.querySelector("input.glass-intensity-range");
+      if (!input) return;
+
+      function applyFromInput(ev) {
+        var t = clamp01(input.value);
+        wrap.classList.toggle("is-dragging", !!(ev && ev.type === "input"));
+        setIntensity(t, { syncInputs: false });
+        wrap.style.setProperty("--glass-intensity", String(t));
+      }
+
+      input.addEventListener("input", applyFromInput);
+      input.addEventListener("change", function (ev) {
+        applyFromInput(ev);
+        wrap.classList.remove("is-dragging");
+      });
+      input.value = String(getIntensity());
+      wrap.style.setProperty("--glass-intensity", String(getIntensity()));
+    });
+  }
+
+  if (typeof Shiny !== "undefined" && Shiny.InputBinding) {
+    var intensityBinding = new Shiny.InputBinding();
+    $.extend(intensityBinding, {
+      find: function (scope) {
+        return $(scope).find(".glass-intensity-slider input.glass-intensity-range");
+      },
+      getId: function (el) {
+        return el.id;
+      },
+      getValue: function (el) {
+        return clamp01(el.value);
+      },
+      setValue: function (el, value) {
+        el.value = clamp01(value);
+        setIntensity(el.value, { syncInputs: false });
+        var wrap = el.closest(".glass-intensity-slider");
+        if (wrap) wrap.style.setProperty("--glass-intensity", String(clamp01(value)));
+      },
+      subscribe: function (el, callback) {
+        $(el).on("input.glassIntensity change.glassIntensity", function () {
+          callback(true);
+        });
+      },
+      unsubscribe: function (el) {
+        $(el).off(".glassIntensity");
+      },
+      receiveMessage: function (el, data) {
+        if (data && data.value != null) {
+          this.setValue(el, data.value);
+          $(el).trigger("change");
+        }
+      },
+      getRatePolicy: function () {
+        return { policy: "debounce", delay: 100 };
+      },
+    });
+    Shiny.inputBindings.register(intensityBinding, "shinyglass.intensity");
+  }
+
+  $(document).on("shiny:connected.shinyglassIntensity", function () {
+    bindIntensitySliders();
+  });
+
   $(function () {
     // Ensure mode/preset are coherent if head script ran or was skipped
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
@@ -733,8 +959,17 @@
       setPrimary(rootEl().dataset.glassPrimary);
     }
 
+    // iOS 27 intensity (0 Ultra Clear → 1 Tinted)
+    var initI = rootEl().dataset.glassIntensity;
+    if (initI != null && initI !== "") {
+      setIntensity(initI, { syncInputs: true });
+    } else {
+      setIntensity(0.45, { syncInputs: true });
+    }
+
     scheduleTintUpdate();
     applyWidgetGlassOverrides();
+    bindIntensitySliders();
 
     if (typeof MutationObserver !== "undefined") {
       var observer = new MutationObserver(function (mutations) {

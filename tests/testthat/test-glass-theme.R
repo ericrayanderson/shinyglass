@@ -335,3 +335,47 @@ test_that("audit-glass-contrast harness exists in the source tree", {
   expect_match(js, "runGlassAudit")
   expect_match(js, "solid-black-chip|dt-pagination-structure")
 })
+
+
+test_that("glass_theme intensity is marked in head", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(intensity = 0.2)
+  deps <- bslib::bs_theme_dependencies(th)
+  preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
+  expect_length(preset_deps, 1)
+  expect_match(preset_deps[[1]]$head, "glassIntensity=0\\.2000")
+  expect_match(preset_deps[[1]]$head, "--glass-intensity")
+})
+
+test_that("glass_intensity_slider returns a tag with range input", {
+  skip_if_not_installed("htmltools")
+  ui <- glass_intensity_slider("gi", value = 0.7, preview = FALSE)
+  expect_s3_class(ui, "shiny.tag")
+  html <- as.character(ui)
+  expect_match(html, "glass-intensity-slider")
+  expect_match(html, 'id="gi"')
+  expect_match(html, 'value="0.7"')
+  expect_match(html, "Ultra Clear")
+  expect_match(html, "Tinted")
+})
+
+test_that("intensity must be in 0..1", {
+  expect_error(glass_theme(intensity = 1.5), "intensity")
+  expect_error(glass_theme(intensity = -0.1), "intensity")
+})
+
+test_that("update_glass_theme accepts intensity", {
+  skip_if_not_installed("shiny")
+  # session mock: capture sendCustomMessage
+  msgs <- list()
+  session <- list(
+    sendCustomMessage = function(type, message) {
+      msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+    }
+  )
+  class(session) <- "ShinySession"
+  update_glass_theme(session, intensity = 0.8)
+  expect_equal(length(msgs), 1L)
+  expect_equal(msgs[[1]]$type, "shinyglass")
+  expect_equal(msgs[[1]]$message$intensity, 0.8)
+})

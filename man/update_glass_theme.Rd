@@ -4,7 +4,13 @@
 \alias{update_glass_theme}
 \title{Update glass theme options in a running app}
 \usage{
-update_glass_theme(session, preset = NULL, tint = NULL, primary = NULL)
+update_glass_theme(
+  session,
+  preset = NULL,
+  tint = NULL,
+  primary = NULL,
+  intensity = NULL
+)
 }
 \arguments{
 \item{session}{A Shiny session object (usually the \code{session} argument of
@@ -15,6 +21,9 @@ the server function).}
 \item{tint}{Optional logical. Enable or disable content-aware ambient tint.}
 
 \item{primary}{Optional accent color (hex like \code{"#AF52DE"} or \code{rgb()}).}
+
+\item{intensity}{Optional numeric in \eqn{[0, 1]}: Ultra Clear (\code{0}) to
+Tinted (\code{1}).}
 }
 \value{
 \code{session}, invisibly.

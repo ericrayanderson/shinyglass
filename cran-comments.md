@@ -14,6 +14,7 @@ This is an update from 0.1.1 to 0.2.0.
 * Reduced-motion support; softer plot frames; demo fixes.
 * Liquid Glass material fidelity (layered surfaces, chrome vs content,
   `material = "regular"|"clear"`, updated blur/radius defaults).
+* iOS 27 intensity slider (`glass_intensity_slider()`, `intensity=` on theme).
 
 ### Breaking (documented in NEWS + vignette)
 

@@ -22,6 +22,9 @@
 #'   Prefer larger concentric radii (default `1.5rem`).
 #' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
 #'   transparent; best over media-rich content with bold labels).
+#' @param intensity Liquid Glass intensity from `0` (Ultra Clear) to `1`
+#'   (Tinted), matching iOS 27 Appearance → Liquid Glass. Default `0.45`.
+#'   Use [glass_intensity_slider()] for a live control.
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
@@ -62,12 +65,14 @@ glass_theme <- function(
     saturation = 190,
     radius = "1.5rem",
     material = c("regular", "clear"),
+    intensity = 0.45,
     tint = TRUE,
     specular = TRUE,
     nav_morph = TRUE,
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
+  intensity <- .glass_normalize_intensity(intensity)
   stopifnot(
     is.logical(tint), length(tint) == 1L, !is.na(tint),
     is.logical(specular), length(specular) == 1L, !is.na(specular),
@@ -152,7 +157,8 @@ glass_theme <- function(
     specular = specular,
     nav_morph = nav_morph,
     primary = primary,
-    material = material
+    material = material,
+    intensity = intensity
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -194,6 +200,8 @@ glass_theme <- function(
 #' @param preset Optional. `"light"`, `"dark"`, or `"auto"`.
 #' @param tint Optional logical. Enable or disable content-aware ambient tint.
 #' @param primary Optional accent color (hex like `"#AF52DE"` or `rgb()`).
+#' @param intensity Optional numeric in \eqn{[0, 1]}: Ultra Clear (`0`) to
+#'   Tinted (`1`).
 #'
 #' @return `session`, invisibly.
 #'
@@ -219,7 +227,12 @@ glass_theme <- function(
 #' }
 #'
 #' @export
-update_glass_theme <- function(session, preset = NULL, tint = NULL, primary = NULL) {
+update_glass_theme <- function(
+    session,
+    preset = NULL,
+    tint = NULL,
+    primary = NULL,
+    intensity = NULL) {
   if (missing(session) || is.null(session)) {
     stop("`session` is required.", call. = FALSE)
   }
@@ -232,7 +245,10 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL, primary = NU
   if (!is.null(primary)) {
     primary <- .glass_normalize_color(primary)
   }
-  if (is.null(preset) && is.null(tint) && is.null(primary)) {
+  if (!is.null(intensity)) {
+    intensity <- .glass_normalize_intensity(intensity)
+  }
+  if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity)) {
     return(invisible(session))
   }
 
@@ -240,6 +256,7 @@ update_glass_theme <- function(session, preset = NULL, tint = NULL, primary = NU
   if (!is.null(preset)) payload$preset <- preset
   if (!is.null(tint)) payload$tint <- tint
   if (!is.null(primary)) payload$primary <- primary
+  if (!is.null(intensity)) payload$intensity <- intensity
 
   # Prefer structured message; JS also accepts legacy glassPreset string.
   session$sendCustomMessage("shinyglass", payload)
@@ -355,6 +372,14 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
   )
 }
 
+.glass_normalize_intensity <- function(intensity) {
+  stopifnot(is.numeric(intensity), length(intensity) == 1L, !is.na(intensity))
+  if (intensity < 0 || intensity > 1) {
+    stop("`intensity` must be between 0 (Ultra Clear) and 1 (Tinted).", call. = FALSE)
+  }
+  as.numeric(intensity)
+}
+
 .glass_normalize_color <- function(primary) {
   stopifnot(is.character(primary), length(primary) == 1L, !is.na(primary))
   primary <- trimws(primary)
@@ -427,7 +452,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     specular,
     nav_morph,
     primary = "#007AFF",
-    material = "regular") {
+    material = "regular",
+    intensity = 0.45) {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -438,6 +464,7 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     sprintf("{r:%d,g:%d,b:%d}", rgb$r, rgb$g, rgb$b)
   }
   material <- if (identical(material, "clear")) "clear" else "regular"
+  intensity <- .glass_normalize_intensity(intensity)
   sprintf(
     paste0(
       "<script>(function(){",
@@ -454,6 +481,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
       "}",
       "root.dataset.glassPreset=resolve(p);",
       "root.dataset.glassMaterial=%s;",
+      "root.dataset.glassIntensity=%s;",
+      "root.style.setProperty('--glass-intensity',%s);",
       "root.dataset.glassTint=%s;",
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
@@ -471,6 +500,8 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     ),
     jsonlite_quote(preset),
     jsonlite_quote(material),
+    sprintf("%.4f", intensity),
+    sprintf("%.4f", intensity),
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
