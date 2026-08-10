@@ -1,13 +1,3 @@
-# shinyglass (development)
-
-* Liquid Glass material fidelity pass (Tahoe / iOS 26 inspired): multi-layer
-  surfaces (illumination fill, dual-edge rim, ambient + pointer specular),
-  chrome vs content hierarchy (less glass-on-glass), softer wallpaper orbs,
-  larger concentric radii, capsule-leaning controls.
-* New `glass_theme(material = "regular"|"clear")`. Clear is more transparent
-  for media-rich layouts.
-* Defaults: `blur = 32`, `radius = "1.5rem"`, `saturation = 190`.
-
 # shinyglass 0.2.0
 
 ## Breaking changes
@@ -41,6 +31,14 @@
   `.setTint()` / `.setPrimary()` / `.getPrimary()`.
 
 ## Improvements
+
+* Liquid Glass material fidelity (Tahoe / iOS 26 inspired): multi-layer
+  surfaces (illumination fill, dual-edge rim/lip, ambient + pointer specular),
+  chrome vs content hierarchy (less glass-on-glass), softer wallpaper orbs,
+  larger concentric radii, capsule-leaning controls.
+* New `glass_theme(material = "regular"|"clear")`. Clear is more transparent
+  for media-rich layouts. Defaults: `blur = 32`, `radius = "1.5rem"`,
+  `saturation = 190`.
 
 * DataTables / Bootstrap pagination chips: style the visible `.page-link`
   surface (DT uses `<li.paginate_button><a.page-link>`). Fixes solid black
