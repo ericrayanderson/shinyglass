@@ -92,14 +92,18 @@ Shiny inputs (`glass_toggle_light`, …) so the server can stay in sync.
 glass_theme(
   preset = "auto",
   primary = "#AF52DE",
-  blur = 28,
-  saturation = 200,
-  radius = "1.25rem",
+  blur = 32,
+  saturation = 190,
+  radius = "1.5rem",
+  material = "regular", # or "clear" over media-rich content
   tint = TRUE,      # sample plot/image colors into glass surfaces
   specular = TRUE,  # pointer specular highlight
   nav_morph = TRUE  # compact navbar while scrolling down
 )
 ```
+
+`material = "regular"` is the adaptive Tahoe-style fill (default). Use
+`"clear"` when chrome sits over rich media and labels stay bold.
 
 All three JS behaviors default to `TRUE` (same as 0.1.x). They respect
 `prefers-reduced-motion: reduce` where relevant. Advanced escape hatch:
@@ -114,7 +118,7 @@ Bootswatch `darkly` rebuild. Prefer CSS custom properties over Sass
 ``` css
 :root {
   /* shared knobs also set by glass_theme(blur=..., radius=...) */
-  --glass-blur: 28px;
+  --glass-blur: 32px;
   --glass-radius: 1.25rem;
   --bs-primary: #007AFF;       /* also updated by update_glass_theme(primary=) */
   --glass-primary: #007AFF;

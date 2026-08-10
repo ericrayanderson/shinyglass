@@ -40,30 +40,46 @@
 
 ### Improvements
 
+- Liquid Glass material fidelity (Tahoe / iOS 26 inspired): multi-layer
+  surfaces (illumination fill, dual-edge rim/lip, ambient + pointer
+  specular), chrome vs content hierarchy (less glass-on-glass), softer
+  wallpaper orbs, larger concentric radii, capsule-leaning controls.
+
+- New `glass_theme(material = "regular"|"clear")`. Clear is more
+  transparent for media-rich layouts. Defaults: `blur = 32`,
+  `radius = "1.5rem"`, `saturation = 190`.
+
 - DataTables / Bootstrap pagination chips: style the visible
   `.page-link` surface (DT uses `<li.paginate_button><a.page-link>`).
   Fixes solid black page numbers and light-grey ellipsis chips in dark
   mode on the dashboard demo / README screenshots.
+
 - Visual QA harness: `inst/scripts/audit-glass-contrast.R` (+ `.js`)
   runs a dual-theme computed-style audit (low contrast, solid-black
   chips, Bootstrap light greys in dark, dark ink on accent, DT
   pagination structure) across demo / dashboard / inputs-gallery.
   Checklist and definition of done in `inst/scripts/VISUAL-QA.md`.
+
 - Selectize fields: force body/menu ink on inputs and multi-select tags
   (selectize default near-black item text failed dark mode); opaque
   `--glass-menu-bg` fills in dark; dropdown options use menu colors.
+
 - Ecosystem chrome: **plotly** modebar + frame, **gt** tables,
   **waiter** / shinybusy overlays, **shinyalert**/SweetAlert2 popups,
   denser **shinydashboardPlus** controlbar/dropdowns/user menu, light
   **rhandsontable** / echarts/highcharter hosts. Examples:
   `plotly-gt-demo.R`, `shinydashboardPlus-glass-demo.R`.
+
 - Live demo
   [shinyglass-plotly-gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/);
   README light/dark screenshots for plotly+gt.
+
 - CI workflow `visual-qa` (testthat + dual-theme contrast audit) and
   committed `inst/scripts/audit-baseline.json`.
+
 - Navbar brand / page title ink uses `--glass-body-color` (no more white
   brand on light glass). Plotly hosts no longer clip x-axis titles.
+
 - Active-on-accent contrast: lower Bootstrap `$min-contrast-ratio` to
   **3** so `color-contrast()` picks white on brand blues/purples (white
   on `#007AFF` is ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` /
@@ -71,16 +87,22 @@
   luminance-based ink via `glass-on()` / `--glass-on-*` — not body color
   on solid primary. Safety nets remain for checks, radios, switches,
   pagination, and list-group active.
+
 - Accent rules target Shiny markup (`.shiny-input-checkbox`) as well as
   Bootstrap `.form-check-input`.
+
 - Plot / image outputs get a softer glass frame (lighter nesting inside
   cards).
+
 - `prefers-reduced-motion: reduce` disables nav morph, specular, tint
   sampling, and decorative transitions (JS + CSS).
+
 - Demo and bslib dashboard examples: theme toggle helper; dashboard
   accent select calls `update_glass_theme(primary = …)`.
+
 - Vignettes cover migration, primary updates, toggle helper, and reduced
   motion.
+
 - Unit tests cover dual CSS packs, head script knobs, active-color vars,
   and
   [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
