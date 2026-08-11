@@ -33,10 +33,8 @@ for the same continuous control as iOS 27 **Settings → Appearance →
 Liquid Glass**. Surfaces update live as you drag from **Ultra Clear**
 (`0`) to **Tinted** (`1`) — no page reload.
 
-![Intensity slider Ultra Clear to Tinted,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)![Intensity
-slider Ultra Clear to Tinted,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark.gif)
+![Liquid Glass intensity slider animating Ultra Clear to
+Tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
 
 ![Liquid Glass intensity slider,
 light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png)![Liquid
