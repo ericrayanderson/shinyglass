@@ -62,16 +62,27 @@
 <!-- badges: start -->
 
 <p><a href="https://developer.apple.com/documentation/technologyoverviews/liquid-glass" class="external-link">Liquid Glass</a> themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>. <code><a href="reference/glass_theme.html">glass_theme()</a></code> returns a <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a> theme with translucent surfaces, backdrop blur, and system typography. Pass it as <code>theme = glass_theme()</code> to <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, <code><a href="https://rdrr.io/pkg/shiny/man/navbarPage.html" class="external-link">navbarPage()</a></code>, or other page functions that accept a bslib theme.</p>
-<p>Light and dark packs switch at <strong>runtime</strong> (no page reload). Use <code>preset = "auto"</code> to follow the OS, or call <code><a href="reference/update_glass_theme.html">update_glass_theme()</a></code> from the server.</p>
+<p><strong>Runtime controls (no page reload):</strong></p>
+<ul>
+<li>
+<strong>Light / Dark / Auto</strong> — <code><a href="reference/glass_theme_toggle.html">glass_theme_toggle()</a></code> + <code>update_glass_theme(preset = …)</code>, or <code>preset = "auto"</code> to follow the OS</li>
+<li>
+<strong>Liquid Glass intensity</strong> — iOS 27-style <strong>Ultra Clear → Tinted</strong> via <code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code> (and <code>glass_theme(intensity = 0–1)</code>)</li>
+</ul>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a> · <strong><a href="#live-demos">Live demos</a></strong></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png" width="48%" alt="plotly + gt, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png" width="48%" alt="plotly + gt, dark"></p>
+<div class="section level3">
+<h3 id="liquid-glass-intensity">Liquid Glass intensity<a class="anchor" aria-label="anchor" href="#liquid-glass-intensity"></a>
+</h3>
+<p>Drop in <code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code> for the same continuous control as iOS 27 <strong>Settings → Appearance → Liquid Glass</strong>. Surfaces update live as you drag from <strong>Ultra Clear</strong> (<code>0</code>) to <strong>Tinted</strong> (<code>1</code>).</p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png" width="48%" alt="Liquid Glass intensity slider, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark.png" width="48%" alt="Liquid Glass intensity slider, dark"></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-clear.png" width="32%" alt="Ultra Clear intensity"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-tinted.png" width="32%" alt="Tinted intensity"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark-tinted.png" width="32%" alt="Tinted intensity, dark"></p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png" width="48%" alt="plotly + gt, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png" width="48%" alt="plotly + gt, dark"></p>
+</div>
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
 </h2>
@@ -88,18 +99,16 @@
 <tbody>
 <tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Demo + theme toggle</a></td>
-<td>Core glass UI + intensity slider + <strong>Light / Dark / Auto</strong>
-</td>
+<td>Core glass UI + <strong><code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code></strong> + Light / Dark / Auto</td>
 </tr>
 <tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">bslib dashboard</a></td>
 <td>
-<code>page_sidebar</code>, value boxes, plots, DT + <strong>Liquid Glass intensity</strong>
-</td>
+<code>page_sidebar</code>, value boxes, plots, DT + intensity in the sidebar</td>
 </tr>
 <tr>
 <td><a href="https://github.com/ericrayanderson/shinyglass/blob/main/inst/examples/intensity-slider-demo.R" class="external-link">Intensity slider example</a></td>
-<td>iOS 27 <strong>Ultra Clear -&gt; Tinted</strong> (<code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code>); deploy via <code>--apps=intensity</code>
+<td>Dedicated <strong>Ultra Clear → Tinted</strong> demo (<code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code>); run locally or deploy via <code>--apps=intensity</code>
 </td>
 </tr>
 <tr>
@@ -135,20 +144,26 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Liquid Glass"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="st">"dark"</span>, <span class="st">"Dark mode"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># iOS 27-style Ultra Clear → Tinted (updates live on the client)</span></span>
+<span>  <span class="fu"><a href="reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># Light / Dark / Auto buttons</span></span>
+<span>  <span class="fu"><a href="reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span>selected <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">dark</span>, <span class="fu"><a href="reference/update_glass_theme.html">update_glass_theme</a></span><span class="op">(</span><span class="va">session</span>, preset <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span>  <span class="co"># optional: keep server session intensity in sync (client already updates live)</span></span>
+<span>  <span class="fu"><a href="reference/observe_glass_intensity.html">observe_glass_intensity</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span>, <span class="st">"glass_intensity"</span><span class="op">)</span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#007AFF"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
+<p>Set the starting material with <code>glass_theme(intensity = …)</code> (<code>0</code> Ultra Clear … <code>1</code> Tinted), or drive it from the server with <code>update_glass_theme(session, intensity = 0.8)</code>.</p>
+<p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>intensity</code>, <code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):</span></span>
 <span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span>

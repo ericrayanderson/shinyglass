@@ -11,24 +11,27 @@ translucent surfaces, backdrop blur, and system typography. Pass it as
 [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html), or
 other page functions that accept a bslib theme.
 
-Light and dark packs switch at **runtime** (no page reload). Use
-`preset = "auto"` to follow the OS, or call
-[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
-from the server.
+**Runtime controls (no page reload):**
+
+- **Light / Dark / Auto** —
+  [`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md) +
+  `update_glass_theme(preset = …)`, or `preset = "auto"` to follow the
+  OS
+- **Liquid Glass intensity** — iOS 27-style **Ultra Clear → Tinted** via
+  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+  (and `glass_theme(intensity = 0–1)`)
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
 [GitHub](https://github.com/ericrayanderson/shinyglass) · **[Live
 demos](#live-demos)**
 
-![Glass dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Glass
-dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
+### Liquid Glass intensity
 
-![plotly + gt,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png)![plotly +
-gt,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png)
+Drop in
+[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+for the same continuous control as iOS 27 **Settings → Appearance →
+Liquid Glass**. Surfaces update live as you drag from **Ultra Clear**
+(`0`) to **Tinted** (`1`).
 
 ![Liquid Glass intensity slider,
 light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png)![Liquid
@@ -41,6 +44,16 @@ intensity](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man
 intensity,
 dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark-tinted.png)
 
+![Glass dashboard,
+light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Glass
+dashboard,
+dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
+
+![plotly + gt,
+light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png)![plotly +
+gt,
+dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png)
+
 ## Live demos
 
 Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may
@@ -48,9 +61,9 @@ take a few seconds to wake):
 
 | App | What it shows |
 |----|----|
-| [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + intensity slider + **Light / Dark / Auto** |
-| [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT + **Liquid Glass intensity** |
-| [Intensity slider example](https://github.com/ericrayanderson/shinyglass/blob/main/inst/examples/intensity-slider-demo.R) | iOS 27 **Ultra Clear -\> Tinted** ([`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)); deploy via `--apps=intensity` |
+| [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)** + Light / Dark / Auto |
+| [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT + intensity in the sidebar |
+| [Intensity slider example](https://github.com/ericrayanderson/shinyglass/blob/main/inst/examples/intensity-slider-demo.R) | Dedicated **Ultra Clear → Tinted** demo ([`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)); run locally or deploy via `--apps=intensity` |
 | [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
 | [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
@@ -74,24 +87,34 @@ library(shiny)
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(preset = "auto"),
+  theme = glass_theme(preset = "auto", intensity = 0.45),
   titlePanel("Liquid Glass"),
-  actionButton("dark", "Dark mode"),
+  # iOS 27-style Ultra Clear → Tinted (updates live on the client)
+  glass_intensity_slider("glass_intensity"),
+  # Light / Dark / Auto buttons
+  glass_theme_toggle(selected = "auto"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$dark, update_glass_theme(session, preset = "dark"))
+  observe_glass_theme_toggle(input, session)
+  # optional: keep server session intensity in sync (client already updates live)
+  observe_glass_intensity(input, session, "glass_intensity")
   output$plot <- renderPlot(barplot(seq_len(input$n), col = "#007AFF", border = NA))
 }
 
 shinyApp(ui, server)
 ```
 
+Set the starting material with `glass_theme(intensity = …)` (`0` Ultra
+Clear … `1` Tinted), or drive it from the server with
+`update_glass_theme(session, intensity = 0.8)`.
+
 See the [theming
 article](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
-for knobs (`tint`, `specular`, `nav_morph`) and CSS variables.
+for knobs (`intensity`, `tint`, `specular`, `nav_morph`) and CSS
+variables.
 
 ``` r
 
