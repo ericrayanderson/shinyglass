@@ -1004,10 +1004,49 @@
     bindIntensitySliders();
   });
 
+  // Client-side theme preset selects (id="preset" or data-glass-preset-input).
+  // Applies setPreset immediately so light/dark works even when host layers
+  // drop or rewrite custom messages (observed on shinyapps.io for selectInput
+  // + update_glass_theme only; glass_theme_toggle already uses onclick).
+  function bindPresetSelects(scope) {
+    var $root = scope ? $(scope) : $(document);
+    var $selects = $root.find("select#preset, select[data-glass-preset-input]");
+    if (scope && scope.nodeName === "SELECT" &&
+        (scope.id === "preset" || scope.hasAttribute("data-glass-preset-input"))) {
+      $selects = $selects.add(scope);
+    }
+    $selects.each(function () {
+      var el = this;
+      if (el.__glassPresetBound) return;
+      el.__glassPresetBound = true;
+      $(el).on("change.glassPreset", function () {
+        var v = $(el).val();
+        if (v == null || v === "") return;
+        if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
+          window.shinyglass.setPreset(v);
+        }
+      });
+    });
+  }
+
+  // Event delegation as a belt-and-suspenders path (selectize + dynamic UI)
+  $(document).on("change.glassPresetDelegate", "select#preset, select[data-glass-preset-input]", function () {
+    var v = $(this).val();
+    if (v == null || v === "") return;
+    if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
+      window.shinyglass.setPreset(v);
+    }
+  });
+
+  $(document).on("shiny:connected.shinyglassPreset shiny:value.shinyglassPreset", function () {
+    bindPresetSelects(document);
+  });
+
   $(function () {
     // Ensure mode/preset are coherent if head script ran or was skipped
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
     applyPreset(mode);
+    bindPresetSelects(document);
 
     // Re-apply primary from head/data if present
     if (rootEl().dataset.glassPrimary) {

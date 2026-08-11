@@ -203,7 +203,7 @@ server <- function(input, output, session) {
       )
     }
 
-    str(list(
+    paste(capture.output(str(list(
       textInput = input$text,
       passwordInput = if (nzchar(input$password)) "<redacted>" else "",
       textAreaInput = input$textarea,
@@ -221,8 +221,9 @@ server <- function(input, output, session) {
       dateInput = as.character(input$date),
       dateRangeInput = as.character(input$date_range),
       fileInput = file_label,
-      submitButton = input$submit_text
-    ))
+      submitButton = input$submit_text,
+      theme_preset = input$preset
+    ))), collapse = "\n")
   })
 }
 
