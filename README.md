@@ -17,7 +17,11 @@
 
 ### Liquid Glass intensity
 
-Drop in `glass_intensity_slider()` for the same continuous control as iOS 27 **Settings → Appearance → Liquid Glass**. Surfaces update live as you drag from **Ultra Clear** (`0`) to **Tinted** (`1`).
+Drop in `glass_intensity_slider()` for the same continuous control as iOS 27 **Settings → Appearance → Liquid Glass**. Surfaces update live as you drag from **Ultra Clear** (`0`) to **Tinted** (`1`) — no page reload.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="90%" alt="Liquid Glass intensity slider animating Ultra Clear to Tinted">
+</p>
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png" width="48%" alt="Liquid Glass intensity slider, light">
