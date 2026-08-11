@@ -61,6 +61,8 @@ reference:
   - observe_glass_theme_toggle
   - glass_intensity_slider
   - observe_glass_intensity
+  - glass_preset_input
+  - observe_glass_preset_input
 
 articles:
 - title: Guides
