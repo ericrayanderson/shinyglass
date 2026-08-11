@@ -12,8 +12,10 @@ Description: Provides drop-in Liquid Glass themes for 'shiny'. Call
     navbarPage(), or any 'bslib'-aware page function to get
     translucent surfaces, backdrop blur, and system typography on
     'Bootstrap' components. Includes light and dark presets with
-    runtime switching and an OS-following 'auto' mode, plus options for
-    accent color, blur, corner radius, and motion or tint behavior.
+    runtime switching and an OS-following 'auto' mode, an iOS-style
+    intensity control from Ultra Clear to Tinted
+    (glass_intensity_slider()), and options for accent color, blur,
+    corner radius, and motion or tint behavior.
 License: GPL-3
 URL: https://ericrayanderson.github.io/shinyglass/,
     https://github.com/ericrayanderson/shinyglass

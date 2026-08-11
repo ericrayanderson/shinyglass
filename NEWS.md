@@ -19,8 +19,9 @@
   **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
   starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and
   `window.shinyglass.setIntensity()` update it live.
-* Demo app `intensity-slider-demo.R` and shinyapps app **shinyglass-intensity**;
-  dashboard demo ships the intensity slider in the sidebar.
+* Demo app `intensity-slider-demo.R`; live [shinyglass-demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
+  and [shinyglass-dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
+  ship `glass_intensity_slider()` in the UI.
 * iOS 27 material polish: stronger darkened edges, brighter specular highlights,
   intensity-scaled fill/blur for clearer layer separation and readability.
 * Dark-mode nav tab ink keeps WCAG UI 3:1 on glass (inactive tabs).
