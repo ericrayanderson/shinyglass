@@ -10,6 +10,8 @@ This is an update from 0.1.1 to 0.2.0.
 * `glass_theme_toggle()` / `observe_glass_theme_toggle()` helpers.
 * iOS 27 Liquid Glass intensity: `glass_intensity_slider()`,
   `observe_glass_intensity()`, and `glass_theme(intensity = 0–1)`.
+* Client-first theme controls: `glass_theme_toggle()`, `glass_preset_input()`,
+  dual-channel `update_glass_theme()` delivery for reliable runtime switching.
 * Active-on-accent contrast fix (white checks/knobs on brand primary).
 * DT/selectize glass chrome fixes; plotly/gt/AdminLTE overlay CSS.
 * Navbar brand ink matches glass body color; plotly axis titles not clipped.

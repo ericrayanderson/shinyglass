@@ -33,10 +33,9 @@ ui <- page_sidebar(
       "Every built-in Shiny input and button, styled with ",
       code("glass_theme()"), ". Change controls — values update live below."
     ),
-    selectInput(
+    glass_preset_input(
       "preset",
-      "Theme preset",
-      choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
+      label = "Theme preset",
       selected = glass_preset,
       width = "100%"
     ),
@@ -243,9 +242,8 @@ ui <- page_sidebar(
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$preset, {
-    update_glass_theme(session, preset = input$preset)
-  }, ignoreInit = TRUE)
+  # Client applies preset live; this keeps the server session aligned
+  observe_glass_preset_input(input, session, "preset")
 
   observeEvent(input$action, {
     showNotification("actionButton clicked", type = "message", duration = 3)

@@ -198,11 +198,16 @@ test_that("update_glass_theme sends shinyglass custom message", {
     }
   )
   update_glass_theme(session, preset = "dark", tint = FALSE, primary = "#AF52DE")
-  expect_length(msgs, 1)
-  expect_equal(msgs[[1]]$type, "shinyglass")
-  expect_equal(msgs[[1]]$message$preset, "dark")
-  expect_equal(msgs[[1]]$message$tint, FALSE)
-  expect_equal(msgs[[1]]$message$primary, "#AF52DE")
+  # Dual-channel: structured shinyglass + legacy glassPreset when preset set
+  expect_length(msgs, 2)
+  types <- vapply(msgs, `[[`, character(1), "type")
+  expect_true("shinyglass" %in% types)
+  expect_true("glassPreset" %in% types)
+  sg <- msgs[[which(types == "shinyglass")[[1]]]]
+  expect_equal(sg$message$preset, "dark")
+  expect_equal(sg$message$tint, FALSE)
+  expect_equal(sg$message$primary, "#AF52DE")
+  expect_equal(msgs[[which(types == "glassPreset")[[1]]]]$message, "dark")
 })
 
 test_that("update_glass_theme validates preset", {
@@ -378,4 +383,34 @@ test_that("update_glass_theme accepts intensity", {
   expect_equal(length(msgs), 1L)
   expect_equal(msgs[[1]]$type, "shinyglass")
   expect_equal(msgs[[1]]$message$intensity, 0.8)
+})
+
+test_that("update_glass_theme dual-channels preset", {
+  skip_if_not_installed("shiny")
+  msgs <- list()
+  session <- list(
+    sendCustomMessage = function(type, message) {
+      msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+    }
+  )
+  class(session) <- "ShinySession"
+  update_glass_theme(session, preset = "dark")
+  types <- vapply(msgs, `[[`, character(1), "type")
+  expect_true("shinyglass" %in% types)
+  expect_true("glassPreset" %in% types)
+  sg <- msgs[[which(types == "shinyglass")[1]]]
+  expect_equal(sg$message$preset, "dark")
+  leg <- msgs[[which(types == "glassPreset")[1]]]
+  expect_equal(leg$message, "dark")
+})
+
+test_that("glass_preset_input marks select for client binding", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("htmltools")
+  ui <- glass_preset_input("my_preset", selected = "dark")
+  html <- paste(as.character(ui), collapse = "\n")
+  expect_match(html, "data-glass-preset-input")
+  expect_match(html, "glass-preset-input")
+  expect_match(html, 'id="my_preset"')
+  expect_match(html, "dark")
 })

@@ -78,6 +78,28 @@
     }
   }
 
+  function syncPresetInputs(mode) {
+    // Keep glass_preset_input() / select#preset widgets aligned with client state
+    var v = mode || rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
+    document
+      .querySelectorAll(
+        "select.glass-preset-input, select[data-glass-preset-input], select#preset, [data-glass-preset-input] select"
+      )
+      .forEach(function (el) {
+        if (el.value === v) return;
+        // Prefer selectize API when present
+        if (el.selectize && typeof el.selectize.setValue === "function") {
+          try {
+            el.selectize.setValue(v, true); // silent — avoid re-entry loops
+          } catch (eSel) {
+            el.value = v;
+          }
+        } else {
+          el.value = v;
+        }
+      });
+  }
+
   function applyPreset(mode, opts) {
     opts = opts || {};
     var root = rootEl();
@@ -90,6 +112,11 @@
     var resolved = resolvePreset(mode);
     var prev = root.dataset.glassPreset;
     root.dataset.glassPreset = resolved;
+    // Bootstrap 5 color-mode attribute (helps components that key off it)
+    root.setAttribute("data-bs-theme", resolved);
+    if (document.body) {
+      document.body.setAttribute("data-bs-theme", resolved);
+    }
 
     if (mode === "auto") {
       attachSchemeListener();
@@ -103,6 +130,10 @@
     }
     // Intensity endpoints differ by preset
     setIntensity(intensityState, { syncInputs: true });
+
+    if (opts.syncInputs !== false) {
+      syncPresetInputs(mode);
+    }
 
     try {
       root.dispatchEvent(
@@ -852,12 +883,15 @@
   }
 
   function dispatchShinyHandlers(message) {
-    // Fallback when we hooked before Shiny installed its dispatcher (so prev
-    // was empty) — still deliver showModal / insertUI / etc.
+    // Fallback when our proxy is the only oncustommessage (prev empty) —
+    // still deliver showModal / insertUI / notifyBar / etc.
     if (!message || typeof message !== "object") return;
-    var handlers = Shiny.messageHandlers || Shiny._messageHandlers || null;
+    var handlers =
+      (Shiny && (Shiny.messageHandlers || Shiny._messageHandlers)) || null;
     if (!handlers) return;
     Object.keys(message).forEach(function (type) {
+      // Don't re-dispatch our own types (already handled by consumeCustomEnvelope)
+      if (type === "shinyglass" || type === "glassPreset") return;
       var list = handlers[type];
       if (!list || !list.length) return;
       for (var i = 0; i < list.length; i++) {
@@ -870,42 +904,70 @@
     });
   }
 
+  // Permanent self-healing proxy for Shiny.oncustommessage.
+  // Hosts like shinyapps.io overwrite oncustommessage after load and drop
+  // registered handlers. We always re-seat a single proxy that:
+  //   1) applies shinyglass payloads
+  //   2) forwards to whatever dispatcher is currently next
+  //   3) falls back to the handlers map if next is missing
   function installOnCustomMessageHook() {
     if (typeof Shiny === "undefined" || !Shiny) return;
-    var prev = Shiny.oncustommessage;
-    // Already our hook and still installed
-    if (prev && prev.__shinyglassHooked) return;
-    var hooked = function (message) {
-      try {
-        consumeCustomEnvelope(message);
-      } catch (e1) {
-        /* ignore */
-      }
-      if (typeof prev === "function" && !prev.__shinyglassHooked) {
+
+    if (!window.__shinyglassMsgProxy) {
+      window.__shinyglassMsgProxy = function shinyglassMsgProxy(message) {
         try {
-          return prev.apply(this, arguments);
-        } catch (e2) {
-          /* ignore host handler errors */
-        }
-      } else {
-        // prev missing/overwritten — still run Shiny's registered handlers
-        try {
-          dispatchShinyHandlers(message);
-        } catch (e3) {
+          // Envelope may be the custom map itself or a full message
+          if (message && message.custom) {
+            consumeCustomEnvelope(message.custom);
+          }
+          consumeCustomEnvelope(message);
+        } catch (e1) {
           /* ignore */
         }
+        var next = window.__shinyglassMsgProxy.__next;
+        if (
+          typeof next === "function" &&
+          next !== window.__shinyglassMsgProxy &&
+          !next.__shinyglassHooked
+        ) {
+          try {
+            return next.apply(this, arguments);
+          } catch (e2) {
+            /* ignore host handler errors */
+          }
+        } else {
+          try {
+            // If message is the custom map, dispatch it; if full msg, use .custom
+            var payload =
+              message && message.custom && typeof message.custom === "object"
+                ? message.custom
+                : message;
+            dispatchShinyHandlers(payload);
+          } catch (e3) {
+            /* ignore */
+          }
+        }
+      };
+      window.__shinyglassMsgProxy.__shinyglassHooked = true;
+      window.__shinyglassMsgProxy.__next = null;
+    }
+
+    var proxy = window.__shinyglassMsgProxy;
+    var current = Shiny.oncustommessage;
+    if (current !== proxy) {
+      // Capture whoever is currently installed (Shiny dispatcher or host)
+      if (current && current.__shinyglassHooked) {
+        proxy.__next = current.__next || null;
+      } else {
+        proxy.__next = current || null;
       }
-    };
-    hooked.__shinyglassHooked = true;
-    // Keep reference to whatever we wrapped so we can re-chain if host
-    // overwrites us again.
-    hooked.__shinyglassPrev = prev;
-    Shiny.oncustommessage = hooked;
+      Shiny.oncustommessage = proxy;
+    }
   }
 
   // --- Message routing (order matters: never throw before jQuery binds) ---
 
-  // 1) shiny:message — fires for every server payload (most reliable)
+  // 1) shiny:message — fires for every server payload (most reliable when present)
   $(document).on("shiny:message.shinyglass", function (event) {
     try {
       var msg = event && event.message;
@@ -920,7 +982,7 @@
   // 2) tint / widget updates
   $(document).on("shiny:value.shinyglass shiny:visualchange.shinyglass", scheduleTintUpdate);
 
-  // 3) Re-install host hooks when session connects
+  // 3) Re-install host hooks when session connects; keep healing for the session
   $(document).on("shiny:connected.shinyglass", function () {
     try {
       installOnCustomMessageHook();
@@ -934,6 +996,24 @@
       /* ignore */
     }
     scheduleTintUpdate();
+    // Heal for the life of the session (hosts re-overwrite on reconnect)
+    if (!window.__shinyglassHookInterval) {
+      window.__shinyglassHookInterval = setInterval(function () {
+        try {
+          if (typeof Shiny === "undefined") return;
+          installOnCustomMessageHook();
+        } catch (eI) {
+          /* ignore */
+        }
+      }, 750);
+    }
+  });
+
+  $(document).on("shiny:disconnected.shinyglass", function () {
+    if (window.__shinyglassHookInterval) {
+      clearInterval(window.__shinyglassHookInterval);
+      window.__shinyglassHookInterval = null;
+    }
   });
 
   // 4) Standard Shiny handler map + oncustommessage wrap (best-effort)
@@ -964,18 +1044,11 @@
     /* ignore — jQuery shiny:message path still works */
   }
 
-  // 5) shinyapps.io may overwrite oncustommessage after our script; re-hook
+  // 5) Early/late host races before shiny:connected
   setTimeout(installOnCustomMessageHook, 0);
   setTimeout(installOnCustomMessageHook, 250);
   setTimeout(installOnCustomMessageHook, 1000);
   setTimeout(installOnCustomMessageHook, 3000);
-  // Keep watching for a short window after load (host scripts race)
-  var hookAttempts = 0;
-  var hookTimer = setInterval(function () {
-    installOnCustomMessageHook();
-    hookAttempts += 1;
-    if (hookAttempts >= 20) clearInterval(hookTimer);
-  }, 500);
 
 
   function bindIntensitySliders() {
@@ -1071,13 +1144,18 @@
   }
 
   // Event delegation as a belt-and-suspenders path (selectize + dynamic UI)
-  $(document).on("change.glassPresetDelegate", "select#preset, select[data-glass-preset-input]", function () {
-    var v = $(this).val();
-    if (v == null || v === "") return;
-    if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
-      window.shinyglass.setPreset(v);
+  $(document).on(
+    "change.glassPresetDelegate",
+    "select#preset, select.glass-preset-input, select[data-glass-preset-input], [data-glass-preset-input] select",
+    function () {
+      var v = $(this).val();
+      if (v == null || v === "") return;
+      if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
+        // Client-first: apply immediately (server observer is sync-only)
+        window.shinyglass.setPreset(v);
+      }
     }
-  });
+  );
 
   $(document).on("shiny:connected.shinyglassPreset shiny:value.shinyglassPreset", function () {
     bindPresetSelects(document);

@@ -44,11 +44,11 @@ ui <- page_sidebar(
     title = "Controls",
     width = 280,
     open = "desktop",
-    selectInput(
+    glass_preset_input(
       "preset",
-      "Theme",
-      c("Light" = "light", "Dark" = "dark", "Auto" = "auto"),
+      label = "Theme",
       selected = glass_preset,
+      choices = c("Light" = "light", "Dark" = "dark", "Auto" = "auto"),
       width = "100%"
     ),
     selectInput(
@@ -93,9 +93,7 @@ server <- function(input, output, session) {
     waiter_hide()
   }
 
-  observeEvent(input$preset, {
-    update_glass_theme(session, preset = input$preset)
-  }, ignoreInit = TRUE)
+  observe_glass_preset_input(input, session, "preset")
 
   filtered <- reactive({
     input$reload

@@ -47,10 +47,9 @@ ui <- page_sidebar(
       value = 0.45,
       preview = TRUE
     ),
-    selectInput(
+    glass_preset_input(
       "preset",
-      "Theme preset",
-      choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
+      label = "Theme preset",
       selected = glass_preset,
       width = "100%"
     ),
@@ -134,10 +133,7 @@ server <- function(input, output, session) {
   })
 
   observe_glass_intensity(input, session, "glass_intensity")
-
-  observeEvent(input$preset, {
-    update_glass_theme(session, preset = input$preset)
-  }, ignoreInit = TRUE)
+  observe_glass_preset_input(input, session, "preset")
 
   observeEvent(input$accent, {
     update_glass_theme(session, primary = input$accent)

@@ -260,8 +260,13 @@ update_glass_theme <- function(
   if (!is.null(primary)) payload$primary <- primary
   if (!is.null(intensity)) payload$intensity <- intensity
 
-  # Prefer structured message; JS also accepts legacy glassPreset string.
+  # Dual-channel delivery: structured shinyglass payload + legacy glassPreset
+  # string. Some hosts rewrite or drop one channel but not both; the client
+  # also applies user-driven preset/intensity changes immediately (see JS).
   session$sendCustomMessage("shinyglass", payload)
+  if (!is.null(preset)) {
+    session$sendCustomMessage("glassPreset", preset)
+  }
   invisible(session)
 }
 
@@ -357,6 +362,106 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
     ignoreInit = TRUE
   )
   invisible(NULL)
+}
+
+#' Light / dark / auto preset select input
+#'
+#' Drop-in [shiny::selectInput()] for the glass theme preset. The client applies
+#' the change **immediately** via `window.shinyglass.setPreset()` (marked with
+#' `data-glass-preset-input`), so Light/Dark/Auto works even when custom
+#' messages are delayed or rewritten (e.g. on some shinyapps.io hosts). Pair
+#' with [observe_glass_preset_input()] so the server stays in sync.
+#'
+#' @param inputId The `input` slot that will be used to access the value.
+#' @param label Display label for the control (or `NULL` for none).
+#' @param selected Initially selected mode (`"light"`, `"dark"`, or `"auto"`).
+#' @param choices Named character vector of choices. Defaults to Light / Dark /
+#'   Auto (OS). Names are labels; values must be `light`, `dark`, and/or `auto`.
+#' @param width The width of the input (e.g. `"100%"`).
+#'
+#' @return A [shiny::selectInput()] tag (with glass client bindings).
+#'
+#' @seealso [observe_glass_preset_input()], [glass_theme_toggle()],
+#'   [update_glass_theme()]
+#'
+#' @export
+glass_preset_input <- function(
+    inputId = "glass_preset",
+    label = "Theme preset",
+    selected = c("auto", "light", "dark"),
+    choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
+    width = NULL) {
+  selected <- match.arg(selected)
+  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  vals <- unname(choices)
+  if (!all(vals %in% c("light", "dark", "auto"))) {
+    stop(
+      "`choices` values must be a subset of 'light', 'dark', 'auto'.",
+      call. = FALSE
+    )
+  }
+  if (!selected %in% vals) {
+    stop("`selected` must be one of the `choices` values.", call. = FALSE)
+  }
+
+  sel <- shiny::selectInput(
+    inputId = inputId,
+    label = label,
+    choices = choices,
+    selected = selected,
+    width = width
+  )
+
+  # Mark the widget so shiny-glass.js applies setPreset on change (client-first).
+  # Prefer tagging the <select>; fall back to the outer container.
+  if (requireNamespace("htmltools", quietly = TRUE) &&
+      exists("tagQuery", where = asNamespace("htmltools"), inherits = FALSE)) {
+    sel <- htmltools::tagQuery(sel)$
+      find("select")$
+      addClass("glass-preset-input")$
+      addAttrs(`data-glass-preset-input` = inputId)$
+      allTags()
+  } else if (is.list(sel) && !is.null(sel$attribs)) {
+    sel$attribs$`data-glass-preset-input` <- inputId
+    sel$attribs$class <- paste(sel$attribs$class %||% "", "glass-preset-input-wrap")
+  }
+
+  sel
+}
+
+`%||%` <- function(x, y) {
+  if (is.null(x) || length(x) == 0L || (is.character(x) && !nzchar(x[[1]]))) y else x
+}
+
+#' Observe [glass_preset_input()] on the server
+#'
+#' Wires a preset select to [update_glass_theme()] so session state stays
+#' aligned with the client (the client already applied the preset live).
+#'
+#' @param input The server `input` object.
+#' @param session The server `session` object.
+#' @param inputId Same id passed to [glass_preset_input()].
+#'
+#' @return An [shiny::observeEvent()] observer (invisibly).
+#'
+#' @export
+observe_glass_preset_input <- function(input, session, inputId = "glass_preset") {
+  if (missing(input) || missing(session)) {
+    stop("`input` and `session` are required.", call. = FALSE)
+  }
+  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  shiny::observeEvent(
+    input[[inputId]],
+    {
+      val <- input[[inputId]]
+      if (is.null(val) || !nzchar(val) || !val %in% c("light", "dark", "auto")) {
+        return()
+      }
+      update_glass_theme(session, preset = val)
+    },
+    ignoreInit = TRUE,
+    ignoreNULL = TRUE
+  )
 }
 
 .glass_font_stack <- function() {

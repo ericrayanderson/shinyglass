@@ -19,6 +19,13 @@
   **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
   starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and
   `window.shinyglass.setIntensity()` update it live.
+* [glass_preset_input()] / [observe_glass_preset_input()] — client-first
+  Light/Dark/Auto select (applies `setPreset` immediately; server sync is
+  optional). Prefer this over a bare `selectInput()` + `update_glass_theme()`
+  alone on hosts that rewrite custom messages.
+* Theme delivery is dual-channel (`shinyglass` + legacy `glassPreset`) with a
+  self-healing `oncustommessage` proxy so preset/intensity/showModal survive
+  host message rewrites (e.g. shinyapps.io).
 * Demo app `intensity-slider-demo.R`; live [shinyglass-demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
   and [shinyglass-dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
   ship `glass_intensity_slider()` in the UI.
