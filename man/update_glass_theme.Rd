@@ -30,13 +30,15 @@ Tinted (\code{1}).}
 }
 \description{
 Send a message to the browser to change the Liquid Glass preset, accent
-color, or content-tint behavior without reloading the page. Requires a page
-that used \code{\link[=glass_theme]{glass_theme()}} (so \code{shiny-glass.js} is loaded).
+color, intensity, or content-tint behavior without reloading the page.
+Requires a page that used \code{\link[=glass_theme]{glass_theme()}} (so \code{shiny-glass.js} is loaded).
 }
 \details{
 \code{primary} updates CSS variables (\code{--bs-primary}, \code{--bs-primary-rgb},
 \code{--glass-primary}) so buttons, checks, and other accent surfaces follow the
 new color. Sass-baked one-off colors may not all switch until a full reload.
+\code{intensity} updates fill/blur along the Ultra Clear to Tinted spectrum
+(see \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}).
 }
 \examples{
 if (interactive()) {

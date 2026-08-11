@@ -15,7 +15,7 @@
 #'   `prefers-color-scheme` and updates when the OS theme changes.
 #' @param primary Accent color for buttons, links, and focus rings.
 #'   Defaults to system blue (`#007AFF`).
-#' @param blur Backdrop blur radius in pixels. Default `32` matches the
+#' @param blur Backdrop blur radius in pixels. Default `36` matches the
 #'   iOS 27 diffusion-first material.
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).
@@ -188,12 +188,14 @@ glass_theme <- function(
 #' Update glass theme options in a running app
 #'
 #' Send a message to the browser to change the Liquid Glass preset, accent
-#' color, or content-tint behavior without reloading the page. Requires a page
-#' that used [glass_theme()] (so `shiny-glass.js` is loaded).
+#' color, intensity, or content-tint behavior without reloading the page.
+#' Requires a page that used [glass_theme()] (so `shiny-glass.js` is loaded).
 #'
 #' `primary` updates CSS variables (`--bs-primary`, `--bs-primary-rgb`,
 #' `--glass-primary`) so buttons, checks, and other accent surfaces follow the
 #' new color. Sass-baked one-off colors may not all switch until a full reload.
+#' `intensity` updates fill/blur along the Ultra Clear to Tinted spectrum
+#' (see [glass_intensity_slider()]).
 #'
 #' @param session A Shiny session object (usually the `session` argument of
 #'   the server function).

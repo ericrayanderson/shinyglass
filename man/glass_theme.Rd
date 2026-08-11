@@ -25,7 +25,7 @@ glass_theme(
 \item{primary}{Accent color for buttons, links, and focus rings.
 Defaults to system blue (\verb{#007AFF}).}
 
-\item{blur}{Backdrop blur radius in pixels. Default \code{32} matches the
+\item{blur}{Backdrop blur radius in pixels. Default \code{36} matches the
 iOS 27 diffusion-first material.}
 
 \item{saturation}{Backdrop saturation percentage.}

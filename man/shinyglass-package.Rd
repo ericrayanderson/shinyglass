@@ -18,16 +18,28 @@ function to get translucent surfaces, backdrop blur, and system typography.
 library(shinyglass)
 
 ui <- fluidPage(
-  theme = glass_theme(),
+  theme = glass_theme(preset = "auto", intensity = 0.45),
   titlePanel("Liquid Glass"),
+  glass_intensity_slider("glass_intensity"),
+  glass_theme_toggle(selected = "auto"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
+
+server <- function(input, output, session) \{
+  observe_glass_theme_toggle(input, session)
+  observe_glass_intensity(input, session, "glass_intensity")
+  output$plot <- renderPlot(
+    barplot(seq_len(input$n), col = "#007AFF", border = NA)
+  )
+\}
 }\if{html}{\out{</div>}}
 
 Light and dark presets are available via \code{glass_theme(preset = "dark")},
 or \code{preset = "auto"} to follow the OS. Switch at runtime with
-\code{\link[=update_glass_theme]{update_glass_theme()}}. Accent color, blur, saturation, corner radius,
+\code{\link[=update_glass_theme]{update_glass_theme()}} or \code{\link[=glass_theme_toggle]{glass_theme_toggle()}}. Material density is
+controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted) or
+\code{glass_theme(intensity = )}. Accent color, blur, saturation, corner radius,
 and JS behaviors (\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
 
 For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
@@ -35,7 +47,8 @@ For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 }
 
 \seealso{
-\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}
+\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
+\code{\link[=glass_theme_toggle]{glass_theme_toggle()}}
 }
 \author{
 \strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]

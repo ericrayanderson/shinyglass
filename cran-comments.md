@@ -36,6 +36,9 @@ Local `R CMD check shinyglass_0.2.0.tar.gz --as-cran` (2026-08-11):
 
 **0 errors | 0 warnings | 0 notes**
 
+Also clean: `urlchecker::url_check()`, `spelling::spell_check_package()`,
+`devtools::test()` (109 tests).
+
 If CRAN's incoming check later reports a "days since last update" note
 for a short interval after 0.1.1, that is expected and harmless.
 Re-run check on a fresh tarball immediately before submit.
