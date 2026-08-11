@@ -179,6 +179,16 @@ Create and update a Liquid Glass theme for your Shiny app.
   Keep session intensity in sync with
   [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
 
+- [`glass_preset_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_preset_input.md)
+  : Light / dark / auto preset select input
+
+- [`observe_glass_preset_input()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_preset_input.md)
+  :
+
+  Observe
+  [`glass_preset_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_preset_input.md)
+  on the server
+
 # Articles
 
 ### Guides

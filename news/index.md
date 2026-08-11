@@ -27,6 +27,18 @@
   \[update_glass_theme()\] and `window.shinyglass.setIntensity()` update
   it live.
 
+- \[glass_preset_input()\] / \[observe_glass_preset_input()\] —
+  client-first Light/Dark/Auto select (applies `setPreset` immediately;
+  server sync is optional). Prefer this over a bare
+  [`selectInput()`](https://rdrr.io/pkg/shiny/man/selectInput.html) +
+  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+  alone on hosts that rewrite custom messages.
+
+- Theme delivery is dual-channel (`shinyglass` + legacy `glassPreset`)
+  with a self-healing `oncustommessage` proxy so
+  preset/intensity/showModal survive host message rewrites
+  (e.g. shinyapps.io).
+
 - Demo app `intensity-slider-demo.R`; live
   [shinyglass-demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
   and
