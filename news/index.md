@@ -27,9 +27,13 @@
   \[update_glass_theme()\] and `window.shinyglass.setIntensity()` update
   it live.
 
-- Demo app `intensity-slider-demo.R` and shinyapps app
-  **shinyglass-intensity**; dashboard demo ships the intensity slider in
-  the sidebar.
+- Demo app `intensity-slider-demo.R`; live
+  [shinyglass-demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
+  and
+  [shinyglass-dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/)
+  ship
+  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+  in the UI.
 
 - iOS 27 material polish: stronger darkened edges, brighter specular
   highlights, intensity-scaled fill/blur for clearer layer separation
