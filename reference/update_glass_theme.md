@@ -1,8 +1,8 @@
 # Update glass theme options in a running app
 
 Send a message to the browser to change the Liquid Glass preset, accent
-color, or content-tint behavior without reloading the page. Requires a
-page that used
+color, intensity, or content-tint behavior without reloading the page.
+Requires a page that used
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
 (so `shiny-glass.js` is loaded).
 
@@ -51,7 +51,9 @@ update_glass_theme(
 `primary` updates CSS variables (`--bs-primary`, `--bs-primary-rgb`,
 `--glass-primary`) so buttons, checks, and other accent surfaces follow
 the new color. Sass-baked one-off colors may not all switch until a full
-reload.
+reload. `intensity` updates fill/blur along the Ultra Clear to Tinted
+spectrum (see
+[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)).
 
 ## Examples
 

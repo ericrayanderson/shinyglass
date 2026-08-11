@@ -41,7 +41,7 @@ glass_theme(
 
 - blur:
 
-  Backdrop blur radius in pixels. Default `32` matches the iOS 27
+  Backdrop blur radius in pixels. Default `36` matches the iOS 27
   diffusion-first material.
 
 - saturation:

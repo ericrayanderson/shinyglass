@@ -62,21 +62,34 @@ function to get translucent surfaces, backdrop blur, and system typography.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Liquid Glass"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span>selected <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/observe_glass_intensity.html">observe_glass_intensity</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span>, <span class="st">"glass_intensity"</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"#007AFF"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre><p></p></div>
 <p>Light and dark presets are available via <code>glass_theme(preset = "dark")</code>,
 or <code>preset = "auto"</code> to follow the OS. Switch at runtime with
-<code><a href="update_glass_theme.html">update_glass_theme()</a></code>. Accent color, blur, saturation, corner radius,
+<code><a href="update_glass_theme.html">update_glass_theme()</a></code> or <code><a href="glass_theme_toggle.html">glass_theme_toggle()</a></code>. Material density is
+controlled with <code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code> (Ultra Clear to Tinted) or
+<code>glass_theme(intensity = )</code>. Accent color, blur, saturation, corner radius,
 and JS behaviors (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) are configurable.</p>
 <p>For <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps, set
 <code>options(teal.bs_theme = glass_theme())</code> before calling <code>teal::init()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code>,
+<code><a href="glass_theme_toggle.html">glass_theme_toggle()</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
