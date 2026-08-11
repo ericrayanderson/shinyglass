@@ -52,7 +52,6 @@ Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a f
 |-----|----------------|
 | [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **`glass_intensity_slider()`** + Light / Dark / Auto |
 | [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT + intensity in the sidebar |
-| [Intensity slider example](https://github.com/ericrayanderson/shinyglass/blob/main/inst/examples/intensity-slider-demo.R) | Dedicated **Ultra Clear → Tinted** demo (`glass_intensity_slider()`); run locally or deploy via `--apps=intensity` |
 | [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
 | [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
