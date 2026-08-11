@@ -11,6 +11,10 @@ library(shiny)
 library(bslib)
 library(shinyglass)
 
+`%||%` <- function(x, y) {
+  if (is.null(x) || length(x) == 0L || (is.character(x) && !nzchar(x[[1]]))) y else x
+}
+
 glass_preset <- match.arg(
   Sys.getenv("SHINYGLASS_PRESET", "auto"),
   c("light", "dark", "auto")
@@ -143,20 +147,23 @@ ui <- page_sidebar(
         actionButton("action", "actionButton", class = "btn-primary"),
         actionLink("action_link", "actionLink")
       ),
-      tags$form(
-        textInput("submit_text", NULL, "Form field", width = "100%"),
-        submitButton("submitButton")
-      ),
       div(
         class = "d-flex flex-wrap gap-2 align-items-center mt-2",
+        actionButton("show_modal", "Show modal", class = "btn-outline-primary"),
         downloadButton("download", "downloadButton"),
         downloadLink("download_link", "downloadLink")
+      ),
+      tags$form(
+        class = "mt-2",
+        textInput("submit_text", NULL, "Form field", width = "100%"),
+        submitButton("submitButton")
       )
     ),
     card(
       card_header("Live values"),
       class = "bslib-card",
-      verbatimTextOutput("values")
+      # renderPrint + verbatimTextOutput is the reliable pair for str()-style dumps
+      verbatimTextOutput("values", placeholder = TRUE)
     )
   )
 )
@@ -172,6 +179,45 @@ server <- function(input, output, session) {
 
   observeEvent(input$action_link, {
     showNotification("actionLink clicked", type = "message", duration = 3)
+  })
+
+  observeEvent(input$show_modal, {
+    showModal(modalDialog(
+      title = "Glass modal",
+      easyClose = TRUE,
+      fade = TRUE,
+      size = "m",
+      tagList(
+        p(
+          "This dialog uses ",
+          code("modalDialog()"),
+          " under ",
+          code("glass_theme()"),
+          ". The page behind should frost with backdrop blur."
+        ),
+        selectInput(
+          "modal_choice",
+          "Modal selectInput",
+          c("Ultra Clear", "Balanced", "Tinted"),
+          selected = "Balanced",
+          width = "100%"
+        ),
+        textInput("modal_text", "Modal textInput", "Hello from the modal", width = "100%")
+      ),
+      footer = tagList(
+        modalButton("Close"),
+        actionButton("modal_ok", "OK", class = "btn-primary")
+      )
+    ))
+  })
+
+  observeEvent(input$modal_ok, {
+    removeModal()
+    showNotification(
+      paste("Modal OK —", input$modal_choice %||% "?", "/", input$modal_text %||% ""),
+      type = "message",
+      duration = 3
+    )
   })
 
   output$download <- downloadHandler(
@@ -192,7 +238,7 @@ server <- function(input, output, session) {
     }
   )
 
-  output$values <- renderText({
+  output$values <- renderPrint({
     file_label <- if (is.null(input$file)) {
       NULL
     } else {
@@ -203,9 +249,10 @@ server <- function(input, output, session) {
       )
     }
 
-    paste(capture.output(str(list(
+    # Avoid str() inside renderText (returns NULL). renderPrint captures it.
+    list(
       textInput = input$text,
-      passwordInput = if (nzchar(input$password)) "<redacted>" else "",
+      passwordInput = if (isTruthy(input$password) && nzchar(input$password)) "<redacted>" else "",
       textAreaInput = input$textarea,
       numericInput = input$numeric,
       sliderInput = input$slider,
@@ -216,14 +263,16 @@ server <- function(input, output, session) {
       checkboxInput = input$checkbox,
       checkboxGroupInput = input$checkbox_group,
       radioButtons = input$radio,
-      varSelectInput = input$var_select,
-      varSelectizeInput = input$var_selectize,
+      varSelectInput = as.character(input$var_select),
+      varSelectizeInput = as.character(input$var_selectize),
       dateInput = as.character(input$date),
       dateRangeInput = as.character(input$date_range),
       fileInput = file_label,
       submitButton = input$submit_text,
-      theme_preset = input$preset
-    ))), collapse = "\n")
+      theme_preset = input$preset,
+      modal_choice = input$modal_choice,
+      modal_text = input$modal_text
+    )
   })
 }
 

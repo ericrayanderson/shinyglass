@@ -1411,7 +1411,76 @@ form.well,
   @include glass-surface(1.25rem);
   // Keep dialogs readable over dense app chrome (teal delayed-data, etc.)
   background: color-mix(in srgb, var(--glass-menu-bg) 82%, transparent) !important;
-  color: var(--glass-menu-color, inherit);
+  color: var(--glass-menu-color, var(--glass-body-color, inherit));
+  border: 1px solid var(--glass-border) !important;
+  box-shadow:
+    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.12)),
+    0 16px 48px var(--glass-shadow) !important;
+}
+
+// Bootstrap dims .modal-backdrop with opacity:0.5 which kills backdrop-filter.
+// Keep a translucent fill + real blur so the page frosts behind dialogs.
+.modal-backdrop {
+  background-color: rgba(15, 15, 20, 0.42) !important;
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(var(--glass-saturate)) !important;
+  opacity: 1 !important;
+}
+
+.modal-backdrop.fade {
+  opacity: 0 !important;
+  transition:
+    opacity 0.2s ease,
+    backdrop-filter 0.25s ease,
+    -webkit-backdrop-filter 0.25s ease !important;
+}
+
+.modal-backdrop.show {
+  opacity: 1 !important;
+}
+
+// Temporary scrim while the native file picker is open (see shiny-glass.js).
+// Frosts the app behind the OS dialog the same way modal-backdrop does.
+.glass-file-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1055; // just under Bootstrap modal (1055+) / above page chrome
+  pointer-events: none;
+  opacity: 0;
+  background-color: rgba(15, 15, 20, 0.28);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(var(--glass-saturate));
+  transition:
+    opacity 0.18s ease,
+    backdrop-filter 0.22s ease,
+    -webkit-backdrop-filter 0.22s ease;
+}
+
+.glass-file-scrim.is-active {
+  opacity: 1;
+}
+
+// Verbatim / live values — Bootstrap pre defaults to near-black ink (invisible
+// on dark glass). Always follow the glass body pack.
+pre,
+pre.shiny-text-output,
+.shiny-text-output,
+.shiny-verbatim,
+.verbatim {
+  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  color: var(--glass-body-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.85rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
 }
 
 .dropdown-menu {

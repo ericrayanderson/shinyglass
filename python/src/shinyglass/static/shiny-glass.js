@@ -1042,6 +1042,50 @@
     bindPresetSelects(document);
   });
 
+  // Frost the page while the native file picker is open (mirrors modal-backdrop).
+  function ensureFileScrim() {
+    var el = document.getElementById("glass-file-scrim");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "glass-file-scrim";
+      el.className = "glass-file-scrim";
+      el.setAttribute("aria-hidden", "true");
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  function showFileScrim() {
+    ensureFileScrim().classList.add("is-active");
+  }
+
+  function hideFileScrim() {
+    var el = document.getElementById("glass-file-scrim");
+    if (el) el.classList.remove("is-active");
+  }
+
+  $(document).on("mousedown.glassFileScrim focusin.glassFileScrim", "input[type='file']", function () {
+    showFileScrim();
+  });
+
+  $(document).on("change.glassFileScrim", "input[type='file']", function () {
+    // Dialog closed via selection
+    setTimeout(hideFileScrim, 50);
+  });
+
+  // Dialog cancelled: window regains focus without a change event
+  $(window).on("focus.glassFileScrim", function () {
+    setTimeout(function () {
+      var a = document.activeElement;
+      if (a && a.tagName === "INPUT" && a.type === "file") return;
+      hideFileScrim();
+    }, 120);
+  });
+
+  $(document).on("keydown.glassFileScrim", function (ev) {
+    if (ev.key === "Escape") hideFileScrim();
+  });
+
   $(function () {
     // Ensure mode/preset are coherent if head script ran or was skipped
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
