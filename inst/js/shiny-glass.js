@@ -164,6 +164,8 @@
   // iOS 27 Liquid Glass intensity: 0 = Ultra Clear, 1 = Tinted
   var intensityState = 0.45;
   var intensityBaseBlurPx = null;
+  // Last content-aware tint sample (so intensity can re-scale fills while tint is active)
+  var lastTintRgb = null;
 
   function clamp01(t) {
     t = Number(t);
@@ -258,9 +260,11 @@
       return lerp(c[key], d[key], t);
     }
 
-    // Only set fills when content-aware tint is not actively overriding.
-    // Tint path re-invokes setIntensity after sampling (see applyTint).
-    if (!opts.fromTint && !root.classList.contains("glass-tint-active")) {
+    // Content-aware tint owns fill RGB; re-scale its alphas with intensity.
+    // Neutral (no tint) path sets fills directly from intensity endpoints.
+    if (!opts.fromTint && root.classList.contains("glass-tint-active") && lastTintRgb) {
+      applyTintFills(lastTintRgb, t);
+    } else if (!opts.fromTint && !root.classList.contains("glass-tint-active")) {
       root.style.setProperty("--glass-bg", rgba(fill.r, fill.g, fill.b, A("bgA")));
       root.style.setProperty("--glass-bg-hover", rgba(fill.r, fill.g, fill.b, A("bgHoverA")));
       root.style.setProperty("--glass-bg-content", rgba(fill.r, fill.g, fill.b, A("contentA")));
@@ -481,6 +485,7 @@
 
   function clearTint() {
     var root = rootEl();
+    lastTintRgb = null;
     root.classList.remove("glass-tint-active");
     root.style.removeProperty("--glass-tint-strength");
     [
@@ -489,6 +494,7 @@
       "--glass-bg-content",
       "--glass-bg-content-hover",
       "--glass-border",
+      "--glass-rim",
       "--glass-orb-tint-1",
       "--glass-orb-tint-2",
       "--glass-orb-tint-3",
@@ -498,93 +504,132 @@
     setIntensity(intensityState, { syncInputs: true });
   }
 
+  // Apply content-sampled tint RGB with intensity-scaled alphas (Ultra Clear → Tinted).
+  // Without this, intensity only tweaked blur while tint freezes fill opacity.
+  function applyTintFills(rgb, t) {
+    if (!rgb) return;
+    t = clamp01(t != null ? t : intensityState);
+    try {
+      if (window.matchMedia("(prefers-reduced-transparency: reduce)").matches) {
+        t = 1;
+      }
+    } catch (e) { /* ignore */ }
+
+    var root = rootEl();
+    var preset = root.dataset.glassPreset || "light";
+    var ep = intensityEndpoints(preset);
+    var c = ep.clear;
+    var d = ep.tinted;
+    function A(key) {
+      return lerp(c[key], d[key], t);
+    }
+
+    // Strength softens toward Ultra Clear so tint hue still reads but fill thins
+    var baseStrength = preset === "dark" ? 0.48 : 0.55;
+    var strength = baseStrength * lerp(0.45, 1, t);
+    root.style.setProperty("--glass-tint-r", String(rgb.r));
+    root.style.setProperty("--glass-tint-g", String(rgb.g));
+    root.style.setProperty("--glass-tint-b", String(rgb.b));
+    root.style.setProperty("--glass-tint-strength", String(strength.toFixed(4)));
+
+    if (preset === "dark") {
+      root.style.setProperty("--glass-bg", rgba(rgb.r, rgb.g, rgb.b, A("bgA")));
+      root.style.setProperty("--glass-bg-hover", rgba(rgb.r, rgb.g, rgb.b, A("bgHoverA")));
+      root.style.setProperty("--glass-bg-content", rgba(rgb.r, rgb.g, rgb.b, A("contentA")));
+      root.style.setProperty(
+        "--glass-bg-content-hover",
+        rgba(rgb.r, rgb.g, rgb.b, A("contentHoverA"))
+      );
+      root.style.setProperty(
+        "--glass-border",
+        rgba(blend(rgb.r, 255, 0.42), blend(rgb.g, 255, 0.42), blend(rgb.b, 255, 0.42), A("borderA"))
+      );
+      root.style.setProperty(
+        "--glass-rim",
+        rgba(blend(rgb.r, 255, 0.55), blend(rgb.g, 255, 0.55), blend(rgb.b, 255, 0.55), A("rimA"))
+      );
+    } else {
+      // Light: keep a white mix so text stays readable, but scale alpha with intensity
+      var mixBg = lerp(0.12, 0.28, t);
+      var mixHover = lerp(0.18, 0.36, t);
+      var mixBorder = lerp(0.30, 0.50, t);
+      root.style.setProperty(
+        "--glass-bg",
+        rgba(blend(255, rgb.r, mixBg), blend(255, rgb.g, mixBg), blend(255, rgb.b, mixBg), A("bgA"))
+      );
+      root.style.setProperty(
+        "--glass-bg-hover",
+        rgba(
+          blend(255, rgb.r, mixHover),
+          blend(255, rgb.g, mixHover),
+          blend(255, rgb.b, mixHover),
+          A("bgHoverA")
+        )
+      );
+      root.style.setProperty(
+        "--glass-bg-content",
+        rgba(blend(255, rgb.r, mixBg), blend(255, rgb.g, mixBg), blend(255, rgb.b, mixBg), A("contentA"))
+      );
+      root.style.setProperty(
+        "--glass-bg-content-hover",
+        rgba(
+          blend(255, rgb.r, mixHover),
+          blend(255, rgb.g, mixHover),
+          blend(255, rgb.b, mixHover),
+          A("contentHoverA")
+        )
+      );
+      root.style.setProperty(
+        "--glass-border",
+        rgba(
+          blend(255, rgb.r, mixBorder),
+          blend(255, rgb.g, mixBorder),
+          blend(255, rgb.b, mixBorder),
+          A("borderA")
+        )
+      );
+      root.style.setProperty(
+        "--glass-rim",
+        rgba(
+          blend(255, rgb.r, mixBorder),
+          blend(255, rgb.g, mixBorder),
+          blend(255, rgb.b, mixBorder),
+          A("rimA")
+        )
+      );
+    }
+
+    var secondary = shiftHue(rgb);
+    var tertiary = shiftWarm(rgb);
+    var orb1 = (preset === "dark" ? 0.34 : 0.30) * lerp(0.4, 1, t);
+    var orb2 = (preset === "dark" ? 0.28 : 0.24) * lerp(0.4, 1, t);
+    var orb3 = (preset === "dark" ? 0.22 : 0.18) * lerp(0.4, 1, t);
+
+    root.style.setProperty(
+      "--glass-orb-tint-1",
+      rgba(rgb.r, rgb.g, rgb.b, orb1)
+    );
+    root.style.setProperty(
+      "--glass-orb-tint-2",
+      rgba(secondary.r, secondary.g, secondary.b, orb2)
+    );
+    root.style.setProperty(
+      "--glass-orb-tint-3",
+      rgba(tertiary.r, tertiary.g, tertiary.b, orb3)
+    );
+  }
+
   function applyTint(rgb) {
     if (!rgb) {
       clearTint();
       return;
     }
 
+    lastTintRgb = { r: rgb.r, g: rgb.g, b: rgb.b };
     var root = rootEl();
-    var preset = root.dataset.glassPreset || "light";
-    var strength = preset === "dark" ? 0.48 : 0.55;
-    var secondary = shiftHue(rgb);
-    var tertiary = shiftWarm(rgb);
-
     root.classList.add("glass-tint-active");
-    root.style.setProperty("--glass-tint-r", String(rgb.r));
-    root.style.setProperty("--glass-tint-g", String(rgb.g));
-    root.style.setProperty("--glass-tint-b", String(rgb.b));
-    root.style.setProperty("--glass-tint-strength", String(strength));
-
-    if (preset === "dark") {
-      root.style.setProperty(
-        "--glass-bg",
-        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.12)"
-      );
-      root.style.setProperty(
-        "--glass-bg-hover",
-        "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 0.20)"
-      );
-      root.style.setProperty(
-        "--glass-border",
-        "rgba(" +
-          blend(rgb.r, 255, 0.42) +
-          ", " +
-          blend(rgb.g, 255, 0.42) +
-          ", " +
-          blend(rgb.b, 255, 0.42) +
-          ", 0.28)"
-      );
-    } else {
-      root.style.setProperty(
-        "--glass-bg",
-        "rgba(" +
-          blend(255, rgb.r, 0.22) +
-          ", " +
-          blend(255, rgb.g, 0.22) +
-          ", " +
-          blend(255, rgb.b, 0.22) +
-          ", 0.30)"
-      );
-      root.style.setProperty(
-        "--glass-bg-hover",
-        "rgba(" +
-          blend(255, rgb.r, 0.30) +
-          ", " +
-          blend(255, rgb.g, 0.30) +
-          ", " +
-          blend(255, rgb.b, 0.30) +
-          ", 0.42)"
-      );
-      root.style.setProperty(
-        "--glass-border",
-        "rgba(" +
-          blend(255, rgb.r, 0.45) +
-          ", " +
-          blend(255, rgb.g, 0.45) +
-          ", " +
-          blend(255, rgb.b, 0.45) +
-          ", 0.58)"
-      );
-    }
-
-    var orb1 = preset === "dark" ? 0.34 : 0.30;
-    var orb2 = preset === "dark" ? 0.28 : 0.24;
-    var orb3 = preset === "dark" ? 0.22 : 0.18;
-
-    root.style.setProperty(
-      "--glass-orb-tint-1",
-      "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + orb1 + ")"
-    );
-    root.style.setProperty(
-      "--glass-orb-tint-2",
-      "rgba(" + secondary.r + ", " + secondary.g + ", " + secondary.b + ", " + orb2 + ")"
-    );
-    root.style.setProperty(
-      "--glass-orb-tint-3",
-      "rgba(" + tertiary.r + ", " + tertiary.g + ", " + tertiary.b + ", " + orb3 + ")"
-    );
-    // Scale edge/blur with intensity while tint owns fill colors
+    applyTintFills(lastTintRgb, intensityState);
+    // Scale edge/blur/highlights with intensity (fills already set above)
     setIntensity(intensityState, { fromTint: true, syncInputs: true });
   }
 
