@@ -851,6 +851,25 @@
     }
   }
 
+  function dispatchShinyHandlers(message) {
+    // Fallback when we hooked before Shiny installed its dispatcher (so prev
+    // was empty) — still deliver showModal / insertUI / etc.
+    if (!message || typeof message !== "object") return;
+    var handlers = Shiny.messageHandlers || Shiny._messageHandlers || null;
+    if (!handlers) return;
+    Object.keys(message).forEach(function (type) {
+      var list = handlers[type];
+      if (!list || !list.length) return;
+      for (var i = 0; i < list.length; i++) {
+        try {
+          list[i](message[type]);
+        } catch (eH) {
+          /* ignore handler errors */
+        }
+      }
+    });
+  }
+
   function installOnCustomMessageHook() {
     if (typeof Shiny === "undefined" || !Shiny) return;
     var prev = Shiny.oncustommessage;
@@ -867,6 +886,13 @@
           return prev.apply(this, arguments);
         } catch (e2) {
           /* ignore host handler errors */
+        }
+      } else {
+        // prev missing/overwritten — still run Shiny's registered handlers
+        try {
+          dispatchShinyHandlers(message);
+        } catch (e3) {
+          /* ignore */
         }
       }
     };
@@ -916,6 +942,21 @@
       Shiny.addCustomMessageHandler("shinyglass", handleShinyglassMessage);
       Shiny.addCustomMessageHandler("glassPreset", function (preset) {
         applyPreset(preset || "light");
+      });
+      // Close a Bootstrap modal by id (used by demos after actionButton in footer)
+      Shiny.addCustomMessageHandler("shinyglass-close-modal", function (id) {
+        try {
+          var el = document.getElementById(id || "");
+          if (!el) return;
+          if (window.bootstrap && bootstrap.Modal) {
+            var inst = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+            inst.hide();
+          } else if (window.jQuery) {
+            $(el).modal("hide");
+          }
+        } catch (eClose) {
+          /* ignore */
+        }
       });
     }
     installOnCustomMessageHook();

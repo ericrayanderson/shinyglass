@@ -149,7 +149,15 @@ ui <- page_sidebar(
       ),
       div(
         class = "d-flex flex-wrap gap-2 align-items-center mt-2",
-        actionButton("show_modal", "Show modal", class = "btn-outline-primary"),
+        # Client-side BS5 modal open (works even if Shiny custom messages lag)
+        tags$button(
+          type = "button",
+          class = "btn btn-outline-primary",
+          id = "show_modal",
+          `data-bs-toggle` = "modal",
+          `data-bs-target` = "#glass_demo_modal",
+          "Show modal"
+        ),
         downloadButton("download", "downloadButton"),
         downloadLink("download_link", "downloadLink")
       ),
@@ -164,6 +172,72 @@ ui <- page_sidebar(
       class = "bslib-card",
       # renderPrint + verbatimTextOutput is the reliable pair for str()-style dumps
       verbatimTextOutput("values", placeholder = TRUE)
+    )
+  ),
+  # Static Bootstrap 5 modal (client open) so it works even if custom messages
+  # are flaky; glass_theme styles .modal-content + .modal-backdrop blur.
+  tags$div(
+    class = "modal fade",
+    id = "glass_demo_modal",
+    tabindex = "-1",
+    `aria-labelledby` = "glass_demo_modal_title",
+    `aria-hidden` = "true",
+    tags$div(
+      class = "modal-dialog modal-dialog-centered",
+      tags$div(
+        class = "modal-content",
+        tags$div(
+          class = "modal-header",
+          tags$h5(
+            class = "modal-title",
+            id = "glass_demo_modal_title",
+            "Glass modal"
+          ),
+          tags$button(
+            type = "button",
+            class = "btn-close",
+            `data-bs-dismiss` = "modal",
+            `aria-label` = "Close"
+          )
+        ),
+        tags$div(
+          class = "modal-body",
+          p(
+            "This dialog is a Bootstrap modal under ",
+            code("glass_theme()"),
+            ". The page behind frosts with backdrop blur (same idea as the file-picker scrim)."
+          ),
+          selectInput(
+            "modal_choice",
+            "Modal selectInput",
+            c("Ultra Clear", "Balanced", "Tinted"),
+            selected = "Balanced",
+            width = "100%"
+          ),
+          textInput(
+            "modal_text",
+            "Modal textInput",
+            "Hello from the modal",
+            width = "100%"
+          )
+        ),
+        tags$div(
+          class = "modal-footer",
+          tags$button(
+            type = "button",
+            class = "btn btn-secondary",
+            `data-bs-dismiss` = "modal",
+            "Close"
+          ),
+          # data-bs-dismiss closes on the client; server still gets the click
+          actionButton(
+            "modal_ok",
+            "OK",
+            class = "btn-primary",
+            `data-bs-dismiss` = "modal"
+          )
+        )
+      )
     )
   )
 )
@@ -181,40 +255,15 @@ server <- function(input, output, session) {
     showNotification("actionLink clicked", type = "message", duration = 3)
   })
 
-  observeEvent(input$show_modal, {
-    showModal(modalDialog(
-      title = "Glass modal",
-      easyClose = TRUE,
-      fade = TRUE,
-      size = "m",
-      tagList(
-        p(
-          "This dialog uses ",
-          code("modalDialog()"),
-          " under ",
-          code("glass_theme()"),
-          ". The page behind should frost with backdrop blur."
-        ),
-        selectInput(
-          "modal_choice",
-          "Modal selectInput",
-          c("Ultra Clear", "Balanced", "Tinted"),
-          selected = "Balanced",
-          width = "100%"
-        ),
-        textInput("modal_text", "Modal textInput", "Hello from the modal", width = "100%")
-      ),
-      footer = tagList(
-        modalButton("Close"),
-        actionButton("modal_ok", "OK", class = "btn-primary")
-      )
-    ))
-  })
-
+  # Client data-bs-toggle / data-bs-dismiss open and close the modal.
   observeEvent(input$modal_ok, {
-    removeModal()
     showNotification(
-      paste("Modal OK —", input$modal_choice %||% "?", "/", input$modal_text %||% ""),
+      paste0(
+        "Modal OK - ",
+        input$modal_choice %||% "?",
+        " / ",
+        input$modal_text %||% ""
+      ),
       type = "message",
       duration = 3
     )
