@@ -2588,14 +2588,29 @@ body .Reactable {
   background-color: var(--glass-bg) !important;
   color: var(--glass-body-color, inherit) !important;
   border-color: var(--glass-border) !important;
-  overflow: hidden;
+  // glass-surface sets overflow:hidden for rounded corners; allow horizontal
+  // scroll so last column headers (e.g. "Petal Length") are not clipped.
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
   margin-bottom: 0.75rem;
   max-width: 100%;
+  width: 100%;
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0;
 
   th,
   td {
     color: inherit !important;
     border-color: color-mix(in srgb, var(--glass-border) 70%, transparent) !important;
+    // Prefer wrap over ellipsis/clip in narrow glass cards
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: normal;
+    hyphens: manual;
+    vertical-align: bottom;
+    line-height: 1.25;
   }
 }
 
@@ -2619,6 +2634,13 @@ body .Reactable {
   color: var(--glass-body-color, inherit) !important;
   border-color: var(--glass-border) !important;
   font-weight: 600;
+  // Keep multi-word headers readable when the card is narrow
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  min-width: 4.5rem;
+  padding-left: 0.55rem !important;
+  padding-right: 0.55rem !important;
 }
 
 .gt_row,
@@ -2658,14 +2680,26 @@ body .Reactable {
   color: #{$glass-accent};
 }
 
-// Don't double-frame gt inside shiny-html-output
-.shiny-html-output:has(.gt_table) {
+// Don't double-frame gt inside shiny-html-output; allow the host to scroll
+// when the table is wider than the glass card.
+.shiny-html-output:has(.gt_table),
+.gt_shiny,
+.card:has(.gt_table) > .card-body,
+.bslib-card:has(.gt_table) > .card-body {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  max-width: 100%;
+}
+
+.shiny-html-output:has(.gt_table) {
+  // restore a little inset so glass rim of .gt_table still breathes
+  padding: 0.15rem !important;
 }
 
 // ---------------------------------------------------------------------------

@@ -69,8 +69,10 @@ ui <- page_sidebar(
       }
     )
   ),
+  # Even split on desktop so the gt card is wide enough for full column labels
+  # (a 7/5 split was clipping "Petal Length" under overflow:hidden glass).
   layout_columns(
-    col_widths = breakpoints(xs = c(12, 12), md = c(7, 5)),
+    col_widths = breakpoints(xs = c(12, 12), md = c(6, 6)),
     gap = "0.75rem",
     card(
       full_screen = TRUE,
@@ -153,12 +155,21 @@ server <- function(input, output, session) {
       ) |>
       cols_label(
         Species = "Species",
-        Sepal.Length = "Sepal L",
-        Sepal.Width = "Sepal W",
-        Petal.Length = "Petal L"
+        Sepal.Length = "Sepal Length",
+        Sepal.Width = "Sepal Width",
+        Petal.Length = "Petal Length"
+      ) |>
+      cols_align(align = "left", columns = Species) |>
+      cols_align(align = "right", columns = where(is.numeric)) |>
+      cols_width(
+        Species ~ px(96),
+        Sepal.Length ~ px(104),
+        Sepal.Width ~ px(104),
+        Petal.Length ~ px(104)
       ) |>
       opt_row_striping() |>
       tab_options(
+        table.width = pct(100),
         table.background.color = "transparent",
         heading.background.color = "transparent",
         column_labels.background.color = "transparent",
@@ -166,7 +177,9 @@ server <- function(input, output, session) {
         table.border.top.color = "transparent",
         table.border.bottom.color = "transparent",
         table.border.left.color = "transparent",
-        table.border.right.color = "transparent"
+        table.border.right.color = "transparent",
+        column_labels.padding = "8px",
+        data_row.padding = "6px"
       )
   })
 }
