@@ -50,6 +50,7 @@
 <div class="section level3">
 <h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
 <ul><li><p>Light / Dark / Auto is an iOS-style segmented control: theme-aware glass thumb (changes in light vs dark), body ink on every chip, and a delegated click so Auto applies even when host pages rewrite inline handlers.</p></li>
+<li><p>Theme toggle applies the preset once (no inline handler + server echo storm), so plots no longer flicker when switching Light / Dark.</p></li>
 <li><p>Default <code><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton()</a></code> / <code>.btn-link</code> ink follows theme tokens (<code>--glass-body-color</code> / <code>--glass-accent</code>) instead of compiled <code>$primary</code>.</p></li>
 <li><p>[glass_resolved_preset()] reports the resolved light/dark appearance so plots do not stay light-inked when the user picks Auto.</p></li>
 <li><p>Dark pack no longer re-locks default / outline / download labels to compiled <code>$primary</code>. Download links and ghost focus rings follow <code>--glass-accent</code>. Accent <code>&lt;select id="accent"&gt;</code> applies <code>setPrimary</code> immediately.</p></li>

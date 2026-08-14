@@ -26,6 +26,9 @@
   delegated click so Auto applies even when host pages rewrite inline
   handlers.
 
+- Theme toggle applies the preset once (no inline handler + server echo
+  storm), so plots no longer flicker when switching Light / Dark.
+
 - Default
   [`actionButton()`](https://rdrr.io/pkg/shiny/man/actionButton.html) /
   `.btn-link` ink follows theme tokens (`--glass-body-color` /
