@@ -274,6 +274,14 @@ test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
   expect_match(css, "--glass-body-color")
 })
 
+test_that("dark pack does not re-lock default button labels to $primary", {
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_false(grepl(
+    "color-mix\\(in srgb, \\$primary 88%, #ffffff 12%\\)",
+    scss
+  ))
+})
+
 test_that("glass_resolved_preset prefers client resolved value", {
   expect_equal(glass_resolved_preset(NULL), "light")
   expect_equal(glass_resolved_preset(list(), default = "dark"), "dark")

@@ -1248,6 +1248,19 @@
     syncResolvedPresetInput();
   });
 
+  // Accent pickers (select#accent) — client-first, same host-rewrite hole as preset
+  $(document).on(
+    "change.glassPrimary",
+    "select#accent, select[data-glass-primary-input], [data-glass-primary-input] select",
+    function () {
+      var v = $(this).val();
+      if (v == null || v === "") return;
+      if (window.shinyglass && typeof window.shinyglass.setPrimary === "function") {
+        window.shinyglass.setPrimary(v);
+      }
+    }
+  );
+
   // Frost the page while the native file picker is open (mirrors modal-backdrop).
   function ensureFileScrim() {
     var el = document.getElementById("glass-file-scrim");
