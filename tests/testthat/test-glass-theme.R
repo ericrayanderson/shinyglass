@@ -271,6 +271,24 @@ test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
   # Shiny checkboxInput markup (not only Bootstrap form-check-input)
   expect_match(css, "shiny-input-checkbox")
   expect_match(css, "glass-theme-toggle")
+  expect_match(css, "--glass-body-color")
+})
+
+test_that("glass_resolved_preset prefers client resolved value", {
+  expect_equal(glass_resolved_preset(NULL), "light")
+  expect_equal(glass_resolved_preset(list(), default = "dark"), "dark")
+  expect_equal(
+    glass_resolved_preset(list(glass_resolved_preset = "dark", preset = "auto")),
+    "dark"
+  )
+  expect_equal(
+    glass_resolved_preset(list(preset = "dark")),
+    "dark"
+  )
+  expect_equal(
+    glass_resolved_preset(list(preset = "auto")),
+    "light"
+  )
 })
 
 test_that("compiled CSS styles DT/Bootstrap page-link surfaces (not li-only)", {
