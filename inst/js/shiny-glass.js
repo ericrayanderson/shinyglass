@@ -98,6 +98,32 @@
           el.value = v;
         }
       });
+    syncThemeToggles(v);
+  }
+
+  function toggleButtonMode(el) {
+    var d = el.getAttribute("data-glass-preset-mode");
+    if (d === "light" || d === "dark" || d === "auto") return d;
+    var id = el.id || "";
+    if (/_light$/.test(id)) return "light";
+    if (/_dark$/.test(id)) return "dark";
+    if (/_auto$/.test(id)) return "auto";
+    return "";
+  }
+
+  // Move the filled selected chip; unselected stay ghost with body ink.
+  function syncThemeToggles(mode) {
+    var v = mode || rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
+    document
+      .querySelectorAll(".glass-theme-toggle .btn, [data-glass-preset-mode]")
+      .forEach(function (el) {
+        var m = toggleButtonMode(el);
+        if (!m) return;
+        var on = m === v;
+        el.classList.toggle("btn-primary", on);
+        el.classList.toggle("btn-secondary", !on);
+        el.setAttribute("aria-pressed", on ? "true" : "false");
+      });
   }
 
   function applyPreset(mode, opts) {

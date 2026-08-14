@@ -4237,8 +4237,17 @@ body .controls-pane {
 }
 
 // Theme toggle helper (glass_theme_toggle())
+// Unselected = body ink (not locked $primary). Selected chip stays btn-primary.
 .glass-theme-toggle .btn {
   min-width: 4.5rem;
+}
+
+.glass-theme-toggle .btn:not(.btn-primary) {
+  color: var(--glass-body-color) !important;
+}
+
+.glass-theme-toggle .btn.btn-primary {
+  color: #fff !important;
 }
 
 // Runtime accent: primary buttons follow --glass-accent.

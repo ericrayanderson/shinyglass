@@ -229,6 +229,10 @@ test_that("glass_theme_toggle returns labeled buttons", {
   expect_match(html, "setPreset")
   expect_match(html, "glass-theme-toggle")
   expect_match(html, "dark")
+  expect_match(html, "data-glass-preset-mode")
+  expect_match(html, "aria-pressed=\"true\"")
+  expect_match(html, "btn-primary")
+  expect_match(html, "btn-secondary")
 })
 
 test_that("head script includes primary CSS variables", {

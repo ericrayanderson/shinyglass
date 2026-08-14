@@ -304,14 +304,14 @@ glass_theme_toggle <- function(
 
   btns <- lapply(modes, function(mode) {
     id <- paste0(inputId, "_", mode)
-    btn_class <- "btn-sm"
-    if (identical(mode, selected)) {
-      btn_class <- paste(btn_class, "btn-primary")
-    }
+    active <- identical(mode, selected)
+    btn_class <- if (active) "btn-sm btn-primary" else "btn-sm btn-secondary"
     shiny::actionButton(
       inputId = id,
       label = unname(labels[[mode]]),
       class = btn_class,
+      `data-glass-preset-mode` = mode,
+      `aria-pressed` = if (active) "true" else "false",
       onclick = sprintf(
         "window.shinyglass&&window.shinyglass.setPreset(%s)",
         jsonlite_quote(mode)
