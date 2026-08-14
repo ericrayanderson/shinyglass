@@ -5,6 +5,7 @@ CMD
 CRAN
 DT
 DataTables
+Datepicker
 Glass
 JS
 Liquid
@@ -27,7 +28,6 @@ controlbar
 css
 darkly
 datepicker
-Datepicker
 dreamRs
 dropdown
 dropdowns
@@ -65,9 +65,10 @@ shinyapps
 shinybusy
 shinydashboard
 shinydashboardPlus
-showModal
 shinyglass
+showModal
 specular
 testthat
 theming
+unselected
 waiter

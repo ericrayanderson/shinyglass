@@ -546,6 +546,7 @@ body.bslib-page-navbar > .navbar,
   position: sticky;
   top: var(--glass-float-margin);
   z-index: 1030;
+  overflow: visible !important;
   // Match body / sidebar ink. Bootstrap often ships brand as #fff (dark
   // navbar default), which disappears on light glass.
   color: var(--glass-body-color) !important;
@@ -872,8 +873,8 @@ body.glass-nav-expanded {
 }
 
 // default actionButton (not Bootstrap gray fill)
-.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.shiny-download-link),
-.action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) {
+.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-secondary):not(.btn-file):not(.shiny-download-link),
+.action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-secondary) {
   @include glass-button-ghost($primary);
 }
 
@@ -1026,8 +1027,7 @@ a.shiny-download-link {
     color: #1d1d1f !important;
   }
 
-  .btn-default:not(.btn-primary):not(.shiny-download-link),
-  .action-button.btn-default:not(.btn-primary),
+  .action-button.btn-default:not(.btn-primary):not(.btn-secondary),
   .btn-outline-primary,
   a.shiny-download-link:not(.btn) {
     color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
@@ -1476,7 +1476,7 @@ body {
 // Verbatim / live values / code samples
 pre,
 pre.shiny-text-output,
-.shiny-text-output,
+.shiny-text-output:not(.value-box-value),
 .shiny-verbatim,
 .verbatim,
 code,
@@ -1517,6 +1517,7 @@ small,
 
 .dropdown-menu {
   background-color: var(--glass-menu-bg);
+  color: var(--glass-menu-color);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--glass-border);
@@ -1534,6 +1535,257 @@ small,
       background: var(--glass-bg-hover);
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Overlay chrome that only exists after a click (datepicker, notifications,
+// accordion, tooltip/popover, toast, file Browse, close ×).
+// Same failure class as DT .page-link: Bootstrap / plugin paints the visible
+// node with light-theme hex, and the 0.2 dark pack no longer hides it behind
+// Bootswatch darkly.
+// ---------------------------------------------------------------------------
+
+// bootstrap-datepicker (dateInput / dateRangeInput). Also has .dropdown-menu.
+.datepicker,
+.datepicker-dropdown,
+.datepicker.datepicker-dropdown {
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+  z-index: 1070 !important;
+  padding: 0.45rem 0.55rem;
+
+  table {
+    background: transparent !important;
+    color: inherit;
+  }
+
+  th,
+  td,
+  .day,
+  .dow,
+  .datepicker-switch,
+  .prev,
+  .next,
+  .cw {
+    color: var(--glass-menu-color) !important;
+    background: transparent !important;
+    border-radius: 0.45rem;
+  }
+
+  .dow {
+    opacity: 0.62;
+    font-weight: 600;
+  }
+
+  .day:hover,
+  .datepicker-switch:hover,
+  .prev:hover,
+  .next:hover {
+    background: var(--glass-bg-hover) !important;
+    color: var(--glass-menu-color) !important;
+  }
+
+  .day.old,
+  .day.new,
+  .day.disabled,
+  .day.disabled:hover {
+    color: var(--glass-menu-color) !important;
+    opacity: 0.42;
+    background: transparent !important;
+  }
+
+  .day.today,
+  .today {
+    background: color-mix(in srgb, var(--glass-menu-bg) 72%, #{$glass-accent} 28%) !important;
+    color: var(--glass-menu-color) !important;
+  }
+
+  .day.active,
+  .day.active:hover,
+  .active.day,
+  table tr td.active,
+  table tr td.active.active,
+  table tr td.active:hover {
+    background: #{$glass-accent} !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    opacity: 1;
+  }
+
+  .day.range,
+  table tr td.range {
+    background: color-mix(in srgb, var(--glass-menu-bg) 70%, #{$glass-accent} 30%) !important;
+    color: var(--glass-menu-color) !important;
+    opacity: 1;
+  }
+}
+
+// Shiny toast notifications — default plugin is cream/black on light hex.
+.shiny-notification {
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.9rem !important;
+  box-shadow:
+    0 16px 40px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+.shiny-notification-content,
+.shiny-notification-content-text,
+.shiny-notification-close {
+  color: inherit !important;
+}
+
+.shiny-notification-close {
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.shiny-notification-message {
+  border-left: 3px solid #{$glass-accent};
+}
+
+.shiny-notification-warning {
+  border-left: 3px solid var(--bs-warning, #ff9500);
+}
+
+.shiny-notification-error {
+  border-left: 3px solid var(--bs-danger, #ff3b30);
+}
+
+// Bootstrap close × is a black SVG; invert on dark glass.
+.btn-close {
+  --bs-btn-close-opacity: 0.65;
+  --bs-btn-close-hover-opacity: 0.95;
+}
+
+[data-glass-preset="dark"] .btn-close {
+  filter: invert(1) grayscale(1);
+}
+
+// Generic Bootstrap / bslib accordion (teal-specific rules stay below).
+.accordion-item {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--glass-radius) * 0.75);
+  overflow: hidden;
+  color: inherit;
+}
+
+.accordion-button {
+  background: var(--glass-bg) !important;
+  color: var(--glass-body-color) !important;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+
+  &:not(.collapsed) {
+    background: var(--glass-bg-hover) !important;
+    color: var(--glass-body-color) !important;
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+  }
+
+  &:focus {
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      0 0 0 0.15rem color-mix(in srgb, #{$glass-accent} 22%, transparent);
+  }
+
+  &::after {
+    opacity: 0.7;
+  }
+}
+
+[data-glass-preset="dark"] .accordion-button::after {
+  filter: invert(1);
+}
+
+.accordion-body {
+  background: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  color: inherit;
+}
+
+// Bootstrap 5 / bslib tooltip + popover (not ion/noUi slider chips).
+.tooltip .tooltip-inner {
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 0.55rem;
+  box-shadow: 0 8px 24px var(--glass-shadow);
+}
+
+.tooltip {
+  --bs-tooltip-bg: var(--glass-menu-bg);
+  --bs-tooltip-color: var(--glass-menu-color);
+}
+
+.popover {
+  --bs-popover-bg: var(--glass-menu-bg);
+  --bs-popover-header-bg: var(--glass-bg);
+  --bs-popover-body-color: var(--glass-menu-color);
+  --bs-popover-header-color: var(--glass-menu-color);
+  --bs-popover-border-color: var(--glass-border);
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.9rem;
+  box-shadow: 0 16px 40px var(--glass-elevated-shadow, var(--glass-shadow));
+}
+
+.popover-header,
+.popover-body {
+  background: transparent !important;
+  color: inherit !important;
+  border-color: var(--glass-border) !important;
+}
+
+// bslib / Bootstrap toast
+.toast {
+  --bs-toast-bg: var(--glass-menu-bg);
+  --bs-toast-color: var(--glass-menu-color);
+  --bs-toast-border-color: var(--glass-border);
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.9rem;
+}
+
+.toast-header {
+  background: transparent !important;
+  color: inherit !important;
+  border-color: var(--glass-border) !important;
+}
+
+.toast-body {
+  color: inherit;
+}
+
+// File input Browse chip (Shiny wraps <input type=file> in .btn-file / input-group).
+// Beat .btn-default { glass-button-ghost($primary) } so the label is not
+// brand-blue on a translucent fill (2.7:1 in dark).
+.shiny-input-container:has(input[type="file"]) .btn,
+.shiny-input-container .btn-file,
+.btn-file,
+.btn-file.btn {
+  @include glass-input();
+  color: var(--glass-body-color) !important;
+  background: var(--glass-bg) !important;
+}
+
+.shiny-input-container:has(input[type="file"]) .form-control[readonly],
+.shiny-input-container input[type="text"][readonly].form-control {
+  color: inherit;
 }
 
 .alert {
@@ -1567,6 +1819,68 @@ small,
   @include glass-surface();
 }
 
+// Value boxes: tinted glass, not solid .bg-* slabs. Keep a wash of the
+// theme color so primary/success/info still read, but the page orbs show
+// through. Ink follows the glass body pack (not white-on-solid).
+@mixin glass-value-box-tint($fill) {
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, #{$fill} 30%, transparent) 0%,
+      color-mix(in srgb, #{$fill} 12%, var(--glass-bg)) 100%
+    ) !important;
+  background-color: transparent !important;
+  color: var(--glass-body-color) !important;
+  --bs-card-color: var(--glass-body-color);
+  --bs-card-title-color: var(--glass-body-color);
+  --bs-card-subtitle-color: var(--glass-body-color);
+  --bslib-color-fg: var(--glass-body-color);
+  --bslib-value-box-color: var(--glass-body-color);
+  border-color: color-mix(in srgb, #{$fill} 38%, var(--glass-border)) !important;
+}
+
+.bslib-value-box.bg-primary,
+.bslib-value-box.text-bg-primary,
+.value-box.bg-primary {
+  @include glass-value-box-tint($glass-accent);
+}
+
+@each $name, $color in $theme-colors {
+  @if $name != primary {
+    .bslib-value-box.bg-#{$name},
+    .bslib-value-box.text-bg-#{$name},
+    .value-box.bg-#{$name} {
+      @include glass-value-box-tint($color);
+    }
+  }
+}
+
+.bslib-value-box .value-box-title,
+.bslib-value-box .value-box-value,
+.bslib-value-box .shiny-text-output,
+.value-box .value-box-title,
+.value-box .value-box-value,
+.value-box .shiny-text-output {
+  color: inherit !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  font-size: inherit;
+  white-space: normal;
+}
+
+// bslib nests the value in an inner fill/showcase well — keep it open
+.bslib-value-box .value-box-area,
+.bslib-value-box .value-box-showcase,
+.bslib-value-box .html-fill-container,
+.bslib-value-box .html-fill-item {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 .bslib-page-sidebar > .navbar {
   @include glass-floating(var(--glass-radius));
   background: var(--glass-bg) !important;
@@ -1578,6 +1892,7 @@ small,
   position: sticky;
   top: var(--glass-float-margin);
   z-index: 1030;
+  overflow: visible !important;
   border-bottom: 1px solid var(--glass-border) !important;
 
   // Force light-glass brand ink (Bootstrap/bslib default brand is often #fff)
@@ -1886,16 +2201,36 @@ small,
   box-sizing: border-box;
 }
 
-// Nested plots inside cards: lighter frame so they don't double-glass
+// Nested plots / tables inside cards: no second pane. The card is the glass;
+// let page orbs show through a transparent host (pair with renderPlot(bg=NA)).
 .card .shiny-plot-output,
 .card .shiny-image-output,
 .bslib-card .shiny-plot-output,
-.bslib-card .shiny-image-output {
-  background: color-mix(in srgb, var(--glass-bg) 55%, transparent);
-  box-shadow:
-    0 2px 12px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
-    inset 0 1px 0 var(--glass-highlight);
-  border-color: color-mix(in srgb, var(--glass-border) 70%, transparent);
+.bslib-card .shiny-image-output,
+.card .dataTables_wrapper,
+.bslib-card .dataTables_wrapper,
+.card .shiny-html-output:has(.dataTables_wrapper),
+.bslib-card .shiny-html-output:has(.dataTables_wrapper),
+.card .shiny-html-output:has(.gt_table),
+.bslib-card .shiny-html-output:has(.gt_table) {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.15rem 0 0;
+  margin-bottom: 0;
+
+  &::before,
+  &::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  img {
+    border-radius: 0;
+  }
 }
 
 // Frame html outputs that carry real content. Empty teal validation
@@ -3902,8 +4237,17 @@ body .controls-pane {
 }
 
 // Theme toggle helper (glass_theme_toggle())
+// Unselected = body ink (not locked $primary). Selected chip stays btn-primary.
 .glass-theme-toggle .btn {
   min-width: 4.5rem;
+}
+
+.glass-theme-toggle .btn:not(.btn-primary) {
+  color: var(--glass-body-color) !important;
+}
+
+.glass-theme-toggle .btn.btn-primary {
+  color: #fff !important;
 }
 
 // Runtime accent: primary buttons follow --glass-accent.
