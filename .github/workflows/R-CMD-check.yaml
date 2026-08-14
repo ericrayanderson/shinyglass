@@ -52,5 +52,14 @@ jobs:
       - name: Check URLs + Spelling
         if: matrix.config.r == 'release' && matrix.config.os == 'ubuntu-latest'
         run: |
-          Rscript -e "urlchecker::url_check()"
+          Rscript -e '
+            last <- NULL
+            for (i in 1:4) {
+              last <- tryCatch(urlchecker::url_check(), error = function(e) e)
+              if (!inherits(last, "error")) break
+              message("url_check attempt ", i, " failed: ", conditionMessage(last))
+              Sys.sleep(12 * i)
+            }
+            if (inherits(last, "error")) stop(last)
+          '
           Rscript -e "spelling::spell_check_package()"

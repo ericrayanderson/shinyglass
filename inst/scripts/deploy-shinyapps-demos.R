@@ -102,7 +102,7 @@ catalog <- list(
     entry = "app-glass.R",
     imports = c(
       "shiny", "shinyWidgets", "ggplot2", "ggthemes", "bslib", "dplyr",
-      "data.table", "reactable", "tidyr", "ggtext", "shinyglass"
+      "data.table", "reactable", "tidyr", "shinyglass"
     )
   ),
   plotly_gt = list(
