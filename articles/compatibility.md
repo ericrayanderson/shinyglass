@@ -9,8 +9,9 @@ stacks where practical.
 | Stack | Status | Notes |
 |----|----|----|
 | `fluidPage` / `navbarPage` | Supported | Drop-in `theme = glass_theme()` |
+| bslib `page_navbar` / `nav_menu` | Supported | See `chrome-kitchen-sink.R` |
 | bslib `page_sidebar` / `layout_sidebar` | Supported | Floating glass sidebar; nested layouts stay in-flow (0.1.1+) |
-| bslib cards, value boxes, navsets | Supported |  |
+| bslib cards, value boxes, navsets, accordion | Supported | Tooltip / popover / toast use the glass menu surface |
 | DT | Supported | Visible `.page-link` chips (not li-only) |
 | reactable | Supported | Avoids double-framing the html-output |
 | **gt** | Supported | Table / heading / stripe / summary chrome |
@@ -37,6 +38,9 @@ stacks where practical.
 
 ``` r
 
+# overlays: datepicker, notifications, showModal, accordion, navbar menu
+shiny::runApp(system.file("examples", "chrome-kitchen-sink.R", package = "shinyglass"))
+
 # plotly + gt (+ waiter if installed)
 shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"))
 
@@ -48,7 +52,7 @@ Dual-theme contrast audit (optional ecosystem apps skip if packages
 missing):
 
 ``` r
-Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_gt
+Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_gt,chrome
 ```
 
 ## Tips
