@@ -311,11 +311,7 @@ glass_theme_toggle <- function(
       label = unname(labels[[mode]]),
       class = btn_class,
       `data-glass-preset-mode` = mode,
-      `aria-pressed` = if (active) "true" else "false",
-      onclick = sprintf(
-        "window.shinyglass&&window.shinyglass.setPreset(%s)",
-        jsonlite_quote(mode)
-      )
+      `aria-pressed` = if (active) "true" else "false"
     )
   })
 

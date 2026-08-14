@@ -132,8 +132,12 @@
     var v = resolved || rootEl().dataset.glassPreset || "light";
     if (v !== "light" && v !== "dark") v = "light";
     if (!(window.Shiny && typeof Shiny.setInputValue === "function")) return;
+    var root = rootEl();
+    if (root.dataset.glassResolvedSent === v) return;
+    root.dataset.glassResolvedSent = v;
     try {
-      Shiny.setInputValue("glass_resolved_preset", v, { priority: "event" });
+      // Default priority: identical values do not invalidate renderPlot.
+      Shiny.setInputValue("glass_resolved_preset", v);
     } catch (eRes) {
       /* ignore */
     }
@@ -142,14 +146,21 @@
   function applyPreset(mode, opts) {
     opts = opts || {};
     var root = rootEl();
-    if (mode === "light" || mode === "dark" || mode === "auto") {
-      root.dataset.glassMode = mode;
-    } else {
+    if (mode !== "light" && mode !== "dark" && mode !== "auto") {
       mode = root.dataset.glassMode || "light";
     }
 
     var resolved = resolvePreset(mode);
+    if (
+      !opts.force &&
+      root.dataset.glassMode === mode &&
+      root.dataset.glassPreset === resolved
+    ) {
+      return;
+    }
+
     var prev = root.dataset.glassPreset;
+    root.dataset.glassMode = mode;
     root.dataset.glassPreset = resolved;
     // Bootstrap 5 color-mode attribute (helps components that key off it)
     root.setAttribute("data-bs-theme", resolved);
@@ -938,7 +949,11 @@
       handleShinyglassMessage(envelope.shinyglass);
     }
     if (envelope.glassPreset != null) {
-      applyPreset(envelope.glassPreset || "light");
+      var already =
+        envelope.shinyglass &&
+        typeof envelope.shinyglass === "object" &&
+        envelope.shinyglass.preset != null;
+      if (!already) applyPreset(envelope.glassPreset || "light");
     }
   }
 
