@@ -45,6 +45,28 @@ for (pkg in c("chromote", "processx", "curl", "jsonlite")) {
   }
 }
 
+# CI / root containers: Chrome refuses to start without these, and the first
+# session can flake with "debugging port not open after 10 seconds".
+chromote::set_chrome_args(unique(c(
+  chromote::default_chrome_args(),
+  "--no-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu"
+)))
+
+open_chromote_session <- function(attempts = 4L) {
+  last <- NULL
+  for (i in seq_len(attempts)) {
+    sess <- tryCatch(chromote::ChromoteSession$new(), error = function(e) e)
+    if (!inherits(sess, "error")) {
+      return(sess)
+    }
+    last <- sess
+    Sys.sleep(1.25 * i)
+  }
+  stop(last)
+}
+
 script_path <- sub(
   "^--file=",
   "",
@@ -685,7 +707,7 @@ run_case <- function(app_key, preset, port) {
     if (proc$is_alive()) try(proc$kill(tree = TRUE), silent = TRUE)
   }, add = TRUE)
 
-  b <- chromote::ChromoteSession$new()
+  b <- open_chromote_session()
   on.exit(try(b$close(), silent = TRUE), add = TRUE)
   b$set_viewport_size(width = 1400L, height = 900L)
   b$go_to(launched$url)
