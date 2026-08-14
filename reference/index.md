@@ -38,3 +38,6 @@ Create and update a Liquid Glass theme for your Shiny app.
   Observe
   [`glass_preset_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_preset_input.md)
   on the server
+
+- [`glass_resolved_preset()`](https://ericrayanderson.github.io/shinyglass/reference/glass_resolved_preset.md)
+  : Resolved light or dark appearance

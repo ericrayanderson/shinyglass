@@ -26,6 +26,14 @@
   delegated click so Auto applies even when host pages rewrite inline
   handlers.
 
+- Default
+  [`actionButton()`](https://rdrr.io/pkg/shiny/man/actionButton.html) /
+  `.btn-link` ink follows theme tokens (`--glass-body-color` /
+  `--glass-accent`) instead of compiled `$primary`.
+
+- \[glass_resolved_preset()\] reports the resolved light/dark appearance
+  so plots do not stay light-inked when the user picks Auto.
+
 - \[glass_intensity_slider()\] / \[observe_glass_intensity()\] — iOS
   27-style **Ultra Clear → Tinted** control. `glass_theme(intensity = )`
   sets the starting value (`0`–`1`, default `0.45`);
