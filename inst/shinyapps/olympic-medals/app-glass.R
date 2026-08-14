@@ -7,7 +7,9 @@ library(dplyr)
 library(data.table)
 library(reactable)
 library(tidyr)
-library(ggtext)
+if (requireNamespace("ggtext", quietly = TRUE)) {
+  library(ggtext)
+}
 library(shinyglass)
 
 source("R/data.R")

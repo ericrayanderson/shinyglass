@@ -28,7 +28,11 @@ visualisation_medal <- function(x) {
     theme(text = element_text(size = 15)) +
     theme(
       axis.title.y = element_blank(),
-      plot.subtitle = element_markdown()
+      plot.subtitle = if (requireNamespace("ggtext", quietly = TRUE)) {
+        ggtext::element_markdown()
+      } else {
+        ggplot2::element_text()
+      }
     ) +
     guides(fill = "none")
 }
