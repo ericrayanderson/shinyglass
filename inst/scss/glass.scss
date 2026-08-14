@@ -825,7 +825,7 @@ body.glass-nav-expanded {
   }
 }
 
-@mixin glass-button-ghost($label-color: $primary) {
+@mixin glass-button-ghost($label-color: var(--glass-body-color)) {
   @include glass-button-type();
   @include glass-input();
   color: #{$label-color} !important;
@@ -842,9 +842,9 @@ body.glass-nav-expanded {
 
   &:focus-visible {
     outline: none;
-    border-color: rgba($primary, 0.45) !important;
+    border-color: color-mix(in srgb, var(--glass-accent, #{$primary}) 45%, transparent) !important;
     box-shadow:
-      0 0 0 0.2rem rgba($primary, 0.14),
+      0 0 0 0.2rem color-mix(in srgb, var(--glass-accent, #{$primary}) 14%, transparent),
       inset 0 1px 0 var(--glass-highlight);
   }
 }
@@ -1005,14 +1005,14 @@ a.shiny-download-link {
     display: inline-flex;
     align-items: center;
     gap: 0.3em;
-    color: $primary !important;
+    color: var(--glass-accent, #{$primary}) !important;
     padding: 0.15rem 0.1rem;
     border-radius: 0.5rem;
     transition: color 0.2s ease, opacity 0.2s ease;
 
     &:hover,
     &:focus {
-      color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+      color: color-mix(in srgb, var(--glass-accent, #{$primary}) 82%, #ffffff 18%) !important;
       text-decoration: none !important;
     }
 
@@ -1027,17 +1027,6 @@ a.shiny-download-link {
 [data-glass-preset="dark"] {
   .btn-warning {
     color: #1d1d1f !important;
-  }
-
-  .action-button.btn-default:not(.btn-primary):not(.btn-secondary),
-  .btn-outline-primary,
-  a.shiny-download-link:not(.btn) {
-    color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
-
-    &:hover,
-    &:focus {
-      color: color-mix(in srgb, $primary 88%, #ffffff 12%) !important;
-    }
   }
 }
 

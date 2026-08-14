@@ -22,6 +22,9 @@
   (`--glass-body-color` / `--glass-accent`) instead of compiled `$primary`.
 * [glass_resolved_preset()] reports the resolved light/dark appearance so
   plots do not stay light-inked when the user picks Auto.
+* Dark pack no longer re-locks default / outline / download labels to compiled
+  `$primary`. Download links and ghost focus rings follow `--glass-accent`.
+  Accent `<select id="accent">` applies `setPrimary` immediately.
 * [glass_intensity_slider()] / [observe_glass_intensity()] — iOS 27-style
   **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
   starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and

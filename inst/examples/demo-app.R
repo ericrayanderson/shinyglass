@@ -33,13 +33,19 @@ server <- function(input, output, session) {
   output$dist_plot <- renderPlot({
     x <- faithful$waiting
     df <- data.frame(x = x)
+    dark <- identical(glass_resolved_preset(input), "dark")
+    ink <- if (dark) "#f5f5f7" else "#1d1d1f"
     p <- ggplot(df, aes(x)) +
       geom_histogram(bins = input$bins, fill = "#007AFF", color = NA, alpha = 0.88) +
       labs(title = "Faithful Waiting Times", x = "Waiting (minutes)", y = NULL) +
       theme_minimal(base_size = 13) +
       theme(
         panel.background = element_rect(fill = NA, color = NA),
-        plot.background = element_rect(fill = NA, color = NA)
+        plot.background = element_rect(fill = NA, color = NA),
+        text = element_text(color = ink),
+        axis.text = element_text(color = ink),
+        axis.title = element_text(color = ink),
+        plot.title = element_text(color = ink)
       )
     if (isTRUE(input$smooth)) {
       p <- p + geom_density(
