@@ -18,6 +18,8 @@
 * Light / Dark / Auto is an iOS-style segmented control: theme-aware glass
   thumb (changes in light vs dark), body ink on every chip, and a delegated
   click so Auto applies even when host pages rewrite inline handlers.
+* Theme toggle applies the preset once (no inline handler + server echo
+  storm), so plots no longer flicker when switching Light / Dark.
 * Default `actionButton()` / `.btn-link` ink follows theme tokens
   (`--glass-body-color` / `--glass-accent`) instead of compiled `$primary`.
 * [glass_resolved_preset()] reports the resolved light/dark appearance so
