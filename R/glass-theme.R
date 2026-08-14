@@ -294,7 +294,7 @@ glass_theme_toggle <- function(
     inputId = "glass_toggle",
     selected = c("auto", "light", "dark"),
     labels = c(light = "Light", dark = "Dark", auto = "Auto (OS)"),
-    class = "d-flex flex-wrap gap-2 glass-theme-toggle") {
+    class = "glass-theme-toggle") {
   selected <- match.arg(selected)
   stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
   modes <- c("light", "dark", "auto")
