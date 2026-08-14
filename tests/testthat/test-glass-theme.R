@@ -166,9 +166,11 @@ test_that("active-on-primary ink is light, not color-contrast black", {
 
   # text-bg-primary must compile light ink (not color-contrast black)
   expect_true(grepl("text-bg-primary\\{[^}]*color:#fff", css))
-  # Solid .bg-primary / value boxes carry glass-on ink vars
+  # Solid .bg-primary still carries glass-on ink vars; value boxes are
+  # tinted glass with body ink (not white-on-solid).
   expect_match(css, "--glass-on-primary")
   expect_match(css, "bslib-value-box-color")
+  expect_match(css, "bslib-value-box\\.bg-primary|bslib-value-box.bg-primary")
 })
 
 test_that("glass_on_color matches luminance threshold", {

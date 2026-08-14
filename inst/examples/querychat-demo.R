@@ -165,21 +165,20 @@ server <- function(input, output, session) {
     counts <- as.data.frame(table(df$Species), stringsAsFactors = FALSE)
     names(counts) <- c("Species", "Count")
     accent <- if (identical(input$preset, "dark")) "#0A84FF" else "#007AFF"
-    plot_bg <- if (identical(input$preset, "dark")) "#14141a" else "#f8f9fc"
-    plot_fg <- if (identical(input$preset, "dark")) "#f5f5f7" else "black"
+    plot_fg <- if (identical(input$preset, "dark")) "#f5f5f7" else "#1d1d1f"
 
     ggplot(counts, aes(x = Species, y = Count, fill = Species)) +
-      geom_col(fill = accent, width = 0.62, alpha = 0.92) +
+      geom_col(fill = accent, width = 0.62, alpha = 0.88) +
       labs(x = NULL, y = NULL, title = NULL) +
       theme_minimal(base_size = 13) +
       theme(
-        panel.background = element_rect(fill = plot_bg, color = NA),
-        plot.background = element_rect(fill = plot_bg, color = NA),
+        panel.background = element_rect(fill = "transparent", color = NA),
+        plot.background = element_rect(fill = "transparent", color = NA),
         axis.text = element_text(color = plot_fg),
         axis.title = element_text(color = plot_fg),
         legend.position = "none"
       )
-  }, height = 280)
+  }, bg = "transparent", height = 280)
 
   output$sql_query <- renderText({
     qc_vals$sql() %||% "SELECT * FROM iris"

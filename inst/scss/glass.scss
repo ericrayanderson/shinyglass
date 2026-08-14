@@ -1476,7 +1476,7 @@ body {
 // Verbatim / live values / code samples
 pre,
 pre.shiny-text-output,
-.shiny-text-output,
+.shiny-text-output:not(.value-box-value),
 .shiny-verbatim,
 .verbatim,
 code,
@@ -1819,6 +1819,68 @@ small,
   @include glass-surface();
 }
 
+// Value boxes: tinted glass, not solid .bg-* slabs. Keep a wash of the
+// theme color so primary/success/info still read, but the page orbs show
+// through. Ink follows the glass body pack (not white-on-solid).
+@mixin glass-value-box-tint($fill) {
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, #{$fill} 30%, transparent) 0%,
+      color-mix(in srgb, #{$fill} 12%, var(--glass-bg)) 100%
+    ) !important;
+  background-color: transparent !important;
+  color: var(--glass-body-color) !important;
+  --bs-card-color: var(--glass-body-color);
+  --bs-card-title-color: var(--glass-body-color);
+  --bs-card-subtitle-color: var(--glass-body-color);
+  --bslib-color-fg: var(--glass-body-color);
+  --bslib-value-box-color: var(--glass-body-color);
+  border-color: color-mix(in srgb, #{$fill} 38%, var(--glass-border)) !important;
+}
+
+.bslib-value-box.bg-primary,
+.bslib-value-box.text-bg-primary,
+.value-box.bg-primary {
+  @include glass-value-box-tint($glass-accent);
+}
+
+@each $name, $color in $theme-colors {
+  @if $name != primary {
+    .bslib-value-box.bg-#{$name},
+    .bslib-value-box.text-bg-#{$name},
+    .value-box.bg-#{$name} {
+      @include glass-value-box-tint($color);
+    }
+  }
+}
+
+.bslib-value-box .value-box-title,
+.bslib-value-box .value-box-value,
+.bslib-value-box .shiny-text-output,
+.value-box .value-box-title,
+.value-box .value-box-value,
+.value-box .shiny-text-output {
+  color: inherit !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  font-size: inherit;
+  white-space: normal;
+}
+
+// bslib nests the value in an inner fill/showcase well — keep it open
+.bslib-value-box .value-box-area,
+.bslib-value-box .value-box-showcase,
+.bslib-value-box .html-fill-container,
+.bslib-value-box .html-fill-item {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 .bslib-page-sidebar > .navbar {
   @include glass-floating(var(--glass-radius));
   background: var(--glass-bg) !important;
@@ -2139,16 +2201,36 @@ small,
   box-sizing: border-box;
 }
 
-// Nested plots inside cards: lighter frame so they don't double-glass
+// Nested plots / tables inside cards: no second pane. The card is the glass;
+// let page orbs show through a transparent host (pair with renderPlot(bg=NA)).
 .card .shiny-plot-output,
 .card .shiny-image-output,
 .bslib-card .shiny-plot-output,
-.bslib-card .shiny-image-output {
-  background: color-mix(in srgb, var(--glass-bg) 55%, transparent);
-  box-shadow:
-    0 2px 12px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
-    inset 0 1px 0 var(--glass-highlight);
-  border-color: color-mix(in srgb, var(--glass-border) 70%, transparent);
+.bslib-card .shiny-image-output,
+.card .dataTables_wrapper,
+.bslib-card .dataTables_wrapper,
+.card .shiny-html-output:has(.dataTables_wrapper),
+.bslib-card .shiny-html-output:has(.dataTables_wrapper),
+.card .shiny-html-output:has(.gt_table),
+.bslib-card .shiny-html-output:has(.gt_table) {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.15rem 0 0;
+  margin-bottom: 0;
+
+  &::before,
+  &::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  img {
+    border-radius: 0;
+  }
 }
 
 // Frame html outputs that carry real content. Empty teal validation

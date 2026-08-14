@@ -26,6 +26,8 @@ bslib's
 controlbar
 css
 darkly
+datepicker
+Datepicker
 dreamRs
 dropdown
 dropdowns
@@ -63,6 +65,7 @@ shinyapps
 shinybusy
 shinydashboard
 shinydashboardPlus
+showModal
 shinyglass
 specular
 testthat

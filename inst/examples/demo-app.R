@@ -34,9 +34,13 @@ server <- function(input, output, session) {
     x <- faithful$waiting
     df <- data.frame(x = x)
     p <- ggplot(df, aes(x)) +
-      geom_histogram(bins = input$bins, fill = "#007AFF", color = "white") +
+      geom_histogram(bins = input$bins, fill = "#007AFF", color = NA, alpha = 0.88) +
       labs(title = "Faithful Waiting Times", x = "Waiting (minutes)", y = NULL) +
-      theme_minimal(base_size = 13)
+      theme_minimal(base_size = 13) +
+      theme(
+        panel.background = element_rect(fill = NA, color = NA),
+        plot.background = element_rect(fill = NA, color = NA)
+      )
     if (isTRUE(input$smooth)) {
       p <- p + geom_density(
         aes(y = after_stat(count)),
@@ -45,7 +49,7 @@ server <- function(input, output, session) {
       )
     }
     p
-  }, height = 260, res = 96)
+  }, bg = "transparent", height = 260, res = 96)
 }
 
 shinyApp(ui, server)

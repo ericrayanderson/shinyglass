@@ -152,29 +152,32 @@ server <- function(input, output, session) {
     paste0(round(avg, 1), " cm")
   })
 
-  plot_bg <- reactive({
-    # "auto" uses a neutral light panel; pure dark when forced dark.
-    if (identical(input$preset, "dark")) "#14141a" else "#f8f9fc"
+  plot_fg <- reactive({
+    if (identical(input$preset, "dark")) "#f5f5f7" else "#1d1d1f"
   })
 
-  plot_fg <- reactive({
-    if (identical(input$preset, "dark")) "#f5f5f7" else "black"
-  })
+  glass_gg <- function() {
+    theme_minimal(base_size = 12) +
+      theme(
+        panel.background = element_rect(fill = NA, color = NA),
+        plot.background = element_rect(fill = NA, color = NA),
+        legend.background = element_rect(fill = NA, color = NA),
+        legend.box.background = element_rect(fill = NA, color = NA),
+        text = element_text(color = plot_fg()),
+        axis.text = element_text(color = plot_fg()),
+        plot.title = element_text(color = plot_fg()),
+        legend.text = element_text(color = plot_fg()),
+        legend.title = element_text(color = plot_fg())
+      )
+  }
 
   output$dist_plot <- renderPlot({
     df <- filtered_data()
     accent <- input$accent
     p <- ggplot(df, aes(x = Sepal.Length)) +
-      geom_histogram(bins = input$bins, fill = accent, color = NA, alpha = 0.9) +
+      geom_histogram(bins = input$bins, fill = accent, color = NA, alpha = 0.85) +
       labs(title = "Sepal length distribution", x = NULL, y = "Count") +
-      theme_minimal(base_size = 12) +
-      theme(
-        panel.background = element_rect(fill = plot_bg(), color = NA),
-        plot.background = element_rect(fill = plot_bg(), color = NA),
-        text = element_text(color = plot_fg()),
-        axis.text = element_text(color = plot_fg()),
-        plot.title = element_text(color = plot_fg())
-      )
+      glass_gg()
     if (isTRUE(input$show_curve)) {
       p <- p + geom_density(
         aes(y = after_stat(count)),
@@ -184,7 +187,7 @@ server <- function(input, output, session) {
       )
     }
     print(p)
-  }, height = 280, res = 96)
+  }, bg = "transparent", height = 280, res = 96)
 
   output$scatter_plot <- renderPlot({
     df <- filtered_data()
@@ -193,18 +196,9 @@ server <- function(input, output, session) {
       geom_point(size = 2.4, alpha = 0.85) +
       scale_color_manual(values = c("#007AFF", "#AF52DE", "#FF9500")) +
       labs(title = "Sepal dimensions", x = "Length", y = "Width") +
-      theme_minimal(base_size = 12) +
-      theme(
-        panel.background = element_rect(fill = plot_bg(), color = NA),
-        plot.background = element_rect(fill = plot_bg(), color = NA),
-        text = element_text(color = plot_fg()),
-        axis.text = element_text(color = plot_fg()),
-        plot.title = element_text(color = plot_fg()),
-        legend.text = element_text(color = plot_fg()),
-        legend.title = element_text(color = plot_fg()),
-        legend.position = "bottom"
-      )
-  }, height = 280, res = 96)
+      glass_gg() +
+      theme(legend.position = "bottom")
+  }, bg = "transparent", height = 280, res = 96)
 
   output$data_table <- DT::renderDT({
     DT::datatable(
