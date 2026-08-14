@@ -66,11 +66,12 @@ ui <- page_sidebar(
       actionButton("reset_filters", "Reset", class = "btn-secondary")
     ),
     tags$hr(),
-    selectInput(
+    glass_preset_input(
       "preset",
-      "Theme preset",
+      label = "Theme preset",
+      selected = glass_preset,
       choices = c("Light" = "light", "Dark" = "dark"),
-      selected = glass_preset
+      width = "100%"
     )
   ),
   layout_column_wrap(
@@ -113,9 +114,7 @@ ui <- page_sidebar(
 server <- function(input, output, session) {
   qc_vals <- qc$server()
 
-  observeEvent(input$preset, {
-    session$sendCustomMessage("glassPreset", input$preset)
-  }, ignoreInit = TRUE)
+  observe_glass_preset_input(input, session, "preset")
 
   observeEvent(input$filter_all, {
     qc_vals$sql("")
@@ -164,8 +163,8 @@ server <- function(input, output, session) {
     df <- qc_vals$df()
     counts <- as.data.frame(table(df$Species), stringsAsFactors = FALSE)
     names(counts) <- c("Species", "Count")
-    accent <- if (identical(input$preset, "dark")) "#0A84FF" else "#007AFF"
-    plot_fg <- if (identical(input$preset, "dark")) "#f5f5f7" else "#1d1d1f"
+    accent <- if (identical(glass_resolved_preset(input), "dark")) "#0A84FF" else "#007AFF"
+    plot_fg <- if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
 
     ggplot(counts, aes(x = Species, y = Count, fill = Species)) +
       geom_col(fill = accent, width = 0.62, alpha = 0.88) +

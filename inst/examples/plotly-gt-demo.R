@@ -110,7 +110,7 @@ server <- function(input, output, session) {
       on.exit(waiter_hide(), add = TRUE)
     }
     df <- filtered()
-    dark <- identical(input$preset, "dark")
+    dark <- identical(glass_resolved_preset(input), "dark")
     paper <- if (dark) "rgba(0,0,0,0)" else "rgba(255,255,255,0)"
     font_col <- if (dark) "#f5f5f7" else "#1d1d1f"
     grid_col <- if (dark) "rgba(255,255,255,0.12)" else "rgba(0,0,0,0.08)"

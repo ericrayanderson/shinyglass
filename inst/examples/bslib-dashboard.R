@@ -153,7 +153,7 @@ server <- function(input, output, session) {
   })
 
   plot_fg <- reactive({
-    if (identical(input$preset, "dark")) "#f5f5f7" else "#1d1d1f"
+    if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
   })
 
   glass_gg <- function() {

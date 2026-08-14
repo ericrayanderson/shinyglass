@@ -63,6 +63,7 @@ reference:
   - observe_glass_intensity
   - glass_preset_input
   - observe_glass_preset_input
+  - glass_resolved_preset
 
 articles:
 - title: Guides

@@ -872,10 +872,12 @@ body.glass-nav-expanded {
   }
 }
 
-// default actionButton (not Bootstrap gray fill)
+// default actionButton: body ink, not locked Sass $primary.
+// $primary here was the root cause of Light/Dark/Auto (and every other
+// default actionButton) staying Apple-blue in dark mode.
 .btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-secondary):not(.btn-file):not(.shiny-download-link),
 .action-button.btn-default:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-secondary) {
-  @include glass-button-ghost($primary);
+  @include glass-button-ghost(var(--glass-body-color));
 }
 
 .btn-secondary,
@@ -916,7 +918,7 @@ body.glass-nav-expanded {
 }
 
 .btn-outline-primary {
-  @include glass-button-ghost($primary);
+  @include glass-button-ghost(var(--glass-accent, #{$primary}));
 }
 
 .btn-outline-secondary,
@@ -942,13 +944,13 @@ body.glass-nav-expanded {
 
 .btn-link {
   @include glass-button-type();
-  color: $primary !important;
+  color: var(--glass-accent, #{$primary}) !important;
   text-decoration: none;
   font-weight: 600;
 
   &:hover,
   &:focus {
-    color: color-mix(in srgb, $primary 82%, #ffffff 18%) !important;
+    color: color-mix(in srgb, var(--glass-accent, #{$primary}) 82%, #ffffff 18%) !important;
     text-decoration: none;
   }
 }

@@ -126,6 +126,19 @@
       });
   }
 
+  // Server-side plots often keyed off input$preset == "dark", which is FALSE
+  // when the user picks Auto. Publish the *resolved* appearance instead.
+  function syncResolvedPresetInput(resolved) {
+    var v = resolved || rootEl().dataset.glassPreset || "light";
+    if (v !== "light" && v !== "dark") v = "light";
+    if (!(window.Shiny && typeof Shiny.setInputValue === "function")) return;
+    try {
+      Shiny.setInputValue("glass_resolved_preset", v, { priority: "event" });
+    } catch (eRes) {
+      /* ignore */
+    }
+  }
+
   function applyPreset(mode, opts) {
     opts = opts || {};
     var root = rootEl();
@@ -160,6 +173,7 @@
     if (opts.syncInputs !== false) {
       syncPresetInputs(mode);
     }
+    syncResolvedPresetInput(resolved);
 
     try {
       root.dispatchEvent(
@@ -1215,6 +1229,23 @@
     if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
       window.shinyglass.setPreset(mode);
     }
+  });
+
+  // Radio groups used as a Light/Dark picker (id/name "preset")
+  $(document).on(
+    "change.glassPresetRadio",
+    "input[type=radio][name=preset], input[type=radio][data-glass-preset-input]",
+    function () {
+      var v = $(this).val();
+      if (v == null || v === "") return;
+      if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
+        window.shinyglass.setPreset(v);
+      }
+    }
+  );
+
+  $(document).on("shiny:connected.shinyglassResolved", function () {
+    syncResolvedPresetInput();
   });
 
   // Frost the page while the native file picker is open (mirrors modal-backdrop).

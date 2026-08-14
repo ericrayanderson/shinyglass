@@ -464,6 +464,38 @@ observe_glass_preset_input <- function(input, session, inputId = "glass_preset")
   )
 }
 
+#' Resolved light or dark appearance
+#'
+#' When the user picks **Auto**, `input$preset` stays `"auto"` so checks like
+#' `identical(input$preset, "dark")` stay FALSE and plots keep light ink on a
+#' dark page. The client publishes the *resolved* appearance as
+#' `input$glass_resolved_preset` (`"light"` or `"dark"`).
+#'
+#' @param input The server `input` object.
+#' @param default Fallback if the client has not reported yet (`"light"` or
+#'   `"dark"`).
+#'
+#' @return `"light"` or `"dark"`.
+#'
+#' @export
+glass_resolved_preset <- function(input, default = c("light", "dark")) {
+  default <- match.arg(default)
+  if (missing(input) || is.null(input)) {
+    return(default)
+  }
+  v <- input[["glass_resolved_preset"]]
+  if (length(v) == 1L && !is.na(v) && v %in% c("light", "dark")) {
+    return(as.character(v))
+  }
+  for (key in c("preset", "glass_preset")) {
+    p <- input[[key]]
+    if (length(p) == 1L && !is.na(p) && p %in% c("light", "dark")) {
+      return(as.character(p))
+    }
+  }
+  default
+}
+
 .glass_font_stack <- function() {
   paste(
     "-apple-system",

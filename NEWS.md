@@ -18,6 +18,10 @@
 * Light / Dark / Auto is an iOS-style segmented control: theme-aware glass
   thumb (changes in light vs dark), body ink on every chip, and a delegated
   click so Auto applies even when host pages rewrite inline handlers.
+* Default `actionButton()` / `.btn-link` ink follows theme tokens
+  (`--glass-body-color` / `--glass-accent`) instead of compiled `$primary`.
+* [glass_resolved_preset()] reports the resolved light/dark appearance so
+  plots do not stay light-inked when the user picks Auto.
 * [glass_intensity_slider()] / [observe_glass_intensity()] — iOS 27-style
   **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
   starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and

@@ -52,19 +52,19 @@ ui <- page_sidebar(
     ),
     sliderInput("bins", "Histogram bins", min = 8, max = 40, value = 18),
     checkboxInput("density", "Show density curve", TRUE),
-    radioButtons(
+    glass_preset_input(
       "preset",
-      "Tint preview",
-      choices = c("Light" = "light", "Dark" = "dark"),
+      label = "Theme preset",
       selected = glass_preset,
-      inline = TRUE
+      choices = c("Light" = "light", "Dark" = "dark"),
+      width = "100%"
     ),
     actionButton("notify", "Show notification", class = "btn-primary"),
     tags$hr(),
     tags$small(
       class = "text-muted",
-      "Launch with SHINYGLASS_PRESET=dark for the full dark theme. ",
-      "Tint preview adjusts content-aware glass sampling only."
+      "Theme preset switches glass live. ",
+      "Launch with SHINYGLASS_PRESET=dark to start in dark."
     )
   ),
   p(
@@ -119,14 +119,12 @@ server <- function(input, output, session) {
       transform(accent = cols[1], accent2 = cols[2])
   })
 
-  observeEvent(input$preset, {
-    session$sendCustomMessage("glassPreset", input$preset)
-  }, ignoreInit = TRUE)
+  observe_glass_preset_input(input, session, "preset")
 
   output$hero_plot <- renderPlot({
     df <- plot_data()
     cols <- palette_colors[[input$palette]]
-    text_col <- if (input$preset == "dark") "#f5f5f7" else "#1d1d1f"
+    text_col <- if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
 
     p <- ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
       geom_point(size = 3, alpha = 0.85) +
