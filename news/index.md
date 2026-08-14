@@ -21,9 +21,10 @@
 
 ### New features
 
-- Light / Dark / Auto toggle uses body ink for inactive chips (not
-  locked accent blue) and moves the filled selected chip when you press
-  a mode.
+- Light / Dark / Auto is an iOS-style segmented control: theme-aware
+  glass thumb (changes in light vs dark), body ink on every chip, and a
+  delegated click so Auto applies even when host pages rewrite inline
+  handlers.
 
 - \[glass_intensity_slider()\] / \[observe_glass_intensity()\] — iOS
   27-style **Ultra Clear → Tinted** control. `glass_theme(intensity = )`
