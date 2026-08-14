@@ -115,6 +115,7 @@ shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
 shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
 shiny::runApp(system.file("examples", "intensity-slider-demo.R", package = "shinyglass"))
 shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
+shiny::runApp(system.file("examples", "chrome-kitchen-sink.R", package = "shinyglass"))
 # plotly + gt (+ waiter if installed):
 # shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"))
 ```

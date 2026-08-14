@@ -60,7 +60,7 @@ function glassIsBootstrapLightGrey(c) {
 
 function glassIsControlSelector(sel, className) {
   const s = (sel || "") + " " + (className || "");
-  return /page-link|paginate|btn-primary|btn-secondary|irs-single|nav-link|value-box|form-check|selectize|bg-primary|bg-success|bg-info/i.test(
+  return /page-link|paginate|btn-primary|btn-secondary|irs-single|nav-link|value-box|form-check|selectize|bg-primary|bg-success|bg-info|datepicker|shiny-notification|accordion|tooltip|popover|toast|dropdown-menu|btn-close|btn-file|form-control|form-select/i.test(
     s
   );
 }
@@ -119,7 +119,7 @@ function glassSampleEl(el, pageBg, preset, minContrast) {
 
   // Dark-mode solid black chips (DT pagination bug signature)
   if (preset === "dark" && bg && glassIsNearBlack(bg) && bg.a > 0.95) {
-    if (/page-link|paginate|selectize-input|form-control|form-select|btn-secondary/i.test(sel)) {
+    if (/page-link|paginate|selectize-input|form-control|form-select|btn-secondary|datepicker|shiny-notification|accordion|dropdown-menu|toast|popover/i.test(sel)) {
       findings.push({
         level: "FAIL",
         code: "solid-black-chip",

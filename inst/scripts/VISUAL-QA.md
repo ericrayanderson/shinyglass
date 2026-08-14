@@ -38,14 +38,20 @@ What it checks:
 
 Optional app: `--apps=...,shinywidgets` if `shinyWidgets` is installed.
 
+Default matrix now includes `chrome` (`chrome-kitchen-sink.R`) and opens
+datepicker / navbar menu / notifications / accordion / tooltip / popover /
+server modal, plus intensity 0 and 1. Screenshot a pass with
+`--screenshot-dir=visual-test-output/chrome`.
+
 ## Dual-theme matrix (minimum before release)
 
 | App | light | dark | Interaction |
 |-----|:-----:|:----:|-------------|
 | `demo-app` | ✓ | ✓ | Theme toggle Light → Dark → Auto |
-| `inputs-gallery` | ✓ | ✓ | Open selectize dropdown; move slider |
+| `inputs-gallery` | ✓ | ✓ | Open selectize dropdown; open datepicker; Show modal |
 | `bslib-dashboard` | ✓ | ✓ | DT page **2**; confirm page **1** active chip |
 | `plotly-gt-demo` | ✓ | ✓ | Modebar icons readable; gt header/rows (if plotly+gt installed) |
+| `chrome-kitchen-sink` | ✓ | ✓ | Datepicker, all 4 notification types, `showModal()`, navbar menu, accordion, tooltip/popover |
 | `shinywidgets-gallery-glass` | ✓ | ✓ | Flip a switch / open a picker (if installed) |
 | `shinydashboardPlus-glass-demo` | ✓ | ✓ | Controlbar + notification dropdown (if Plus installed) |
 
@@ -93,7 +99,8 @@ Before merge or shinyapps redeploy:
 
 1. [ ] `Rscript inst/scripts/audit-glass-contrast.R` exits 0  
 2. [ ] Spot-check dashboard DT pagination in dark  
-3. [ ] Spot-check inputs-gallery selectize open + slider chip  
+3. [ ] Spot-check inputs-gallery selectize open + slider chip + datepicker  
+3b. [ ] Spot-check chrome-kitchen-sink in dark: calendar, notifications, modal ×, navbar **More** menu, accordion
 4. [ ] Recapture README figures if UI chrome changed  
    (`Rscript inst/scripts/capture-demo-screenshots.R` — keep dashboard sidebar visible)  
 5. [ ] `Rscript -e 'devtools::test()'` (or `testthat::test_local()`)  
@@ -107,7 +114,9 @@ Before merge or shinyapps redeploy:
 - ion.rangeSlider: track, handle, value chips  
 - buttons: primary / outline / disabled / btn-check  
 - checks / radios / switches (checked mark & knob)  
-- tabs, dropdown menus, modals, notifications  
+- tabs, dropdown menus, modals, notifications (all four types)  
+- bootstrap-datepicker popup; `.btn-close`; file Browse chip  
+- bslib accordion / tooltip / popover / toast; `page_navbar` + `nav_menu` 
 - value boxes / `.bg-*` solid fills  
 - sidebar open vs collapsed gutters  
 - reactable / leaflet / shinyWidgets / bs4Dash when touching those demos  

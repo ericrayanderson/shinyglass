@@ -322,6 +322,10 @@ test_that("compiled CSS covers plotly, gt, waiter, and AdminLTE-plus chrome", {
   expect_match(css, "swal2-popup")
   expect_match(css, "user-panel")
   expect_match(css, "handsontable")
+  expect_match(css, "datepicker")
+  expect_match(css, "shiny-notification")
+  expect_match(css, "accordion-button")
+  expect_match(css, "btn-close")
 })
 
 test_that("audit-glass-contrast harness exists in the source tree", {
@@ -339,6 +343,9 @@ test_that("audit-glass-contrast harness exists in the source tree", {
   js <- paste(readLines(audit_js, warn = FALSE), collapse = "\n")
   expect_match(js, "runGlassAudit")
   expect_match(js, "solid-black-chip|dt-pagination-structure")
+  r_src <- paste(readLines(audit_r, warn = FALSE), collapse = "\n")
+  expect_match(r_src, "chrome-kitchen-sink")
+  expect_match(r_src, "open-datepicker")
 })
 
 

@@ -2,9 +2,9 @@
   "min_contrast": 3,
   "summary": {
     "fail": 0,
-    "warn": 26,
-    "pass": 193,
-    "skip": 152
+    "warn": 38,
+    "pass": 311,
+    "skip": 254
   },
   "findings": [
     {
@@ -63,6 +63,50 @@
       }
     },
     {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-datepicker",
+      "message": "glass.scss must style bootstrap-datepicker popup",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-notification",
+      "message": "glass.scss must style Shiny notification types",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-btn-close",
+      "message": "glass.scss must style Bootstrap .btn-close",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
+      "app": "_static",
+      "label": "scss",
+      "preset": "-",
+      "level": "PASS",
+      "code": "scss-accordion",
+      "message": "glass.scss must style generic .accordion-button (not teal-only)",
+      "meta": {
+        "file": "inst/scss/glass.scss"
+      }
+    },
+    {
       "app": "demo",
       "label": "demo-app",
       "preset": "light",
@@ -73,7 +117,8 @@
         "selector": "body",
         "text": "Liquid Glass\nForm Controls\nSpecies\nsetos",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(245, 245, 247)"
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
       }
     },
     {
@@ -88,7 +133,8 @@
         "text": "Auto (OS)",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -99,7 +145,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -110,7 +157,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -121,7 +169,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -132,7 +181,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -143,7 +193,8 @@
       "code": "missing",
       "message": "no match: .navbar",
       "meta": {
-        "selector": ".navbar"
+        "selector": ".navbar",
+        "phase": "final"
       }
     },
     {
@@ -157,7 +208,8 @@
         "selector": ".card[0]",
         "text": "Form Controls\nSpecies\nsetosa\nBins\n1\n50\n2",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(206, 228, 254, 0.3)"
+        "bg": "rgba(211, 231, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -171,7 +223,8 @@
         "selector": ".card[1]",
         "text": "Plot",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(206, 228, 254, 0.3)"
+        "bg": "rgba(211, 231, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -185,7 +238,8 @@
         "selector": ".selectize-input",
         "text": "setosa",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(206, 228, 254, 0.3)"
+        "bg": "rgba(211, 231, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -199,7 +253,8 @@
         "selector": ".selectize-dropdown",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -214,7 +269,8 @@
         "text": "20",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -228,7 +284,8 @@
         "selector": ".irs-bar",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -239,7 +296,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -250,7 +308,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -261,7 +320,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -272,7 +332,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -283,7 +344,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -294,7 +356,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -305,7 +368,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -316,7 +380,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -327,7 +392,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -338,7 +404,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -349,7 +512,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -360,7 +524,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -371,7 +536,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -382,7 +548,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -393,7 +560,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -404,7 +572,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -415,7 +584,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -426,7 +596,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -440,7 +611,8 @@
         "selector": "body",
         "text": "Liquid Glass\nForm Controls\nSpecies\nsetos",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(245, 245, 247)"
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
       }
     },
     {
@@ -455,7 +627,8 @@
         "text": "Auto (OS)",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -466,7 +639,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -477,7 +651,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -488,7 +663,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -499,7 +675,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -510,7 +687,8 @@
       "code": "missing",
       "message": "no match: .navbar",
       "meta": {
-        "selector": ".navbar"
+        "selector": ".navbar",
+        "phase": "final"
       }
     },
     {
@@ -524,7 +702,8 @@
         "selector": ".card[0]",
         "text": "Form Controls\nSpecies\nsetosa\nBins\n1\n50\n2",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(211, 231, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -538,7 +717,8 @@
         "selector": ".card[1]",
         "text": "Plot",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(211, 231, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -552,7 +732,8 @@
         "selector": ".selectize-input",
         "text": "setosa",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(211, 231, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -566,7 +747,8 @@
         "selector": ".selectize-dropdown",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -581,7 +763,8 @@
         "text": "20",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -595,7 +778,8 @@
         "selector": ".irs-bar",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -606,7 +790,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -617,7 +802,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -628,7 +814,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -639,7 +826,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -650,7 +838,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -661,7 +850,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -672,7 +862,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -683,7 +874,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -694,7 +886,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -705,7 +898,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "demo",
+      "label": "demo-app",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -716,7 +1006,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -727,7 +1018,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -738,7 +1030,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -749,7 +1042,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -760,7 +1054,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -771,7 +1066,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -782,7 +1078,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -793,7 +1090,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -807,7 +1105,8 @@
         "selector": "body",
         "text": "Glass Dashboard\n\nObservations\n\n150\n\nSpec",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(245, 245, 247)"
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
       }
     },
     {
@@ -822,7 +1121,8 @@
         "text": "Refresh metrics",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -833,7 +1133,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -844,7 +1145,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -855,7 +1157,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -866,7 +1169,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -880,7 +1184,8 @@
         "selector": ".navbar",
         "text": "Glass Dashboard",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -895,7 +1200,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -909,7 +1215,8 @@
         "selector": ".card[1]",
         "text": "Species\n\n3",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(25, 135, 84)"
+        "bg": "rgb(25, 135, 84)",
+        "phase": "final"
       }
     },
     {
@@ -923,7 +1230,8 @@
         "selector": ".card[2]",
         "text": "Avg sepal length\n\n5.8 cm",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(13, 202, 240)"
+        "bg": "rgb(13, 202, 240)",
+        "phase": "final"
       }
     },
     {
@@ -937,7 +1245,8 @@
         "selector": ".card[3]",
         "text": "Distribution\nScatter",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -951,7 +1260,8 @@
         "selector": ".card[4]",
         "text": "Iris data\nSepal.Length\tSepal.Width\tPetal",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -965,7 +1275,8 @@
         "selector": ".selectize-input[0]",
         "text": "Light",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -979,7 +1290,8 @@
         "selector": ".selectize-input[1]",
         "text": "Apple Blue",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -993,7 +1305,8 @@
         "selector": ".selectize-input[2]",
         "text": "All",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1007,7 +1320,8 @@
         "selector": ".selectize-dropdown[0]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -1021,7 +1335,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -1035,7 +1350,8 @@
         "selector": ".selectize-dropdown[2]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -1050,7 +1366,8 @@
         "text": "18",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1064,7 +1381,8 @@
         "selector": ".irs-bar",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -1078,7 +1396,8 @@
         "selector": ".dataTables_paginate .page-link[0]",
         "text": "Previous",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1092,7 +1411,8 @@
         "selector": ".dataTables_paginate .page-link[1]",
         "text": "1",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1107,7 +1427,8 @@
         "text": "2",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1121,7 +1442,8 @@
         "selector": ".dataTables_paginate .page-link[3]",
         "text": "3",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1135,7 +1457,8 @@
         "selector": ".dataTables_paginate .page-link[4]",
         "text": "4",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1149,7 +1472,8 @@
         "selector": ".dataTables_paginate .page-link[5]",
         "text": "5",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1163,7 +1487,8 @@
         "selector": ".dataTables_paginate .page-link[6]",
         "text": "…",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1177,7 +1502,8 @@
         "selector": ".dataTables_paginate .page-link[7]",
         "text": "25",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1192,7 +1518,8 @@
         "text": "2",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1206,7 +1533,8 @@
         "selector": ".page-item.disabled .page-link",
         "text": "…",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1217,7 +1545,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -1232,7 +1561,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1247,7 +1577,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1261,7 +1592,8 @@
         "selector": ".bg-success",
         "text": "Species\n\n3",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(25, 135, 84)"
+        "bg": "rgb(25, 135, 84)",
+        "phase": "final"
       }
     },
     {
@@ -1275,7 +1607,8 @@
         "selector": ".bg-info",
         "text": "Avg sepal length\n\n5.8 cm",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(13, 202, 240)"
+        "bg": "rgb(13, 202, 240)",
+        "phase": "final"
       }
     },
     {
@@ -1289,7 +1622,8 @@
         "selector": ".nav-tabs .nav-link.active",
         "text": "Distribution",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(210, 231, 254, 0.3)"
+        "bg": "rgba(216, 234, 254, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -1300,7 +1634,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -1311,7 +1742,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -1322,7 +1754,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -1333,7 +1766,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -1344,7 +1778,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -1355,7 +1790,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -1366,7 +1802,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -1377,7 +1814,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -1388,7 +1826,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -1402,7 +1841,8 @@
         "selector": "body",
         "text": "Glass Dashboard\n\nObservations\n\n150\n\nSpec",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 0, 0)"
+        "bg": "rgb(0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -1417,7 +1857,8 @@
         "text": "Refresh metrics",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1428,7 +1869,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -1439,7 +1881,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -1450,7 +1893,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -1461,7 +1905,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -1475,7 +1920,8 @@
         "selector": ".navbar",
         "text": "Glass Dashboard",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1490,7 +1936,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1504,7 +1951,8 @@
         "selector": ".card[1]",
         "text": "Species\n\n3",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(25, 135, 84)"
+        "bg": "rgb(25, 135, 84)",
+        "phase": "final"
       }
     },
     {
@@ -1518,7 +1966,8 @@
         "selector": ".card[2]",
         "text": "Avg sepal length\n\n5.8 cm",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(13, 202, 240)"
+        "bg": "rgb(13, 202, 240)",
+        "phase": "final"
       }
     },
     {
@@ -1531,8 +1980,9 @@
       "meta": {
         "selector": ".card[3]",
         "text": "Distribution\nScatter",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -1545,8 +1995,9 @@
       "meta": {
         "selector": ".card[4]",
         "text": "Iris data\nSepal.Length\tSepal.Width\tPetal",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -1560,7 +2011,8 @@
         "selector": ".selectize-input[0]",
         "text": "Dark",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1574,7 +2026,8 @@
         "selector": ".selectize-input[1]",
         "text": "Apple Blue",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1588,7 +2041,8 @@
         "selector": ".selectize-input[2]",
         "text": "All",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1602,7 +2056,8 @@
         "selector": ".selectize-dropdown[0]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1616,7 +2071,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1630,7 +2086,8 @@
         "selector": ".selectize-dropdown[2]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -1645,7 +2102,8 @@
         "text": "18",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1658,8 +2116,9 @@
       "meta": {
         "selector": ".irs-bar",
         "text": "",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 122, 255)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -1672,8 +2131,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[0]",
         "text": "Previous",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1686,8 +2146,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[1]",
         "text": "1",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1702,7 +2163,8 @@
         "text": "2",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1715,8 +2177,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[3]",
         "text": "3",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1729,8 +2192,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[4]",
         "text": "4",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1743,8 +2207,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[5]",
         "text": "5",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1757,8 +2222,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[6]",
         "text": "…",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1771,8 +2237,9 @@
       "meta": {
         "selector": ".dataTables_paginate .page-link[7]",
         "text": "25",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1787,7 +2254,8 @@
         "text": "2",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1800,8 +2268,9 @@
       "meta": {
         "selector": ".page-item.disabled .page-link",
         "text": "…",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(22, 61, 108, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -1812,7 +2281,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -1827,7 +2297,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1842,7 +2313,8 @@
         "text": "Observations\n\n150",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -1856,7 +2328,8 @@
         "selector": ".bg-success",
         "text": "Species\n\n3",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(25, 135, 84)"
+        "bg": "rgb(25, 135, 84)",
+        "phase": "final"
       }
     },
     {
@@ -1870,7 +2343,8 @@
         "selector": ".bg-info",
         "text": "Avg sepal length\n\n5.8 cm",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(13, 202, 240)"
+        "bg": "rgb(13, 202, 240)",
+        "phase": "final"
       }
     },
     {
@@ -1883,8 +2357,9 @@
       "meta": {
         "selector": ".nav-tabs .nav-link.active",
         "text": "Distribution",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(22, 61, 107, 0.12)"
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(58, 58, 60, 0.94)",
+        "phase": "final"
       }
     },
     {
@@ -1895,7 +2370,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "dashboard",
+      "label": "bslib-dashboard",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -1906,7 +2478,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -1917,7 +2490,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -1928,7 +2502,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -1939,7 +2514,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -1950,7 +2526,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -1961,7 +2538,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -1972,7 +2550,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -1983,7 +2562,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -1997,7 +2577,8 @@
         "selector": "body",
         "text": "Shiny Inputs Gallery\nText & numbers\ntext",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(245, 245, 247)"
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
       }
     },
     {
@@ -2012,7 +2593,8 @@
         "text": "actionButton",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -2027,18 +2609,39 @@
         "text": "submitButton",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
       "app": "inputs",
       "label": "inputs-gallery",
       "preset": "light",
-      "level": "SKIP",
-      "code": "missing",
-      "message": "no match: .btn-secondary",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"OK\"",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-primary[2]",
+        "text": "OK",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-secondary ok",
+      "meta": {
+        "selector": ".btn-secondary",
+        "text": "Close",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2052,7 +2655,8 @@
         "selector": ".form-control[0]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2066,7 +2670,8 @@
         "selector": ".form-control[1]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2080,7 +2685,8 @@
         "selector": ".form-control[2]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2094,7 +2700,8 @@
         "selector": ".form-control[3]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2108,7 +2715,8 @@
         "selector": ".form-control[4]",
         "text": "Blue",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2122,7 +2730,8 @@
         "selector": ".form-control[5]",
         "text": "Blue",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -2136,7 +2745,8 @@
         "selector": ".form-control[6]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2150,7 +2760,8 @@
         "selector": ".form-control[7]",
         "text": "California",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "color(srgb 1 1 1 / 0.238118)",
+        "phase": "final"
       }
     },
     {
@@ -2161,7 +2772,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -2172,7 +2784,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -2186,7 +2799,8 @@
         "selector": ".navbar",
         "text": "Shiny Inputs Gallery",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2200,7 +2814,8 @@
         "selector": ".card[0]",
         "text": "Text & numbers\ntextInput\npasswordInput\nt",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2214,7 +2829,8 @@
         "selector": ".card[1]",
         "text": "Slider\nsliderInput\n0\n100\n50\n0\n10\n20\n30\n4",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2226,9 +2842,10 @@
       "message": ".card[2] ok",
       "meta": {
         "selector": ".card[2]",
-        "text": "Select menus\nselectInput\nBanana\nApple\nBa",
+        "text": "Select menus\nselectInput\nBanana\nselectiz",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2242,7 +2859,8 @@
         "selector": ".card[3]",
         "text": "Checkboxes & radios\n checkboxInput\ncheck",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2256,7 +2874,8 @@
         "selector": ".card[4]",
         "text": "Variable selectors\nvarSelectInput\nmpg\nva",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2270,7 +2889,8 @@
         "selector": ".card[5]",
         "text": "Dates\ndateInput\ndateRangeInput\nto",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2284,7 +2904,8 @@
         "selector": ".card[6]",
         "text": "File upload\nfileInput\nBrowse...",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2298,7 +2919,8 @@
         "selector": ".card[7]",
         "text": "Buttons & links\nactionButton\nactionLink\n",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -2312,7 +2934,8 @@
         "selector": ".selectize-input[0]",
         "text": "Banana",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.42)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2326,7 +2949,8 @@
         "selector": ".selectize-input[1]",
         "text": "Blue",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2340,7 +2964,8 @@
         "selector": ".selectize-input[2]",
         "text": "California",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2354,7 +2979,8 @@
         "selector": ".selectize-input[3]",
         "text": "mpg",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2368,7 +2994,8 @@
         "selector": ".selectize-input[4]",
         "text": "Species",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2380,9 +3007,25 @@
       "message": ".selectize-input[5] ok",
       "meta": {
         "selector": ".selectize-input[5]",
+        "text": "Balanced",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[6] ok",
+      "meta": {
+        "selector": ".selectize-input[6]",
         "text": "Light",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -2394,9 +3037,10 @@
       "message": ".selectize-dropdown[0] ok",
       "meta": {
         "selector": ".selectize-dropdown[0]",
-        "text": "Apple\nBanana\nCherry",
+        "text": "AppleBananaCherry",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2410,7 +3054,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2424,7 +3069,8 @@
         "selector": ".selectize-dropdown[2]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2438,7 +3084,8 @@
         "selector": ".selectize-dropdown[3]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2452,7 +3099,8 @@
         "selector": ".selectize-dropdown[4]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2466,7 +3114,23 @@
         "selector": ".selectize-dropdown[5]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[6] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[6]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -2481,7 +3145,8 @@
         "text": "50",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -2495,7 +3160,8 @@
         "selector": ".irs-single[1]",
         "text": "",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -2509,7 +3175,8 @@
         "selector": ".irs-bar[0]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -2523,7 +3190,8 @@
         "selector": ".irs-bar[1]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -2534,7 +3202,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -2545,7 +3214,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -2556,7 +3226,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -2567,7 +3238,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -2578,7 +3250,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -2589,7 +3262,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -2600,7 +3274,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -2611,7 +3286,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -2622,7 +3298,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -2633,7 +3310,221 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker ok",
+      "meta": {
+        "selector": ".datepicker",
+        "text": "«\tAugust 2026\t»\nSu\tMo\tTu\tWe\tTh\tFr\tSa\n26\t",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[0] ok",
+      "meta": {
+        "selector": ".datepicker .day[0]",
+        "text": "26",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[1] ok",
+      "meta": {
+        "selector": ".datepicker .day[1]",
+        "text": "27",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[2] ok",
+      "meta": {
+        "selector": ".datepicker .day[2]",
+        "text": "28",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[3] ok",
+      "meta": {
+        "selector": ".datepicker .day[3]",
+        "text": "29",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[4] ok",
+      "meta": {
+        "selector": ".datepicker .day[4]",
+        "text": "30",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[5] ok",
+      "meta": {
+        "selector": ".datepicker .day[5]",
+        "text": "31",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[6] ok",
+      "meta": {
+        "selector": ".datepicker .day[6]",
+        "text": "1",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[7] ok",
+      "meta": {
+        "selector": ".datepicker .day[7]",
+        "text": "2",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close ok",
+      "meta": {
+        "selector": ".btn-close",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modal-content ok",
+      "meta": {
+        "selector": ".modal-content",
+        "text": "Glass modal\n\nThis dialog is a Bootstrap ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.636706)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -2644,7 +3535,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -2655,7 +3547,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -2666,7 +3559,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -2677,7 +3571,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -2688,7 +3583,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -2699,7 +3595,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -2710,7 +3607,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -2721,7 +3619,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -2735,7 +3634,8 @@
         "selector": "body",
         "text": "Shiny Inputs Gallery\nText & numbers\ntext",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 0, 0)"
+        "bg": "rgb(0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -2750,7 +3650,8 @@
         "text": "actionButton",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -2765,18 +3666,39 @@
         "text": "submitButton",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
       "app": "inputs",
       "label": "inputs-gallery",
       "preset": "dark",
-      "level": "SKIP",
-      "code": "missing",
-      "message": "no match: .btn-secondary",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"OK\"",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-primary[2]",
+        "text": "OK",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-secondary ok",
+      "meta": {
+        "selector": ".btn-secondary",
+        "text": "Close",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -2790,7 +3712,8 @@
         "selector": ".form-control[0]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2804,7 +3727,8 @@
         "selector": ".form-control[1]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2818,7 +3742,8 @@
         "selector": ".form-control[2]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2832,7 +3757,8 @@
         "selector": ".form-control[3]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2846,7 +3772,8 @@
         "selector": ".form-control[4]",
         "text": "Blue",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2860,7 +3787,8 @@
         "selector": ".form-control[5]",
         "text": "Blue",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2874,7 +3802,8 @@
         "selector": ".form-control[6]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2888,7 +3817,8 @@
         "selector": ".form-control[7]",
         "text": "California",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -2899,7 +3829,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -2910,7 +3841,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -2924,7 +3856,8 @@
         "selector": ".navbar",
         "text": "Shiny Inputs Gallery",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "bg": "rgba(255, 255, 255, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -2937,8 +3870,9 @@
       "meta": {
         "selector": ".card[0]",
         "text": "Text & numbers\ntextInput\npasswordInput\nt",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -2951,8 +3885,9 @@
       "meta": {
         "selector": ".card[1]",
         "text": "Slider\nsliderInput\n0\n100\n50\n0\n10\n20\n30\n4",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -2964,9 +3899,10 @@
       "message": ".card[2] ok",
       "meta": {
         "selector": ".card[2]",
-        "text": "Select menus\nselectInput\nBanana\nApple\nBa",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "text": "Select menus\nselectInput\nBanana\nselectiz",
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -2979,8 +3915,9 @@
       "meta": {
         "selector": ".card[3]",
         "text": "Checkboxes & radios\n checkboxInput\ncheck",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -2993,8 +3930,9 @@
       "meta": {
         "selector": ".card[4]",
         "text": "Variable selectors\nvarSelectInput\nmpg\nva",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -3007,8 +3945,9 @@
       "meta": {
         "selector": ".card[5]",
         "text": "Dates\ndateInput\ndateRangeInput\nto",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -3021,8 +3960,9 @@
       "meta": {
         "selector": ".card[6]",
         "text": "File upload\nfileInput\nBrowse...",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -3035,8 +3975,9 @@
       "meta": {
         "selector": ".card[7]",
         "text": "Buttons & links\nactionButton\nactionLink\n",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -3050,7 +3991,8 @@
         "selector": ".selectize-input[0]",
         "text": "Banana",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3064,7 +4006,8 @@
         "selector": ".selectize-input[1]",
         "text": "Blue",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3078,7 +4021,8 @@
         "selector": ".selectize-input[2]",
         "text": "California",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3092,7 +4036,8 @@
         "selector": ".selectize-input[3]",
         "text": "mpg",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3106,7 +4051,8 @@
         "selector": ".selectize-input[4]",
         "text": "Species",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3118,9 +4064,25 @@
       "message": ".selectize-input[5] ok",
       "meta": {
         "selector": ".selectize-input[5]",
+        "text": "Balanced",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input[6] ok",
+      "meta": {
+        "selector": ".selectize-input[6]",
         "text": "Dark",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3132,9 +4094,10 @@
       "message": ".selectize-dropdown[0] ok",
       "meta": {
         "selector": ".selectize-dropdown[0]",
-        "text": "Apple\nBanana\nCherry",
+        "text": "AppleBananaCherry",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3148,7 +4111,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3162,7 +4126,8 @@
         "selector": ".selectize-dropdown[2]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3176,7 +4141,8 @@
         "selector": ".selectize-dropdown[3]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3190,7 +4156,8 @@
         "selector": ".selectize-dropdown[4]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3204,7 +4171,23 @@
         "selector": ".selectize-dropdown[5]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown[6] ok",
+      "meta": {
+        "selector": ".selectize-dropdown[6]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -3219,7 +4202,8 @@
         "text": "50",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -3233,7 +4217,8 @@
         "selector": ".irs-single[1]",
         "text": "",
         "color": "rgb(255, 255, 255)",
-        "bg": "rgb(0, 122, 255)"
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -3246,8 +4231,9 @@
       "meta": {
         "selector": ".irs-bar[0]",
         "text": "",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 122, 255)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -3260,8 +4246,9 @@
       "meta": {
         "selector": ".irs-bar[1]",
         "text": "",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 122, 255)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
       }
     },
     {
@@ -3272,7 +4259,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3283,7 +4271,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3294,7 +4283,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3305,7 +4295,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3316,7 +4307,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -3327,7 +4319,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -3338,7 +4331,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -3349,7 +4343,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -3360,7 +4355,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -3371,7 +4367,221 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker ok",
+      "meta": {
+        "selector": ".datepicker",
+        "text": "«\tAugust 2026\t»\nSu\tMo\tTu\tWe\tTh\tFr\tSa\n26\t",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[0] ok",
+      "meta": {
+        "selector": ".datepicker .day[0]",
+        "text": "26",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[1] ok",
+      "meta": {
+        "selector": ".datepicker .day[1]",
+        "text": "27",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[2] ok",
+      "meta": {
+        "selector": ".datepicker .day[2]",
+        "text": "28",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[3] ok",
+      "meta": {
+        "selector": ".datepicker .day[3]",
+        "text": "29",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[4] ok",
+      "meta": {
+        "selector": ".datepicker .day[4]",
+        "text": "30",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[5] ok",
+      "meta": {
+        "selector": ".datepicker .day[5]",
+        "text": "31",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[6] ok",
+      "meta": {
+        "selector": ".datepicker .day[6]",
+        "text": "1",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".datepicker .day[7] ok",
+      "meta": {
+        "selector": ".datepicker .day[7]",
+        "text": "2",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close ok",
+      "meta": {
+        "selector": ".btn-close",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modal-content ok",
+      "meta": {
+        "selector": ".modal-content",
+        "text": "Glass modal\n\nThis dialog is a Bootstrap ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 0.227451 0.227451 0.235294 / 0.594902)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "inputs",
+      "label": "inputs-gallery",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -3382,7 +4592,8 @@
       "code": "missing",
       "message": "no match: .js-plotly-plot",
       "meta": {
-        "selector": ".js-plotly-plot"
+        "selector": ".js-plotly-plot",
+        "phase": "final"
       }
     },
     {
@@ -3393,7 +4604,8 @@
       "code": "missing",
       "message": "no match: .modebar",
       "meta": {
-        "selector": ".modebar"
+        "selector": ".modebar",
+        "phase": "final"
       }
     },
     {
@@ -3404,7 +4616,8 @@
       "code": "missing",
       "message": "no match: .modebar-btn",
       "meta": {
-        "selector": ".modebar-btn"
+        "selector": ".modebar-btn",
+        "phase": "final"
       }
     },
     {
@@ -3415,7 +4628,8 @@
       "code": "missing",
       "message": "no match: .gt_table",
       "meta": {
-        "selector": ".gt_table"
+        "selector": ".gt_table",
+        "phase": "final"
       }
     },
     {
@@ -3426,7 +4640,8 @@
       "code": "missing",
       "message": "no match: .gt_col_heading",
       "meta": {
-        "selector": ".gt_col_heading"
+        "selector": ".gt_col_heading",
+        "phase": "final"
       }
     },
     {
@@ -3437,7 +4652,8 @@
       "code": "missing",
       "message": "no match: .gt_row",
       "meta": {
-        "selector": ".gt_row"
+        "selector": ".gt_row",
+        "phase": "final"
       }
     },
     {
@@ -3448,7 +4664,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -3459,7 +4676,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -3473,7 +4691,8 @@
         "selector": "body",
         "text": "plotly + gt + glass\nplotly\n5\n6\n7\n8\n2\n2.5",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(245, 245, 247)"
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
       }
     },
     {
@@ -3488,7 +4707,8 @@
         "text": "Refresh plot",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -3499,7 +4719,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -3510,7 +4731,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -3521,7 +4743,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -3532,7 +4755,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -3546,7 +4770,8 @@
         "selector": ".navbar",
         "text": "plotly + gt + glass",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -3560,7 +4785,8 @@
         "selector": ".card[0]",
         "text": "plotly\n5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\n",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -3574,7 +4800,8 @@
         "selector": ".card[1]",
         "text": "gt\nMean iris measures\n150 rows\nSpecies\tS",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.337)",
+        "phase": "final"
       }
     },
     {
@@ -3588,7 +4815,8 @@
         "selector": ".selectize-input[0]",
         "text": "Light",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -3602,7 +4830,8 @@
         "selector": ".selectize-input[1]",
         "text": "All",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -3616,7 +4845,8 @@
         "selector": ".selectize-dropdown[0]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -3630,7 +4860,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgb(255, 255, 255)"
+        "bg": "rgba(255, 255, 255, 0.776)",
+        "phase": "final"
       }
     },
     {
@@ -3641,7 +4872,8 @@
       "code": "missing",
       "message": "no match: .irs-single",
       "meta": {
-        "selector": ".irs-single"
+        "selector": ".irs-single",
+        "phase": "final"
       }
     },
     {
@@ -3652,7 +4884,8 @@
       "code": "missing",
       "message": "no match: .irs-bar",
       "meta": {
-        "selector": ".irs-bar"
+        "selector": ".irs-bar",
+        "phase": "final"
       }
     },
     {
@@ -3663,7 +4896,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3674,7 +4908,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3685,7 +4920,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3696,7 +4932,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -3707,7 +4944,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -3718,7 +4956,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -3729,7 +4968,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -3740,7 +4980,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -3751,7 +4992,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -3762,7 +5004,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -3776,7 +5115,8 @@
         "selector": ".js-plotly-plot",
         "text": "5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\nversico",
         "color": "rgb(29, 29, 31)",
-        "bg": "color(srgb 1 1 1 / 0.153137)"
+        "bg": "color(srgb 1 1 1 / 0.148824)",
+        "phase": "final"
       }
     },
     {
@@ -3790,7 +5130,8 @@
         "selector": ".modebar",
         "text": "",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -3804,7 +5145,8 @@
         "selector": ".modebar-btn[0]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3818,7 +5160,8 @@
         "selector": ".modebar-btn[1]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3832,7 +5175,8 @@
         "selector": ".modebar-btn[2]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3846,7 +5190,8 @@
         "selector": ".modebar-btn[3]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3860,7 +5205,8 @@
         "selector": ".modebar-btn[4]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3874,7 +5220,8 @@
         "selector": ".modebar-btn[5]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3888,7 +5235,8 @@
         "selector": ".modebar-btn[6]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3902,7 +5250,8 @@
         "selector": ".modebar-btn[7]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -3916,7 +5265,8 @@
         "selector": ".gt_table",
         "text": "Mean iris measures\n150 rows\nSpecies\tSepa",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.28)"
+        "bg": "rgba(255, 255, 255, 0.27)",
+        "phase": "final"
       }
     },
     {
@@ -3930,7 +5280,8 @@
         "selector": ".gt_col_heading[0]",
         "text": "Species",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.42)"
+        "bg": "rgba(255, 255, 255, 0.376)",
+        "phase": "final"
       }
     },
     {
@@ -3942,9 +5293,10 @@
       "message": ".gt_col_heading[1] ok",
       "meta": {
         "selector": ".gt_col_heading[1]",
-        "text": "Sepal L",
+        "text": "Sepal Length",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.42)"
+        "bg": "rgba(255, 255, 255, 0.376)",
+        "phase": "final"
       }
     },
     {
@@ -3956,9 +5308,10 @@
       "message": ".gt_col_heading[2] ok",
       "meta": {
         "selector": ".gt_col_heading[2]",
-        "text": "Sepal W",
+        "text": "Sepal Width",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.42)"
+        "bg": "rgba(255, 255, 255, 0.376)",
+        "phase": "final"
       }
     },
     {
@@ -3970,9 +5323,10 @@
       "message": ".gt_col_heading[3] ok",
       "meta": {
         "selector": ".gt_col_heading[3]",
-        "text": "Petal L",
+        "text": "Petal Length",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(255, 255, 255, 0.42)"
+        "bg": "rgba(255, 255, 255, 0.376)",
+        "phase": "final"
       }
     },
     {
@@ -3986,7 +5340,8 @@
         "selector": ".gt_row[0]",
         "text": "setosa",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4000,7 +5355,8 @@
         "selector": ".gt_row[1]",
         "text": "5.01",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4014,7 +5370,8 @@
         "selector": ".gt_row[2]",
         "text": "3.43",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4028,7 +5385,8 @@
         "selector": ".gt_row[3]",
         "text": "1.46",
         "color": "rgb(29, 29, 31)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4042,7 +5400,8 @@
         "selector": ".gt_row[4]",
         "text": "versicolor",
         "color": "rgb(29, 29, 31)",
-        "bg": "color(srgb 1 1 1 / 0.194902)"
+        "bg": "color(srgb 1 1 1 / 0.189412)",
+        "phase": "final"
       }
     },
     {
@@ -4056,7 +5415,8 @@
         "selector": ".gt_row[5]",
         "text": "5.94",
         "color": "rgb(29, 29, 31)",
-        "bg": "color(srgb 1 1 1 / 0.194902)"
+        "bg": "color(srgb 1 1 1 / 0.189412)",
+        "phase": "final"
       }
     },
     {
@@ -4070,7 +5430,8 @@
         "selector": ".gt_row[6]",
         "text": "2.77",
         "color": "rgb(29, 29, 31)",
-        "bg": "color(srgb 1 1 1 / 0.194902)"
+        "bg": "color(srgb 1 1 1 / 0.189412)",
+        "phase": "final"
       }
     },
     {
@@ -4084,7 +5445,8 @@
         "selector": ".gt_row[7]",
         "text": "4.26",
         "color": "rgb(29, 29, 31)",
-        "bg": "color(srgb 1 1 1 / 0.194902)"
+        "bg": "color(srgb 1 1 1 / 0.189412)",
+        "phase": "final"
       }
     },
     {
@@ -4095,7 +5457,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -4106,7 +5469,8 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
       }
     },
     {
@@ -4120,7 +5484,8 @@
         "selector": "body",
         "text": "plotly + gt + glass\nplotly\n5\n6\n7\n8\n2\n2.5",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(0, 0, 0)"
+        "bg": "rgb(0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4135,7 +5500,8 @@
         "text": "Refresh plot",
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(0, 122, 255)",
-        "contrast": 4.02
+        "contrast": 4.02,
+        "phase": "final"
       }
     },
     {
@@ -4146,7 +5512,8 @@
       "code": "missing",
       "message": "no match: .btn-secondary",
       "meta": {
-        "selector": ".btn-secondary"
+        "selector": ".btn-secondary",
+        "phase": "final"
       }
     },
     {
@@ -4157,7 +5524,8 @@
       "code": "missing",
       "message": "no match: .form-control",
       "meta": {
-        "selector": ".form-control"
+        "selector": ".form-control",
+        "phase": "final"
       }
     },
     {
@@ -4168,7 +5536,8 @@
       "code": "missing",
       "message": "no match: .form-select",
       "meta": {
-        "selector": ".form-select"
+        "selector": ".form-select",
+        "phase": "final"
       }
     },
     {
@@ -4179,7 +5548,8 @@
       "code": "missing",
       "message": "no match: .form-check-input:checked",
       "meta": {
-        "selector": ".form-check-input:checked"
+        "selector": ".form-check-input:checked",
+        "phase": "final"
       }
     },
     {
@@ -4193,7 +5563,8 @@
         "selector": ".navbar",
         "text": "plotly + gt + glass",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "bg": "rgba(255, 255, 255, 0.145)",
+        "phase": "final"
       }
     },
     {
@@ -4206,8 +5577,9 @@
       "meta": {
         "selector": ".card[0]",
         "text": "plotly\n5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\n",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -4220,8 +5592,9 @@
       "meta": {
         "selector": ".card[1]",
         "text": "gt\nMean iris measures\n150 rows\nSpecies\tS",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.08)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(255, 255, 255, 0.12)",
+        "phase": "final"
       }
     },
     {
@@ -4235,7 +5608,8 @@
         "selector": ".selectize-input[0]",
         "text": "Dark",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4249,7 +5623,8 @@
         "selector": ".selectize-input[1]",
         "text": "All",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4263,7 +5638,8 @@
         "selector": ".selectize-dropdown[0]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4277,7 +5653,8 @@
         "selector": ".selectize-dropdown[1]",
         "text": "",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4288,7 +5665,8 @@
       "code": "missing",
       "message": "no match: .irs-single",
       "meta": {
-        "selector": ".irs-single"
+        "selector": ".irs-single",
+        "phase": "final"
       }
     },
     {
@@ -4299,7 +5677,8 @@
       "code": "missing",
       "message": "no match: .irs-bar",
       "meta": {
-        "selector": ".irs-bar"
+        "selector": ".irs-bar",
+        "phase": "final"
       }
     },
     {
@@ -4310,7 +5689,8 @@
       "code": "missing",
       "message": "no match: .dataTables_paginate .page-link",
       "meta": {
-        "selector": ".dataTables_paginate .page-link"
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
       }
     },
     {
@@ -4321,7 +5701,8 @@
       "code": "missing",
       "message": "no match: .page-item.active .page-link",
       "meta": {
-        "selector": ".page-item.active .page-link"
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
       }
     },
     {
@@ -4332,7 +5713,8 @@
       "code": "missing",
       "message": "no match: .page-item.disabled .page-link",
       "meta": {
-        "selector": ".page-item.disabled .page-link"
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
       }
     },
     {
@@ -4343,7 +5725,8 @@
       "code": "missing",
       "message": "no match: .paginate_button.current .page-link",
       "meta": {
-        "selector": ".paginate_button.current .page-link"
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
       }
     },
     {
@@ -4354,7 +5737,8 @@
       "code": "missing",
       "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
       "meta": {
-        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary"
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -4365,7 +5749,8 @@
       "code": "missing",
       "message": "no match: .bg-primary",
       "meta": {
-        "selector": ".bg-primary"
+        "selector": ".bg-primary",
+        "phase": "final"
       }
     },
     {
@@ -4376,7 +5761,8 @@
       "code": "missing",
       "message": "no match: .bg-success",
       "meta": {
-        "selector": ".bg-success"
+        "selector": ".bg-success",
+        "phase": "final"
       }
     },
     {
@@ -4387,7 +5773,8 @@
       "code": "missing",
       "message": "no match: .bg-info",
       "meta": {
-        "selector": ".bg-info"
+        "selector": ".bg-info",
+        "phase": "final"
       }
     },
     {
@@ -4398,7 +5785,8 @@
       "code": "missing",
       "message": "no match: .nav-tabs .nav-link.active",
       "meta": {
-        "selector": ".nav-tabs .nav-link.active"
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
       }
     },
     {
@@ -4409,7 +5797,104 @@
       "code": "missing",
       "message": "no match: .shiny-notification",
       "meta": {
-        "selector": ".shiny-notification"
+        "selector": ".shiny-notification",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .btn-close",
+      "meta": {
+        "selector": ".btn-close",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .accordion-button",
+      "meta": {
+        "selector": ".accordion-button",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modal-content",
+      "meta": {
+        "selector": ".modal-content",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .tooltip-inner",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "plotly_gt",
+      "label": "plotly-gt-demo",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .popover",
+      "meta": {
+        "selector": ".popover",
+        "phase": "final"
       }
     },
     {
@@ -4422,8 +5907,9 @@
       "meta": {
         "selector": ".js-plotly-plot",
         "text": "5\n6\n7\n8\n2\n2.5\n3\n3.5\n4\n4.5\nsetosa\nversico",
-        "color": "rgb(245, 245, 247)",
-        "bg": "color(srgb 1 1 1 / 0.0431373)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "color(srgb 1 1 1 / 0.0798039)",
+        "phase": "final"
       }
     },
     {
@@ -4436,8 +5922,9 @@
       "meta": {
         "selector": ".modebar",
         "text": "",
-        "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "color": "rgb(222, 226, 230)",
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4451,7 +5938,8 @@
         "selector": ".modebar-btn[0]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4465,7 +5953,8 @@
         "selector": ".modebar-btn[1]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4479,7 +5968,8 @@
         "selector": ".modebar-btn[2]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4493,7 +5983,8 @@
         "selector": ".modebar-btn[3]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4507,7 +5998,8 @@
         "selector": ".modebar-btn[4]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4521,7 +6013,8 @@
         "selector": ".modebar-btn[5]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4535,7 +6028,8 @@
         "selector": ".modebar-btn[6]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4549,7 +6043,8 @@
         "selector": ".modebar-btn[7]",
         "text": "",
         "color": "rgb(0, 122, 255)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4563,7 +6058,8 @@
         "selector": ".gt_table",
         "text": "Mean iris measures\n150 rows\nSpecies\tSepa",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgb(28, 28, 30)"
+        "bg": "rgba(58, 58, 60, 0.725)",
+        "phase": "final"
       }
     },
     {
@@ -4577,7 +6073,8 @@
         "selector": ".gt_col_heading[0]",
         "text": "Species",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.14)"
+        "bg": "rgba(255, 255, 255, 0.21)",
+        "phase": "final"
       }
     },
     {
@@ -4589,9 +6086,10 @@
       "message": ".gt_col_heading[1] ok",
       "meta": {
         "selector": ".gt_col_heading[1]",
-        "text": "Sepal L",
+        "text": "Sepal Length",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.14)"
+        "bg": "rgba(255, 255, 255, 0.21)",
+        "phase": "final"
       }
     },
     {
@@ -4603,9 +6101,10 @@
       "message": ".gt_col_heading[2] ok",
       "meta": {
         "selector": ".gt_col_heading[2]",
-        "text": "Sepal W",
+        "text": "Sepal Width",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.14)"
+        "bg": "rgba(255, 255, 255, 0.21)",
+        "phase": "final"
       }
     },
     {
@@ -4617,9 +6116,10 @@
       "message": ".gt_col_heading[3] ok",
       "meta": {
         "selector": ".gt_col_heading[3]",
-        "text": "Petal L",
+        "text": "Petal Length",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(255, 255, 255, 0.14)"
+        "bg": "rgba(255, 255, 255, 0.21)",
+        "phase": "final"
       }
     },
     {
@@ -4633,7 +6133,8 @@
         "selector": ".gt_row[0]",
         "text": "setosa",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4647,7 +6148,8 @@
         "selector": ".gt_row[1]",
         "text": "5.01",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4661,7 +6163,8 @@
         "selector": ".gt_row[2]",
         "text": "3.43",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4675,7 +6178,8 @@
         "selector": ".gt_row[3]",
         "text": "1.46",
         "color": "rgb(245, 245, 247)",
-        "bg": "rgba(0, 0, 0, 0)"
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
       }
     },
     {
@@ -4689,7 +6193,8 @@
         "selector": ".gt_row[4]",
         "text": "versicolor",
         "color": "rgb(245, 245, 247)",
-        "bg": "color(srgb 1 1 1 / 0.0666667)"
+        "bg": "color(srgb 1 1 1 / 0.123333)",
+        "phase": "final"
       }
     },
     {
@@ -4703,7 +6208,8 @@
         "selector": ".gt_row[5]",
         "text": "5.94",
         "color": "rgb(245, 245, 247)",
-        "bg": "color(srgb 1 1 1 / 0.0666667)"
+        "bg": "color(srgb 1 1 1 / 0.123333)",
+        "phase": "final"
       }
     },
     {
@@ -4717,7 +6223,8 @@
         "selector": ".gt_row[6]",
         "text": "2.77",
         "color": "rgb(245, 245, 247)",
-        "bg": "color(srgb 1 1 1 / 0.0666667)"
+        "bg": "color(srgb 1 1 1 / 0.123333)",
+        "phase": "final"
       }
     },
     {
@@ -4731,7 +6238,8 @@
         "selector": ".gt_row[7]",
         "text": "4.26",
         "color": "rgb(245, 245, 247)",
-        "bg": "color(srgb 1 1 1 / 0.0666667)"
+        "bg": "color(srgb 1 1 1 / 0.123333)",
+        "phase": "final"
       }
     },
     {
@@ -4742,7 +6250,8 @@
       "code": "missing",
       "message": "no match: .waiter-overlay",
       "meta": {
-        "selector": ".waiter-overlay"
+        "selector": ".waiter-overlay",
+        "phase": "final"
       }
     },
     {
@@ -4753,7 +6262,2034 @@
       "code": "missing",
       "message": "no match: .swal2-popup",
       "meta": {
-        "selector": ".swal2-popup"
+        "selector": ".swal2-popup",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Glass chrome\nOverlays\nbslib\nMore \nLight\n",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(242, 242, 247)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Light\"",
+      "meta": {
+        "selector": ".btn-primary[0]",
+        "text": "Light",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"message\"",
+      "meta": {
+        "selector": ".btn-primary[1]",
+        "text": "message",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"OK\"",
+      "meta": {
+        "selector": ".btn-primary[2]",
+        "text": "OK",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-secondary ok",
+      "meta": {
+        "selector": ".btn-secondary",
+        "text": "Disabled",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.5)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[0] ok",
+      "meta": {
+        "selector": ".form-control[0]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[1] ok",
+      "meta": {
+        "selector": ".form-control[1]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[2] ok",
+      "meta": {
+        "selector": ".form-control[2]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[3] ok",
+      "meta": {
+        "selector": ".form-control[3]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[4] ok",
+      "meta": {
+        "selector": ".form-control[4]",
+        "text": "a\nb\nc\nd\ne\nf\ng\nh",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[5] ok",
+      "meta": {
+        "selector": ".form-control[5]",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.847059)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-check-input:checked ok",
+      "meta": {
+        "selector": ".form-check-input:checked",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Glass chrome\nOverlays\nbslib\nMore \nLight\n",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Dates\n                \n                 ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "File\n                \n                  ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Notifications\n                \n         ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Server modal\n                \n          ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Accordion\nOne\nFirst accordion panel — gl",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[5] ok",
+      "meta": {
+        "selector": ".card[5]",
+        "text": "Tooltip / popover / switch\nHover tooltip",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[6] ok",
+      "meta": {
+        "selector": ".card[6]",
+        "text": "Navsets\nPill A\nPill B\n\nnavset_pill panel",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[7] ok",
+      "meta": {
+        "selector": ".card[7]",
+        "text": "Native multi + inline\n                \n ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input ok",
+      "meta": {
+        "selector": ".selectize-input",
+        "text": "Balanced",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.5)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown ok",
+      "meta": {
+        "selector": ".selectize-dropdown",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"0\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "0",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[0] ok",
+      "meta": {
+        "selector": ".shiny-notification[0]",
+        "text": "×\nNotification type: default",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[1] ok",
+      "meta": {
+        "selector": ".shiny-notification[1]",
+        "text": "×\nNotification type: message",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[2] ok",
+      "meta": {
+        "selector": ".shiny-notification[2]",
+        "text": "×\nNotification type: warning",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[3] ok",
+      "meta": {
+        "selector": ".shiny-notification[3]",
+        "text": "×\nNotification type: error",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close[0] ok",
+      "meta": {
+        "selector": ".btn-close[0]",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close[1] ok",
+      "meta": {
+        "selector": ".btn-close[1]",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button[0] ok",
+      "meta": {
+        "selector": ".accordion-button[0]",
+        "text": "One",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.64)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button[1] ok",
+      "meta": {
+        "selector": ".accordion-button[1]",
+        "text": "Two",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.64)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modal-content ok",
+      "meta": {
+        "selector": ".modal-content",
+        "text": "Server modalDialog\nChoice\nBalanced\nNote\n",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.771765)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".tooltip-inner ok",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "text": "Tooltip on glass",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".popover ok",
+      "meta": {
+        "selector": ".popover",
+        "text": "Popover\nPopover body on the glass menu s",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day.active",
+      "meta": {
+        "selector": ".datepicker .day.active",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker-switch",
+      "meta": {
+        "selector": ".datepicker-switch",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-message ok",
+      "meta": {
+        "selector": ".shiny-notification-message",
+        "text": "×\nNotification type: message",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-warning ok",
+      "meta": {
+        "selector": ".shiny-notification-warning",
+        "text": "×\nNotification type: warning",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-error ok",
+      "meta": {
+        "selector": ".shiny-notification-error",
+        "text": "×\nNotification type: error",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button:not(.collapsed)[0] ok",
+      "meta": {
+        "selector": ".accordion-button:not(.collapsed)[0]",
+        "text": "One",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.64)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button:not(.collapsed)[1] ok",
+      "meta": {
+        "selector": ".accordion-button:not(.collapsed)[1]",
+        "text": "Two",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.64)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-body[0] ok",
+      "meta": {
+        "selector": ".accordion-body[0]",
+        "text": "First accordion panel — glass header + b",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-body[1] ok",
+      "meta": {
+        "selector": ".accordion-body[1]",
+        "text": "Second accordion panel opened by the con",
+        "color": "rgb(29, 29, 31)",
+        "bg": "color(srgb 1 1 1 / 0.441726)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".popover-body ok",
+      "meta": {
+        "selector": ".popover-body",
+        "text": "Popover body on the glass menu surface.",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dropdown-menu.show, .navbar-nav .dropdown-menu ok",
+      "meta": {
+        "selector": ".dropdown-menu.show, .navbar-nav .dropdown-menu",
+        "text": "Selects",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.94)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Pill A\"",
+      "meta": {
+        "selector": ".nav-pills .nav-link.active",
+        "text": "Pill A",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select[multiple]",
+      "meta": {
+        "selector": ".form-select[multiple]",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-file, .shiny-input-container:has(input[type='file']) .btn ok",
+      "meta": {
+        "selector": ".btn-file, .shiny-input-container:has(input[type='file']) .btn",
+        "text": "Browse...",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.5)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "light",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".well ok",
+      "meta": {
+        "selector": ".well",
+        "text": "wellPanel under glass_theme().\n         ",
+        "color": "rgb(29, 29, 31)",
+        "bg": "rgba(255, 255, 255, 0.58)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": "body ok",
+      "meta": {
+        "selector": "body",
+        "text": "Glass chrome\nOverlays\nbslib\nMore \nLight\n",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Dark\"",
+      "meta": {
+        "selector": ".btn-primary[0]",
+        "text": "Dark",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"message\"",
+      "meta": {
+        "selector": ".btn-primary[1]",
+        "text": "message",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"OK\"",
+      "meta": {
+        "selector": ".btn-primary[2]",
+        "text": "OK",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-secondary ok",
+      "meta": {
+        "selector": ".btn-secondary",
+        "text": "Disabled",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.24)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[0] ok",
+      "meta": {
+        "selector": ".form-control[0]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[1] ok",
+      "meta": {
+        "selector": ".form-control[1]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[2] ok",
+      "meta": {
+        "selector": ".form-control[2]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[3] ok",
+      "meta": {
+        "selector": ".form-control[3]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[4] ok",
+      "meta": {
+        "selector": ".form-control[4]",
+        "text": "a\nb\nc\nd\ne\nf\ng\nh",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-control[5] ok",
+      "meta": {
+        "selector": ".form-control[5]",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 0.227451 0.227451 0.235294 / 0.811765)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select",
+      "meta": {
+        "selector": ".form-select",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".form-check-input:checked ok",
+      "meta": {
+        "selector": ".form-check-input:checked",
+        "text": "",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".navbar ok",
+      "meta": {
+        "selector": ".navbar",
+        "text": "Glass chrome\nOverlays\nbslib\nMore \nLight\n",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[0] ok",
+      "meta": {
+        "selector": ".card[0]",
+        "text": "Dates\n                \n                 ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[1] ok",
+      "meta": {
+        "selector": ".card[1]",
+        "text": "File\n                \n                  ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[2] ok",
+      "meta": {
+        "selector": ".card[2]",
+        "text": "Notifications\n                \n         ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[3] ok",
+      "meta": {
+        "selector": ".card[3]",
+        "text": "Server modal\n                \n          ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[4] ok",
+      "meta": {
+        "selector": ".card[4]",
+        "text": "Accordion\nOne\nFirst accordion panel — gl",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[5] ok",
+      "meta": {
+        "selector": ".card[5]",
+        "text": "Tooltip / popover / switch\nHover tooltip",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[6] ok",
+      "meta": {
+        "selector": ".card[6]",
+        "text": "Navsets\nPill A\nPill B\n\nnavset_pill panel",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".card[7] ok",
+      "meta": {
+        "selector": ".card[7]",
+        "text": "Native multi + inline\n                \n ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-input ok",
+      "meta": {
+        "selector": ".selectize-input",
+        "text": "Balanced",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".selectize-dropdown ok",
+      "meta": {
+        "selector": ".selectize-dropdown",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"0\"",
+      "meta": {
+        "selector": ".irs-single",
+        "text": "0",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".irs-bar ok",
+      "meta": {
+        "selector": ".irs-bar",
+        "text": "",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgb(0, 122, 255)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dataTables_paginate .page-link",
+      "meta": {
+        "selector": ".dataTables_paginate .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.active .page-link",
+      "meta": {
+        "selector": ".page-item.active .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .page-item.disabled .page-link",
+      "meta": {
+        "selector": ".page-item.disabled .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .paginate_button.current .page-link",
+      "meta": {
+        "selector": ".paginate_button.current .page-link",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+      "meta": {
+        "selector": ".value-box.bg-primary, .bslib-value-box .bg-primary, .bg-primary.value-box, [class*='value-box'] .bg-primary, .bslib-value-box.bg-primary",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-primary",
+      "meta": {
+        "selector": ".bg-primary",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-success",
+      "meta": {
+        "selector": ".bg-success",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .bg-info",
+      "meta": {
+        "selector": ".bg-info",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .nav-tabs .nav-link.active",
+      "meta": {
+        "selector": ".nav-tabs .nav-link.active",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[0] ok",
+      "meta": {
+        "selector": ".shiny-notification[0]",
+        "text": "×\nNotification type: default",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[1] ok",
+      "meta": {
+        "selector": ".shiny-notification[1]",
+        "text": "×\nNotification type: message",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[2] ok",
+      "meta": {
+        "selector": ".shiny-notification[2]",
+        "text": "×\nNotification type: warning",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification[3] ok",
+      "meta": {
+        "selector": ".shiny-notification[3]",
+        "text": "×\nNotification type: error",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker",
+      "meta": {
+        "selector": ".datepicker",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day",
+      "meta": {
+        "selector": ".datepicker .day",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close[0] ok",
+      "meta": {
+        "selector": ".btn-close[0]",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-close[1] ok",
+      "meta": {
+        "selector": ".btn-close[1]",
+        "text": "",
+        "color": "rgb(0, 0, 0)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button[0] ok",
+      "meta": {
+        "selector": ".accordion-button[0]",
+        "text": "One",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.32)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button[1] ok",
+      "meta": {
+        "selector": ".accordion-button[1]",
+        "text": "Two",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.32)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .dropdown-menu.show",
+      "meta": {
+        "selector": ".dropdown-menu.show",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".modal-content ok",
+      "meta": {
+        "selector": ".modal-content",
+        "text": "Server modalDialog\nChoice\nBalanced\nNote\n",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 0.227451 0.227451 0.235294 / 0.739608)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".tooltip-inner ok",
+      "meta": {
+        "selector": ".tooltip-inner",
+        "text": "Tooltip on glass",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".popover ok",
+      "meta": {
+        "selector": ".popover",
+        "text": "Popover\nPopover body on the glass menu s",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .js-plotly-plot",
+      "meta": {
+        "selector": ".js-plotly-plot",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar",
+      "meta": {
+        "selector": ".modebar",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .modebar-btn",
+      "meta": {
+        "selector": ".modebar-btn",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_table",
+      "meta": {
+        "selector": ".gt_table",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_col_heading",
+      "meta": {
+        "selector": ".gt_col_heading",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .gt_row",
+      "meta": {
+        "selector": ".gt_row",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .waiter-overlay",
+      "meta": {
+        "selector": ".waiter-overlay",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .swal2-popup",
+      "meta": {
+        "selector": ".swal2-popup",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker .day.active",
+      "meta": {
+        "selector": ".datepicker .day.active",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .datepicker-switch",
+      "meta": {
+        "selector": ".datepicker-switch",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-message ok",
+      "meta": {
+        "selector": ".shiny-notification-message",
+        "text": "×\nNotification type: message",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-warning ok",
+      "meta": {
+        "selector": ".shiny-notification-warning",
+        "text": "×\nNotification type: warning",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".shiny-notification-error ok",
+      "meta": {
+        "selector": ".shiny-notification-error",
+        "text": "×\nNotification type: error",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button:not(.collapsed)[0] ok",
+      "meta": {
+        "selector": ".accordion-button:not(.collapsed)[0]",
+        "text": "One",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.32)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-button:not(.collapsed)[1] ok",
+      "meta": {
+        "selector": ".accordion-button:not(.collapsed)[1]",
+        "text": "Two",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.32)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-body[0] ok",
+      "meta": {
+        "selector": ".accordion-body[0]",
+        "text": "First accordion panel — glass header + b",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.21051)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".accordion-body[1] ok",
+      "meta": {
+        "selector": ".accordion-body[1]",
+        "text": "Second accordion panel opened by the con",
+        "color": "rgb(245, 245, 247)",
+        "bg": "color(srgb 1 1 1 / 0.21051)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".popover-body ok",
+      "meta": {
+        "selector": ".popover-body",
+        "text": "Popover body on the glass menu surface.",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".dropdown-menu.show, .navbar-nav .dropdown-menu ok",
+      "meta": {
+        "selector": ".dropdown-menu.show, .navbar-nav .dropdown-menu",
+        "text": "Selects",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(58, 58, 60, 0.9)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "WARN",
+      "code": "contrast-aa",
+      "message": "contrast 4.02:1 below WCAG AA 4.5 for \"Pill A\"",
+      "meta": {
+        "selector": ".nav-pills .nav-link.active",
+        "text": "Pill A",
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(0, 122, 255)",
+        "contrast": 4.02,
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "SKIP",
+      "code": "missing",
+      "message": "no match: .form-select[multiple]",
+      "meta": {
+        "selector": ".form-select[multiple]",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".btn-file, .shiny-input-container:has(input[type='file']) .btn ok",
+      "meta": {
+        "selector": ".btn-file, .shiny-input-container:has(input[type='file']) .btn",
+        "text": "Browse...",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.24)",
+        "phase": "final"
+      }
+    },
+    {
+      "app": "chrome",
+      "label": "chrome-kitchen-sink",
+      "preset": "dark",
+      "level": "PASS",
+      "code": "ok",
+      "message": ".well ok",
+      "meta": {
+        "selector": ".well",
+        "text": "wellPanel under glass_theme().\n         ",
+        "color": "rgb(245, 245, 247)",
+        "bg": "rgba(255, 255, 255, 0.2)",
+        "phase": "final"
       }
     }
   ]

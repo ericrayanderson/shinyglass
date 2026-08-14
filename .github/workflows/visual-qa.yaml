@@ -72,7 +72,7 @@ jobs:
       - name: Dual-theme contrast audit
         run: |
           Rscript inst/scripts/audit-glass-contrast.R \
-            --apps=demo,dashboard,inputs,plotly_gt \
+            --apps=demo,dashboard,inputs,plotly_gt,chrome \
             --presets=light,dark \
             --json=audit-ci-report.json
 

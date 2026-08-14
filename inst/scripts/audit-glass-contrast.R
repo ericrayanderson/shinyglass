@@ -7,8 +7,9 @@
 #
 # Usage (from package root):
 #   Rscript inst/scripts/audit-glass-contrast.R
-#   Rscript inst/scripts/audit-glass-contrast.R --apps=dashboard,inputs --presets=dark
+#   Rscript inst/scripts/audit-glass-contrast.R --apps=dashboard,inputs,chrome --presets=dark
 #   Rscript inst/scripts/audit-glass-contrast.R --min-contrast=3 --json=audit.json
+#   Rscript inst/scripts/audit-glass-contrast.R --apps=chrome --screenshot-dir=visual-test-output/chrome
 #
 # Exit code 1 if any FAIL findings; 0 if only PASS/WARN/SKIP.
 #
@@ -27,9 +28,10 @@ has_flag <- function(flag) any(args == flag)
 
 min_contrast <- as.numeric(get_flag("--min-contrast", "3"))
 if (is.na(min_contrast) || min_contrast <= 0) min_contrast <- 3
-apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt")
+apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt,chrome")
 presets_arg <- get_flag("--presets", "light,dark")
 json_out <- get_flag("--json", NULL)
+screenshot_dir <- get_flag("--screenshot-dir", NULL)
 port_base <- as.integer(get_flag("--port-base", "3910"))
 if (is.na(port_base)) port_base <- 3910L
 
@@ -91,6 +93,18 @@ catalog <- list(
           })();
         ",
         wait_ms = 800
+      ),
+      list(
+        name = "focus-dt-length",
+        js = "
+          (function() {
+            const sel = document.querySelector('.dataTables_length select');
+            if (!sel) return false;
+            sel.focus();
+            return true;
+          })();
+        ",
+        wait_ms = 200
       )
     )
   ),
@@ -110,15 +124,53 @@ catalog <- list(
             return true;
           })();
         ",
-        wait_ms = 500
+        wait_ms = 500,
+        sample = TRUE
+      ),
+      list(
+        name = "open-datepicker",
+        js = "
+          (function() {
+            return new Promise((resolve) => {
+              const start = Date.now();
+              const tick = () => {
+                const el = document.querySelector('#date input, .shiny-date-input input');
+                const $ = window.jQuery || window.$;
+                const method = $ && $.fn && ($.fn.bsDatepicker ? 'bsDatepicker' : ($.fn.datepicker ? 'datepicker' : null));
+                if (el && method) {
+                  el.scrollIntoView({block: 'center'});
+                  $(el)[method]('show');
+                  resolve(true);
+                  return;
+                }
+                if (Date.now() - start > 8000) { resolve(false); return; }
+                setTimeout(tick, 150);
+              };
+              tick();
+            });
+          })();
+        ",
+        wait_ms = 500,
+        sample = TRUE,
+        expect = ".datepicker-dropdown, .datepicker[style*='display: block']"
+      ),
+      list(
+        name = "open-modal",
+        js = "
+          (function() {
+            const btn = document.getElementById('show_modal');
+            if (btn) { btn.click(); return true; }
+            return false;
+          })();
+        ",
+        wait_ms = 400,
+        sample = TRUE,
+        expect = ".modal.show, .modal-content"
       ),
       list(
         name = "show-notification",
         js = "
           (function() {
-            if (window.Shiny && Shiny.notifications) {
-              // server-driven preferred; client fallback banner
-            }
             if (window.Shiny && Shiny.setInputValue) {
               Shiny.setInputValue('action', Date.now(), {priority: 'event'});
               return true;
@@ -128,7 +180,239 @@ catalog <- list(
             return false;
           })();
         ",
+        wait_ms = 400,
+        sample = TRUE
+      )
+    )
+  ),
+  chrome = list(
+    label = "chrome-kitchen-sink",
+    path = file.path(pkg_root, "inst", "examples", "chrome-kitchen-sink.R"),
+    needs = character(),
+    wait = c("#date", "#notify_message", ".navbar"),
+    extra_selectors = c(
+      ".datepicker",
+      ".datepicker .day",
+      ".datepicker .day.active",
+      ".datepicker-switch",
+      ".shiny-notification",
+      ".shiny-notification-message",
+      ".shiny-notification-warning",
+      ".shiny-notification-error",
+      ".btn-close",
+      ".accordion-button",
+      ".accordion-button:not(.collapsed)",
+      ".accordion-body",
+      ".tooltip-inner",
+      ".popover",
+      ".popover-body",
+      ".dropdown-menu.show, .navbar-nav .dropdown-menu",
+      ".nav-pills .nav-link.active",
+      ".form-select[multiple]",
+      ".btn-file, .shiny-input-container:has(input[type='file']) .btn",
+      ".modal-content",
+      ".well"
+    ),
+    interactions = list(
+      list(
+        name = "open-datepicker",
+        js = "
+          (function() {
+            return new Promise((resolve) => {
+              const start = Date.now();
+              const tick = () => {
+                const el = document.querySelector('#date input, .shiny-date-input input');
+                const $ = window.jQuery || window.$;
+                const method = $ && $.fn && ($.fn.bsDatepicker ? 'bsDatepicker' : ($.fn.datepicker ? 'datepicker' : null));
+                if (el && method) {
+                  el.scrollIntoView({block: 'center'});
+                  $(el)[method]('show');
+                  resolve(true);
+                  return;
+                }
+                if (Date.now() - start > 8000) { resolve(false); return; }
+                setTimeout(tick, 150);
+              };
+              tick();
+            });
+          })();
+        ",
+        wait_ms = 500,
+        sample = TRUE,
+        expect = ".datepicker-dropdown, .datepicker[style*='display: block']"
+      ),
+      list(
+        name = "close-datepicker",
+        js = "
+          (function() {
+            const $ = window.jQuery || window.$;
+            const el = document.querySelector('#date input, .shiny-date-input input');
+            const method = $ && $.fn && ($.fn.bsDatepicker ? 'bsDatepicker' : ($.fn.datepicker ? 'datepicker' : null));
+            if (el && method) { $(el)[method]('hide'); }
+            document.body.click();
+            return true;
+          })();
+        ",
+        wait_ms = 200
+      ),
+      list(
+        name = "open-navbar-menu",
+        js = "
+          (function() {
+            const tog = document.querySelector('.navbar-nav .dropdown-toggle');
+            if (!tog) return false;
+            tog.click();
+            return true;
+          })();
+        ",
+        wait_ms = 400,
+        sample = TRUE,
+        expect = ".dropdown-menu.show, .navbar-nav .dropdown-menu"
+      ),
+      list(
+        name = "close-navbar-menu",
+        js = "
+          (function() {
+            const tog = document.querySelector('.navbar-nav .dropdown-toggle');
+            if (tog) tog.click();
+            return true;
+          })();
+        ",
+        wait_ms = 200
+      ),
+      list(
+        name = "show-notifications",
+        js = "
+          (function() {
+            const ids = ['notify_default','notify_message','notify_warning','notify_error'];
+            let n = 0;
+            ids.forEach((id) => {
+              if (window.Shiny && Shiny.setInputValue) {
+                Shiny.setInputValue(id, Date.now() + Math.random(), {priority: 'event'});
+                n++;
+              } else {
+                const b = document.getElementById(id);
+                if (b) { b.click(); n++; }
+              }
+            });
+            return n > 0;
+          })();
+        ",
+        wait_ms = 700,
+        sample = TRUE,
+        expect = ".shiny-notification"
+      ),
+      list(
+        name = "nav-bslib",
+        js = "
+          (function() {
+            const link = Array.from(document.querySelectorAll('.navbar .nav-link, .nav-link'))
+              .find((el) => (el.textContent || '').trim() === 'bslib');
+            if (!link) return false;
+            link.click();
+            return true;
+          })();
+        ",
         wait_ms = 400
+      ),
+      list(
+        name = "open-accordion",
+        js = "
+          (function() {
+            const btns = document.querySelectorAll('.accordion-button');
+            if (btns.length < 2) return false;
+            btns[1].scrollIntoView({block: 'center'});
+            btns[1].click();
+            return true;
+          })();
+        ",
+        wait_ms = 400,
+        sample = TRUE,
+        expect = ".accordion-button"
+      ),
+      list(
+        name = "show-tooltip",
+        js = "
+          (function() {
+            const el = document.getElementById('tip_btn');
+            if (!el) return false;
+            el.scrollIntoView({block: 'center'});
+            if (window.bootstrap && bootstrap.Tooltip) {
+              const inst = bootstrap.Tooltip.getOrCreateInstance(el);
+              inst.show();
+              return true;
+            }
+            el.dispatchEvent(new MouseEvent('mouseenter', {bubbles: true}));
+            el.focus();
+            return true;
+          })();
+        ",
+        wait_ms = 400,
+        sample = TRUE
+      ),
+      list(
+        name = "open-popover",
+        js = "
+          (function() {
+            const el = document.getElementById('pop_btn');
+            if (!el) return false;
+            el.scrollIntoView({block: 'center'});
+            if (window.bootstrap && bootstrap.Popover) {
+              const inst = bootstrap.Popover.getOrCreateInstance(el);
+              inst.show();
+              return true;
+            }
+            el.click();
+            return true;
+          })();
+        ",
+        wait_ms = 400,
+        sample = TRUE
+      ),
+      list(
+        name = "show-modal",
+        js = "
+          (function() {
+            if (window.Shiny && Shiny.setInputValue) {
+              Shiny.setInputValue('show_server_modal', Date.now(), {priority: 'event'});
+              return true;
+            }
+            const b = document.getElementById('show_server_modal');
+            if (b) { b.click(); return true; }
+            return false;
+          })();
+        ",
+        wait_ms = 600,
+        sample = TRUE,
+        expect = ".modal.show, .modal-content"
+      ),
+      list(
+        name = "intensity-clear",
+        js = "
+          (function() {
+            if (window.shinyglass && window.shinyglass.setIntensity) {
+              window.shinyglass.setIntensity(0);
+              return true;
+            }
+            return false;
+          })();
+        ",
+        wait_ms = 350,
+        sample = TRUE
+      ),
+      list(
+        name = "intensity-tinted",
+        js = "
+          (function() {
+            if (window.shinyglass && window.shinyglass.setIntensity) {
+              window.shinyglass.setIntensity(1);
+              return true;
+            }
+            return false;
+          })();
+        ",
+        wait_ms = 350,
+        sample = TRUE
       )
     )
   ),
@@ -193,6 +477,14 @@ core_selectors <- c(
   ".bg-info",
   ".nav-tabs .nav-link.active",
   ".shiny-notification",
+  ".datepicker",
+  ".datepicker .day",
+  ".btn-close",
+  ".accordion-button",
+  ".dropdown-menu.show",
+  ".modal-content",
+  ".tooltip-inner",
+  ".popover",
   ".js-plotly-plot",
   ".modebar",
   ".modebar-btn",
@@ -284,10 +576,84 @@ launch_app <- function(app_path, port, preset) {
   list(proc = proc, url = url)
 }
 
+normalize_findings <- function(fr) {
+  if (is.null(fr)) return(list())
+  if (is.data.frame(fr)) {
+    return(lapply(seq_len(nrow(fr)), function(i) as.list(fr[i, ])))
+  }
+  if (!is.list(fr)) return(list())
+  if (!is.null(fr$level) && is.character(fr$level) && length(fr$level) == 1) {
+    return(list(fr))
+  }
+  fr
+}
+
+selectors_for <- function(spec) {
+  extra <- spec$extra_selectors %||% character()
+  unique(c(core_selectors, extra))
+}
+
+run_audit_js <- function(session, selectors, preset) {
+  inject <- paste0(
+    audit_js,
+    "\n; runGlassAudit(",
+    jsonlite::toJSON(selectors), ", ",
+    jsonlite::toJSON(preset, auto_unbox = TRUE), ", ",
+    jsonlite::toJSON(min_contrast, auto_unbox = TRUE),
+    ");"
+  )
+  result <- session$Runtime$evaluate(
+    expression = inject,
+    returnByValue = TRUE,
+    timeout = 20000
+  )
+  result$result$value
+}
+
+maybe_screenshot <- function(session, app_key, preset, phase) {
+  if (is.null(screenshot_dir) || !nzchar(screenshot_dir)) return(invisible(NULL))
+  dir.create(screenshot_dir, recursive = TRUE, showWarnings = FALSE)
+  dest <- file.path(
+    screenshot_dir,
+    sprintf("%s-%s-%s.png", app_key, preset, gsub("[^A-Za-z0-9_-]+", "-", phase))
+  )
+  tryCatch(
+    session$screenshot(filename = dest, selector = "html"),
+    error = function(e) {
+      try(session$screenshot(filename = dest), silent = TRUE)
+    }
+  )
+  invisible(dest)
+}
+
+expect_present <- function(session, selector) {
+  if (is.null(selector) || !nzchar(selector)) return(TRUE)
+  js <- sprintf(
+    "(function(){
+      try {
+        const el = document.querySelector(%s);
+        if (!el) return false;
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 2 && r.height > 2;
+      } catch(e) { return false; }
+    })();",
+    jsonlite::toJSON(selector, auto_unbox = TRUE)
+  )
+  out <- tryCatch(
+    session$Runtime$evaluate(expression = js, returnByValue = TRUE),
+    error = function(e) NULL
+  )
+  isTRUE(out$result$value)
+}
+
 run_case <- function(app_key, preset, port) {
   spec <- catalog[[app_key]]
   findings <- list()
   meta <- list(app = app_key, label = spec$label, preset = preset, port = port)
+  sels <- selectors_for(spec)
+  last_preset <- preset
 
   missing <- spec$needs[!vapply(spec$needs, requireNamespace, logical(1), quietly = TRUE)]
   if (length(missing)) {
@@ -337,62 +703,68 @@ run_case <- function(app_key, preset, port) {
     )))
   }
 
-  # interactions
+  collect_sample <- function(phase, keep_all = FALSE) {
+    val <- tryCatch(
+      run_audit_js(b, sels, preset),
+      error = function(e) NULL
+    )
+    maybe_screenshot(b, app_key, preset, phase)
+    if (is.null(val) || is.null(val$findings)) {
+      return(list(list(
+        level = "FAIL",
+        code = "audit-js-failed",
+        message = paste("Browser audit returned no findings payload at", phase),
+        meta = list(phase = phase)
+      )))
+    }
+    last_preset <<- val$preset %||% preset
+    rows <- normalize_findings(val$findings)
+    if (!keep_all) {
+      rows <- Filter(function(r) {
+        toupper(as.character(r$level %||% "")) %in% c("FAIL", "WARN")
+      }, rows)
+    }
+    lapply(rows, function(r) {
+      r$meta <- c(r$meta %||% list(), list(phase = phase))
+      r
+    })
+  }
+
+  # interactions — sample open-state overlays when requested
   for (ix in spec$interactions) {
+    phase <- ix$name %||% "interaction"
     tryCatch({
-      b$Runtime$evaluate(expression = ix$js, returnByValue = TRUE)
+      b$Runtime$evaluate(
+        expression = ix$js,
+        returnByValue = TRUE,
+        awaitPromise = TRUE,
+        timeout = 15000
+      )
       Sys.sleep((ix$wait_ms %||% 500) / 1000)
+      if (!is.null(ix$expect) && !expect_present(b, ix$expect)) {
+        findings <<- c(findings, list(list(
+          level = "WARN",
+          code = "expect-missing",
+          message = paste(phase, "did not reveal", ix$expect),
+          meta = list(phase = phase, expect = ix$expect)
+        )))
+      }
+      if (isTRUE(ix$sample)) {
+        findings <<- c(findings, collect_sample(phase, keep_all = FALSE))
+      }
     }, error = function(e) {
       findings <<- c(findings, list(list(
         level = "WARN",
         code = "interaction-failed",
-        message = paste(ix$name, conditionMessage(e)),
+        message = paste(phase, conditionMessage(e)),
         meta = list()
       )))
     })
   }
 
-  # inject audit functions + run
-  inject <- paste0(
-    audit_js,
-    "\n; runGlassAudit(",
-    jsonlite::toJSON(core_selectors), ", ",
-    jsonlite::toJSON(preset, auto_unbox = TRUE), ", ",
-    jsonlite::toJSON(min_contrast, auto_unbox = TRUE),
-    ");"
-  )
-  result <- b$Runtime$evaluate(
-    expression = inject,
-    returnByValue = TRUE,
-    timeout = 20000
-  )
-  val <- result$result$value
-  if (is.null(val) || is.null(val$findings)) {
-    findings <- c(findings, list(list(
-      level = "FAIL",
-      code = "audit-js-failed",
-      message = "Browser audit returned no findings payload",
-      meta = list()
-    )))
-  } else {
-    # normalize list of findings
-    fr <- val$findings
-    if (is.data.frame(fr)) {
-      # chromote sometimes simplifies
-      findings <- c(findings, lapply(seq_len(nrow(fr)), function(i) {
-        as.list(fr[i, ])
-      }))
-    } else if (is.list(fr)) {
-      # may be named list of single finding or list of findings
-      if (!is.null(fr$level) && is.character(fr$level) && length(fr$level) == 1) {
-        findings <- c(findings, list(fr))
-      } else {
-        findings <- c(findings, fr)
-      }
-    }
-  }
+  findings <- c(findings, collect_sample("final", keep_all = TRUE))
 
-  list(meta = meta, findings = findings, glass_preset = val$preset %||% preset)
+  list(meta = meta, findings = findings, glass_preset = last_preset)
 }
 
 # Static SCSS structure checks (no browser)
@@ -428,6 +800,28 @@ if (file.exists(scss_path)) {
       code = "scss-form-check",
       ok = grepl("form-check-input", scss, fixed = TRUE),
       message = "glass.scss must style form-check-input checked states"
+    ),
+    list(
+      code = "scss-datepicker",
+      ok = grepl(".datepicker", scss, fixed = TRUE) &&
+        grepl("datepicker-dropdown", scss, fixed = TRUE),
+      message = "glass.scss must style bootstrap-datepicker popup"
+    ),
+    list(
+      code = "scss-notification",
+      ok = grepl(".shiny-notification", scss, fixed = TRUE) &&
+        grepl("shiny-notification-warning", scss, fixed = TRUE),
+      message = "glass.scss must style Shiny notification types"
+    ),
+    list(
+      code = "scss-btn-close",
+      ok = grepl(".btn-close", scss, fixed = TRUE),
+      message = "glass.scss must style Bootstrap .btn-close"
+    ),
+    list(
+      code = "scss-accordion",
+      ok = grepl("\n.accordion-button", scss, fixed = TRUE),
+      message = "glass.scss must style generic .accordion-button (not teal-only)"
     )
   )
   for (ch in checks) {

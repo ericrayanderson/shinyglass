@@ -854,6 +854,26 @@
     $(this).closest(".shiny-input-container").removeClass("glass-select-open");
   });
 
+  // bootstrap-datepicker is appended next to the input. Cards / navbars use
+  // backdrop-filter (a containing block) so the popup is clipped unless we
+  // hoist it to <body> and re-place it.
+  function hoistDatepicker(input) {
+    var $el = $(input);
+    var dp = $el.data("datepicker") || $el.data("bsDatepicker");
+    if (!dp || !dp.picker) return;
+    if (dp.o) dp.o.container = "body";
+    dp.picker.appendTo(document.body);
+    if (typeof dp.place === "function") dp.place();
+  }
+
+  $(document).on(
+    "show",
+    "input.hasDatepicker, .shiny-date-input input, .shiny-date-range-input input",
+    function () {
+      hoistDatepicker(this);
+    }
+  );
+
   function handleShinyglassMessage(msg) {
     if (msg == null) return;
     // Legacy: glassPreset sent a bare string

@@ -66,10 +66,20 @@
   surface (DT uses `<li.paginate_button><a.page-link>`). Fixes solid black
   page numbers and light-grey ellipsis chips in dark mode on the dashboard
   demo / README screenshots.
+* Overlay chrome (datepicker popup, Shiny notification types, generic
+  accordion, Bootstrap tooltip/popover/toast, `.btn-close`, file Browse chip)
+  now uses the glass menu pack so dark mode is not leftover Bootstrap light
+  hex. Datepicker is hoisted to `document.body` (Shiny 1.14 `bsDatepicker`)
+  so card/navbar `backdrop-filter` no longer clips the calendar. Navbar
+  overflow is visible so `nav_menu` dropdowns escape the glass bar.
+  Kitchen-sink example: `chrome-kitchen-sink.R` (`page_navbar`,
+  `nav_menu`, `showModal()`, all four `showNotification()` types).
 * Visual QA harness: `inst/scripts/audit-glass-contrast.R` (+ `.js`) runs a
   dual-theme computed-style audit (low contrast, solid-black chips, Bootstrap
   light greys in dark, dark ink on accent, DT pagination structure) across
-  demo / dashboard / inputs-gallery. Checklist and definition of done in
+  demo / dashboard / inputs-gallery / chrome kitchen-sink. Opens datepicker,
+  navbar menu, notifications, accordion, tooltip/popover, and server modal
+  before sampling. Checklist and definition of done in
   `inst/scripts/VISUAL-QA.md`.
 * Selectize fields: force body/menu ink on inputs and multi-select tags
   (selectize default near-black item text failed dark mode); opaque

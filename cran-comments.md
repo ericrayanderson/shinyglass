@@ -14,6 +14,8 @@ This is an update from 0.1.1 to 0.2.0.
   dual-channel `update_glass_theme()` delivery for reliable runtime switching.
 * Active-on-accent contrast fix (white checks/knobs on brand primary).
 * DT/selectize glass chrome fixes; plotly/gt/AdminLTE overlay CSS.
+* Overlay chrome: datepicker, notifications, accordion, tooltip/popover,
+  `.btn-close`, file Browse (dark pack no longer relies on Bootswatch darkly).
 * Navbar brand ink matches glass body color; plotly axis titles not clipped.
 * Reduced-motion support; softer plot frames; demo fixes.
 * Liquid Glass material fidelity (layered surfaces, chrome vs content,
@@ -39,7 +41,9 @@ Local `R CMD check shinyglass_0.2.0.tar.gz --as-cran` (2026-08-11):
 **0 errors | 0 warnings | 0 notes**
 
 Also clean: `urlchecker::url_check()`, `spelling::spell_check_package()`,
-`devtools::test()` (109 tests).
+`devtools::test()` (125 tests). Overlay chrome contrast audit
+(datepicker, notifications, accordion, tooltip/popover, `showModal()`,
+`page_navbar`) is 0 FAIL on light+dark.
 
 If CRAN's incoming check later reports a "days since last update" note
 for a short interval after 0.1.1, that is expected and harmless.
