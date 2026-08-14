@@ -1207,6 +1207,16 @@
     bindPresetSelects(document);
   });
 
+  // Delegated clicks for glass_theme_toggle() — do not rely only on inline
+  // onclick (hosts can rewrite attributes). Always apply client-first.
+  $(document).on("click.glassThemeToggle", ".glass-theme-toggle [data-glass-preset-mode], .glass-theme-toggle .btn", function (ev) {
+    var mode = toggleButtonMode(this);
+    if (!mode) return;
+    if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
+      window.shinyglass.setPreset(mode);
+    }
+  });
+
   // Frost the page while the native file picker is open (mirrors modal-backdrop).
   function ensureFileScrim() {
     var el = document.getElementById("glass-file-scrim");
