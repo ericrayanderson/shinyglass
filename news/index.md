@@ -91,6 +91,11 @@
   transparent for media-rich layouts. Defaults: `blur = 36`,
   `radius = "1.5rem"`, `saturation = 200`.
 
+- Value boxes are tinted glass (theme-color wash + body ink), not solid
+  `.bg-*` slabs. Plots and DT/gt hosts inside cards drop the extra glass
+  frame so page orbs show through (`renderPlot(bg = "transparent")` in
+  bundled demos).
+
 - DataTables / Bootstrap pagination chips: style the visible
   `.page-link` surface (DT uses `<li.paginate_button><a.page-link>`).
   Fixes solid black page numbers and light-grey ellipsis chips in dark
