@@ -38,9 +38,10 @@ This is an update from 0.1.1 to 0.2.0.
 
 ## R CMD check results
 
-Local `R CMD check shinyglass_0.2.0.tar.gz --as-cran` (2026-08-14):
-incoming feasibility OK. Remote Bioconductor PACKAGES fetch may warn
-offline; `devtools::test()` 126 pass, spelling and urlchecker clean.
+Local `R CMD check shinyglass_0.2.0.tar.gz --as-cran` (2026-08-20):
+incoming feasibility OK. Package-real results were clean; environment-only
+noise on that machine was missing pdflatex / HTML tidy / V8.
+`devtools::test()` 135 pass, spelling and urlchecker clean.
 Contrast audit (demo + dashboard, light/dark) 0 FAIL after glass
 value-box / transparent plot-host change.
 
@@ -57,7 +58,8 @@ None known.
 
 ## Notes for this submission window
 
-* CRAN submissions were closed ~2026-08-05 through ~2026-08-19 (team vacation).
+* CRAN submissions were closed ~2026-08-05 through ~2026-08-19 (team vacation);
+  the upload form is open again as of 2026-08-20.
 * Large README marketing assets (intensity GIFs/PNGs, dashboard screenshots,
   etc.) are excluded via `.Rbuildignore` and stay on GitHub only.
 * Live demos: shinyglass-demo, -dashboard, -inputs, -plotly-gt, -olympics
