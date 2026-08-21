@@ -1,3 +1,5 @@
+# shinyglass (development version)
+
 # shinyglass 0.2.0
 
 ## Breaking changes
