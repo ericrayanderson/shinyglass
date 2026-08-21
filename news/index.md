@@ -2,6 +2,8 @@
 
 ## shinyglass 0.2.0
 
+CRAN release: 2026-08-21
+
 ### Breaking changes
 
 - Light and dark glass surfaces are now dual **CSS custom-property
