@@ -5,6 +5,9 @@
   var tintTimer = null;
   var schemeMql = null;
   var schemeListener = null;
+  var imageSamples = new WeakMap();
+  var widgetFrame = null;
+  var widgetStyles = new WeakMap();
 
   function rootEl() {
     return document.documentElement;
@@ -502,6 +505,10 @@
     var nh = img.naturalHeight || img.height;
     if (!nw || !nh) return null;
 
+    var key = (img.currentSrc || img.src) + ":" + nw + ":" + nh;
+    var cached = imageSamples.get(img);
+    if (cached && cached.key === key) return cached.value;
+
     var canvas = document.createElement("canvas");
     var w = Math.min(nw, 72);
     var h = Math.min(nh, 72);
@@ -511,8 +518,11 @@
     try {
       var ctx = canvas.getContext("2d", { willReadFrequently: true });
       ctx.drawImage(img, 0, 0, w, h);
-      return samplePixels(ctx, w, h);
+      var value = samplePixels(ctx, w, h);
+      imageSamples.set(img, { key: key, value: value });
+      return value;
     } catch (e) {
+      imageSamples.set(img, { key: key, value: null });
       return null;
     }
   }
@@ -520,7 +530,6 @@
   function sampleCanvas(canvas) {
     if (!canvas || !canvas.width || !canvas.height) return null;
     try {
-      var ctx = canvas.getContext("2d", { willReadFrequently: true });
       var w = Math.min(canvas.width, 72);
       var h = Math.min(canvas.height, 72);
       var scratch = document.createElement("canvas");
@@ -567,6 +576,7 @@
 
   function clearTint() {
     var root = rootEl();
+    if (!lastTintRgb && !root.classList.contains("glass-tint-active")) return;
     lastTintRgb = null;
     root.classList.remove("glass-tint-active");
     root.style.removeProperty("--glass-tint-strength");
@@ -707,6 +717,8 @@
       return;
     }
 
+    if (lastTintRgb && lastTintRgb.r === rgb.r &&
+        lastTintRgb.g === rgb.g && lastTintRgb.b === rgb.b) return;
     lastTintRgb = { r: rgb.r, g: rgb.g, b: rgb.b };
     var root = rootEl();
     root.classList.add("glass-tint-active");
@@ -723,9 +735,13 @@
   }
 
   function scheduleTintUpdate() {
-    if (!tintEnabled()) return;
+    if (!tintEnabled() || document.hidden) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (tintTimer) clearTimeout(tintTimer);
-    tintTimer = setTimeout(updateContentTint, TINT_THROTTLE_MS);
+    tintTimer = setTimeout(function () {
+      tintTimer = null;
+      updateContentTint();
+    }, TINT_THROTTLE_MS);
   }
 
   // Public API for advanced users / tests
@@ -829,30 +845,44 @@
     }
   })();
 
-  // force glass colors past inline widget styles
-  function applyWidgetGlassOverrides() {
-    document.querySelectorAll(".stati").forEach(function (el) {
-      el.style.setProperty("background", "var(--glass-bg)", "important");
-      el.style.setProperty("background-color", "var(--glass-bg)", "important");
-      el.style.setProperty("color", "inherit", "important");
-      el.style.setProperty(
-        "box-shadow",
-        "0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight)",
-        "important"
-      );
-      el.querySelectorAll(".stati-value, .stati-subtitle, i, svg").forEach(function (child) {
-        child.style.setProperty("color", "inherit", "important");
-        child.style.removeProperty("fill");
-      });
-    });
+  function setWidgetStyle(el, name, value) {
+    var known = widgetStyles.get(el);
+    if (!known) { known = {}; widgetStyles.set(el, known); }
+    if (el.style.getPropertyValue(name) !== known[name] ||
+        el.style.getPropertyPriority(name) !== "important") {
+      el.style.setProperty(name, value, "important");
+      known[name] = el.style.getPropertyValue(name);
+    }
+  }
 
-    document.querySelectorAll(".Reactable").forEach(function (el) {
-      el.style.setProperty("background-color", "var(--glass-bg)", "important");
-      el.style.setProperty("color", "inherit", "important");
+  function scheduleWidgetOverrides() {
+    if (widgetFrame !== null) return;
+    widgetFrame = window.requestAnimationFrame(function () {
+      widgetFrame = null;
+      applyWidgetGlassOverrides();
     });
   }
 
-  $(document).on("shiny:connected shiny:value shiny:visualchange", applyWidgetGlassOverrides);
+  // Idempotent writes: the observer also sees our own style mutations.
+  function applyWidgetGlassOverrides() {
+    document.querySelectorAll(".stati").forEach(function (el) {
+      setWidgetStyle(el, "background", "var(--glass-bg)");
+      setWidgetStyle(el, "background-color", "var(--glass-bg)");
+      setWidgetStyle(el, "color", "inherit");
+      setWidgetStyle(el, "box-shadow",
+        "0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight)");
+      el.querySelectorAll(".stati-value, .stati-subtitle, i, svg").forEach(function (child) {
+        setWidgetStyle(child, "color", "inherit");
+        if (child.style.getPropertyValue("fill")) child.style.removeProperty("fill");
+      });
+    });
+    document.querySelectorAll(".Reactable").forEach(function (el) {
+      setWidgetStyle(el, "background-color", "var(--glass-bg)");
+      setWidgetStyle(el, "color", "inherit");
+    });
+  }
+
+  $(document).on("shiny:connected", scheduleWidgetOverrides);
 
   // --glass-specular-x/y from pointer
   (function () {
@@ -860,28 +890,36 @@
       ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper, .stati, .box, .small-box, .info-box, .reactable, .Reactable, .value-box";
 
     var pointerActiveTimer = null;
+    var pointerFrame = null;
+    var pointerEvent = null;
     document.addEventListener(
       "mousemove",
       function (e) {
         if (!specularEnabled()) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        var el = e.target.closest(specularSelector);
-        if (!el) {
-          rootEl().classList.remove("glass-pointer-active");
-          return;
-        }
-        var rect = el.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        var x = ((e.clientX - rect.left) / rect.width) * 100;
-        var y = ((e.clientY - rect.top) / rect.height) * 100;
-        // Pause ambient drift while pointer drives specular
-        rootEl().classList.add("glass-pointer-active");
-        if (pointerActiveTimer) clearTimeout(pointerActiveTimer);
-        pointerActiveTimer = setTimeout(function () {
-          rootEl().classList.remove("glass-pointer-active");
-        }, 1400);
-        el.style.setProperty("--glass-specular-x", x + "%");
-        el.style.setProperty("--glass-specular-y", y + "%");
+        pointerEvent = e;
+        if (pointerFrame !== null) return;
+        pointerFrame = window.requestAnimationFrame(function () {
+          pointerFrame = null;
+          var e = pointerEvent;
+          var el = e.target.closest(specularSelector);
+          if (!el) {
+            rootEl().classList.remove("glass-pointer-active");
+            return;
+          }
+          var rect = el.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+          var x = ((e.clientX - rect.left) / rect.width) * 100;
+          var y = ((e.clientY - rect.top) / rect.height) * 100;
+          // Pause ambient drift while pointer drives specular
+          rootEl().classList.add("glass-pointer-active");
+          if (pointerActiveTimer) clearTimeout(pointerActiveTimer);
+          pointerActiveTimer = setTimeout(function () {
+            rootEl().classList.remove("glass-pointer-active");
+          }, 1400);
+          el.style.setProperty("--glass-specular-x", x + "%");
+          el.style.setProperty("--glass-specular-y", y + "%");
+        });
       },
       { passive: true }
     );
@@ -1055,7 +1093,22 @@
   });
 
   // 2) tint / widget updates
-  $(document).on("shiny:value.shinyglass shiny:visualchange.shinyglass", scheduleTintUpdate);
+  $(document).on("shiny:value.shinyglass shiny:visualchange.shinyglass", function (event) {
+    var target = event.target;
+    if (target && target.matches &&
+        (target.matches(".shiny-plot-output, .shiny-image-output, canvas") ||
+         target.querySelector("canvas"))) scheduleTintUpdate();
+  });
+  // Plot src changes can precede image decoding; sample again once loaded.
+  document.addEventListener("load", function (event) {
+    var target = event.target;
+    if (target && target.matches && target.matches(
+      ".shiny-plot-output img, .shiny-image-output img, .glass-content-hero img"
+    )) {
+      imageSamples.delete(target);
+      scheduleTintUpdate();
+    }
+  }, true);
 
   // 3) Re-install host hooks when session connects; keep healing for the session
   $(document).on("shiny:connected.shinyglass", function () {
@@ -1323,7 +1376,8 @@
   $(function () {
     // Ensure mode/preset are coherent if head script ran or was skipped
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
-    applyPreset(mode);
+    // The early head script already sets the preset; still initialize listeners.
+    applyPreset(mode, { force: true });
     bindPresetSelects(document);
 
     // Re-apply primary from head/data if present
@@ -1347,31 +1401,41 @@
       var observer = new MutationObserver(function (mutations) {
         var needsTint = false;
         var needsWidgetGlass = false;
-
-        for (var i = 0; i < mutations.length; i++) {
-          var t = mutations[i].target;
-          if (
-            t.matches &&
-            (t.matches(".shiny-plot-output img") ||
-              t.matches(".shiny-image-output img") ||
-              t.matches("canvas"))
-          ) {
-            needsTint = true;
-          } else if (
-            t.matches &&
-            (t.matches(".stati") || t.matches(".Reactable") || t.closest(".stati, .Reactable"))
-          ) {
-            needsWidgetGlass = true;
-          }
-
-          if (t.querySelector) {
-            if (t.querySelector(".shiny-plot-output img, canvas")) needsTint = true;
-            if (t.querySelector(".stati, .Reactable")) needsWidgetGlass = true;
-          }
+        var needsBindings = false;
+        var media = ".shiny-plot-output img, .shiny-image-output img, .glass-content-hero img, canvas";
+        var widgets = ".stati, .Reactable";
+        var controls = ".glass-intensity-slider, select[data-glass-preset-input], select#preset";
+        function contains(el, selector) {
+          return el.nodeType === 1 && (el.matches(selector) || !!el.querySelector(selector));
         }
-
+        mutations.forEach(function (mutation) {
+          var target = mutation.target;
+          if (mutation.type === "attributes") {
+            // A body/class change is not a reason to scan every chart on the page.
+            if (mutation.attributeName === "src" && target.matches(media)) {
+              imageSamples.delete(target);
+              needsTint = true;
+            }
+            if (target.matches(widgets) || target.closest(widgets)) needsWidgetGlass = true;
+            return;
+          }
+          // Inspect only changed subtrees, not the entire mutation target.
+          Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+            if (contains(node, media)) needsTint = true;
+            if (contains(node, widgets)) needsWidgetGlass = true;
+            if (contains(node, controls)) needsBindings = true;
+          });
+          Array.prototype.forEach.call(mutation.removedNodes, function (node) {
+            if (contains(node, media)) needsTint = true;
+          });
+          if (target.closest(widgets)) needsWidgetGlass = true;
+        });
+        if (needsBindings) {
+          bindIntensitySliders();
+          bindPresetSelects(document);
+        }
         if (needsTint) scheduleTintUpdate();
-        if (needsWidgetGlass) applyWidgetGlassOverrides();
+        if (needsWidgetGlass) scheduleWidgetOverrides();
       });
       observer.observe(document.body, {
         childList: true,

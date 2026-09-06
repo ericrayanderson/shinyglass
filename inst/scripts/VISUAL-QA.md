@@ -120,3 +120,27 @@ Before merge or shinyapps redeploy:
 - value boxes / `.bg-*` solid fills  
 - sidebar open vs collapsed gutters  
 - reactable / leaflet / shinyWidgets / bs4Dash when touching those demos  
+
+## Runtime responsiveness regressions
+
+```sh
+cd inst/scripts/browser
+npm ci
+npx playwright install chromium
+npx playwright test
+```
+
+These Chromium tests load the actual `inst/js/shiny-glass.js` with jQuery and a
+recording Shiny transport. They cover initial Auto/OS changes, keyboard preset
+and intensity controls, duplicate message delivery, dynamic sliders, reconnect
+hook installation, and idle widget/media work after a burst of text updates.
+They do not measure R execution time, actual WebSocket reconnects, or GPU paint
+cost. The existing R tests and demo contrast audit remain separate CI gates.
+
+For reports of sluggishness, compare the same app/data/browser with plain bslib,
+then glass with `tint = FALSE, specular = FALSE, nav_morph = FALSE`, then default
+glass. Record a browser Performance trace during the same reactive interaction.
+Compare scripting, style/layout, paint/compositing, and interaction latency;
+use Shiny profiling separately for server time. Repeat with representative
+charts/tables and on the affected device. Avoid claiming a speedup from unit
+checks alone: blur and layered surfaces can still be costly to paint.

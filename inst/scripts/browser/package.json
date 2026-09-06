@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "jquery": "3.7.1"
+  }
+}

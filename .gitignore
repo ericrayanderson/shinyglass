@@ -23,3 +23,8 @@ python/build/
 python/.ruff_cache/
 *.pyc
 # Keep vendored static CSS/JS in git; ignore only caches
+
+# Browser regression harness
+node_modules/
+test-results/
+playwright-report/
