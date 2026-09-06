@@ -8,6 +8,7 @@
   var imageSamples = new WeakMap();
   var widgetFrame = null;
   var widgetStyles = new WeakMap();
+  var domObserver = null;
 
   function rootEl() {
     return document.documentElement;
@@ -845,14 +846,28 @@
     }
   })();
 
-  function setWidgetStyle(el, name, value) {
-    var known = widgetStyles.get(el);
-    if (!known) { known = {}; widgetStyles.set(el, known); }
-    if (el.style.getPropertyValue(name) !== known[name] ||
-        el.style.getPropertyPriority(name) !== "important") {
+  // Apply several properties, then re-snapshot. Setting `background` then
+  // `background-color` changes how the shorthand serializes, so a per-property
+  // cache recorded mid-write looks stale and rewrites every frame.
+  function setWidgetStyles(el, styles) {
+    var known = widgetStyles.get(el) || {};
+    var names = Object.keys(styles);
+    var i, name, value, current;
+    for (i = 0; i < names.length; i++) {
+      name = names[i];
+      value = styles[name];
+      current = el.style.getPropertyValue(name);
+      if (el.style.getPropertyPriority(name) === "important" &&
+          (current === value || current === known[name])) {
+        continue;
+      }
       el.style.setProperty(name, value, "important");
-      known[name] = el.style.getPropertyValue(name);
     }
+    known = {};
+    for (i = 0; i < names.length; i++) {
+      known[names[i]] = el.style.getPropertyValue(names[i]);
+    }
+    widgetStyles.set(el, known);
   }
 
   function scheduleWidgetOverrides() {
@@ -866,20 +881,24 @@
   // Idempotent writes: the observer also sees our own style mutations.
   function applyWidgetGlassOverrides() {
     document.querySelectorAll(".stati").forEach(function (el) {
-      setWidgetStyle(el, "background", "var(--glass-bg)");
-      setWidgetStyle(el, "background-color", "var(--glass-bg)");
-      setWidgetStyle(el, "color", "inherit");
-      setWidgetStyle(el, "box-shadow",
-        "0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight)");
+      setWidgetStyles(el, {
+        background: "var(--glass-bg)",
+        "background-color": "var(--glass-bg)",
+        color: "inherit",
+        "box-shadow": "0 8px 32px var(--glass-shadow), inset 0 1px 0 var(--glass-highlight)"
+      });
       el.querySelectorAll(".stati-value, .stati-subtitle, i, svg").forEach(function (child) {
-        setWidgetStyle(child, "color", "inherit");
+        setWidgetStyles(child, { color: "inherit" });
         if (child.style.getPropertyValue("fill")) child.style.removeProperty("fill");
       });
     });
     document.querySelectorAll(".Reactable").forEach(function (el) {
-      setWidgetStyle(el, "background-color", "var(--glass-bg)");
-      setWidgetStyle(el, "color", "inherit");
+      setWidgetStyles(el, {
+        "background-color": "var(--glass-bg)",
+        color: "inherit"
+      });
     });
+    if (domObserver) domObserver.takeRecords();
   }
 
   $(document).on("shiny:connected", scheduleWidgetOverrides);
@@ -1398,7 +1417,7 @@
     bindIntensitySliders();
 
     if (typeof MutationObserver !== "undefined") {
-      var observer = new MutationObserver(function (mutations) {
+      domObserver = new MutationObserver(function (mutations) {
         var needsTint = false;
         var needsWidgetGlass = false;
         var needsBindings = false;
@@ -1437,7 +1456,7 @@
         if (needsTint) scheduleTintUpdate();
         if (needsWidgetGlass) scheduleWidgetOverrides();
       });
-      observer.observe(document.body, {
+      domObserver.observe(document.body, {
         childList: true,
         subtree: true,
         attributes: true,
