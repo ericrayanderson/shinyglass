@@ -24,6 +24,9 @@ The GitHub development version (`0.2.0.9000`) includes updates beyond the CRAN r
 
 - Less redundant browser work during reactive updates: unchanged image tint samples are cached, unrelated text outputs no longer trigger tint scans, and widget styling and pointer highlights are coalesced.
 - Fixed OS-theme tracking when starting in Auto mode and live bindings for dynamically inserted intensity sliders.
+- Validated slider ranges and explicit initial values, synchronized page-wide intensity controls, and clearer keyboard focus and screen-reader values.
+- Independent `ambient_motion = FALSE` control, plus live responses to OS reduced-motion and reduced-transparency changes.
+- Real Shiny integration tests and a reproducible plain-bslib/default-glass/effects-disabled benchmark; results distinguish browser responsiveness from server computation.
 - Chromium regression tests for runtime controls, message handling, and unnecessary client work, alongside the existing R tests and dual-theme visual audit.
 
 Install the [development version](#install) below to get these changes. See [NEWS](NEWS.md) for full release notes and the [QA guide](inst/scripts/VISUAL-QA.md) for testing details.
@@ -116,7 +119,7 @@ shinyApp(ui, server)
 
 Set the starting intensity with `glass_theme(intensity = …)` (`0` Ultra Clear … `1` Tinted), or drive it from the server with `update_glass_theme(session, intensity = 0.8)`.
 
-See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/theming.html) for knobs (`intensity`, `tint`, `specular`, `nav_morph`) and CSS variables.
+See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/theming.html) for knobs (`intensity`, `tint`, `specular`, `nav_morph`, `ambient_motion`) and CSS variables.
 
 ```r
 # re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):

@@ -3789,7 +3789,7 @@ body .controls-pane {
 }
 
 // Only when pointer is not over the surface — JS toggles .glass-specular-active
-:root:not(.glass-pointer-active) {
+:root:not(.glass-pointer-active):not([data-glass-ambient-motion="false"]) {
   .card,
   form.well,
   .col-sm-4.well,
@@ -3995,6 +3995,13 @@ body .controls-pane {
   :root {
     --glass-intensity: 1 !important;
   }
+}
+
+// Native range remains keyboard-focusable even under its decorative thumb.
+.glass-intensity-slider:focus-within,
+.glass-theme-toggle .btn:focus-visible {
+  outline: 3px solid var(--glass-body-color);
+  outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {

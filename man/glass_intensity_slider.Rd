@@ -23,10 +23,14 @@ glass_intensity_slider(
 \item{label}{Display label for the control (or \code{NULL} for none).}
 
 \item{value}{Initial intensity in \eqn{[0, 1]}. If \code{NULL}, uses the theme
-default from \code{\link[=glass_theme]{glass_theme()}} / the client current intensity.}
+default from \code{\link[=glass_theme]{glass_theme()}} / the client current intensity. Intensity is
+page-wide: the first explicit value in each inserted group wins, and all
+controls synchronize. A restricted range displays the nearest endpoint
+when the current theme intensity lies outside that range.}
 
 \item{min, max, step}{Range for the underlying range input. Defaults cover
-the full Ultra Clear -> Tinted spectrum.}
+the full Ultra Clear -> Tinted spectrum. Bounds must be finite, within
+\code{[0, 1]}, and increasing; \code{step} must be finite and positive.}
 
 \item{min_label, max_label}{End-cap captions (iOS uses "Ultra Clear" /
 "Tinted").}

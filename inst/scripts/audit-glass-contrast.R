@@ -27,6 +27,7 @@ get_flag <- function(flag, default = NULL) {
 has_flag <- function(flag) any(args == flag)
 
 min_contrast <- as.numeric(get_flag("--min-contrast", "3"))
+text_aa <- has_flag("--text-aa")
 if (is.na(min_contrast) || min_contrast <= 0) min_contrast <- 3
 apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt,chrome")
 presets_arg <- get_flag("--presets", "light,dark")
@@ -622,6 +623,7 @@ run_audit_js <- function(session, selectors, preset) {
     jsonlite::toJSON(selectors), ", ",
     jsonlite::toJSON(preset, auto_unbox = TRUE), ", ",
     jsonlite::toJSON(min_contrast, auto_unbox = TRUE),
+    ", ", jsonlite::toJSON(text_aa, auto_unbox = TRUE),
     ");"
   )
   result <- session$Runtime$evaluate(
@@ -958,6 +960,7 @@ if (!is.null(json_out) && nzchar(json_out)) {
   jsonlite::write_json(
     list(
       min_contrast = min_contrast,
+      text_aa = text_aa,
       summary = list(fail = n_fail, warn = n_warn, pass = n_pass, skip = n_skip),
       findings = payload
     ),
