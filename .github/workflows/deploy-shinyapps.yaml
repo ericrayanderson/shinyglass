@@ -1,0 +1,104 @@
+name: Deploy shinyapps.io demos
+
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: Demo to deploy (all deploys all six)
+        type: choice
+        default: all
+        options: [all, demo, dashboard, intensity, inputs, olympics, plotly_gt]
+      dry_run:
+        description: Stage and validate only; do not publish
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shinyapps-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'ericrayanderson/shinyglass' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: shinyapps-production
+    env:
+      R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2
+        with:
+          cache: false
+          extra-packages: |
+            any::rsconnect
+            any::remotes
+            any::shinyWidgets
+            any::ggthemes
+            any::dplyr
+            any::data.table
+            any::reactable
+            any::tidyr
+            any::plotly
+            any::gt
+            any::waiter
+            local::.
+      - name: Install the exact main commit with GitHub provenance
+        shell: Rscript {0}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          remotes::install_github(
+            paste0("ericrayanderson/shinyglass@", Sys.getenv("GITHUB_SHA")),
+            dependencies = FALSE, upgrade = "never", force = TRUE
+          )
+          stopifnot(identical(
+            utils::packageDescription("shinyglass")$RemoteSha,
+            Sys.getenv("GITHUB_SHA")
+          ))
+      - name: Authenticate and deploy (or stage a dry run)
+        shell: Rscript {0}
+        env:
+          SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
+          SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
+          DEPLOY_APPS: ${{ inputs.apps }}
+          DEPLOY_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          dry_run <- identical(Sys.getenv("DEPLOY_DRY_RUN"), "true")
+          if (!dry_run) {
+            if (!nzchar(Sys.getenv("SHINYAPPS_TOKEN")) ||
+                !nzchar(Sys.getenv("SHINYAPPS_SECRET"))) {
+              stop("Add SHINYAPPS_TOKEN and SHINYAPPS_SECRET to the shinyapps-production environment.")
+            }
+            rsconnect::setAccountInfo(
+              name = "ericrayanderson",
+              token = Sys.getenv("SHINYAPPS_TOKEN"),
+              secret = Sys.getenv("SHINYAPPS_SECRET")
+            )
+          }
+          Sys.unsetenv(c("SHINYAPPS_TOKEN", "SHINYAPPS_SECRET"))
+          apps <- Sys.getenv("DEPLOY_APPS")
+          allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt")
+          if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
+          stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
+          args <- c("inst/scripts/deploy-shinyapps-demos.R",
+                    "--account=ericrayanderson", paste0("--apps=", apps))
+          if (dry_run) args <- c(args, "--dry-run")
+          status <- system2(file.path(R.home("bin"), "Rscript"), args)
+          if (status != 0L) stop("Deployment script failed; inspect the preceding app logs.")
+      - name: Remove temporary account configuration
+        if: always()
+        shell: Rscript {0}
+        run: |
+          config <- Sys.getenv("R_USER_CONFIG_DIR")
+          expected <- file.path(Sys.getenv("RUNNER_TEMP"), "shinyapps-config")
+          stopifnot(nzchar(Sys.getenv("RUNNER_TEMP")), identical(config, expected))
+          unlink(config, recursive = TRUE)
