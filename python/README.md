@@ -88,6 +88,24 @@ GitHub Actions (`.github/workflows/python.yml`):
 1. Editable install + vendor + pytest  
 2. Build wheel, install in a **clean venv** with no monorepo `inst/`, re-run tests  
 
+## R / Python feature scope
+
+R is the primary implementation. Python is experimental and does not yet offer
+all of the R runtime controls. Shared assets do not imply API parity.
+
+| Feature | R | Python |
+| --- | --- | --- |
+| Presets | Light / Dark / Auto | Light / Dark |
+| Live preset / accent updates | Public server and UI helpers | No Python helpers |
+| Intensity / material controls | Public API and slider | No Python API |
+| Default blur / radius | 36 px / `1.5rem` | 28 px / `1.25rem` |
+| Default CSS delivery | bslib Sass compilation | Precompiled wheel assets |
+| Custom theme knobs | bslib / sass | Optional `[theme]` extra |
+
+When editing shared JavaScript, update its vendored copy too. When editing SCSS,
+run `python scripts/vendor_assets.py` from this directory to rebuild wheel CSS.
+The Python CI jobs verify editable and isolated wheel installations.
+
 ## Not yet
 
 - Published PyPI release (version still `0.1.0.9000` dev)
