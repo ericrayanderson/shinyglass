@@ -1,127 +1,28 @@
 # shinyglass
 
-[Liquid
-Glass](https://developer.apple.com/documentation/technologyoverviews/liquid-glass)
-themes for [Shiny](https://shiny.posit.co/).
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-returns a [bslib](https://rstudio.github.io/bslib/) theme with
-translucent surfaces, backdrop blur, and system typography. Pass it as
-`theme = glass_theme()` to
-[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
-[`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html), or
-other page functions that accept a bslib theme.
-
-**Runtime controls (no page reload):**
-
-- **Light / Dark / Auto** —
-  [`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md) +
-  `update_glass_theme(preset = …)`, or `preset = "auto"` to follow the
-  OS
-- **Liquid Glass intensity** — iOS 27-style **Ultra Clear → Tinted** via
-  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-  (and `glass_theme(intensity = 0–1)`)
-- **Live accent color** —
-  `update_glass_theme(session, primary = "#AF52DE")` updates themed
-  controls without recompiling Sass
-
-Choose `glass_theme(material = "regular")` for general UI or
-`material = "clear"` for more transparent surfaces over media-rich
-content. Customize blur, corner radius, content tint, pointer
-highlights, and navbar motion through the theme options.
+Glass themes for [Shiny](https://shiny.posit.co/), built on
+[bslib](https://rstudio.github.io/bslib/). Add translucent surfaces,
+live light/dark switching, and adjustable glass intensity to your app.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
-[GitHub](https://github.com/ericrayanderson/shinyglass) · **[Live
-demos](#live-demos)**
+[Theming
+guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
+· [Release notes](https://ericrayanderson.github.io/shinyglass/NEWS.md)
 
-## What’s new in development
-
-The GitHub development version (`0.2.0.9000`) includes updates beyond
-the CRAN release:
-
-- Less redundant browser work during reactive updates: unchanged image
-  tint samples are cached, unrelated text outputs no longer trigger tint
-  scans, and widget styling and pointer highlights are coalesced.
-- Fixed OS-theme tracking when starting in Auto mode and live bindings
-  for dynamically inserted intensity sliders.
-- Validated slider ranges and explicit initial values, synchronized
-  page-wide intensity controls, and clearer keyboard focus and
-  screen-reader values.
-- Independent `ambient_motion = FALSE` control, plus live responses to
-  OS reduced-motion and reduced-transparency changes.
-- Real Shiny integration tests and a reproducible
-  plain-bslib/default-glass/effects-disabled benchmark; results
-  distinguish browser responsiveness from server computation.
-- Chromium regression tests for runtime controls, message handling, and
-  unnecessary client work, alongside the existing R tests and dual-theme
-  visual audit.
-
-Install the [development version](#install) below to get these changes.
-See [NEWS](https://ericrayanderson.github.io/shinyglass/NEWS.md) for
-full release notes and the [QA
-guide](https://ericrayanderson.github.io/shinyglass/inst/scripts/VISUAL-QA.md)
-for testing details.
-
-### Liquid Glass intensity
-
-Drop in
-[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-for the same continuous control as iOS 27 **Settings → Appearance →
-Liquid Glass**. Surfaces update live as you drag from **Ultra Clear**
-(`0`) to **Tinted** (`1`) — no page reload.
-
-![Liquid Glass intensity slider animating Ultra Clear to
-Tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
-
-![Liquid Glass intensity slider,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.png)![Liquid
-Glass intensity slider,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark.png)
-
-![Ultra Clear
-intensity](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-clear.png)![Tinted
-intensity](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-tinted.png)![Tinted
-intensity,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider-dark-tinted.png)
-
-![Glass dashboard,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png)![Glass
-dashboard,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png)
-
-![plotly + gt,
-light](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png)![plotly +
-gt,
-dark](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png)
-
-## Live demos
-
-Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may
-take a few seconds to wake):
-
-| App | What it shows |
-|----|----|
-| [Demo + theme toggle](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Core glass UI + **[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)** + Light / Dark / Auto |
-| [bslib dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | `page_sidebar`, value boxes, plots, DT + intensity in the sidebar |
-| [Inputs gallery](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Built-in Shiny inputs under glass |
-| [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | plotly modebar + gt tables under glass |
-| [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | denser dreamRs-style dashboard (glass port) |
+![Glass intensity changing from clear to
+tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
 
 ## Install
-
-Choose one installation source.
-
-**Released version from CRAN:**
 
 ``` r
 
 install.packages("shinyglass")
 ```
 
-**Development version from GitHub**, including the updates listed above:
+For the latest development features:
 
 ``` r
 
-# Install remotes first if needed:
 # install.packages("remotes")
 remotes::install_github("ericrayanderson/shinyglass")
 ```
@@ -135,84 +36,46 @@ library(shinyglass)
 
 ui <- fluidPage(
   theme = glass_theme(preset = "auto", intensity = 0.45),
-  titlePanel("Liquid Glass"),
-  # iOS 27-style Ultra Clear → Tinted (updates live on the client)
-  glass_intensity_slider("glass_intensity"),
-  # Light / Dark / Auto buttons
+  titlePanel("Hello, glass"),
   glass_theme_toggle(selected = "auto"),
+  glass_intensity_slider("glass_intensity"),
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) {
   observe_glass_theme_toggle(input, session)
-  # optional: keep server session intensity in sync (client already updates live)
   observe_glass_intensity(input, session, "glass_intensity")
-  output$plot <- renderPlot(barplot(seq_len(input$n), col = "#007AFF", border = NA))
+  output$plot <- renderPlot(barplot(seq_len(input$n)))
 }
 
 shinyApp(ui, server)
 ```
 
-Set the starting intensity with `glass_theme(intensity = …)` (`0` Ultra
-Clear … `1` Tinted), or drive it from the server with
-`update_glass_theme(session, intensity = 0.8)`.
+## Live demos
 
-See the [theming
-article](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
-for knobs (`intensity`, `tint`, `specular`, `nav_morph`,
-`ambient_motion`) and CSS variables.
+Apps may take a moment to wake up.
 
-``` r
+| Demo | Explore |
+|----|----|
+| [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
+| [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
+| [Intensity](https://ericrayanderson.shinyapps.io/shinyglass-intensity/) | Clear-to-tinted glass |
+| [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |
+| [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | A complete dashboard |
+| [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | Interactive charts and tables |
 
-# re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):
-# remotes::install_github("ericrayanderson/shinyglass")
-# Rscript inst/scripts/deploy-shinyapps-demos.R
-# Rscript inst/scripts/deploy-shinyapps-demos.R --apps=demo,dashboard,intensity
-#
-# visual QA (contrast + DT/selectize structure, light+dark matrix):
-# Rscript inst/scripts/audit-glass-contrast.R
-# see inst/scripts/VISUAL-QA.md
-```
+Built for Bootstrap 5 and bslib. See
+[compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html)
+for supported widgets and older layouts.
 
-For private-key GitHub Actions deployment, follow the [deployment setup
-guide](https://ericrayanderson.github.io/shinyglass/inst/scripts/SHINYAPPS-DEPLOY.md).
-The manual workflow can deploy all six demos or one selected app, with a
-dry-run option.
-
-## Compatibility
-
-shinyglass targets Bootstrap 5 and bslib first. It styles Shiny inputs,
-cards, sidebars, navigation, tables, and overlay controls, with
-integrations for DT, reactable, gt, plotly, and other common packages.
-Chart internals may still need app-level settings, such as transparent
-plotly backgrounds.
-
-Classic shinydashboard, bs4Dash, and shinydashboardPlus receive visual
-overlays while retaining their AdminLTE layouts. Bootstrap 3-only apps
-have limited support. See the [compatibility
-guide](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html)
-for the full support matrix.
-
-## Local examples
-
-``` r
-
-shiny::runApp(system.file("examples", "demo-app.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "bslib-dashboard.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "intensity-slider-demo.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "inputs-gallery.R", package = "shinyglass"))
-shiny::runApp(system.file("examples", "chrome-kitchen-sink.R", package = "shinyglass"))
-# plotly + gt (+ waiter if installed):
-# shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"))
-```
-
-## Shiny for Python (experimental)
-
-A parallel package lives under
-[`python/`](https://github.com/ericrayanderson/shinyglass/tree/main/python)
-(not on PyPI yet). See that README for wheel builds and the R/Python
-feature matrix.
+More:
+[examples](https://ericrayanderson.github.io/shinyglass/inst/examples/)
+· [experimental Python
+package](https://ericrayanderson.github.io/shinyglass/python/) ·
+[testing](https://ericrayanderson.github.io/shinyglass/inst/scripts/VISUAL-QA.md)
+·
+[deployment](https://ericrayanderson.github.io/shinyglass/inst/scripts/SHINYAPPS-DEPLOY.md)
 
 # Package index
 
