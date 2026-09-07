@@ -48,6 +48,7 @@ jobs:
             any::plotly
             any::gt
             any::waiter
+            any::cpp11
             local::.
       - name: Install the exact main commit with GitHub provenance
         shell: Rscript {0}
