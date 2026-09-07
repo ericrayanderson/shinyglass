@@ -26,8 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: shinyapps-production
-    env:
-      R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -67,6 +65,7 @@ jobs:
       - name: Authenticate and deploy (or stage a dry run)
         shell: Rscript {0}
         env:
+          R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
           DEPLOY_APPS: ${{ inputs.apps }}
@@ -97,6 +96,8 @@ jobs:
       - name: Remove temporary account configuration
         if: always()
         shell: Rscript {0}
+        env:
+          R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
         run: |
           config <- Sys.getenv("R_USER_CONFIG_DIR")
           expected <- file.path(Sys.getenv("RUNNER_TEMP"), "shinyapps-config")
