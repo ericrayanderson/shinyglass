@@ -12,8 +12,21 @@
 
 - **Light / Dark / Auto** — `glass_theme_toggle()` + `update_glass_theme(preset = …)`, or `preset = "auto"` to follow the OS
 - **Liquid Glass intensity** — iOS 27-style **Ultra Clear → Tinted** via `glass_intensity_slider()` (and `glass_theme(intensity = 0–1)`)
+- **Live accent color** — `update_glass_theme(session, primary = "#AF52DE")` updates themed controls without recompiling Sass
+
+Choose `glass_theme(material = "regular")` for general UI or `material = "clear"` for more transparent surfaces over media-rich content. Customize blur, corner radius, content tint, pointer highlights, and navbar motion through the theme options.
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [GitHub](https://github.com/ericrayanderson/shinyglass) · **[Live demos](#live-demos)**
+
+## What's new in development
+
+The GitHub development version (`0.2.0.9000`) includes updates beyond the CRAN release:
+
+- Less redundant browser work during reactive updates: unchanged image tint samples are cached, unrelated text outputs no longer trigger tint scans, and widget styling and pointer highlights are coalesced.
+- Fixed OS-theme tracking when starting in Auto mode and live bindings for dynamically inserted intensity sliders.
+- Chromium regression tests for runtime controls, message handling, and unnecessary client work, alongside the existing R tests and dual-theme visual audit.
+
+Install the [development version](#install) below to get these changes. See [NEWS](NEWS.md) for full release notes and the [QA guide](inst/scripts/VISUAL-QA.md) for testing details.
 
 ### Liquid Glass intensity
 
@@ -58,11 +71,19 @@ Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a f
 
 ## Install
 
-```r
-# released version:
-install.packages("shinyglass")
+Choose one installation source.
 
-# development version:
+**Released version from CRAN:**
+
+```r
+install.packages("shinyglass")
+```
+
+**Development version from GitHub**, including the updates listed above:
+
+```r
+# Install remotes first if needed:
+# install.packages("remotes")
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
@@ -93,7 +114,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-Set the starting material with `glass_theme(intensity = …)` (`0` Ultra Clear … `1` Tinted), or drive it from the server with `update_glass_theme(session, intensity = 0.8)`.
+Set the starting intensity with `glass_theme(intensity = …)` (`0` Ultra Clear … `1` Tinted), or drive it from the server with `update_glass_theme(session, intensity = 0.8)`.
 
 See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/theming.html) for knobs (`intensity`, `tint`, `specular`, `nav_morph`) and CSS variables.
 
@@ -107,6 +128,12 @@ See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/
 # Rscript inst/scripts/audit-glass-contrast.R
 # see inst/scripts/VISUAL-QA.md
 ```
+
+## Compatibility
+
+shinyglass targets Bootstrap 5 and bslib first. It styles Shiny inputs, cards, sidebars, navigation, tables, and overlay controls, with integrations for DT, reactable, gt, plotly, and other common packages. Chart internals may still need app-level settings, such as transparent plotly backgrounds.
+
+Classic shinydashboard, bs4Dash, and shinydashboardPlus receive visual overlays while retaining their AdminLTE layouts. Bootstrap 3-only apps have limited support. See the [compatibility guide](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html) for the full support matrix.
 
 ## Local examples
 
