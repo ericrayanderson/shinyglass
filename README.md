@@ -132,6 +132,8 @@ See the [theming article](https://ericrayanderson.github.io/shinyglass/articles/
 # see inst/scripts/VISUAL-QA.md
 ```
 
+For private-key GitHub Actions deployment, follow the [deployment setup guide](inst/scripts/SHINYAPPS-DEPLOY.md). The manual workflow can deploy all six demos or one selected app, with a dry-run option.
+
 ## Compatibility
 
 shinyglass targets Bootstrap 5 and bslib first. It styles Shiny inputs, cards, sidebars, navigation, tables, and overlay controls, with integrations for DT, reactable, gt, plotly, and other common packages. Chart internals may still need app-level settings, such as transparent plotly backgrounds.
