@@ -15,6 +15,7 @@ glass_theme(
   tint = TRUE,
   specular = TRUE,
   nav_morph = TRUE,
+  ambient_motion = TRUE,
   ...
 )
 }
@@ -45,6 +46,9 @@ Use \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for a live c
 \item{specular}{Pointer-driven specular highlight on glass surfaces (JS).}
 
 \item{nav_morph}{Compact navbar on scroll down; expand on scroll up (JS).}
+
+\item{ambient_motion}{Animate the decorative ambient sheen. Set \code{FALSE}
+to keep static glass surfaces. OS reduced-motion settings take priority.}
 
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }

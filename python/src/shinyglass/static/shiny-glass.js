@@ -371,12 +371,12 @@
 
     // Sync any intensity slider widgets
     document.querySelectorAll(".glass-intensity-slider").forEach(function (wrap) {
-      wrap.style.setProperty("--glass-intensity", String(intensityState));
       var input = wrap.querySelector("input.glass-intensity-range");
       if (input && opts.syncInputs !== false) {
         var v = String(intensityState);
         if (input.value !== v) input.value = v;
       }
+      if (input) updateIntensityAccessibility(input);
       var minL = wrap.querySelector(".glass-intensity-end--min");
       var maxL = wrap.querySelector(".glass-intensity-end--max");
       if (minL) minL.classList.toggle("is-active", intensityState < 0.35);
@@ -392,6 +392,30 @@
 
   function getIntensity() {
     return intensityState;
+  }
+
+  function updateIntensityAccessibility(input) {
+    var value = Number(input.value);
+    var min = Number(input.min || 0);
+    var max = Number(input.max || 1);
+    var wrap = input.closest(".glass-intensity-slider");
+    // Native range semantics expose min/max/current value; don't leave stale ARIA.
+    input.removeAttribute("aria-valuenow");
+    input.setAttribute("aria-valuetext", Math.round(value * 100) + "% intensity");
+    if (wrap) wrap.style.setProperty("--glass-intensity", String((value - min) / (max - min)));
+  }
+
+  function syncAccessibilityPreferences() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (tintTimer) { clearTimeout(tintTimer); tintTimer = null; }
+      rootEl().classList.remove("glass-pointer-active");
+      if (document.body) document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
+      clearTint();
+    } else {
+      scheduleTintUpdate();
+    }
+    // Recompute effective surfaces, retaining the user's chosen intensity.
+    setIntensity(intensityState, { syncInputs: true });
   }
 
   function setPrimary(color) {
@@ -920,6 +944,7 @@
         if (pointerFrame !== null) return;
         pointerFrame = window.requestAnimationFrame(function () {
           pointerFrame = null;
+          if (!specularEnabled() || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
           var e = pointerEvent;
           var el = e.target.closest(specularSelector);
           if (!el) {
@@ -1199,17 +1224,20 @@
 
 
   function bindIntensitySliders() {
+    var initial = null;
+    document.querySelectorAll(".glass-intensity-slider[data-glass-initial-intensity]").forEach(function (wrap) {
+      if (!wrap.__glassIntensityBound && initial === null) initial = Number(wrap.dataset.glassInitialIntensity);
+    });
     document.querySelectorAll(".glass-intensity-slider").forEach(function (wrap) {
       if (wrap.__glassIntensityBound) return;
-      wrap.__glassIntensityBound = true;
       var input = wrap.querySelector("input.glass-intensity-range");
       if (!input) return;
+      wrap.__glassIntensityBound = true;
 
       function applyFromInput(ev) {
         var t = clamp01(input.value);
         wrap.classList.toggle("is-dragging", !!(ev && ev.type === "input"));
-        setIntensity(t, { syncInputs: false });
-        wrap.style.setProperty("--glass-intensity", String(t));
+        setIntensity(t, { syncInputs: true });
       }
 
       input.addEventListener("input", applyFromInput);
@@ -1218,8 +1246,9 @@
         wrap.classList.remove("is-dragging");
       });
       input.value = String(getIntensity());
-      wrap.style.setProperty("--glass-intensity", String(getIntensity()));
+      updateIntensityAccessibility(input);
     });
+    if (initial !== null) setIntensity(initial, { syncInputs: true });
   }
 
   if (typeof Shiny !== "undefined" && Shiny.InputBinding) {
@@ -1228,6 +1257,7 @@
       find: function (scope) {
         return $(scope).find(".glass-intensity-slider input.glass-intensity-range");
       },
+      initialize: function () { bindIntensitySliders(); },
       getId: function (el) {
         return el.id;
       },
@@ -1236,9 +1266,7 @@
       },
       setValue: function (el, value) {
         el.value = clamp01(value);
-        setIntensity(el.value, { syncInputs: false });
-        var wrap = el.closest(".glass-intensity-slider");
-        if (wrap) wrap.style.setProperty("--glass-intensity", String(clamp01(value)));
+        setIntensity(el.value, { syncInputs: true });
       },
       subscribe: function (el, callback) {
         $(el).on("input.glassIntensity change.glassIntensity", function () {
@@ -1332,6 +1360,8 @@
   );
 
   $(document).on("shiny:connected.shinyglassResolved", function () {
+    // A new connection needs the resolved value even when appearance is unchanged.
+    delete rootEl().dataset.glassResolvedSent;
     syncResolvedPresetInput();
   });
 
@@ -1415,6 +1445,16 @@
     scheduleTintUpdate();
     applyWidgetGlassOverrides();
     bindIntensitySliders();
+
+    ["(prefers-reduced-motion: reduce)", "(prefers-reduced-transparency: reduce)"].forEach(function (query) {
+      var mql = window.matchMedia(query);
+      if (mql.addEventListener) mql.addEventListener("change", syncAccessibilityPreferences);
+      else if (mql.addListener) mql.addListener(syncAccessibilityPreferences);
+    });
+    syncAccessibilityPreferences();
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) scheduleTintUpdate();
+    });
 
     if (typeof MutationObserver !== "undefined") {
       domObserver = new MutationObserver(function (mutations) {

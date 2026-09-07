@@ -33,6 +33,24 @@ test('initial Auto follows OS changes; explicit presets detach from OS', async (
   await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
 });
 
+test('first explicit slider value wins and restricted controls display clamped values', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    document.querySelector('#dynamic').innerHTML = `
+      <div class="glass-intensity-slider" data-glass-initial-intensity="0.8"><input id="explicit" type="range" min="0" max="1" step="0.01" class="glass-intensity-range"></div>
+      <div class="glass-intensity-slider" data-glass-initial-intensity="0.2"><input id="second" type="range" min="0" max="1" step="0.01" class="glass-intensity-range"></div>
+      <div class="glass-intensity-slider"><input id="restricted" type="range" min="0.2" max="0.6" step="0.01" class="glass-intensity-range"></div>`;
+  });
+  await expect(page.locator('#explicit')).toHaveValue('0.8');
+  await expect(page.locator('#second')).toHaveValue('0.8');
+  await expect(page.locator('#restricted')).toHaveValue('0.6');
+  expect(await page.evaluate(() => shinyglass.getIntensity())).toBe(0.8);
+  await page.locator('#restricted').focus();
+  await page.keyboard.press('Home');
+  await expect(page.locator('#explicit')).toHaveValue('0.2');
+  await expect(page.locator('#restricted')).toHaveAttribute('aria-valuetext', '20% intensity');
+});
+
 test('keyboard toggles publish one resolved change despite duplicate server delivery', async ({ page }) => {
   await boot(page);
   await page.getByRole('button', { name: 'dark', exact: true }).focus();

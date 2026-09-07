@@ -1,3 +1,28 @@
+test_that("slider bounds and step reject invalid ranges", {
+  for (bad in c(NA_real_, NaN, Inf, -Inf, 0, -0.1)) {
+    expect_error(glass_intensity_slider(step = bad))
+  }
+  expect_error(glass_intensity_slider(min = -0.1))
+  expect_error(glass_intensity_slider(max = 1.1))
+  expect_error(glass_intensity_slider(min = Inf))
+  expect_error(glass_intensity_slider(min = 0.5, max = 0.5))
+  expect_error(glass_intensity_slider(min = 0.5, value = 0.2), "within")
+  expect_no_error(glass_intensity_slider(min = 0.6, max = 0.9))
+  explicit <- as.character(glass_intensity_slider(value = 0.7, label = NULL))
+  expect_match(explicit, 'data-glass-initial-intensity="0.7"', fixed = TRUE)
+  expect_match(explicit, 'aria-label="Liquid Glass intensity"', fixed = TRUE)
+  expect_false(grepl("aria-valuenow", explicit, fixed = TRUE))
+  expect_false(grepl("data-glass-initial-intensity", as.character(glass_intensity_slider()), fixed = TRUE))
+})
+
+test_that("ambient motion can be disabled independently", {
+  th <- glass_theme(ambient_motion = FALSE)
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, 'glassAmbientMotion="false"', fixed = TRUE)
+  expect_error(glass_theme(ambient_motion = NA))
+})
+
 test_that("glass_theme returns a bs_theme object", {
   skip_if_not_installed("bslib")
   theme <- glass_theme()
