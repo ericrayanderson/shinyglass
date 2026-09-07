@@ -36,7 +36,10 @@ test('representative Shiny responsiveness comparison', async ({ browser }) => {
         });
         const start = performance.now();
         await advance.click();
-        await expect.poll(async () => JSON.parse(await page.locator('#benchmark_result').textContent()).iteration).toBe(iteration);
+        await page.waitForFunction(n => {
+          const text = document.querySelector('#benchmark_result').textContent;
+          return text && JSON.parse(text).iteration === n;
+        }, iteration);
         await page.waitForFunction(() => !document.documentElement.classList.contains('shiny-busy'));
         await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
         const latency = performance.now() - start;

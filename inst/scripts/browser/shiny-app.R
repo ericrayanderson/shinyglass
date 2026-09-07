@@ -49,7 +49,9 @@ ui <- function(request) {
   )
 }
 server <- function(input, output, session) {
-  session$allowReconnect(TRUE)
+  # Standalone runApp has no hosting proxy advertising reconnect support.
+  # Force a real new-session reconnect while retaining the browser's inputs.
+  session$allowReconnect("force")
   controls_server("module")
   renders <- reactiveVal(0L)
   timing <- reactiveVal(list(iteration = 0L, server_compute_ms = 0))

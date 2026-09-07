@@ -157,7 +157,9 @@ RUN_SHINY_TESTS=1 RUN_BENCHMARK=1 npx playwright test benchmark.spec.js
 ```
 
 The fixture checks module inputs, server-driven theme updates, inserted sliders,
-actual WebSocket reconnection, and plot redraw counts. It also tests live OS
+actual new-session WebSocket reconnection, and plot redraw counts. The standalone
+fixture uses Shiny's forced reconnect mode; it does not test a hosting proxy's
+existing-session recovery. It also tests live OS
 preferences and independent ambient animation. CI runs both suites and uploads
 `test-results/benchmark.json` with the test artifacts.
 
