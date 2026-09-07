@@ -40,7 +40,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-</div>
+<ul><li>Reduce client work during reactive updates: inspect changed DOM subtrees, coalesce widget styling, avoid repeated style writes, cache unchanged image tint samples, and skip tint scans for unrelated text outputs. Pointer highlights update at most once per animation frame.</li>
+<li>Fix initial Auto mode OS-theme tracking and dynamically inserted intensity slider bindings. Keep the Python vendored runtime synchronized.</li>
+<li>Add Chromium runtime regression tests and CI coverage; clarify Python API scope and released R installation instructions.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2><p class="text-muted">CRAN release: 2026-08-21</p>
 <div class="section level3">
