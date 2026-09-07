@@ -68,8 +68,21 @@
 <strong>Light / Dark / Auto</strong> — <code><a href="reference/glass_theme_toggle.html">glass_theme_toggle()</a></code> + <code>update_glass_theme(preset = …)</code>, or <code>preset = "auto"</code> to follow the OS</li>
 <li>
 <strong>Liquid Glass intensity</strong> — iOS 27-style <strong>Ultra Clear → Tinted</strong> via <code><a href="reference/glass_intensity_slider.html">glass_intensity_slider()</a></code> (and <code>glass_theme(intensity = 0–1)</code>)</li>
+<li>
+<strong>Live accent color</strong> — <code>update_glass_theme(session, primary = "#AF52DE")</code> updates themed controls without recompiling Sass</li>
 </ul>
+<p>Choose <code>glass_theme(material = "regular")</code> for general UI or <code>material = "clear"</code> for more transparent surfaces over media-rich content. Customize blur, corner radius, content tint, pointer highlights, and navbar motion through the theme options.</p>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://github.com/ericrayanderson/shinyglass" class="external-link">GitHub</a> · <strong><a href="#live-demos">Live demos</a></strong></p>
+<div class="section level2">
+<h2 id="whats-new-in-development">What’s new in development<a class="anchor" aria-label="anchor" href="#whats-new-in-development"></a>
+</h2>
+<p>The GitHub development version (<code>0.2.0.9000</code>) includes updates beyond the CRAN release:</p>
+<ul>
+<li>Less redundant browser work during reactive updates: unchanged image tint samples are cached, unrelated text outputs no longer trigger tint scans, and widget styling and pointer highlights are coalesced.</li>
+<li>Fixed OS-theme tracking when starting in Auto mode and live bindings for dynamically inserted intensity sliders.</li>
+<li>Chromium regression tests for runtime controls, message handling, and unnecessary client work, alongside the existing R tests and dual-theme visual audit.</li>
+</ul>
+<p>Install the <a href="#install">development version</a> below to get these changes. See <a href="NEWS.html">NEWS</a> for full release notes and the <a href="inst/scripts/VISUAL-QA.html">QA guide</a> for testing details.</p>
 <div class="section level3">
 <h3 id="liquid-glass-intensity">Liquid Glass intensity<a class="anchor" aria-label="anchor" href="#liquid-glass-intensity"></a>
 </h3>
@@ -84,6 +97,7 @@
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard.png" width="48%" alt="Glass dashboard, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/bslib-dashboard-dark.png" width="48%" alt="Glass dashboard, dark"></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt.png" width="48%" alt="plotly + gt, light"><img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/plotly-gt-dark.png" width="48%" alt="plotly + gt, dark"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
@@ -126,17 +140,20 @@
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
+<p>Choose one installation source.</p>
+<p><strong>Released version from CRAN:</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># released version:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"shinyglass"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># development version:</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"shinyglass"</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Development version from GitHub</strong>, including the updates listed above:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install remotes first if needed:</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
@@ -159,9 +176,9 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>Set the starting material with <code>glass_theme(intensity = …)</code> (<code>0</code> Ultra Clear … <code>1</code> Tinted), or drive it from the server with <code>update_glass_theme(session, intensity = 0.8)</code>.</p>
+<p>Set the starting intensity with <code>glass_theme(intensity = …)</code> (<code>0</code> Ultra Clear … <code>1</code> Tinted), or drive it from the server with <code>update_glass_theme(session, intensity = 0.8)</code>.</p>
 <p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>intensity</code>, <code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):</span></span>
 <span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span>
 <span><span class="co"># Rscript inst/scripts/deploy-shinyapps-demos.R</span></span>
@@ -172,9 +189,15 @@
 <span><span class="co"># see inst/scripts/VISUAL-QA.md</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="compatibility">Compatibility<a class="anchor" aria-label="anchor" href="#compatibility"></a>
+</h2>
+<p>shinyglass targets Bootstrap 5 and bslib first. It styles Shiny inputs, cards, sidebars, navigation, tables, and overlay controls, with integrations for DT, reactable, gt, plotly, and other common packages. Chart internals may still need app-level settings, such as transparent plotly backgrounds.</p>
+<p>Classic shinydashboard, bs4Dash, and shinydashboardPlus receive visual overlays while retaining their AdminLTE layouts. Bootstrap 3-only apps have limited support. See the <a href="https://ericrayanderson.github.io/shinyglass/articles/compatibility.html">compatibility guide</a> for the full support matrix.</p>
+</div>
+<div class="section level2">
 <h2 id="local-examples">Local examples<a class="anchor" aria-label="anchor" href="#local-examples"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"demo-app.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"bslib-dashboard.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"intensity-slider-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
