@@ -59,11 +59,11 @@ Public apps on [shinyapps.io](https://www.shinyapps.io/) (free tier may take a f
 ## Install
 
 ```r
-# once on CRAN:
+# released version:
 install.packages("shinyglass")
 
 # development version:
-# remotes::install_github("ericrayanderson/shinyglass")
+remotes::install_github("ericrayanderson/shinyglass")
 ```
 
 ## Quick start
@@ -124,4 +124,4 @@ shiny::runApp(system.file("examples", "chrome-kitchen-sink.R", package = "shinyg
 
 A parallel package lives under
 [`python/`](https://github.com/ericrayanderson/shinyglass/tree/main/python)
-(not on CRAN/PyPI yet). See that README for wheel builds.
+(not on PyPI yet). See that README for wheel builds and the R/Python feature matrix.

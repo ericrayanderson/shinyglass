@@ -1,5 +1,14 @@
 # shinyglass (development version)
 
+* Reduce client work during reactive updates: inspect changed DOM subtrees,
+  coalesce widget styling, avoid repeated style writes, cache unchanged image
+  tint samples, and skip tint scans for unrelated text outputs. Pointer
+  highlights update at most once per animation frame.
+* Fix initial Auto mode OS-theme tracking and dynamically inserted intensity
+  slider bindings. Keep the Python vendored runtime synchronized.
+* Add Chromium runtime regression tests and CI coverage; clarify Python API
+  scope and released R installation instructions.
+
 # shinyglass 0.2.0
 
 ## Breaking changes
