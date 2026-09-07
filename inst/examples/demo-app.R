@@ -31,13 +31,14 @@ server <- function(input, output, session) {
   observe_glass_intensity(input, session, "glass_intensity")
 
   output$dist_plot <- renderPlot({
-    x <- faithful$waiting
+    req(input$species)
+    x <- iris$Sepal.Length[iris$Species == input$species]
     df <- data.frame(x = x)
     dark <- identical(glass_resolved_preset(input), "dark")
     ink <- if (dark) "#f5f5f7" else "#1d1d1f"
     p <- ggplot(df, aes(x)) +
       geom_histogram(bins = input$bins, fill = "#007AFF", color = NA, alpha = 0.88) +
-      labs(title = "Faithful Waiting Times", x = "Waiting (minutes)", y = NULL) +
+      labs(title = paste("Sepal length:", input$species), x = "Sepal length (cm)", y = NULL) +
       theme_minimal(base_size = 13) +
       theme(
         panel.background = element_rect(fill = NA, color = NA),
