@@ -28,6 +28,8 @@
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
+#' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
+#'   to keep static glass surfaces. OS reduced-motion settings take priority.
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
@@ -69,6 +71,7 @@ glass_theme <- function(
     tint = TRUE,
     specular = TRUE,
     nav_morph = TRUE,
+    ambient_motion = TRUE,
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
@@ -76,7 +79,8 @@ glass_theme <- function(
   stopifnot(
     is.logical(tint), length(tint) == 1L, !is.na(tint),
     is.logical(specular), length(specular) == 1L, !is.na(specular),
-    is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph)
+    is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph),
+    is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion)
   )
   primary <- .glass_normalize_color(primary)
 
@@ -156,6 +160,7 @@ glass_theme <- function(
     tint = tint,
     specular = specular,
     nav_morph = nav_morph,
+    ambient_motion = ambient_motion,
     primary = primary,
     material = material,
     intensity = intensity
@@ -588,7 +593,8 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     nav_morph,
     primary = "#007AFF",
     material = "regular",
-    intensity = 0.45) {
+    intensity = 0.45,
+    ambient_motion = TRUE) {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -621,6 +627,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "root.dataset.glassTint=%s;",
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
+      "root.dataset.glassAmbientMotion=%s;",
       "var prim=%s;",
       "var rgb=%s;",
       "var onPrim=%s;",
@@ -640,6 +647,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
+    if (isTRUE(ambient_motion)) "\"true\"" else "\"false\"",
     jsonlite_quote(primary),
     rgb_css,
     jsonlite_quote(on_primary)

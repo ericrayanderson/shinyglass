@@ -45,7 +45,7 @@ function glassComposite(fg, bg) {
     r: Math.round((fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / a),
     g: Math.round((fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / a),
     b: Math.round((fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / a),
-    a: 1
+    a: a
   };
 }
 
@@ -65,20 +65,21 @@ function glassIsControlSelector(sel, className) {
   );
 }
 
-function glassSampleEl(el, pageBg, preset, minContrast) {
+function glassSampleEl(el, pageBg, preset, minContrast, textAA) {
   const cs = getComputedStyle(el);
   const color = glassParseColor(cs.color);
   let bg = glassParseColor(cs.backgroundColor);
+  const ownBg = bg;
   let node = el;
   let guard = 0;
-  while (bg && bg.a < 0.15 && node.parentElement && guard < 6) {
+  while ((!bg || bg.a < 0.99) && node.parentElement && guard < 30) {
     node = node.parentElement;
     const pbg = glassParseColor(getComputedStyle(node).backgroundColor);
-    bg = glassComposite(bg.a > 0.01 ? bg : null, pbg) || pbg || bg;
+    bg = glassComposite(bg, pbg);
     guard++;
   }
   const effectiveBg = glassComposite(bg, pageBg) || pageBg;
-  const effectiveFg = color;
+  const effectiveFg = glassComposite(color, effectiveBg);
   const findings = [];
   const text = (el.innerText || el.textContent || "").trim().slice(0, 40);
   const sel = el.__auditSelector || el.tagName;
@@ -90,32 +91,46 @@ function glassSampleEl(el, pageBg, preset, minContrast) {
   };
 
   if (cs.display === "none" || cs.visibility === "hidden" || Number(cs.opacity) === 0) {
-    return findings;
+    return [{ level: "SKIP", code: "hidden", message: "hidden element", meta: meta }];
   }
-
-  const isControl = glassIsControlSelector(sel, el.className);
+  if (!el.getClientRects().length) {
+    return [{ level: "SKIP", code: "hidden", message: "no rendered box", meta: meta }];
+  }
+  const disabled = el.matches(":disabled") || el.closest('[aria-disabled="true"], .disabled');
+  const size = parseFloat(cs.fontSize);
+  const weight = cs.fontWeight === "bold" ? 700 : parseFloat(cs.fontWeight);
+  const largeText = size >= 24 || (size >= 56 / 3 && weight >= 700);
+  const required = largeText ? 3 : 4.5;
+  meta.required_text_contrast = required;
+  meta.font_size = cs.fontSize;
+  meta.font_weight = cs.fontWeight;
+  meta.measurement = "computed-color estimate; gradients, backdrop content and ancestor opacity require visual review";
 
   if (effectiveFg && effectiveBg && effectiveFg.a > 0.5) {
     const ratio = glassContrastRatio(effectiveFg, effectiveBg);
     meta.contrast = Math.round(ratio * 100) / 100;
     const hasText = text.length > 0;
-    if (hasText && isControl && ratio < minContrast) {
+    const threshold = textAA ? Math.max(minContrast, required) : minContrast;
+    if (hasText && !disabled && ratio < threshold) {
       findings.push({
         level: "FAIL",
         code: "low-contrast",
         message:
-          "contrast " + meta.contrast + ":1 < " + minContrast + ':1 for "' + text + '"',
+          "contrast " + meta.contrast + ":1 < " + threshold + ':1 for "' + text + '"',
         meta: meta
       });
-    } else if (hasText && isControl && ratio < 4.5) {
+    } else if (hasText && !disabled && ratio < required) {
       findings.push({
         level: "WARN",
         code: "contrast-aa",
-        message: "contrast " + meta.contrast + ':1 below WCAG AA 4.5 for "' + text + '"',
+        message: "contrast " + meta.contrast + ':1 below text threshold ' + required + ' for "' + text + '"',
         meta: meta
       });
     }
   }
+
+  // Signature checks inspect the actual element fill, not ancestor compositing.
+  bg = ownBg;
 
   // Dark-mode solid black chips (DT pagination bug signature)
   if (preset === "dark" && bg && glassIsNearBlack(bg) && bg.a > 0.95) {
@@ -190,7 +205,7 @@ function glassCssColorVar(name, fallbackRgb) {
   return fallbackRgb;
 }
 
-function runGlassAudit(selectors, preset, minContrast) {
+function runGlassAudit(selectors, preset, minContrast, textAA) {
   // Prefer CSS custom properties (glass page pack) over computed body bg:
   // body may be transparent while --glass-page-bg holds the real surface.
   const fallback =
@@ -236,7 +251,7 @@ function runGlassAudit(selectors, preset, minContrast) {
     for (let idx = 0; idx < limit; idx++) {
       const el = nodes[idx];
       el.__auditSelector = sel + (nodes.length > 1 ? "[" + idx + "]" : "");
-      const findings = glassSampleEl(el, pageBg, preset, minContrast);
+      const findings = glassSampleEl(el, pageBg, preset, minContrast, textAA);
       if (!findings.length) {
         all.push({
           level: "PASS",
