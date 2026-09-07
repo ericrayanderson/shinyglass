@@ -160,10 +160,10 @@ ui <- page_sidebar(
         downloadButton("download", "downloadButton"),
         downloadLink("download_link", "downloadLink")
       ),
-      tags$form(
+      div(
         class = "mt-2",
         textInput("submit_text", NULL, "Form field", width = "100%"),
-        submitButton("submitButton")
+        actionButton("apply_form", "Apply form")
       )
     ),
     card(
@@ -253,6 +253,10 @@ server <- function(input, output, session) {
     showNotification("actionLink clicked", type = "message", duration = 3)
   })
 
+  observeEvent(input$apply_form, {
+    showNotification(paste("Form applied:", input$submit_text), type = "message", duration = 3)
+  })
+
   # Client data-bs-toggle / data-bs-dismiss open and close the modal.
   observeEvent(input$modal_ok, {
     showNotification(
@@ -315,7 +319,7 @@ server <- function(input, output, session) {
       dateInput = as.character(input$date),
       dateRangeInput = as.character(input$date_range),
       fileInput = file_label,
-      submitButton = input$submit_text,
+      form_text = input$submit_text,
       theme_preset = input$preset,
       modal_choice = input$modal_choice,
       modal_text = input$modal_text
