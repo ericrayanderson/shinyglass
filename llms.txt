@@ -175,6 +175,11 @@ for knobs (`intensity`, `tint`, `specular`, `nav_morph`,
 # see inst/scripts/VISUAL-QA.md
 ```
 
+For private-key GitHub Actions deployment, follow the [deployment setup
+guide](https://ericrayanderson.github.io/shinyglass/inst/scripts/SHINYAPPS-DEPLOY.md).
+The manual workflow can deploy all six demos or one selected app, with a
+dry-run option.
+
 ## Compatibility
 
 shinyglass targets Bootstrap 5 and bslib first. It styles Shiny inputs,
