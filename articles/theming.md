@@ -170,7 +170,30 @@ When the user prefers reduced motion (`prefers-reduced-motion: reduce`):
 - Content tint sampling is skipped
 - Decorative transitions on cards/inputs/nav are removed
 
-This is automatic — no app code required.
+This is automatic and responds to OS preference changes while the app is
+open. Reduced-transparency changes also update the surfaces without
+changing the requested slider value.
+
+To disable only the idle decorative animation, use
+`glass_theme(ambient_motion = FALSE)`. To disable all optional effects,
+use:
+
+``` r
+
+glass_theme(tint = FALSE, specular = FALSE, nav_morph = FALSE,
+            ambient_motion = FALSE)
+```
+
+This retains glass surfaces and blur; it is not a zero-paint-cost mode.
+
+## Multiple intensity controls
+
+Intensity is page-wide. The first explicit slider `value` in each newly
+inserted group sets that intensity; peer sliders synchronize visually. A
+restricted-range slider displays the nearest endpoint when the global
+value is outside its range. Bounds must satisfy `0 <= min < max <= 1`,
+`step` must be finite and positive, and an explicit `value` must be
+within the slider’s range.
 
 ## Active-on-accent contrast
 
@@ -178,4 +201,9 @@ Bootstrap’s `color-contrast()` often picks **black** ink for system blue
 `#007AFF`.
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
 forces light ink on primary fills so checked checkboxes, radios,
-switches, and active pagination stay readable.
+switches, and active pagination retain light ink. White on `#007AFF` is
+approximately 4.02:1: it meets the 3:1 large-text threshold, but not the
+4.5:1 ordinary-text threshold. Choose and test an appropriate darker
+accent when ordinary white labels must meet that threshold. The QA
+guide’s `--text-aa` audit checks size-aware text thresholds; translucent
+backgrounds, gradients, and focus visibility still need visual review.

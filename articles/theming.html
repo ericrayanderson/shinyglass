@@ -260,7 +260,28 @@ instead.</p>
 <li>Content tint sampling is skipped</li>
 <li>Decorative transitions on cards/inputs/nav are removed</li>
 </ul>
-<p>This is automatic — no app code required.</p>
+<p>This is automatic and responds to OS preference changes while the app
+is open. Reduced-transparency changes also update the surfaces without
+changing the requested slider value.</p>
+<p>To disable only the idle decorative animation, use
+<code>glass_theme(ambient_motion = FALSE)</code>. To disable all
+optional effects, use:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>tint <span class="op">=</span> <span class="cn">FALSE</span>, specular <span class="op">=</span> <span class="cn">FALSE</span>, nav_morph <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>            ambient_motion <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>This retains glass surfaces and blur; it is not a zero-paint-cost
+mode.</p>
+</div>
+<div class="section level2">
+<h2 id="multiple-intensity-controls">Multiple intensity controls<a class="anchor" aria-label="anchor" href="#multiple-intensity-controls"></a>
+</h2>
+<p>Intensity is page-wide. The first explicit slider <code>value</code>
+in each newly inserted group sets that intensity; peer sliders
+synchronize visually. A restricted-range slider displays the nearest
+endpoint when the global value is outside its range. Bounds must satisfy
+<code>0 &lt;= min &lt; max &lt;= 1</code>, <code>step</code> must be
+finite and positive, and an explicit <code>value</code> must be within
+the slider’s range.</p>
 </div>
 <div class="section level2">
 <h2 id="active-on-accent-contrast">Active-on-accent contrast<a class="anchor" aria-label="anchor" href="#active-on-accent-contrast"></a>
@@ -268,7 +289,13 @@ instead.</p>
 <p>Bootstrap’s <code>color-contrast()</code> often picks
 <strong>black</strong> ink for system blue <code>#007AFF</code>.
 <code><a href="../reference/glass_theme.html">glass_theme()</a></code> forces light ink on primary fills so checked
-checkboxes, radios, switches, and active pagination stay readable.</p>
+checkboxes, radios, switches, and active pagination retain light ink.
+White on <code>#007AFF</code> is approximately 4.02:1: it meets the 3:1
+large-text threshold, but not the 4.5:1 ordinary-text threshold. Choose
+and test an appropriate darker accent when ordinary white labels must
+meet that threshold. The QA guide’s <code>--text-aa</code> audit checks
+size-aware text thresholds; translucent backgrounds, gradients, and
+focus visibility still need visual review.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

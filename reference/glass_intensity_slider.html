@@ -79,12 +79,16 @@ live-updates the glass material without a page reload.</p>
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>Initial intensity in \([0, 1]\). If <code>NULL</code>, uses the theme
-default from <code><a href="glass_theme.html">glass_theme()</a></code> / the client current intensity.</p></dd>
+default from <code><a href="glass_theme.html">glass_theme()</a></code> / the client current intensity. Intensity is
+page-wide: the first explicit value in each inserted group wins, and all
+controls synchronize. A restricted range displays the nearest endpoint
+when the current theme intensity lies outside that range.</p></dd>
 
 
 <dt id="arg-min-max-step">min, max, step<a class="anchor" aria-label="anchor" href="#arg-min-max-step"></a></dt>
 <dd><p>Range for the underlying range input. Defaults cover
-the full Ultra Clear -&gt; Tinted spectrum.</p></dd>
+the full Ultra Clear -&gt; Tinted spectrum. Bounds must be finite, within
+<code>[0, 1]</code>, and increasing; <code>step</code> must be finite and positive.</p></dd>
 
 
 <dt id="arg-min-label-max-label">min_label, max_label<a class="anchor" aria-label="anchor" href="#arg-min-label-max-label"></a></dt>

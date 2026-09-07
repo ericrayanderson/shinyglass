@@ -36,12 +36,16 @@ glass_intensity_slider(
   Initial intensity in \\\[0, 1\]\\. If `NULL`, uses the theme default
   from
   [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  / the client current intensity.
+  / the client current intensity. Intensity is page-wide: the first
+  explicit value in each inserted group wins, and all controls
+  synchronize. A restricted range displays the nearest endpoint when the
+  current theme intensity lies outside that range.
 
 - min, max, step:
 
   Range for the underlying range input. Defaults cover the full Ultra
-  Clear -\> Tinted spectrum.
+  Clear -\> Tinted spectrum. Bounds must be finite, within `[0, 1]`, and
+  increasing; `step` must be finite and positive.
 
 - min_label, max_label:
 

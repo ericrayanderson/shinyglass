@@ -43,6 +43,14 @@ the CRAN release:
   scans, and widget styling and pointer highlights are coalesced.
 - Fixed OS-theme tracking when starting in Auto mode and live bindings
   for dynamically inserted intensity sliders.
+- Validated slider ranges and explicit initial values, synchronized
+  page-wide intensity controls, and clearer keyboard focus and
+  screen-reader values.
+- Independent `ambient_motion = FALSE` control, plus live responses to
+  OS reduced-motion and reduced-transparency changes.
+- Real Shiny integration tests and a reproducible
+  plain-bslib/default-glass/effects-disabled benchmark; results
+  distinguish browser responsiveness from server computation.
 - Chromium regression tests for runtime controls, message handling, and
   unnecessary client work, alongside the existing R tests and dual-theme
   visual audit.
@@ -152,8 +160,8 @@ Clear … `1` Tinted), or drive it from the server with
 
 See the [theming
 article](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
-for knobs (`intensity`, `tint`, `specular`, `nav_morph`) and CSS
-variables.
+for knobs (`intensity`, `tint`, `specular`, `nav_morph`,
+`ambient_motion`) and CSS variables.
 
 ``` r
 

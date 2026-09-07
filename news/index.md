@@ -2,13 +2,38 @@
 
 ## shinyglass (development version)
 
+- Validate intensity slider bounds and steps; explicit values initialize
+  the page-wide intensity predictably. Multiple controls synchronize
+  visually, including dynamically inserted and module-namespaced inputs.
+
+- Add `glass_theme(ambient_motion = FALSE)` to disable decorative
+  ambient animation independently of pointer highlights and navbar
+  motion.
+
+- Update reduced-motion and reduced-transparency behavior when OS
+  preferences change during a session; add visible focus rings and
+  current slider value announcements, including an accessible name when
+  the label is hidden.
+
+- Add real Shiny integration tests for module inputs, server updates,
+  dynamic controls, WebSocket reconnects, and plot redraw counts. Add a
+  reproducible three-variant responsiveness benchmark with separate
+  browser and server measurements and CI JSON artifacts.
+
+- Contrast auditing now composites ancestor fills, distinguishes normal
+  from large text, excludes disabled text, and supports strict
+  `--text-aa` findings. Measurements remain computed-color estimates
+  requiring visual review over gradients and backdrop content.
+
 - Reduce client work during reactive updates: inspect changed DOM
   subtrees, coalesce widget styling, avoid repeated style writes, cache
   unchanged image tint samples, and skip tint scans for unrelated text
   outputs. Pointer highlights update at most once per animation frame.
+
 - Fix initial Auto mode OS-theme tracking and dynamically inserted
   intensity slider bindings. Keep the Python vendored runtime
   synchronized.
+
 - Add Chromium runtime regression tests and CI coverage; clarify Python
   API scope and released R installation instructions.
 

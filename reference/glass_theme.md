@@ -23,6 +23,7 @@ glass_theme(
   tint = TRUE,
   specular = TRUE,
   nav_morph = TRUE,
+  ambient_motion = TRUE,
   ...
 )
 ```
@@ -76,6 +77,11 @@ glass_theme(
 - nav_morph:
 
   Compact navbar on scroll down; expand on scroll up (JS).
+
+- ambient_motion:
+
+  Animate the decorative ambient sheen. Set `FALSE` to keep static glass
+  surfaces. OS reduced-motion settings take priority.
 
 - ...:
 

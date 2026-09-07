@@ -80,6 +80,9 @@
 <ul>
 <li>Less redundant browser work during reactive updates: unchanged image tint samples are cached, unrelated text outputs no longer trigger tint scans, and widget styling and pointer highlights are coalesced.</li>
 <li>Fixed OS-theme tracking when starting in Auto mode and live bindings for dynamically inserted intensity sliders.</li>
+<li>Validated slider ranges and explicit initial values, synchronized page-wide intensity controls, and clearer keyboard focus and screen-reader values.</li>
+<li>Independent <code>ambient_motion = FALSE</code> control, plus live responses to OS reduced-motion and reduced-transparency changes.</li>
+<li>Real Shiny integration tests and a reproducible plain-bslib/default-glass/effects-disabled benchmark; results distinguish browser responsiveness from server computation.</li>
 <li>Chromium regression tests for runtime controls, message handling, and unnecessary client work, alongside the existing R tests and dual-theme visual audit.</li>
 </ul>
 <p>Install the <a href="#install">development version</a> below to get these changes. See <a href="NEWS.html">NEWS</a> for full release notes and the <a href="inst/scripts/VISUAL-QA.html">QA guide</a> for testing details.</p>
@@ -177,7 +180,7 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
 <p>Set the starting intensity with <code>glass_theme(intensity = …)</code> (<code>0</code> Ultra Clear … <code>1</code> Tinted), or drive it from the server with <code>update_glass_theme(session, intensity = 0.8)</code>.</p>
-<p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>intensity</code>, <code>tint</code>, <code>specular</code>, <code>nav_morph</code>) and CSS variables.</p>
+<p>See the <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">theming article</a> for knobs (<code>intensity</code>, <code>tint</code>, <code>specular</code>, <code>nav_morph</code>, <code>ambient_motion</code>) and CSS variables.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># re-deploy live demos (requires rsconnect; installs shinyglass from GitHub):</span></span>
 <span><span class="co"># remotes::install_github("ericrayanderson/shinyglass")</span></span>

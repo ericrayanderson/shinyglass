@@ -40,9 +40,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li>Reduce client work during reactive updates: inspect changed DOM subtrees, coalesce widget styling, avoid repeated style writes, cache unchanged image tint samples, and skip tint scans for unrelated text outputs. Pointer highlights update at most once per animation frame.</li>
-<li>Fix initial Auto mode OS-theme tracking and dynamically inserted intensity slider bindings. Keep the Python vendored runtime synchronized.</li>
-<li>Add Chromium runtime regression tests and CI coverage; clarify Python API scope and released R installation instructions.</li>
+<ul><li><p>Validate intensity slider bounds and steps; explicit values initialize the page-wide intensity predictably. Multiple controls synchronize visually, including dynamically inserted and module-namespaced inputs.</p></li>
+<li><p>Add <code>glass_theme(ambient_motion = FALSE)</code> to disable decorative ambient animation independently of pointer highlights and navbar motion.</p></li>
+<li><p>Update reduced-motion and reduced-transparency behavior when OS preferences change during a session; add visible focus rings and current slider value announcements, including an accessible name when the label is hidden.</p></li>
+<li><p>Add real Shiny integration tests for module inputs, server updates, dynamic controls, WebSocket reconnects, and plot redraw counts. Add a reproducible three-variant responsiveness benchmark with separate browser and server measurements and CI JSON artifacts.</p></li>
+<li><p>Contrast auditing now composites ancestor fills, distinguishes normal from large text, excludes disabled text, and supports strict <code>--text-aa</code> findings. Measurements remain computed-color estimates requiring visual review over gradients and backdrop content.</p></li>
+<li><p>Reduce client work during reactive updates: inspect changed DOM subtrees, coalesce widget styling, avoid repeated style writes, cache unchanged image tint samples, and skip tint scans for unrelated text outputs. Pointer highlights update at most once per animation frame.</p></li>
+<li><p>Fix initial Auto mode OS-theme tracking and dynamically inserted intensity slider bindings. Keep the Python vendored runtime synchronized.</p></li>
+<li><p>Add Chromium runtime regression tests and CI coverage; clarify Python API scope and released R installation instructions.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2><p class="text-muted">CRAN release: 2026-08-21</p>
