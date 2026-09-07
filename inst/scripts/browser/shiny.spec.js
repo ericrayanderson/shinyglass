@@ -41,7 +41,7 @@ test('preset changes redraw the plot once; intensity does not redraw it', async 
   await expect(page.locator('#render_count')).toHaveText(String(before + 1));
 });
 
-test('actual WebSocket reconnect preserves controls and server communication', async ({ page }) => {
+test('actual new-session WebSocket reconnect preserves controls and server communication', async ({ page }) => {
   await ready(page);
   await page.evaluate(() => {
     window.reconnections = 0;

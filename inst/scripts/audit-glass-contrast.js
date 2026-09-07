@@ -38,7 +38,7 @@ function glassContrastRatio(a, b) {
 
 function glassComposite(fg, bg) {
   if (!fg) return bg;
-  if (!bg) return fg.a >= 0.99 ? fg : null;
+  if (!bg) return fg;
   const a = fg.a + bg.a * (1 - fg.a);
   if (a < 1e-6) return null;
   return {
