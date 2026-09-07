@@ -5,6 +5,10 @@ visualisation_medal <- function(x) {
     "SILVER" = "<span style = 'color: #969696'> <b>Silver</b> </span>",
     "BRONZE" = "<span style = 'color: #996B4F'> <b>Bronze</b> </span>"
   )
+  rich_subtitle <- requireNamespace("ggtext", quietly = TRUE)
+  if (!rich_subtitle) {
+    cur_sub_title <- c(GOLD = "Gold", SILVER = "Silver", BRONZE = "Bronze")
+  }
   cur_sub_title <- cur_sub_title[sort(match(x = unique(x$medal_type), table = names(cur_sub_title)))]
   if (length(cur_sub_title) > 1) {
     cur_sub_title <- append(x = cur_sub_title, value = "and", after = (length(cur_sub_title) - 1))
@@ -20,7 +24,7 @@ visualisation_medal <- function(x) {
     scale_fill_manual(values = col_medailles, breaks = names(col_medailles)[length(col_medailles):1]) +
     labs(
       title = "An overview of olympic medals",
-      subtitle = paste(cur_sub_title, collapse = ""),
+      subtitle = paste(cur_sub_title, collapse = " "),
       x = "number of medals",
       fill = "medal type"
     ) +
@@ -28,7 +32,7 @@ visualisation_medal <- function(x) {
     theme(text = element_text(size = 15)) +
     theme(
       axis.title.y = element_blank(),
-      plot.subtitle = if (requireNamespace("ggtext", quietly = TRUE)) {
+      plot.subtitle = if (rich_subtitle) {
         ggtext::element_markdown()
       } else {
         ggplot2::element_text()
