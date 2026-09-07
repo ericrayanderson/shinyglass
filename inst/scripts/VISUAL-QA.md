@@ -138,9 +138,46 @@ They do not measure R execution time, actual WebSocket reconnects, or GPU paint
 cost. The existing R tests and demo contrast audit remain separate CI gates.
 
 For reports of sluggishness, compare the same app/data/browser with plain bslib,
-then glass with `tint = FALSE, specular = FALSE, nav_morph = FALSE`, then default
+then glass with `tint = FALSE, specular = FALSE, nav_morph = FALSE,
+ambient_motion = FALSE`, then default
 glass. Record a browser Performance trace during the same reactive interaction.
 Compare scripting, style/layout, paint/compositing, and interaction latency;
 use Shiny profiling separately for server time. Repeat with representative
 charts/tables and on the affected device. Avoid claiming a speedup from unit
 checks alone: blur and layered surfaces can still be costly to paint.
+
+### Real Shiny integration and benchmark
+
+With R, the package dependencies, `pkgload`, and `jsonlite` installed, run from
+`inst/scripts/browser`:
+
+```sh
+RUN_SHINY_TESTS=1 npx playwright test shiny.spec.js
+RUN_SHINY_TESTS=1 RUN_BENCHMARK=1 npx playwright test benchmark.spec.js
+```
+
+The fixture checks module inputs, server-driven theme updates, inserted sliders,
+actual WebSocket reconnection, and plot redraw counts. It also tests live OS
+preferences and independent ambient animation. CI runs both suites and uploads
+`test-results/benchmark.json` with the test artifacts.
+
+The benchmark rotates three variants across three rounds, measuring ten warmed-up
+interactions per variant per round with identical deterministic data, two plots,
+and a table. It reports driver-observed response latency, browser CPU/layout/paint
+work, long tasks, and R plot-expression computation separately. Headless Chromium
+paint events do not measure GPU compositing or predict performance on every
+device. Treat these as reproducible observations, not a universal speedup claim.
+
+### Ordinary-text accessibility audit
+
+```sh
+Rscript inst/scripts/audit-glass-contrast.R --text-aa
+```
+
+Strict mode requires 4.5:1 for ordinary text and 3:1 for large text (24px, or
+18.67px bold). Hidden and disabled controls are excluded. Without this flag the
+legacy 3:1 failure floor remains, with warnings for ordinary text below 4.5:1.
+The audit composites computed ancestor colors; gradients, backdrop filtering,
+images, and ancestor opacity require visual review. A passing report is not a
+claim of full WCAG conformance. In particular, white ordinary text on the default
+system-blue accent is about 4.02:1 and needs a darker accent for 4.5:1.

@@ -13,9 +13,13 @@
 #' @param inputId The `input` slot that will be used to access the value.
 #' @param label Display label for the control (or `NULL` for none).
 #' @param value Initial intensity in \eqn{[0, 1]}. If `NULL`, uses the theme
-#'   default from [glass_theme()] / the client current intensity.
+#'   default from [glass_theme()] / the client current intensity. Intensity is
+#'   page-wide: the first explicit value in each inserted group wins, and all
+#'   controls synchronize. A restricted range displays the nearest endpoint
+#'   when the current theme intensity lies outside that range.
 #' @param min,max,step Range for the underlying range input. Defaults cover
-#'   the full Ultra Clear -> Tinted spectrum.
+#'   the full Ultra Clear -> Tinted spectrum. Bounds must be finite, within
+#'   `[0, 1]`, and increasing; `step` must be finite and positive.
 #' @param min_label,max_label End-cap captions (iOS uses "Ultra Clear" /
 #'   "Tinted").
 #' @param preview Show three mini glass chips as a live material sample.
@@ -58,17 +62,21 @@ glass_intensity_slider <- function(
     preview = TRUE,
     width = NULL) {
   stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
-  if (!is.null(value)) {
-    value <- .glass_normalize_intensity(value)
-  } else {
-    value <- 0.45
-  }
+  explicit_value <- !is.null(value)
   stopifnot(
-    is.numeric(min), length(min) == 1L,
-    is.numeric(max), length(max) == 1L,
-    is.numeric(step), length(step) == 1L,
-    min < max
+    is.numeric(min), length(min) == 1L, is.finite(min),
+    is.numeric(max), length(max) == 1L, is.finite(max),
+    is.numeric(step), length(step) == 1L, is.finite(step), step > 0,
+    min >= 0, max <= 1, min < max
   )
+  if (explicit_value) {
+    value <- .glass_normalize_intensity(value)
+    if (value < min || value > max) {
+      stop("`value` must be within `min` and `max`.", call. = FALSE)
+    }
+  } else {
+    value <- base::min(max, base::max(min, 0.45))
+  }
 
   style <- if (!is.null(width)) {
     sprintf("width:%s;", shiny::validateCssUnit(width))
@@ -91,6 +99,7 @@ glass_intensity_slider <- function(
     class = "form-group shiny-input-container glass-intensity-slider",
     style = style,
     `data-glass-intensity-input` = inputId,
+    `data-glass-initial-intensity` = if (explicit_value) value else NULL,
     if (!is.null(label)) {
       htmltools::tags$label(
         class = "control-label",
@@ -119,7 +128,7 @@ glass_intensity_slider <- function(
           value = value,
           `aria-valuemin` = min,
           `aria-valuemax` = max,
-          `aria-valuenow` = value,
+          `aria-label` = if (is.null(label)) "Liquid Glass intensity" else NULL,
           `aria-labelledby` = if (!is.null(label)) paste0(inputId, "-label") else NULL
         )
       ),
