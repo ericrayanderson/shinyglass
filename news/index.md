@@ -36,6 +36,11 @@
   used in dashboard and plotly+gt examples. Shinylive playground article
   and a Quarto `_brand.yml` sketch ship on GitHub.
 
+- Golden Gate material: 90° top highlight, light top/bottom strokes with
+  darker side edges, richer wallpaper orbs, and denser chrome when
+  content scrolls underneath — closer to iOS 27 / macOS 27 Liquid Glass
+  on SDR.
+
 - Validate intensity slider bounds and steps; explicit values initialize
   the page-wide intensity predictably. Multiple controls synchronize
   visually, including dynamically inserted and module-namespaced inputs.
