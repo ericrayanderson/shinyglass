@@ -32,16 +32,17 @@ visualisation_medal <- function(x, input = NULL) {
       fill = "medal type"
     ) +
     guides(fill = "none")
+  p <- p + ggplot2::theme_minimal(base_size = 15)
   if (requireNamespace("shinyglass", quietly = TRUE)) {
-    p <- p +
-      shinyglass::theme_glass(input = input, base_size = 15) +
-      ggplot2::theme(axis.title.y = ggplot2::element_blank())
-  } else {
-    p <- p +
-      ggplot2::theme_minimal(base_size = 15) +
-      ggplot2::theme(axis.title.y = ggplot2::element_blank())
+    glass_th <- tryCatch(
+      shinyglass::theme_glass(input = input, base_size = 15),
+      error = function(e) NULL
+    )
+    if (!is.null(glass_th)) {
+      p <- p + glass_th
+    }
   }
-  p
+  p + ggplot2::theme(axis.title.y = ggplot2::element_blank())
 }
 
 table_medal <- function(data) {
