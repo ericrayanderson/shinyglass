@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Demo to deploy (all deploys all six)
+        description: Demo selection (core5 fits the five-app plan)
         type: choice
-        default: all
+        default: core5
         options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt]
       dry_run:
         description: Stage and validate only; do not publish
