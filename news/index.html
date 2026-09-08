@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,24 +40,35 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-<ul><li><p>Remember glass: <code>glass_theme(persist = TRUE)</code> stores preset, intensity, accent, material, and scene in <code>localStorage</code> per app path.</p></li>
-<li><p><code><a href="../reference/theme_glass.html">theme_glass()</a></code>, <code><a href="../reference/plotly_glass.html">plotly_glass()</a></code>, and <code><a href="../reference/gt_theme_glass.html">gt_theme_glass()</a></code> match plot and table ink to the resolved light/dark pack. <code><a href="../reference/glass_plot_colors.html">glass_plot_colors()</a></code> exposes the palette.</p></li>
-<li><p>iOS-style <code><a href="../reference/glass_accent_input.html">glass_accent_input()</a></code> wells (blue / purple / pink / orange / green / teal). Named colors like <code>primary = "purple"</code> are accepted.</p></li>
-<li><p><code><a href="../reference/glass_page.html">glass_page()</a></code> / <code><a href="../reference/observe_glass.html">observe_glass()</a></code> assemble theme + toggle + intensity + accent in one call. Persistence defaults to on.</p></li>
-<li><p>Named wallpaper scenes (<code>tahoe</code>, <code>dusk</code>, <code>mesh</code>) and optional photo <code>wallpaper =</code>. <code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> can change <code>material</code>, <code>ambient_motion</code>, and <code>scene</code> live.</p></li>
-<li><p>High-contrast (<code>prefers-contrast: more</code>) and Windows forced-colors surfaces. Reduced motion / transparency already followed the OS.</p></li>
-<li><p>Fold intensity and accent wells into the live basics demo; helpers used in dashboard and plotly+gt examples. Shinylive playground article and a Quarto <code>_brand.yml</code> sketch ship on GitHub.</p></li>
-<li><p>Golden Gate material: 90° top highlight, light top/bottom strokes with darker side edges, richer wallpaper orbs, and denser chrome when content scrolls underneath — closer to iOS 27 / macOS 27 Liquid Glass on SDR.</p></li>
-<li><p>Validate intensity slider bounds and steps; explicit values initialize the page-wide intensity predictably. Multiple controls synchronize visually, including dynamically inserted and module-namespaced inputs.</p></li>
-<li><p>Add <code>glass_theme(ambient_motion = FALSE)</code> to disable decorative ambient animation independently of pointer highlights and navbar motion.</p></li>
-<li><p>Update reduced-motion and reduced-transparency behavior when OS preferences change during a session; add visible focus rings and current slider value announcements, including an accessible name when the label is hidden.</p></li>
-<li><p>Add real Shiny integration tests for module inputs, server updates, dynamic controls, WebSocket reconnects, and plot redraw counts. Add a reproducible three-variant responsiveness benchmark with separate browser and server measurements and CI JSON artifacts.</p></li>
-<li><p>Contrast auditing now composites ancestor fills, distinguishes normal from large text, excludes disabled text, and supports strict <code>--text-aa</code> findings. Measurements remain computed-color estimates requiring visual review over gradients and backdrop content.</p></li>
-<li><p>Reduce client work during reactive updates: inspect changed DOM subtrees, coalesce widget styling, avoid repeated style writes, cache unchanged image tint samples, and skip tint scans for unrelated text outputs. Pointer highlights update at most once per animation frame.</p></li>
-<li><p>Fix initial Auto mode OS-theme tracking and dynamically inserted intensity slider bindings. Keep the Python vendored runtime synchronized.</p></li>
-<li><p>Add Chromium runtime regression tests and CI coverage; clarify Python API scope and released R installation instructions.</p></li>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="shinyglass-030">shinyglass 0.3.0<a class="anchor" aria-label="anchor" href="#shinyglass-030"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li>Remember glass: <code>glass_theme(persist = TRUE)</code> stores preset, intensity, accent, material, and scene in <code>localStorage</code> per app path.</li>
+<li>
+<code><a href="../reference/theme_glass.html">theme_glass()</a></code>, <code><a href="../reference/plotly_glass.html">plotly_glass()</a></code>, and <code><a href="../reference/gt_theme_glass.html">gt_theme_glass()</a></code> match plot and table ink to the resolved light/dark pack. <code><a href="../reference/glass_plot_colors.html">glass_plot_colors()</a></code> exposes the palette.</li>
+<li>iOS-style <code><a href="../reference/glass_accent_input.html">glass_accent_input()</a></code> wells (blue / purple / pink / orange / green / teal). Named colors like <code>primary = "purple"</code> are accepted.</li>
+<li>
+<code><a href="../reference/glass_page.html">glass_page()</a></code> / <code><a href="../reference/observe_glass.html">observe_glass()</a></code> assemble theme + toggle + intensity + accent in one call. Persistence defaults to on.</li>
+<li>Named wallpaper scenes (<code>tahoe</code>, <code>dusk</code>, <code>mesh</code>) and optional photo <code>wallpaper =</code>. <code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> can change <code>material</code>, <code>ambient_motion</code>, and <code>scene</code> live.</li>
+<li>
+<code>glass_theme(ambient_motion = FALSE)</code> disables decorative ambient animation independently of pointer highlights and navbar motion.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="improvements-0-3-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-0"></a></h3>
+<ul><li>Golden Gate material: 90° top highlight, light top/bottom strokes with darker side edges, richer wallpaper orbs, and denser chrome when content scrolls underneath.</li>
+<li>High-contrast (<code>prefers-contrast: more</code>) and Windows forced-colors surfaces. Reduced-motion and reduced-transparency follow the OS live.</li>
+<li>Intensity sliders validate bounds and steps; multiple controls synchronize, including dynamically inserted and module-namespaced inputs.</li>
+<li>Visible focus rings and slider value announcements when the label is hidden.</li>
+<li>Faster client updates: inspect changed DOM subtrees, coalesce widget styling, cache unchanged image tint samples, skip unrelated text outputs, and cap pointer highlights at one per frame.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<ul><li>Olympics subtitle no longer shows raw HTML; favicon points at the shipped <code>rings.jpg</code>.</li>
+<li>Auto mode tracks OS theme from the first paint; dynamically inserted intensity sliders bind correctly.</li>
+<li>
+<code><a href="../reference/theme_glass.html">theme_glass()</a></code> uses grid-safe colors (ggplot2 cannot paint CSS <code>rgba()</code>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="shinyglass-020">shinyglass 0.2.0<a class="anchor" aria-label="anchor" href="#shinyglass-020"></a></h2><p class="text-muted">CRAN release: 2026-08-21</p>
 <div class="section level3">
