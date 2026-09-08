@@ -4,6 +4,14 @@ const runtime = path.resolve(__dirname, '../../js/shiny-glass.js');
 
 async function boot(page, mode = 'light') {
   await page.emulateMedia({ colorScheme: 'light' });
+  // about:blank is an opaque origin, so localStorage throws SecurityError.
+  await page.route('http://glass.test/**', (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: '<!DOCTYPE html><html><body></body></html>',
+    })
+  );
+  await page.goto('http://glass.test/app');
   await page.setContent(`<html data-glass-mode="${mode}" data-glass-preset="light" data-glass-tint="false"><body>
     <div class="glass-theme-toggle">${['light', 'dark', 'auto'].map(m => `<button data-glass-preset-mode="${m}">${m}</button>`).join('')}</div>
     <div id="dynamic"></div></body></html>`);
