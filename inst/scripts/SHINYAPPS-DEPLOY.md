@@ -1,9 +1,12 @@
-# Deploying the six demos with GitHub Actions
+# Deploying the demos with GitHub Actions
 
 The **Deploy shinyapps.io demos** workflow is manual, main-only, and uses the
 existing deployment script. It installs the exact selected main commit from
 GitHub, so the deployed package has remote provenance rather than a local-path
-installation. Select all six demos or one demo to retry a partial deployment.
+installation. The default `core5` selection deploys demo, dashboard, inputs,
+olympics, and plotly + gt within the five-app plan. The standalone intensity
+example remains available locally; `all` requires capacity for six apps.
+Select one demo to retry a partial deployment.
 
 ## One-time private configuration
 
@@ -22,13 +25,16 @@ workflow does not create the secrets or protection rules.
 ## Run
 
 Open **Actions → Deploy shinyapps.io demos → Run workflow**, choose `main`,
-select `all`, and leave **Stage and validate only** checked for a first dry run.
+select `core5`, and leave **Stage and validate only** checked for a first dry run.
 After it succeeds and the main CI checks are green, run it again with that box
 unchecked. Approve the environment deployment if required. A dry run stages
-files; it does not authenticate or prove that remote builds will succeed.
+files, resolves dependencies, and validates repository URLs; it does not
+authenticate or prove that remote builds will succeed.
 
 The workflow deploys sequentially. A failure stops remaining deployments; earlier
-apps may already be updated. Select the affected app to retry, or rerun all.
+apps may already be updated. Select the affected app to retry, or rerun `core5`.
+Do not queue multiple individual runs: GitHub concurrency retains only one
+pending run and replaces it when another is queued.
 Review each deployment's logs and open the printed public URL to verify it.
 
 ## Secret handling

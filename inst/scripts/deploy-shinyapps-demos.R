@@ -40,6 +40,15 @@ if (!requireNamespace("rsconnect", quietly = TRUE)) {
   stop('Install rsconnect first: install.packages("rsconnect")', call. = FALSE)
 }
 
+# setup-r exports an unnamed renv repository override. Packages installed by
+# pak retain Repository: RSPM, so renv needs that name mapped to a real URL.
+if (identical(Sys.getenv("GITHUB_ACTIONS"), "true")) {
+  Sys.unsetenv("RENV_CONFIG_REPOS_OVERRIDE")
+  rspm <- Sys.getenv("RSPM")
+  stopifnot(grepl("^https://", rspm))
+  options(repos = c(RSPM = rspm, CRAN = "https://cloud.r-project.org"))
+}
+
 script_path <- sub(
   "^--file=",
   "",
@@ -197,6 +206,16 @@ for (key in app_keys) {
   } else {
     stage_dreamrs(spec$source, spec$entry, app_dir, imports)
   }
+
+  # Use the same dependency resolver as deployment, including in dry runs.
+  deps <- rsconnect::appDependencies(app_dir)
+  repos <- deps$Repository
+  invalid <- !is.na(repos) & nzchar(repos) & !grepl("^https?://", repos)
+  if (any(invalid)) {
+    stop("Unresolved dependency repository for: ",
+         paste(deps$Package[invalid], collapse = ", "), call. = FALSE)
+  }
+  message("Validated ", nrow(deps), " dependencies for ", spec$appName)
 
   if (dry_run) {
     message("[dry-run] would deployApp(", app_dir, ", appName = ", spec$appName, ")")
