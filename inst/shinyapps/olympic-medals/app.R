@@ -29,7 +29,7 @@ ui <- fluidPage(
   tags$head(
     tags$link(
       rel = "icon", type = "image/png", sizes = "32x32",
-      href = "rings.png"
+      href = "rings.jpg"
     )
   ),
   setBackgroundImage(
