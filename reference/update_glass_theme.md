@@ -14,7 +14,10 @@ update_glass_theme(
   preset = NULL,
   tint = NULL,
   primary = NULL,
-  intensity = NULL
+  intensity = NULL,
+  material = NULL,
+  ambient_motion = NULL,
+  scene = NULL
 )
 ```
 
@@ -41,6 +44,18 @@ update_glass_theme(
 - intensity:
 
   Optional numeric in \\\[0, 1\]\\: Ultra Clear (`0`) to Tinted (`1`).
+
+- material:
+
+  Optional `"regular"` or `"clear"`.
+
+- ambient_motion:
+
+  Optional logical.
+
+- scene:
+
+  Optional `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
 
 ## Value
 

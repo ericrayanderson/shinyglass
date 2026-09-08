@@ -24,6 +24,9 @@ glass_theme(
   specular = TRUE,
   nav_morph = TRUE,
   ambient_motion = TRUE,
+  persist = FALSE,
+  scene = c("default", "tahoe", "dusk", "mesh"),
+  wallpaper = NULL,
   ...
 )
 ```
@@ -83,6 +86,22 @@ glass_theme(
   Animate the decorative ambient sheen. Set `FALSE` to keep static glass
   surfaces. OS reduced-motion settings take priority.
 
+- persist:
+
+  Remember preset, intensity, accent, material, and scene in
+  `localStorage` for this app path. Default `FALSE` (opt in).
+  [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
+  turns this on.
+
+- scene:
+
+  Wallpaper scene: `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+
+- wallpaper:
+
+  Optional image URL painted as a frosted photo behind the glass (https,
+  data URI, or site-relative path).
+
 - ...:
 
   Additional arguments forwarded to
@@ -112,6 +131,7 @@ theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 auto <- glass_theme(preset = "auto", tint = FALSE)
 clear <- glass_theme(material = "clear")
+remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 
 if (interactive()) {
   library(shiny)

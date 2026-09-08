@@ -24,6 +24,7 @@ Requires a page that used glass_theme() (so shiny-glass.js is loaded)."></head><
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
+    <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -56,7 +57,10 @@ Requires a page that used <code><a href="glass_theme.html">glass_theme()</a></co
 <span>  preset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tint <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  primary <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  intensity <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  intensity <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  material <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ambient_motion <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scene <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -84,6 +88,18 @@ the server function).</p></dd>
 <dt id="arg-intensity">intensity<a class="anchor" aria-label="anchor" href="#arg-intensity"></a></dt>
 <dd><p>Optional numeric in \([0, 1]\): Ultra Clear (<code>0</code>) to
 Tinted (<code>1</code>).</p></dd>
+
+
+<dt id="arg-material">material<a class="anchor" aria-label="anchor" href="#arg-material"></a></dt>
+<dd><p>Optional <code>"regular"</code> or <code>"clear"</code>.</p></dd>
+
+
+<dt id="arg-ambient-motion">ambient_motion<a class="anchor" aria-label="anchor" href="#arg-ambient-motion"></a></dt>
+<dd><p>Optional logical.</p></dd>
+
+
+<dt id="arg-scene">scene<a class="anchor" aria-label="anchor" href="#arg-scene"></a></dt>
+<dd><p>Optional <code>"default"</code>, <code>"tahoe"</code>, <code>"dusk"</code>, or <code>"mesh"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

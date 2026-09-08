@@ -7,19 +7,22 @@
 library(shiny)
 library(shinyglass)
 
-ui <- fluidPage(
-  theme = glass_theme(), # or preset = "dark" / "auto"
-  titlePanel("Liquid Glass"),
+ui <- glass_page(
+  title = "Liquid Glass",
+  persist = TRUE,
+  scene = "tahoe",
   plotOutput("p")
 )
 ```
 
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-returns a **bslib** theme. Pass it as `theme =` to
-[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
-[`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
-[`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
-and other page helpers that accept a bslib theme.
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
+is [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html) plus
+\[glass_theme()\], the Light / Dark / Auto toggle, intensity slider, and
+accent wells. Pair it with \[observe_glass()\] in the server. For a bare
+page, still pass `theme = glass_theme()` to
+[`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html) /
+[`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html) /
+[`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html).
 
 ## Presets
 
@@ -160,6 +163,37 @@ window.shinyglass.getPrimary();
 options(teal.bs_theme = glass_theme(preset = "auto"))
 # then teal::init(...) as usual
 ```
+
+## Persistence
+
+`glass_theme(persist = TRUE)` (and
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+which defaults to on) writes preset, intensity, accent, material, and
+scene to `localStorage` for this app path so a refresh restores the last
+look.
+
+## Wallpaper scenes
+
+`glass_theme(scene = "tahoe")` (or `"dusk"` / `"mesh"`) swaps the page
+gradient and orbs. `wallpaper = "https://..."` paints a frosted photo
+behind the glass. Change scene live with
+`update_glass_theme(session, scene = "dusk")`.
+
+## Plots that match the chrome
+
+``` r
+
+output$p <- renderPlot({
+  ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) +
+    ggplot2::geom_point() +
+    theme_glass(input = input)
+}, bg = "transparent")
+```
+
+\[theme_glass()\] is a ggplot2 theme with transparent panels and
+light/dark ink. \[plotly_glass()\] and \[gt_theme_glass()\] do the same
+for those packages. \[glass_plot_colors()\] returns `ink`, `grid`,
+`fill`, and `paper`.
 
 ## Reduced motion
 

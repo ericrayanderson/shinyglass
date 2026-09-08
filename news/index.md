@@ -2,6 +2,40 @@
 
 ## shinyglass (development version)
 
+- Remember glass: `glass_theme(persist = TRUE)` stores preset,
+  intensity, accent, material, and scene in `localStorage` per app path.
+
+- [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md),
+  [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md),
+  and
+  [`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)
+  match plot and table ink to the resolved light/dark pack.
+  [`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md)
+  exposes the palette.
+
+- iOS-style
+  [`glass_accent_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_accent_input.md)
+  wells (blue / purple / pink / orange / green / teal). Named colors
+  like `primary = "purple"` are accepted.
+
+- [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
+  /
+  [`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md)
+  assemble theme + toggle + intensity + accent in one call. Persistence
+  defaults to on.
+
+- Named wallpaper scenes (`tahoe`, `dusk`, `mesh`) and optional photo
+  `wallpaper =`.
+  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+  can change `material`, `ambient_motion`, and `scene` live.
+
+- High-contrast (`prefers-contrast: more`) and Windows forced-colors
+  surfaces. Reduced motion / transparency already followed the OS.
+
+- Fold intensity and accent wells into the live basics demo; helpers
+  used in dashboard and plotly+gt examples. Shinylive playground article
+  and a Quarto `_brand.yml` sketch ship on GitHub.
+
 - Validate intensity slider bounds and steps; explicit values initialize
   the page-wide intensity predictably. Multiple controls synchronize
   visually, including dynamically inserted and module-namespaced inputs.

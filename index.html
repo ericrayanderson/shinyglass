@@ -39,6 +39,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="articles/compatibility.html">Ecosystem compatibility</a></li>
+    <li><a class="dropdown-item" href="articles/playground.html">Try it</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
@@ -82,22 +83,24 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Hello, glass"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span>selected <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span><span class="op">)</span>,</span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/glass_page.html">glass_page</a></span><span class="op">(</span></span>
+<span>  title <span class="op">=</span> <span class="st">"Hello, glass"</span>,</span>
+<span>  persist <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scene <span class="op">=</span> <span class="st">"tahoe"</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="reference/observe_glass_theme_toggle.html">observe_glass_theme_toggle</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="reference/observe_glass_intensity.html">observe_glass_intensity</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span>, <span class="st">"glass_intensity"</span><span class="op">)</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/observe_glass.html">observe_glass</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/glass_plot_colors.html">glass_plot_colors</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">pal</span><span class="op">$</span><span class="va">fill</span>, border <span class="op">=</span> <span class="cn">NA</span>, col.axis <span class="op">=</span> <span class="va">pal</span><span class="op">$</span><span class="va">ink</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, bg <span class="op">=</span> <span class="st">"transparent"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/glass_page.html">glass_page()</a></code> includes Light / Dark / Auto, the intensity slider, and accent wells. Set <code>persist = TRUE</code> (the default here) to remember those choices.</p>
 </div>
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>

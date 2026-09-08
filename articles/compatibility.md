@@ -4,11 +4,11 @@ shinyglass is a **theme layer**, not a universal skin. It targets
 Bootstrap 5 / bslib surfaces first, then overlays denser dashboard
 stacks where practical.
 
-## Support matrix (as of 0.2)
+## Support matrix (as of 0.3)
 
 | Stack | Status | Notes |
 |----|----|----|
-| `fluidPage` / `navbarPage` | Supported | Drop-in `theme = glass_theme()` |
+| `fluidPage` / `navbarPage` | Supported | Drop-in `theme = glass_theme()` or [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md) |
 | bslib `page_navbar` / `nav_menu` | Supported | See `chrome-kitchen-sink.R` |
 | bslib `page_sidebar` / `layout_sidebar` | Supported | Floating glass sidebar; nested layouts stay in-flow (0.1.1+) |
 | bslib cards, value boxes, navsets, accordion | Supported | Tooltip / popover / toast use the glass menu surface |
