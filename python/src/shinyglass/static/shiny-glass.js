@@ -313,14 +313,14 @@
     if (preset === "dark") {
       return {
         clear: {
-          bgA: 0.07, bgHoverA: 0.12, contentA: 0.06, contentHoverA: 0.10,
-          borderA: 0.20, rimA: 0.30, lipA: 0.35, highlightA: 0.22, specularA: 0.28,
-          edgeSheenA: 0.16, innerGlowA: 0.07, menuA: 0.58, blurScale: 1.12
+          bgA: 0.08, bgHoverA: 0.14, contentA: 0.07, contentHoverA: 0.12,
+          borderA: 0.26, rimA: 0.38, lipA: 0.42, highlightA: 0.30, specularA: 0.34,
+          edgeSheenA: 0.22, innerGlowA: 0.10, menuA: 0.62, blurScale: 1.16
         },
         tinted: {
-          bgA: 0.24, bgHoverA: 0.32, contentA: 0.20, contentHoverA: 0.28,
-          borderA: 0.40, rimA: 0.52, lipA: 0.62, highlightA: 0.40, specularA: 0.44,
-          edgeSheenA: 0.30, innerGlowA: 0.14, menuA: 0.90, blurScale: 1.22
+          bgA: 0.26, bgHoverA: 0.34, contentA: 0.22, contentHoverA: 0.30,
+          borderA: 0.46, rimA: 0.58, lipA: 0.70, highlightA: 0.48, specularA: 0.52,
+          edgeSheenA: 0.36, innerGlowA: 0.18, menuA: 0.92, blurScale: 1.26
         },
         fill: { r: 255, g: 255, b: 255 },
         menu: { r: 58, g: 58, b: 60 },
@@ -329,14 +329,14 @@
     }
     return {
       clear: {
-        bgA: 0.08, bgHoverA: 0.16, contentA: 0.14, contentHoverA: 0.22,
-        borderA: 0.48, rimA: 0.70, lipA: 0.06, highlightA: 0.82, specularA: 0.58,
-        edgeSheenA: 0.36, innerGlowA: 0.16, menuA: 0.64, blurScale: 1.12
+        bgA: 0.10, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
+        borderA: 0.52, rimA: 0.78, lipA: 0.12, highlightA: 0.90, specularA: 0.64,
+        edgeSheenA: 0.42, innerGlowA: 0.20, menuA: 0.68, blurScale: 1.16
       },
       tinted: {
-        bgA: 0.50, bgHoverA: 0.64, contentA: 0.58, contentHoverA: 0.70,
-        borderA: 0.82, rimA: 0.95, lipA: 0.15, highlightA: 0.98, specularA: 0.82,
-        edgeSheenA: 0.62, innerGlowA: 0.32, menuA: 0.94, blurScale: 1.22
+        bgA: 0.52, bgHoverA: 0.66, contentA: 0.60, contentHoverA: 0.72,
+        borderA: 0.86, rimA: 0.98, lipA: 0.22, highlightA: 1.00, specularA: 0.88,
+        edgeSheenA: 0.68, innerGlowA: 0.38, menuA: 0.95, blurScale: 1.26
       },
       fill: { r: 255, g: 255, b: 255 },
       menu: { r: 255, g: 255, b: 255 },
