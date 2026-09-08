@@ -28,7 +28,7 @@ visualisation_medal <- function(x, input = NULL) {
     labs(
       # Page already has the H2 title; repeating it here clips on phones.
       title = NULL,
-      subtitle = .medal_subtitle(x$medal_type),
+      subtitle = paste(strwrap(.medal_subtitle(x$medal_type), width = 32), collapse = "\n"),
       x = "medals",
       fill = "medal type"
     ) +
