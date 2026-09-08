@@ -17,20 +17,18 @@ function to get translucent surfaces, backdrop blur, and system typography.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{library(shiny)
 library(shinyglass)
 
-ui <- fluidPage(
-  theme = glass_theme(preset = "auto", intensity = 0.45),
-  titlePanel("Liquid Glass"),
-  glass_intensity_slider("glass_intensity"),
-  glass_theme_toggle(selected = "auto"),
+ui <- glass_page(
+  title = "Liquid Glass",
+  persist = TRUE,
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) \{
-  observe_glass_theme_toggle(input, session)
-  observe_glass_intensity(input, session, "glass_intensity")
+  observe_glass(input, session)
   output$plot <- renderPlot(
-    barplot(seq_len(input$n), col = "#007AFF", border = NA)
+    barplot(seq_len(input$n), col = "#007AFF", border = NA),
+    bg = "transparent"
   )
 \}
 }\if{html}{\out{</div>}}
@@ -47,7 +45,8 @@ For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 }
 
 \seealso{
-\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
+\code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=theme_glass]{theme_glass()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
 \code{\link[=glass_theme_toggle]{glass_theme_toggle()}}
 }
 \author{

@@ -1,0 +1,19 @@
+meta:
+  name: shinyglass
+  link: https://ericrayanderson.github.io/shinyglass/
+
+color:
+  palette:
+    blue: "#007AFF"
+    purple: "#AF52DE"
+    orange: "#FF9500"
+    green: "#34C759"
+  primary: blue
+  background: "#f2f2f7"
+  foreground: "#1d1d1f"
+
+typography:
+  fonts:
+    - family: system-ui
+      source: system
+  base: system-ui

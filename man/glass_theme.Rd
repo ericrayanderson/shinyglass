@@ -16,6 +16,9 @@ glass_theme(
   specular = TRUE,
   nav_morph = TRUE,
   ambient_motion = TRUE,
+  persist = FALSE,
+  scene = c("default", "tahoe", "dusk", "mesh"),
+  wallpaper = NULL,
   ...
 )
 }
@@ -50,6 +53,15 @@ Use \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for a live c
 \item{ambient_motion}{Animate the decorative ambient sheen. Set \code{FALSE}
 to keep static glass surfaces. OS reduced-motion settings take priority.}
 
+\item{persist}{Remember preset, intensity, accent, material, and scene in
+\code{localStorage} for this app path. Default \code{FALSE} (opt in). \code{\link[=glass_page]{glass_page()}}
+turns this on.}
+
+\item{scene}{Wallpaper scene: \code{"default"}, \code{"tahoe"}, \code{"dusk"}, or \code{"mesh"}.}
+
+\item{wallpaper}{Optional image URL painted as a frosted photo behind the
+glass (https, data URI, or site-relative path).}
+
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }
 \value{
@@ -73,6 +85,7 @@ theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 auto <- glass_theme(preset = "auto", tint = FALSE)
 clear <- glass_theme(material = "clear")
+remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 
 if (interactive()) {
   library(shiny)

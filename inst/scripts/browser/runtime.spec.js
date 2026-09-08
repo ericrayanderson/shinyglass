@@ -134,6 +134,43 @@ test('reactive text updates do not sample unchanged media or rewrite widget styl
   await expect.poll(() => page.evaluate(() => document.querySelector('.Reactable').style.color)).toBe('inherit');
 });
 
+test('persist writes preset and intensity; material and scene update live', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    document.documentElement.dataset.glassPersist = 'true';
+    localStorage.clear();
+    shinyglass.setPreset('dark');
+    shinyglass.setIntensity(0.7);
+    shinyglass.setMaterial('clear');
+    shinyglass.setScene('dusk');
+  });
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.glassMaterial)).toBe('clear');
+  await expect(page.locator('html')).toHaveAttribute('data-glass-scene', 'dusk');
+  const stored = await page.waitForFunction(() => {
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('shinyglass:'));
+    if (!keys.length) return null;
+    return JSON.parse(localStorage.getItem(keys[0]));
+  });
+  const value = await stored.jsonValue();
+  expect(value.preset).toBe('dark');
+  expect(value.intensity).toBe(0.7);
+  expect(value.material).toBe('clear');
+  expect(value.scene).toBe('dusk');
+});
+
+test('accent wells apply primary immediately', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    document.querySelector('#dynamic').innerHTML = `
+      <div class="glass-accent-input" data-glass-accent-input="glass_accent">
+        <button class="glass-accent-well" data-glass-primary="#AF52DE" data-glass-accent-input="glass_accent">purple</button>
+      </div>`;
+  });
+  await page.locator('.glass-accent-well').click();
+  expect(await page.evaluate(() => shinyglass.getPrimary().toLowerCase())).toBe('#af52de');
+  await expect(page.locator('.glass-accent-well')).toHaveClass(/is-selected/);
+});
+
 test('pointer highlight layout reads are coalesced within a frame', async ({ page }) => {
   await boot(page);
   await page.evaluate(() => {

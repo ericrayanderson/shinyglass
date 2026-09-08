@@ -55,7 +55,7 @@ app_ui = ui.page_sidebar(
     ),
     title="shinyglass (Python)",
     fillable=True,
-    theme=glass_theme(preset="light"),
+    theme=glass_theme(preset="auto"),
 )
 
 

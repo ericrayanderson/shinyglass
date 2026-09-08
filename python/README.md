@@ -49,11 +49,12 @@ app = App(app_ui, None)
 
 | Argument | Default | |
 | --- | --- | --- |
-| `preset` | `"light"` | `"light"` or `"dark"` |
+| `preset` | `"light"` | `"light"`, `"dark"`, or `"auto"` |
 | `primary` | `"#007AFF"` | Accent (custom → needs `[theme]`) |
-| `blur` | `28` | Backdrop blur px |
+| `blur` | `36` | Backdrop blur px |
 | `saturation` | `200` | Backdrop saturate % |
-| `radius` | `"1.25rem"` | Corner radius |
+| `radius` | `"1.5rem"` | Corner radius |
+| `intensity` | `0.45` | Ultra Clear (`0`) to Tinted (`1`) |
 
 ## Demo
 
@@ -95,10 +96,10 @@ all of the R runtime controls. Shared assets do not imply API parity.
 
 | Feature | R | Python |
 | --- | --- | --- |
-| Presets | Light / Dark / Auto | Light / Dark |
-| Live preset / accent updates | Public server and UI helpers | No Python helpers |
-| Intensity / material controls | Public API and slider | No Python API |
-| Default blur / radius | 36 px / `1.5rem` | 28 px / `1.25rem` |
+| Presets | Light / Dark / Auto | Light / Dark / Auto |
+| Live preset / accent updates | Public server and UI helpers | Shared JS (`setPreset` / `setIntensity`) |
+| Intensity / material controls | Public API and slider | Intensity default matches R; no Python widgets |
+| Default blur / radius | 36 px / `1.5rem` | 36 px / `1.5rem` |
 | Default CSS delivery | bslib Sass compilation | Precompiled wheel assets |
 | Custom theme knobs | bslib / sass | Optional `[theme]` extra |
 

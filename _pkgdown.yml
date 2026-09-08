@@ -40,6 +40,8 @@ navbar:
           href: articles/theming.html
         - text: Ecosystem compatibility
           href: articles/compatibility.html
+        - text: Try it
+          href: articles/playground.html
     reference:
       text: Reference
       href: reference/index.html
@@ -64,12 +66,25 @@ reference:
   - glass_preset_input
   - observe_glass_preset_input
   - glass_resolved_preset
+  - glass_accent_input
+  - observe_glass_accent
+  - glass_system_colors
+  - glass_page
+  - observe_glass
+- title: Plots and tables
+  desc: Match ggplot2, plotly, and gt to the glass light/dark pack.
+  contents:
+  - theme_glass
+  - plotly_glass
+  - gt_theme_glass
+  - glass_plot_colors
 
 articles:
 - title: Guides
   contents:
   - theming
   - compatibility
+  - playground
 
 authors:
   Eric Anderson:

@@ -4334,3 +4334,177 @@ body .controls-pane {
     }
   }
 }
+
+// Named wallpaper scenes (glass_theme(scene = )). Default keeps the stock orbs.
+:root[data-glass-scene="tahoe"][data-glass-preset="light"],
+:root[data-glass-scene="tahoe"] {
+  --glass-page-bg: linear-gradient(180deg, #c8d7ea 0%, #eef2f7 38%, #d9cbb8 100%);
+  --glass-orb-1: rgba(70, 120, 180, 0.38);
+  --glass-orb-2: rgba(210, 170, 120, 0.28);
+  --glass-orb-3: rgba(255, 255, 255, 0.35);
+}
+:root[data-glass-scene="tahoe"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(180deg, #0b1220 0%, #05070c 42%, #1a140e 100%);
+  --glass-orb-1: rgba(80, 140, 210, 0.32);
+  --glass-orb-2: rgba(180, 120, 70, 0.22);
+  --glass-orb-3: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-glass-scene="dusk"][data-glass-preset="light"],
+:root[data-glass-scene="dusk"] {
+  --glass-page-bg: linear-gradient(160deg, #f3d5c4 0%, #f6e7ee 45%, #c9b6e4 100%);
+  --glass-orb-1: rgba(255, 120, 80, 0.32);
+  --glass-orb-2: rgba(175, 82, 222, 0.28);
+  --glass-orb-3: rgba(255, 180, 140, 0.24);
+}
+:root[data-glass-scene="dusk"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(160deg, #1a0c14 0%, #0a0610 40%, #1c1028 100%);
+  --glass-orb-1: rgba(255, 90, 60, 0.28);
+  --glass-orb-2: rgba(191, 90, 242, 0.30);
+  --glass-orb-3: rgba(255, 160, 120, 0.16);
+}
+
+:root[data-glass-scene="mesh"][data-glass-preset="light"],
+:root[data-glass-scene="mesh"] {
+  --glass-page-bg: linear-gradient(135deg, #e8f0ff 0%, #f5f5f7 50%, #ece4ff 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.34);
+  --glass-orb-2: rgba(175, 82, 222, 0.30);
+  --glass-orb-3: rgba(52, 199, 89, 0.18);
+}
+:root[data-glass-scene="mesh"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(135deg, #071018 0%, #000 48%, #120818 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.40);
+  --glass-orb-2: rgba(191, 90, 242, 0.34);
+  --glass-orb-3: rgba(48, 209, 88, 0.16);
+}
+
+// Optional photo wallpaper: frosted photo behind orbs.
+:root[data-glass-wallpaper="true"] body::before {
+  background-image: var(--glass-wallpaper);
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) saturate(1.15);
+  opacity: 0.55;
+  transform: scale(1.08);
+}
+
+.glass-accent-input {
+  margin-bottom: 1rem;
+
+  > .control-label {
+    display: block;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.45rem;
+  }
+
+  .glass-accent-wells {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+  }
+}
+
+.glass-accent-well {
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.12),
+    0 4px 10px var(--glass-shadow);
+  background: var(--glass-well-color, #007AFF);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    transform: scale(1.06);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--glass-body-color);
+    outline-offset: 3px;
+  }
+
+  &.is-selected,
+  &[aria-checked="true"] {
+    box-shadow:
+      0 0 0 3px var(--glass-body-bg),
+      0 0 0 5px var(--glass-body-color),
+      0 4px 10px var(--glass-shadow);
+  }
+}
+
+:root[data-glass-preset="dark"] .glass-accent-well {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.glass-page-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--glass-radius);
+  background: var(--glass-bg-content);
+  border: 0.5px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+
+  > * {
+    flex: 1 1 12rem;
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --glass-border: color-mix(in srgb, var(--glass-body-color) 45%, transparent);
+    --glass-lip: color-mix(in srgb, var(--glass-body-color) 35%, transparent);
+  }
+
+  .card,
+  .navbar,
+  .btn,
+  .form-control,
+  .form-select {
+    border-width: 1.5px !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --glass-blur: 0px !important;
+    --glass-saturate: 100% !important;
+    --glass-bg: Canvas;
+    --glass-bg-hover: Canvas;
+    --glass-bg-content: Canvas;
+    --glass-page-bg: Canvas;
+    --glass-body-bg: Canvas;
+    --glass-body-color: CanvasText;
+    --glass-border: ButtonBorder;
+    --glass-shadow: transparent;
+    --glass-elevated-shadow: transparent;
+  }
+
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  .card,
+  .navbar,
+  .modal-content,
+  .bslib-sidebar-layout > .sidebar {
+    background: Canvas !important;
+    color: CanvasText !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid ButtonBorder !important;
+  }
+}

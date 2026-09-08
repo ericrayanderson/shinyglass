@@ -1,3 +1,4 @@
+accent
 AdminLTE
 Apple
 Bootswatch
@@ -14,6 +15,7 @@ PyPI
 README
 Sass
 SweetAlert
+Shinylive
 Tahoe
 Theming
 Tinted
@@ -28,6 +30,7 @@ controlbar
 css
 darkly
 datepicker
+dusk
 dreamRs
 dropdown
 dropdowns
@@ -42,7 +45,9 @@ iOS
 intensity
 io
 li
+localStorage
 luminance
+mesh
 modebar
 nav
 navbar
@@ -50,6 +55,7 @@ navbarPage
 navsets
 noUiSlider
 pkgdown
+persist
 plotly
 qa
 rangeSlider
@@ -72,3 +78,5 @@ testthat
 theming
 unselected
 waiter
+wallpaper
+wells

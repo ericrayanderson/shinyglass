@@ -9,7 +9,10 @@ update_glass_theme(
   preset = NULL,
   tint = NULL,
   primary = NULL,
-  intensity = NULL
+  intensity = NULL,
+  material = NULL,
+  ambient_motion = NULL,
+  scene = NULL
 )
 }
 \arguments{
@@ -24,6 +27,12 @@ the server function).}
 
 \item{intensity}{Optional numeric in \eqn{[0, 1]}: Ultra Clear (\code{0}) to
 Tinted (\code{1}).}
+
+\item{material}{Optional \code{"regular"} or \code{"clear"}.}
+
+\item{ambient_motion}{Optional logical.}
+
+\item{scene}{Optional \code{"default"}, \code{"tahoe"}, \code{"dusk"}, or \code{"mesh"}.}
 }
 \value{
 \code{session}, invisibly.

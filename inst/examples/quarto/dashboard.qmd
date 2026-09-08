@@ -1,0 +1,35 @@
+---
+title: "Glass + brand.yml"
+format: html
+---
+
+Sit shinyglass on a Quarto `_brand.yml` palette. The brand file in this
+folder supplies the accent; pass it to `glass_theme(primary = )`.
+
+```{r}
+#| eval: false
+library(shiny)
+library(shinyglass)
+
+# brand.yml >= 0.1: read_brand_yml()
+primary <- "#007AFF"
+if (requireNamespace("brand.yml", quietly = TRUE)) {
+  brand <- brand.yml::read_brand_yml()
+  if (!is.null(brand$color$primary)) primary <- brand$color$primary
+}
+
+ui <- glass_page(
+  title = "Brand + glass",
+  preset = "auto",
+  persist = TRUE,
+  scene = "mesh",
+  theme = glass_theme(preset = "auto", primary = primary, persist = TRUE, scene = "mesh"),
+  p("Accent comes from _brand.yml. Toggle Light / Dark / Auto and drag intensity.")
+)
+
+server <- function(input, output, session) {
+  observe_glass(input, session)
+}
+
+shinyApp(ui, server)
+```
