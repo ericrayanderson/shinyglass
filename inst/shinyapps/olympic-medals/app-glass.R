@@ -7,9 +7,6 @@ library(dplyr)
 library(data.table)
 library(reactable)
 library(tidyr)
-if (requireNamespace("ggtext", quietly = TRUE)) {
-  library(ggtext)
-}
 library(shinyglass)
 
 source("R/data.R")
@@ -186,10 +183,11 @@ server <- function(input, output, session) {
   })
   output$graph <- renderPlot(
     {
-      visualisation_medal(x = data_in())
+      visualisation_medal(x = data_in(), input = input)
     },
     height = hght,
-    res = 96
+    res = 96,
+    bg = "transparent"
   )
   output$downloadData <- downloadHandler(
     filename = function() {
