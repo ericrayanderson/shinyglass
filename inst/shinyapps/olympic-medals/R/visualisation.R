@@ -26,32 +26,41 @@ visualisation_medal <- function(x, input = NULL) {
     geom_col() +
     scale_fill_manual(values = col_medailles, breaks = names(col_medailles)[length(col_medailles):1]) +
     labs(
-      title = "An overview of olympic medals",
+      # Page already has the H2 title; repeating it here clips on phones.
+      title = NULL,
       subtitle = .medal_subtitle(x$medal_type),
-      x = "number of medals",
+      x = "medals",
       fill = "medal type"
     ) +
     guides(fill = "none")
-  p <- p + ggplot2::theme_minimal(base_size = 15)
+  p <- p + ggplot2::theme_minimal(base_size = 11)
   if (requireNamespace("shinyglass", quietly = TRUE)) {
     glass_th <- tryCatch(
-      shinyglass::theme_glass(input = input, base_size = 15),
+      shinyglass::theme_glass(input = input, base_size = 11),
       error = function(e) NULL
     )
     if (!is.null(glass_th)) {
       p <- p + glass_th
     }
   }
-  p + ggplot2::theme(axis.title.y = ggplot2::element_blank())
+  p + ggplot2::theme(
+    axis.title.y = ggplot2::element_blank(),
+    plot.subtitle = ggplot2::element_text(size = 10, hjust = 0),
+    axis.text.y = ggplot2::element_text(size = 8),
+    plot.margin = ggplot2::margin(4, 10, 4, 4)
+  )
 }
 
 table_medal <- function(data) {
   columns <- list(
     country_name = colDef(
-      name = "Country Name"
+      name = "Country",
+      minWidth = 108,
+      sticky = "left"
     ),
     n_tot = colDef(
-      name = "Total Medals"
+      name = "Total",
+      minWidth = 56
     )
   )
   if (hasName(data, "BRONZE")) {
@@ -86,6 +95,7 @@ table_medal <- function(data) {
     columns = columns,
     compact = TRUE,
     highlight = TRUE,
-    defaultColDef = colDef(minWidth = 72, vAlign = "center")
+    fullWidth = TRUE,
+    defaultColDef = colDef(minWidth = 64, vAlign = "center")
   )
 }
