@@ -55,13 +55,15 @@ theme_glass <- function(preset = NULL, base_size = 13, input = NULL, ...) {
     stop('Install ggplot2 to use theme_glass(): install.packages("ggplot2")', call. = FALSE)
   }
   pal <- glass_plot_colors(preset, input)
+  # grid does not accept CSS rgba(); use an #RRGGBBAA color.
+  grid_col <- grDevices::adjustcolor(pal$ink, alpha.f = 0.12)
   ggplot2::theme_minimal(base_size = base_size) +
     ggplot2::theme(
       panel.background = ggplot2::element_rect(fill = NA, color = NA),
       plot.background = ggplot2::element_rect(fill = NA, color = NA),
       legend.background = ggplot2::element_blank(),
       legend.key = ggplot2::element_blank(),
-      panel.grid.major = ggplot2::element_line(color = pal$grid, linewidth = 0.3),
+      panel.grid.major = ggplot2::element_line(color = grid_col, linewidth = 0.3),
       panel.grid.minor = ggplot2::element_blank(),
       text = ggplot2::element_text(color = pal$ink),
       axis.text = ggplot2::element_text(color = pal$ink),

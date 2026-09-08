@@ -540,6 +540,10 @@ test_that("glass_plot_colors and theme_glass follow preset", {
   skip_if_not_installed("ggplot2")
   th <- theme_glass("dark")
   expect_s3_class(th, "theme")
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) +
+    ggplot2::geom_point() +
+    theme_glass("light")
+  expect_silent(ggplot2::ggplotGrob(p))
 })
 
 test_that("compiled CSS includes scenes, wells, and forced-colors", {
