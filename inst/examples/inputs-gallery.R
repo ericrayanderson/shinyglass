@@ -23,7 +23,7 @@ glass_preset <- match.arg(
 ui <- page_sidebar(
   title = "Shiny Inputs Gallery",
   theme = glass_theme(preset = glass_preset),
-  fillable = TRUE,
+  fillable = FALSE,
   sidebar = sidebar(
     title = "About",
     width = 280,
@@ -49,6 +49,7 @@ ui <- page_sidebar(
   layout_column_wrap(
     width = "16rem",
     heights_equal = "row",
+    fill = FALSE,
     gap = "0.75rem",
     card(
       card_header("Text & numbers"),

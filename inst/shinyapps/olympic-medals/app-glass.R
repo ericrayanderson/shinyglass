@@ -36,9 +36,24 @@ ui <- fluidPage(
         margin-left: auto;
         margin-right: auto;
       }
+      /* Glass cards overflow:hidden; keep the ggplot image inside the card. */
+      .olympics-plot,
+      .olympics-plot .shiny-plot-output {
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .olympics-plot img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+      .olympics-wrap .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
       @media (max-width: 575.98px) {
         .olympics-filters .col-filter { margin-bottom: 0.75rem; }
         .olympics-settings-btn { width: 100% !important; }
+        .olympics-wrap .Reactable { font-size: 0.82rem; }
       }
     "))
   ),
@@ -125,7 +140,10 @@ ui <- fluidPage(
           )
         )
       ),
-      plotOutput(outputId = "graph", height = "auto", width = "100%"),
+      div(
+        class = "olympics-plot",
+        plotOutput(outputId = "graph", height = "auto", width = "100%")
+      ),
       tags$br(),
       div(class = "table-responsive", reactableOutput("table")),
       tags$br(),

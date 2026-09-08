@@ -83,6 +83,9 @@ table_medal <- function(data) {
   }
   reactable(
     data = data,
-    columns = columns
+    columns = columns,
+    compact = TRUE,
+    highlight = TRUE,
+    defaultColDef = colDef(minWidth = 72, vAlign = "center")
   )
 }
