@@ -29,11 +29,15 @@ No breaking API changes from 0.2.0.
 
 ## R CMD check results
 
-**0 errors | 0 warnings | 0 notes** expected on the 0.3.0 tarball aside
-from a possible incoming "days since last update" NOTE (~18 days after
-0.2.0). That interval is short but the release is a real feature set
-(persistence, plot helpers, accessibility, material), not a drive-by
-tweak.
+**0 errors | 0 warnings | 0 notes** on local `R CMD check --as-cran`
+(macOS Tahoe, R 4.6.1) and GitHub Actions (ubuntu release + devel,
+macOS release, windows release). CI uses `--no-manual`; the submitted
+tarball is from `R CMD build` with vignettes.
+
+A possible incoming "days since last update" NOTE (~18 days after
+0.2.0) is expected. That interval is short but the release is a real
+feature set (persistence, plot helpers, accessibility, material), not
+a drive-by tweak.
 
 ## Downstream dependencies
 
