@@ -1,7 +1,7 @@
 Package: shinyglass
 Type: Package
 Title: Liquid Glass Design Themes for 'shiny' Applications
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: c(
     person("Eric", "Anderson",
            email = "eric.ray.anderson@gmail.com",
@@ -13,9 +13,9 @@ Description: Provides drop-in Liquid Glass themes for 'shiny'. Call
     translucent surfaces, backdrop blur, and system typography on
     'Bootstrap' components. Includes light and dark presets with
     runtime switching and an OS-following 'auto' mode, an iOS-style
-    intensity control from Ultra Clear to Tinted
-    (glass_intensity_slider()), and options for accent color, blur,
-    corner radius, and motion or tint behavior.
+    intensity control from Ultra Clear to Tinted, optional
+    persistence of the look, named wallpaper scenes, and helpers to
+    match ggplot2, plotly, and gt output to the glass pack.
 License: GPL-3
 URL: https://ericrayanderson.github.io/shinyglass/,
     https://github.com/ericrayanderson/shinyglass

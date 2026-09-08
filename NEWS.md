@@ -1,4 +1,6 @@
-# shinyglass (development version)
+# shinyglass 0.3.0
+
+## New features
 
 * Remember glass: `glass_theme(persist = TRUE)` stores preset, intensity,
   accent, material, and scene in `localStorage` per app path.
@@ -12,40 +14,31 @@
 * Named wallpaper scenes (`tahoe`, `dusk`, `mesh`) and optional photo
   `wallpaper =`. `update_glass_theme()` can change `material`,
   `ambient_motion`, and `scene` live.
-* High-contrast (`prefers-contrast: more`) and Windows forced-colors
-  surfaces. Reduced motion / transparency already followed the OS.
-* Fold intensity and accent wells into the live basics demo; helpers used
-  in dashboard and plotly+gt examples. Shinylive playground article and a
-  Quarto `_brand.yml` sketch ship on GitHub.
+* `glass_theme(ambient_motion = FALSE)` disables decorative ambient
+  animation independently of pointer highlights and navbar motion.
+
+## Improvements
+
 * Golden Gate material: 90° top highlight, light top/bottom strokes with
   darker side edges, richer wallpaper orbs, and denser chrome when content
-  scrolls underneath — closer to iOS 27 / macOS 27 Liquid Glass on SDR.
+  scrolls underneath.
+* High-contrast (`prefers-contrast: more`) and Windows forced-colors
+  surfaces. Reduced-motion and reduced-transparency follow the OS live.
+* Intensity sliders validate bounds and steps; multiple controls
+  synchronize, including dynamically inserted and module-namespaced inputs.
+* Visible focus rings and slider value announcements when the label is
+  hidden.
+* Faster client updates: inspect changed DOM subtrees, coalesce widget
+  styling, cache unchanged image tint samples, skip unrelated text outputs,
+  and cap pointer highlights at one per frame.
 
-* Validate intensity slider bounds and steps; explicit values initialize the
-  page-wide intensity predictably. Multiple controls synchronize visually,
-  including dynamically inserted and module-namespaced inputs.
-* Add `glass_theme(ambient_motion = FALSE)` to disable decorative ambient
-  animation independently of pointer highlights and navbar motion.
-* Update reduced-motion and reduced-transparency behavior when OS preferences
-  change during a session; add visible focus rings and current slider value
-  announcements, including an accessible name when the label is hidden.
-* Add real Shiny integration tests for module inputs, server updates, dynamic
-  controls, WebSocket reconnects, and plot redraw counts. Add a reproducible
-  three-variant responsiveness benchmark with separate browser and server
-  measurements and CI JSON artifacts.
-* Contrast auditing now composites ancestor fills, distinguishes normal from
-  large text, excludes disabled text, and supports strict `--text-aa` findings.
-  Measurements remain computed-color estimates requiring visual review over
-  gradients and backdrop content.
+## Bug fixes
 
-* Reduce client work during reactive updates: inspect changed DOM subtrees,
-  coalesce widget styling, avoid repeated style writes, cache unchanged image
-  tint samples, and skip tint scans for unrelated text outputs. Pointer
-  highlights update at most once per animation frame.
-* Fix initial Auto mode OS-theme tracking and dynamically inserted intensity
-  slider bindings. Keep the Python vendored runtime synchronized.
-* Add Chromium runtime regression tests and CI coverage; clarify Python API
-  scope and released R installation instructions.
+* Olympics subtitle no longer shows raw HTML; favicon points at the
+  shipped `rings.jpg`.
+* Auto mode tracks OS theme from the first paint; dynamically inserted
+  intensity sliders bind correctly.
+* `theme_glass()` uses grid-safe colors (ggplot2 cannot paint CSS `rgba()`).
 
 # shinyglass 0.2.0
 
