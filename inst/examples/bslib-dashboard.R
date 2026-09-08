@@ -24,16 +24,15 @@ glass_preset <- match.arg(
   c("light", "dark", "auto")
 )
 
-accent_colors <- c(
-  "Apple Blue" = "#007AFF",
-  "Purple" = "#AF52DE",
-  "Orange" = "#FF9500",
-  "Green" = "#34C759"
-)
-
 ui <- page_sidebar(
   title = "Glass Dashboard",
-  theme = glass_theme(preset = glass_preset, primary = "#007AFF", intensity = 0.45),
+  theme = glass_theme(
+    preset = glass_preset,
+    primary = "#007AFF",
+    intensity = 0.45,
+    persist = TRUE,
+    scene = "tahoe"
+  ),
   class = "bslib-page-dashboard",
   fillable = TRUE,
   # Closed on phones by default so content is usable; open on desktop
@@ -53,13 +52,7 @@ ui <- page_sidebar(
       selected = glass_preset,
       width = "100%"
     ),
-    selectInput(
-      "accent",
-      "Accent color",
-      choices = accent_colors,
-      selected = "#007AFF",
-      width = "100%"
-    ),
+    glass_accent_input("accent", selected = "blue"),
     selectInput(
       "species",
       "Focus species",
@@ -134,10 +127,7 @@ server <- function(input, output, session) {
 
   observe_glass_intensity(input, session, "glass_intensity")
   observe_glass_preset_input(input, session, "preset")
-
-  observeEvent(input$accent, {
-    update_glass_theme(session, primary = input$accent)
-  }, ignoreInit = TRUE)
+  observe_glass_accent(input, session, "accent")
 
   output$metric_n <- renderText({
     format(nrow(filtered_data()), big.mark = ",")
@@ -152,32 +142,14 @@ server <- function(input, output, session) {
     paste0(round(avg, 1), " cm")
   })
 
-  plot_fg <- reactive({
-    if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
-  })
-
-  glass_gg <- function() {
-    theme_minimal(base_size = 12) +
-      theme(
-        panel.background = element_rect(fill = NA, color = NA),
-        plot.background = element_rect(fill = NA, color = NA),
-        legend.background = element_rect(fill = NA, color = NA),
-        legend.box.background = element_rect(fill = NA, color = NA),
-        text = element_text(color = plot_fg()),
-        axis.text = element_text(color = plot_fg()),
-        plot.title = element_text(color = plot_fg()),
-        legend.text = element_text(color = plot_fg()),
-        legend.title = element_text(color = plot_fg())
-      )
-  }
-
   output$dist_plot <- renderPlot({
     df <- filtered_data()
-    accent <- input$accent
+    pal <- glass_plot_colors(input = input)
+    accent <- if (!is.null(input$accent) && nzchar(input$accent)) input$accent else pal$fill
     p <- ggplot(df, aes(x = Sepal.Length)) +
       geom_histogram(bins = input$bins, fill = accent, color = NA, alpha = 0.85) +
       labs(title = "Sepal length distribution", x = NULL, y = "Count") +
-      glass_gg()
+      theme_glass(input = input, base_size = 12)
     if (isTRUE(input$show_curve)) {
       p <- p + geom_density(
         aes(y = after_stat(count)),
@@ -191,12 +163,11 @@ server <- function(input, output, session) {
 
   output$scatter_plot <- renderPlot({
     df <- filtered_data()
-    accent <- input$accent
     ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
       geom_point(size = 2.4, alpha = 0.85) +
       scale_color_manual(values = c("#007AFF", "#AF52DE", "#FF9500")) +
       labs(title = "Sepal dimensions", x = "Length", y = "Width") +
-      glass_gg() +
+      theme_glass(input = input, base_size = 12) +
       theme(legend.position = "bottom")
   }, bg = "transparent", height = 280, res = 96)
 

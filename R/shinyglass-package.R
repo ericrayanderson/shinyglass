@@ -10,20 +10,18 @@
 #' library(shiny)
 #' library(shinyglass)
 #'
-#' ui <- fluidPage(
-#'   theme = glass_theme(preset = "auto", intensity = 0.45),
-#'   titlePanel("Liquid Glass"),
-#'   glass_intensity_slider("glass_intensity"),
-#'   glass_theme_toggle(selected = "auto"),
+#' ui <- glass_page(
+#'   title = "Liquid Glass",
+#'   persist = TRUE,
 #'   sliderInput("n", "Bars", 5, 30, 15),
 #'   plotOutput("plot")
 #' )
 #'
 #' server <- function(input, output, session) {
-#'   observe_glass_theme_toggle(input, session)
-#'   observe_glass_intensity(input, session, "glass_intensity")
+#'   observe_glass(input, session)
 #'   output$plot <- renderPlot(
-#'     barplot(seq_len(input$n), col = "#007AFF", border = NA)
+#'     barplot(seq_len(input$n), col = "#007AFF", border = NA),
+#'     bg = "transparent"
 #'   )
 #' }
 #' ```
@@ -38,8 +36,8 @@
 #' For [teal](https://insightsengineering.github.io/teal/) apps, set
 #' `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
 #'
-#' @seealso [glass_theme()], [glass_intensity_slider()], [update_glass_theme()],
-#'   [glass_theme_toggle()]
+#' @seealso [glass_page()], [glass_theme()], [theme_glass()],
+#'   [glass_intensity_slider()], [update_glass_theme()]
 #'
 #' @keywords internal
 "_PACKAGE"

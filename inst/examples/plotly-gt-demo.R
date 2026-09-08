@@ -110,30 +110,18 @@ server <- function(input, output, session) {
       on.exit(waiter_hide(), add = TRUE)
     }
     df <- filtered()
-    dark <- identical(glass_resolved_preset(input), "dark")
-    paper <- if (dark) "rgba(0,0,0,0)" else "rgba(255,255,255,0)"
-    font_col <- if (dark) "#f5f5f7" else "#1d1d1f"
-    grid_col <- if (dark) "rgba(255,255,255,0.12)" else "rgba(0,0,0,0.08)"
-
-    plot_ly(
-      df,
-      x = ~Sepal.Length,
-      y = ~Sepal.Width,
-      color = ~Species,
-      type = "scatter",
-      mode = "markers",
-      marker = list(size = 9, opacity = 0.85)
+    plotly_glass(
+      plot_ly(
+        df,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        color = ~Species,
+        type = "scatter",
+        mode = "markers",
+        marker = list(size = 9, opacity = 0.85)
+      ),
+      input = input
     ) |>
-      layout(
-        paper_bgcolor = paper,
-        plot_bgcolor = paper,
-        font = list(color = font_col, family = "system-ui, sans-serif"),
-        xaxis = list(gridcolor = grid_col, zerolinecolor = grid_col, color = font_col),
-        yaxis = list(gridcolor = grid_col, zerolinecolor = grid_col, color = font_col),
-        legend = list(bgcolor = "rgba(0,0,0,0)", font = list(color = font_col)),
-        # Room for axis titles (b especially) — tight margins clip under glass
-        margin = list(l = 56, r = 24, t = 36, b = 64)
-      ) |>
       config(displaylogo = FALSE, modeBarButtonsToRemove = c("lasso2d", "select2d"), responsive = TRUE)
   })
 
@@ -146,39 +134,34 @@ server <- function(input, output, session) {
     )
     # Leave font color unset so glass CSS can apply --glass-body-color
     # (gt rejects CSS keyword "inherit" as a color name).
-    gt(summary) |>
-      tab_header(
-        title = "Mean iris measures",
-        subtitle = paste(nrow(df), "rows")
-      ) |>
-      cols_label(
-        Species = "Species",
-        Sepal.Length = "Sepal Length",
-        Sepal.Width = "Sepal Width",
-        Petal.Length = "Petal Length"
-      ) |>
-      cols_align(align = "left", columns = Species) |>
-      cols_align(align = "right", columns = where(is.numeric)) |>
-      cols_width(
-        Species ~ px(96),
-        Sepal.Length ~ px(104),
-        Sepal.Width ~ px(104),
-        Petal.Length ~ px(104)
-      ) |>
-      opt_row_striping() |>
-      tab_options(
-        table.width = pct(100),
-        table.background.color = "transparent",
-        heading.background.color = "transparent",
-        column_labels.background.color = "transparent",
-        row.striping.background_color = "transparent",
-        table.border.top.color = "transparent",
-        table.border.bottom.color = "transparent",
-        table.border.left.color = "transparent",
-        table.border.right.color = "transparent",
-        column_labels.padding = "8px",
-        data_row.padding = "6px"
-      )
+    gt_theme_glass(
+      gt(summary) |>
+        tab_header(
+          title = "Mean iris measures",
+          subtitle = paste(nrow(df), "rows")
+        ) |>
+        cols_label(
+          Species = "Species",
+          Sepal.Length = "Sepal Length",
+          Sepal.Width = "Sepal Width",
+          Petal.Length = "Petal Length"
+        ) |>
+        cols_align(align = "left", columns = Species) |>
+        cols_align(align = "right", columns = where(is.numeric)) |>
+        cols_width(
+          Species ~ px(96),
+          Sepal.Length ~ px(104),
+          Sepal.Width ~ px(104),
+          Petal.Length ~ px(104)
+        ) |>
+        opt_row_striping() |>
+        tab_options(
+          table.width = pct(100),
+          column_labels.padding = "8px",
+          data_row.padding = "6px"
+        ),
+      input = input
+    )
   })
 }
 

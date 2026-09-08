@@ -16,12 +16,13 @@ from ._assets import (
 )
 from ._version import __version__
 
-Preset = Literal["light", "dark"]
+Preset = Literal["light", "dark", "auto"]
 
 _DEFAULT_PRIMARY = "#007AFF"
-_DEFAULT_BLUR = 28
+_DEFAULT_BLUR = 36
 _DEFAULT_SATURATION = 200
-_DEFAULT_RADIUS = "1.25rem"
+_DEFAULT_RADIUS = "1.5rem"
+_DEFAULT_INTENSITY = 0.45
 
 _FONT_STACK = (
     "-apple-system, BlinkMacSystemFont, "
@@ -148,14 +149,24 @@ class GlassTheme(Theme):
             deps = list(super()._html_dependencies())
 
         js_src = str(js_dir())
+        mode = self._glass_preset
         deps.append(
             HTMLDependency(
                 name="shinyglass-preset",
                 version=__version__,
                 head=(
-                    f"<script>"
-                    f'document.documentElement.dataset.glassPreset="{self._glass_preset}";'
-                    f"</script>"
+                    "<script>(function(){"
+                    f"var p={mode!r};"
+                    "var root=document.documentElement;"
+                    "root.dataset.glassMode=p;"
+                    "function resolve(mode){"
+                    "if(mode==='auto'){try{"
+                    "return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';"
+                    "}catch(e){return 'light';}}"
+                    "return mode==='dark'?'dark':'light';}"
+                    "root.dataset.glassPreset=resolve(p);"
+                    f"root.dataset.glassIntensity='{_DEFAULT_INTENSITY}';"
+                    "})();</script>"
                 ),
             )
         )
@@ -182,6 +193,7 @@ def glass_theme(
     blur: float | int = _DEFAULT_BLUR,
     saturation: float | int = _DEFAULT_SATURATION,
     radius: str = _DEFAULT_RADIUS,
+    intensity: float = _DEFAULT_INTENSITY,
     *,
     base: str | None = None,
     _allow_compile: bool = False,
@@ -199,7 +211,7 @@ def glass_theme(
     Parameters
     ----------
     preset
-        ``"light"`` or ``"dark"``.
+        ``"light"``, ``"dark"``, or ``"auto"``.
     primary
         Accent color for buttons, links, and focus rings.
     blur
@@ -208,22 +220,26 @@ def glass_theme(
         Backdrop saturation percentage.
     radius
         Default border radius for glass surfaces (CSS length).
+    intensity
+        Ultra Clear (``0``) to Tinted (``1``). Default ``0.45``.
     base
         Shiny ``Theme`` preset base. Defaults to ``"bootstrap"`` (light) or
         ``"darkly"`` (dark). Ignored when loading precompiled CSS.
     """
-    if preset not in ("light", "dark"):
-        raise ValueError('preset must be "light" or "dark"')
+    if preset not in ("light", "dark", "auto"):
+        raise ValueError('preset must be "light", "dark", or "auto"')
 
     use_precompiled = (
         not _allow_compile
         and _is_default_knobs(primary, blur, saturation, radius)
+        and float(intensity) == float(_DEFAULT_INTENSITY)
         and has_vendored_static()
         and base is None
     )
 
     if use_precompiled:
-        css_path = precompiled_theme_css(preset)
+        css_preset = "light" if preset == "auto" else preset
+        css_path = precompiled_theme_css(css_preset)
         return GlassTheme(
             preset,
             "bootstrap",  # unused when precompiled; required by Theme.__init__
@@ -239,7 +255,7 @@ def glass_theme(
             "or pip install libsass"
         )
 
-    tokens = _tokens(preset)
+    tokens = _tokens("dark" if preset == "dark" else "light")
     base_preset = base or ("darkly" if preset == "dark" else "bootstrap")
     scss = scss_path()
     glass_rules = scss.read_text(encoding="utf-8")

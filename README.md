@@ -33,23 +33,27 @@ remotes::install_github("ericrayanderson/shinyglass")
 library(shiny)
 library(shinyglass)
 
-ui <- fluidPage(
-  theme = glass_theme(preset = "auto", intensity = 0.45),
-  titlePanel("Hello, glass"),
-  glass_theme_toggle(selected = "auto"),
-  glass_intensity_slider("glass_intensity"),
+ui <- glass_page(
+  title = "Hello, glass",
+  persist = TRUE,
+  scene = "tahoe",
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) {
-  observe_glass_theme_toggle(input, session)
-  observe_glass_intensity(input, session, "glass_intensity")
-  output$plot <- renderPlot(barplot(seq_len(input$n)))
+  observe_glass(input, session)
+  output$plot <- renderPlot({
+    pal <- glass_plot_colors(input = input)
+    barplot(seq_len(input$n), col = pal$fill, border = NA, col.axis = pal$ink)
+  }, bg = "transparent")
 }
 
 shinyApp(ui, server)
 ```
+
+`glass_page()` includes Light / Dark / Auto, the intensity slider, and accent
+wells. Set `persist = TRUE` (the default here) to remember those choices.
 
 ## Live demos
 

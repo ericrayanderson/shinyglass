@@ -410,7 +410,8 @@ test_that("glass_theme intensity is marked in head", {
   deps <- bslib::bs_theme_dependencies(th)
   preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
   expect_length(preset_deps, 1)
-  expect_match(preset_deps[[1]]$head, "glassIntensity=0\\.2000")
+  expect_match(preset_deps[[1]]$head, "var intensity=0\\.2000")
+  expect_match(preset_deps[[1]]$head, "glassIntensity=String\\(intensity\\)")
   expect_match(preset_deps[[1]]$head, "--glass-intensity")
 })
 
@@ -475,4 +476,90 @@ test_that("glass_preset_input marks select for client binding", {
   expect_match(html, "glass-preset-input")
   expect_match(html, 'id="my_preset"')
   expect_match(html, "dark")
+})
+
+test_that("persist and scene are marked in the head script", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(persist = TRUE, scene = "dusk")
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, "var persist=true")
+  expect_match(head, 'var scene="dusk"')
+  expect_match(head, "localStorage")
+  expect_error(glass_theme(scene = "neon"))
+})
+
+test_that("named system colors and wallpaper validation", {
+  skip_if_not_installed("bslib")
+  expect_equal(unname(glass_system_colors()[["purple"]]), "#AF52DE")
+  th <- glass_theme(primary = "purple")
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, "#AF52DE")
+  expect_error(glass_theme(wallpaper = "javascript:alert(1)"))
+  expect_error(glass_theme(wallpaper = 'https://x.com/"onclick'))
+})
+
+test_that("glass_accent_input and glass_page emit controls", {
+  skip_if_not_installed("htmltools")
+  skip_if_not_installed("bslib")
+  skip_if_not_installed("shiny")
+  wells <- as.character(glass_accent_input("accent", selected = "orange"))
+  expect_match(wells, "glass-accent-well")
+  expect_match(wells, "#FF9500")
+  expect_match(wells, "is-selected")
+  page <- as.character(glass_page(title = "Hi", controls = TRUE, persist = FALSE))
+  expect_match(page, "glass-page-controls")
+  expect_match(page, "glass-theme-toggle")
+  expect_match(page, "glass-intensity-slider")
+  expect_match(page, "glass-accent-input")
+})
+
+test_that("update_glass_theme sends material and scene", {
+  skip_if_not_installed("shiny")
+  msgs <- list()
+  session <- list(
+    sendCustomMessage = function(type, message) {
+      msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+    }
+  )
+  class(session) <- "ShinySession"
+  update_glass_theme(session, material = "clear", scene = "mesh", ambient_motion = FALSE)
+  sg <- msgs[[1]]$message
+  expect_equal(sg$material, "clear")
+  expect_equal(sg$scene, "mesh")
+  expect_equal(sg$ambient_motion, FALSE)
+})
+
+test_that("glass_plot_colors and theme_glass follow preset", {
+  pal <- glass_plot_colors("dark")
+  expect_equal(pal$ink, "#f5f5f7")
+  pal_l <- glass_plot_colors("light")
+  expect_equal(pal_l$paper, "rgba(0,0,0,0)")
+  skip_if_not_installed("ggplot2")
+  th <- theme_glass("dark")
+  expect_s3_class(th, "theme")
+})
+
+test_that("compiled CSS includes scenes, wells, and forced-colors", {
+  skip_if_not_installed("bslib")
+  theme <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(theme)
+  css_chunks <- character()
+  for (d in deps) {
+    src <- d$src$file %||% d$src
+    sheets <- d$stylesheet
+    if (is.null(sheets)) next
+    for (f in if (is.list(sheets)) unlist(sheets) else sheets) {
+      path <- file.path(src, f)
+      if (file.exists(path)) {
+        css_chunks <- c(css_chunks, paste(readLines(path, warn = FALSE), collapse = "\n"))
+      }
+    }
+  }
+  css <- paste(css_chunks, collapse = "\n")
+  expect_match(css, "data-glass-scene")
+  expect_match(css, "glass-accent-well")
+  expect_match(css, "forced-colors")
+  expect_match(css, "prefers-contrast")
 })

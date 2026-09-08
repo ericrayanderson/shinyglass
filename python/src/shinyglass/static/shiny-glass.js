@@ -20,6 +20,43 @@
     return v === "true" || v === "1";
   }
 
+  var persistTimer = null;
+
+  function persistEnabled() {
+    return rootEl().dataset.glassPersist === "true";
+  }
+
+  function persistKey() {
+    var path = (window.location && location.pathname) || "/";
+    path = String(path).replace(/\/$/, "") || "/";
+    return "shinyglass:" + path;
+  }
+
+  function persistState() {
+    if (!persistEnabled()) return;
+    try {
+      var root = rootEl();
+      localStorage.setItem(
+        persistKey(),
+        JSON.stringify({
+          preset: root.dataset.glassMode || "light",
+          intensity: intensityState,
+          primary: root.dataset.glassPrimary || "",
+          material: root.dataset.glassMaterial || "regular",
+          scene: root.dataset.glassScene || "default"
+        })
+      );
+    } catch (e) {
+      /* private mode / blocked storage */
+    }
+  }
+
+  function persistStateSoon() {
+    if (!persistEnabled()) return;
+    if (persistTimer) clearTimeout(persistTimer);
+    persistTimer = setTimeout(persistState, 180);
+  }
+
   function tintEnabled() {
     if (window.__shinyglassDisableTint) return false;
     return flagEnabled("glassTint", true);
@@ -189,6 +226,7 @@
       syncPresetInputs(mode);
     }
     syncResolvedPresetInput(resolved);
+    persistStateSoon();
 
     try {
       root.dispatchEvent(
@@ -383,6 +421,8 @@
       if (maxL) maxL.classList.toggle("is-active", intensityState > 0.65);
     });
 
+    persistStateSoon();
+
     try {
       root.dispatchEvent(
         new CustomEvent("shinyglass:intensity", { detail: { intensity: intensityState } })
@@ -457,6 +497,8 @@
         "rgba(" + parsed.r + ", " + parsed.g + ", " + parsed.b + ", 0.25)"
       );
     }
+    syncAccentWells(parsed.hex);
+    persistStateSoon();
     try {
       root.dispatchEvent(
         new CustomEvent("shinyglass:primary", {
@@ -769,6 +811,32 @@
     }, TINT_THROTTLE_MS);
   }
 
+  function setMaterial(m) {
+    m = m === "clear" ? "clear" : "regular";
+    rootEl().dataset.glassMaterial = m;
+    persistStateSoon();
+  }
+
+  function setAmbientMotion(on) {
+    rootEl().dataset.glassAmbientMotion = on ? "true" : "false";
+  }
+
+  function setScene(name) {
+    if (name !== "tahoe" && name !== "dusk" && name !== "mesh") name = "default";
+    rootEl().dataset.glassScene = name;
+    persistStateSoon();
+  }
+
+  function syncAccentWells(hex) {
+    hex = String(hex || "").toLowerCase();
+    document.querySelectorAll(".glass-accent-well").forEach(function (el) {
+      var v = String(el.getAttribute("data-glass-primary") || "").toLowerCase();
+      var on = v === hex;
+      el.classList.toggle("is-selected", on);
+      el.setAttribute("aria-checked", on ? "true" : "false");
+    });
+  }
+
   // Public API for advanced users / tests
   window.shinyglass = window.shinyglass || {};
   window.shinyglass.setPreset = function (mode) {
@@ -794,6 +862,21 @@
   };
   window.shinyglass.getIntensity = function () {
     return getIntensity();
+  };
+  window.shinyglass.setMaterial = function (m) {
+    setMaterial(m);
+  };
+  window.shinyglass.getMaterial = function () {
+    return rootEl().dataset.glassMaterial || "regular";
+  };
+  window.shinyglass.setAmbientMotion = function (on) {
+    setAmbientMotion(!!on);
+  };
+  window.shinyglass.setScene = function (name) {
+    setScene(name);
+  };
+  window.shinyglass.getScene = function () {
+    return rootEl().dataset.glassScene || "default";
   };
 
   // raise native <select> above later card content
@@ -1019,6 +1102,9 @@
       if (msg.tint != null) setTintEnabled(!!msg.tint);
       if (msg.primary != null) setPrimary(msg.primary);
       if (msg.intensity != null) setIntensity(msg.intensity, { syncInputs: true });
+      if (msg.material != null) setMaterial(msg.material);
+      if (msg.ambient_motion != null) setAmbientMotion(!!msg.ambient_motion);
+      if (msg.scene != null) setScene(msg.scene);
     }
   }
 
@@ -1248,7 +1334,9 @@
       input.value = String(getIntensity());
       updateIntensityAccessibility(input);
     });
-    if (initial !== null) setIntensity(initial, { syncInputs: true });
+    if (initial !== null && rootEl().dataset.glassPersistRestored !== "true") {
+      setIntensity(initial, { syncInputs: true });
+    }
   }
 
   if (typeof Shiny !== "undefined" && Shiny.InputBinding) {
@@ -1292,6 +1380,56 @@
   $(document).on("shiny:connected.shinyglassIntensity", function () {
     bindIntensitySliders();
   });
+
+  $(document).on("click.glassAccentWell", ".glass-accent-well", function (ev) {
+    var hex = this.getAttribute("data-glass-primary");
+    if (!hex) return;
+    ev.preventDefault();
+    setPrimary(hex);
+    if (window.Shiny && typeof Shiny.setInputValue === "function") {
+      var id = this.getAttribute("data-glass-accent-input") ||
+        (this.closest(".glass-accent-input") &&
+          this.closest(".glass-accent-input").getAttribute("data-glass-accent-input"));
+      if (id) {
+        try {
+          Shiny.setInputValue(id, hex, { priority: "event" });
+        } catch (eAcc) {
+          /* ignore */
+        }
+      }
+    }
+  });
+
+  if (typeof Shiny !== "undefined" && Shiny.InputBinding) {
+    var accentBinding = new Shiny.InputBinding();
+    $.extend(accentBinding, {
+      find: function (scope) {
+        return $(scope).find(".glass-accent-input");
+      },
+      getId: function (el) {
+        return el.getAttribute("data-glass-accent-input") || el.id;
+      },
+      getValue: function (el) {
+        var sel = el.querySelector(".glass-accent-well.is-selected, .glass-accent-well[aria-checked='true']");
+        return sel ? sel.getAttribute("data-glass-primary") : null;
+      },
+      setValue: function (el, value) {
+        if (value) setPrimary(value);
+      },
+      subscribe: function (el, callback) {
+        $(el).on("click.glassAccentBinding", ".glass-accent-well", function () {
+          callback(true);
+        });
+      },
+      unsubscribe: function (el) {
+        $(el).off(".glassAccentBinding");
+      },
+      receiveMessage: function (el, data) {
+        if (data && data.value != null) this.setValue(el, data.value);
+      }
+    });
+    Shiny.inputBindings.register(accentBinding, "shinyglass.accent");
+  }
 
   // Client-side theme preset selects (id="preset" or data-glass-preset-input).
   // Applies setPreset immediately so light/dark works even when host layers
@@ -1433,6 +1571,7 @@
     if (rootEl().dataset.glassPrimary) {
       setPrimary(rootEl().dataset.glassPrimary);
     }
+    syncAccentWells(rootEl().dataset.glassPrimary);
 
     // iOS 27 intensity (0 Ultra Clear → 1 Tinted)
     var initI = rootEl().dataset.glassIntensity;

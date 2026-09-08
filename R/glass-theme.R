@@ -30,6 +30,12 @@
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
 #' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
 #'   to keep static glass surfaces. OS reduced-motion settings take priority.
+#' @param persist Remember preset, intensity, accent, material, and scene in
+#'   `localStorage` for this app path. Default `FALSE` (opt in). [glass_page()]
+#'   turns this on.
+#' @param scene Wallpaper scene: `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+#' @param wallpaper Optional image URL painted as a frosted photo behind the
+#'   glass (https, data URI, or site-relative path).
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
@@ -39,6 +45,7 @@
 #' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 #' auto <- glass_theme(preset = "auto", tint = FALSE)
 #' clear <- glass_theme(material = "clear")
+#' remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 #'
 #' if (interactive()) {
 #'   library(shiny)
@@ -72,17 +79,23 @@ glass_theme <- function(
     specular = TRUE,
     nav_morph = TRUE,
     ambient_motion = TRUE,
+    persist = FALSE,
+    scene = c("default", "tahoe", "dusk", "mesh"),
+    wallpaper = NULL,
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
+  scene <- match.arg(scene)
   intensity <- .glass_normalize_intensity(intensity)
   stopifnot(
     is.logical(tint), length(tint) == 1L, !is.na(tint),
     is.logical(specular), length(specular) == 1L, !is.na(specular),
     is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph),
-    is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion)
+    is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion),
+    is.logical(persist), length(persist) == 1L, !is.na(persist)
   )
   primary <- .glass_normalize_color(primary)
+  wallpaper <- .glass_normalize_wallpaper(wallpaper)
 
   # Sass still needs a single pack of $glass-* defaults at compile time.
   # Runtime light/dark comes from dual CSS variable packs in glass.scss.
@@ -163,7 +176,10 @@ glass_theme <- function(
     ambient_motion = ambient_motion,
     primary = primary,
     material = material,
-    intensity = intensity
+    intensity = intensity,
+    persist = persist,
+    scene = scene,
+    wallpaper = wallpaper
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -209,6 +225,9 @@ glass_theme <- function(
 #' @param primary Optional accent color (hex like `"#AF52DE"` or `rgb()`).
 #' @param intensity Optional numeric in \eqn{[0, 1]}: Ultra Clear (`0`) to
 #'   Tinted (`1`).
+#' @param material Optional `"regular"` or `"clear"`.
+#' @param ambient_motion Optional logical.
+#' @param scene Optional `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
 #'
 #' @return `session`, invisibly.
 #'
@@ -239,7 +258,10 @@ update_glass_theme <- function(
     preset = NULL,
     tint = NULL,
     primary = NULL,
-    intensity = NULL) {
+    intensity = NULL,
+    material = NULL,
+    ambient_motion = NULL,
+    scene = NULL) {
   if (missing(session) || is.null(session)) {
     stop("`session` is required.", call. = FALSE)
   }
@@ -255,7 +277,17 @@ update_glass_theme <- function(
   if (!is.null(intensity)) {
     intensity <- .glass_normalize_intensity(intensity)
   }
-  if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity)) {
+  if (!is.null(material)) {
+    material <- match.arg(material, c("regular", "clear"))
+  }
+  if (!is.null(ambient_motion)) {
+    stopifnot(is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion))
+  }
+  if (!is.null(scene)) {
+    scene <- match.arg(scene, c("default", "tahoe", "dusk", "mesh"))
+  }
+  if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
+      is.null(material) && is.null(ambient_motion) && is.null(scene)) {
     return(invisible(session))
   }
 
@@ -264,6 +296,9 @@ update_glass_theme <- function(
   if (!is.null(tint)) payload$tint <- tint
   if (!is.null(primary)) payload$primary <- primary
   if (!is.null(intensity)) payload$intensity <- intensity
+  if (!is.null(material)) payload$material <- material
+  if (!is.null(ambient_motion)) payload$ambient_motion <- ambient_motion
+  if (!is.null(scene)) payload$scene <- scene
 
   # Dual-channel delivery: structured shinyglass payload + legacy glassPreset
   # string. Some hosts rewrite or drop one channel but not both; the client
@@ -526,6 +561,11 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   if (!nzchar(primary)) {
     stop("`primary` must be a non-empty color string.", call. = FALSE)
   }
+  pal <- glass_system_colors()
+  hit <- pal[tolower(names(pal)) == tolower(primary)]
+  if (length(hit) == 1L) {
+    return(unname(hit))
+  }
   # Accept #RGB, #RRGGBB, or rgb()/rgba() - leave other CSS colors to the browser.
   if (grepl("^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", primary) ||
     grepl("^rgba?\\(", primary, ignore.case = TRUE)) {
@@ -533,6 +573,25 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   }
   # Named colors / other CSS - still pass through for flexibility
   primary
+}
+
+.glass_normalize_wallpaper <- function(wallpaper) {
+  if (is.null(wallpaper) || (is.character(wallpaper) && !nzchar(wallpaper))) {
+    return(NULL)
+  }
+  stopifnot(is.character(wallpaper), length(wallpaper) == 1L, !is.na(wallpaper))
+  wallpaper <- trimws(wallpaper)
+  wallpaper <- sub("^url\\((['\"]?)(.*)\\1\\)$", "\\2", wallpaper)
+  if (grepl("[\"'<>\\\\]", wallpaper)) {
+    stop("`wallpaper` must not contain quotes or markup.", call. = FALSE)
+  }
+  if (!grepl("^(https?:|data:image/|/|\\./)", wallpaper, ignore.case = TRUE)) {
+    stop(
+      "`wallpaper` must be an https URL, data URI, or site-relative path.",
+      call. = FALSE
+    )
+  }
+  wallpaper
 }
 
 # Luminance-based ink for solid theme fills (matches glass-on() in SCSS).
@@ -594,7 +653,10 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     primary = "#007AFF",
     material = "regular",
     intensity = 0.45,
-    ambient_motion = TRUE) {
+    ambient_motion = TRUE,
+    persist = FALSE,
+    scene = "default",
+    wallpaper = NULL) {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -606,11 +668,32 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   }
   material <- if (identical(material, "clear")) "clear" else "regular"
   intensity <- .glass_normalize_intensity(intensity)
+  wall_js <- if (is.null(wallpaper)) "null" else jsonlite_quote(wallpaper)
   sprintf(
     paste0(
       "<script>(function(){",
       "var p=%s;",
+      "var intensity=%s;",
+      "var prim=%s;",
+      "var material=%s;",
+      "var scene=%s;",
+      "var persist=%s;",
+      "var wallpaper=%s;",
       "var root=document.documentElement;",
+      "if(persist){",
+      "try{",
+      "var key='shinyglass:'+((location.pathname||'/').replace(/\\/$/, '')||'/');",
+      "var raw=localStorage.getItem(key);",
+      "if(raw){var st=JSON.parse(raw);",
+      "if(st.preset==='light'||st.preset==='dark'||st.preset==='auto')p=st.preset;",
+      "if(typeof st.intensity==='number')intensity=st.intensity;",
+      "if(typeof st.primary==='string'&&st.primary)prim=st.primary;",
+      "if(st.material==='clear'||st.material==='regular')material=st.material;",
+      "if(st.scene==='tahoe'||st.scene==='dusk'||st.scene==='mesh'||st.scene==='default')scene=st.scene;",
+      "root.dataset.glassPersistRestored='true';}",
+      "}catch(e){}",
+      "}",
+      "root.dataset.glassPersist=persist?'true':'false';",
       "root.dataset.glassMode=p;",
       "function resolve(mode){",
       "if(mode==='auto'){",
@@ -621,14 +704,14 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "return mode==='dark'?'dark':'light';",
       "}",
       "root.dataset.glassPreset=resolve(p);",
-      "root.dataset.glassMaterial=%s;",
-      "root.dataset.glassIntensity=%s;",
-      "root.style.setProperty('--glass-intensity',%s);",
+      "root.dataset.glassMaterial=material;",
+      "root.dataset.glassScene=scene;",
+      "root.dataset.glassIntensity=String(intensity);",
+      "root.style.setProperty('--glass-intensity',String(intensity));",
       "root.dataset.glassTint=%s;",
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
       "root.dataset.glassAmbientMotion=%s;",
-      "var prim=%s;",
       "var rgb=%s;",
       "var onPrim=%s;",
       "if(prim){root.dataset.glassPrimary=prim;",
@@ -638,17 +721,21 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "root.style.setProperty('--glass-on-primary',onPrim);",
       "if(rgb){root.style.setProperty('--bs-primary-rgb',rgb.r+', '+rgb.g+', '+rgb.b);}",
       "}",
+      "if(wallpaper){root.dataset.glassWallpaper='true';",
+      "root.style.setProperty('--glass-wallpaper','url(\"'+wallpaper+'\")');}",
       "})();</script>"
     ),
     jsonlite_quote(preset),
+    sprintf("%.4f", intensity),
+    jsonlite_quote(primary),
     jsonlite_quote(material),
-    sprintf("%.4f", intensity),
-    sprintf("%.4f", intensity),
+    jsonlite_quote(scene),
+    if (isTRUE(persist)) "true" else "false",
+    wall_js,
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
     if (isTRUE(ambient_motion)) "\"true\"" else "\"false\"",
-    jsonlite_quote(primary),
     rgb_css,
     jsonlite_quote(on_primary)
   )
