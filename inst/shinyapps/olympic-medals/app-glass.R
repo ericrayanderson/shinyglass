@@ -46,9 +46,14 @@ ui <- fluidPage(
         max-width: 100% !important;
         height: auto !important;
       }
-      .olympics-wrap .table-responsive {
+      .olympics-wrap .table-responsive,
+      .olympics-wrap .Reactable {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+      }
+      .olympics-wrap .rt-table {
+        min-width: 28rem;
       }
       @media (max-width: 575.98px) {
         .olympics-filters .col-filter { margin-bottom: 0.75rem; }
