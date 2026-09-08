@@ -7,7 +7,7 @@ on:
         description: Demo to deploy (all deploys all six)
         type: choice
         default: all
-        options: [all, demo, dashboard, intensity, inputs, olympics, plotly_gt]
+        options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt]
       dry_run:
         description: Stage and validate only; do not publish
         type: boolean
@@ -88,6 +88,7 @@ jobs:
           apps <- Sys.getenv("DEPLOY_APPS")
           allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt")
           if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
+          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,plotly_gt"
           stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
           args <- c("inst/scripts/deploy-shinyapps-demos.R",
                     "--account=ericrayanderson", paste0("--apps=", apps))
