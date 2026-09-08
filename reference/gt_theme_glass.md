@@ -12,7 +12,8 @@ gt_theme_glass(data, preset = NULL, input = NULL)
 
 - data:
 
-  A `gt::gt()` table (or data frame, which is passed to `gt()`).
+  A [`gt::gt()`](https://gt.rstudio.com/reference/gt.html) table (or
+  data frame, which is passed to `gt()`).
 
 - preset, input:
 

@@ -43,5 +43,4 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
     ggplot2::geom_point() +
     theme_glass("light")
 }
-#> Error in grid.Call.graphics(C_lines, x$x, x$y, index, x$arrow): invalid color name 'rgba(29,29,31,0.10)'
 ```
