@@ -40,13 +40,13 @@ if (!requireNamespace("rsconnect", quietly = TRUE)) {
   stop('Install rsconnect first: install.packages("rsconnect")', call. = FALSE)
 }
 
-# setup-r exports an unnamed renv repository override. Packages installed by
-# pak retain Repository: RSPM, so renv needs that name mapped to a real URL.
+# setup-r exports an unnamed renv repository override and pak stamps
+# Repository: RSPM. Snapshot against public CRAN so shinyapps.io can fetch
+# the same source tarballs. Fail the URL check below if anything still
+# records a non-URL repository name.
 if (identical(Sys.getenv("GITHUB_ACTIONS"), "true")) {
-  Sys.unsetenv("RENV_CONFIG_REPOS_OVERRIDE")
-  rspm <- Sys.getenv("RSPM")
-  stopifnot(grepl("^https://", rspm))
-  options(repos = c(RSPM = rspm, CRAN = "https://cloud.r-project.org"))
+  Sys.unsetenv(c("RENV_CONFIG_REPOS_OVERRIDE", "RSPM"))
+  options(repos = c(CRAN = "https://cloud.r-project.org"))
 }
 
 script_path <- sub(
@@ -110,7 +110,7 @@ catalog <- list(
     kind = "dreamrs",
     entry = "app-glass.R",
     imports = c(
-      "shiny", "shinyWidgets", "ggplot2", "ggthemes", "bslib", "dplyr",
+      "shiny", "shinyWidgets", "ggplot2", "ggthemes", "ggtext", "bslib", "dplyr",
       "data.table", "reactable", "tidyr", "shinyglass"
     )
   ),
@@ -213,7 +213,9 @@ for (key in app_keys) {
   invalid <- !is.na(repos) & nzchar(repos) & !grepl("^https?://", repos)
   if (any(invalid)) {
     stop("Unresolved dependency repository for: ",
-         paste(deps$Package[invalid], collapse = ", "), call. = FALSE)
+         paste(sprintf("%s (%s)", deps$Package[invalid], repos[invalid]),
+               collapse = ", "),
+         call. = FALSE)
   }
   message("Validated ", nrow(deps), " dependencies for ", spec$appName)
 
