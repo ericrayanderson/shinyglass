@@ -49,7 +49,19 @@ jobs:
             any::gt
             any::waiter
             any::cpp11
+            any::ggtext
             local::.
+      - name: Reinstall repository packages with portable metadata
+        shell: Rscript {0}
+        run: |
+          # pak's RemoteType=standard metadata can be interpreted by renv as
+          # a literal repository name instead of a downloadable URL.
+          installed <- installed.packages(fields = "RemoteType")
+          standard <- installed[!is.na(installed[, "RemoteType"]) &
+                                 installed[, "RemoteType"] == "standard", "Package"]
+          if (length(standard)) {
+            install.packages(standard, repos = c(CRAN = Sys.getenv("RSPM")))
+          }
       - name: Install the exact main commit with GitHub provenance
         shell: Rscript {0}
         env:
