@@ -75,8 +75,9 @@ def test_auto_preset_uses_light_pack_and_marks_mode():
     assert theme._glass_preset == "auto"
     head = theme._html_dependencies()
     preset = next(d for d in head if d.name == "shinyglass-preset")
-    assert 'var p=' in (preset.head or "")
-    assert "auto" in (preset.head or "")
+    markup = str(preset.head or "")
+    assert "var p=" in markup
+    assert "auto" in markup
 
 
 def test_custom_primary_requires_libsass_or_works_with_it():
