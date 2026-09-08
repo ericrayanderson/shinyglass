@@ -46,12 +46,12 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
 @property --glass-specular-x {
   syntax: "<percentage>";
   inherits: true;
-  initial-value: 32%;
+  initial-value: 50%;
 }
 @property --glass-specular-y {
   syntax: "<percentage>";
   inherits: true;
-  initial-value: 12%;
+  initial-value: 0%;
 }
 
 :root {
@@ -70,8 +70,9 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-tint-g: 122;
   --glass-tint-b: 255;
   --glass-tint-strength: 0;
-  --glass-specular-x: 32%;
-  --glass-specular-y: 12%;
+  // Golden Gate: highlight arrives from above (90°), not a 45° corner.
+  --glass-specular-x: 50%;
+  --glass-specular-y: 0%;
   // Default accent; head script / setPrimary() override at runtime.
   --glass-accent: #{$primary};
   // Contrast-safe ink for solid theme fills (widgets that inherit body color).
@@ -154,11 +155,13 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-refract-b: rgba(255, 140, 200, 0.14);
   --glass-menu-bg: rgba(255, 255, 255, 0.88);
   --glass-menu-color: #1d1d1f;
-  --glass-page-bg: linear-gradient(165deg, #eef2fa 0%, #f5f5f7 40%, #efeaf6 72%, #e8f0fa 100%);
-  --glass-orb-1: rgba(0, 122, 255, 0.16);
-  --glass-orb-2: rgba(175, 82, 222, 0.10);
-  --glass-orb-3: rgba(90, 200, 250, 0.12);
-  --glass-inner-glow: rgba(255, 255, 255, 0.28);
+  --glass-page-bg: linear-gradient(165deg, #e8eefc 0%, #f5f5f7 38%, #f3e9f8 70%, #e4eefb 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.30);
+  --glass-orb-2: rgba(175, 82, 222, 0.22);
+  --glass-orb-3: rgba(255, 149, 0, 0.16);
+  --glass-inner-glow: rgba(255, 255, 255, 0.36);
+  --glass-stroke-side: rgba(20, 20, 24, 0.16);
+  --glass-stroke-tb: rgba(255, 255, 255, 0.92);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(29, 29, 31, 0.72);
@@ -189,11 +192,13 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-refract-b: rgba(220, 140, 255, 0.12);
   --glass-menu-bg: rgba(58, 58, 60, 0.86);
   --glass-menu-color: #f5f5f7;
-  --glass-page-bg: linear-gradient(165deg, #0a0a14 0%, #000000 42%, #120a18 78%, #050a12 100%);
-  --glass-orb-1: rgba(10, 132, 255, 0.30);
-  --glass-orb-2: rgba(191, 90, 242, 0.18);
-  --glass-orb-3: rgba(100, 210, 255, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.12);
+  --glass-page-bg: linear-gradient(165deg, #070712 0%, #000000 40%, #140a1c 78%, #04060e 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.42);
+  --glass-orb-2: rgba(191, 90, 242, 0.28);
+  --glass-orb-3: rgba(255, 159, 10, 0.16);
+  --glass-inner-glow: rgba(255, 255, 255, 0.18);
+  --glass-stroke-side: rgba(0, 0, 0, 0.62);
+  --glass-stroke-tb: rgba(255, 255, 255, 0.34);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(245, 245, 247, 0.72);
@@ -234,14 +239,15 @@ body {
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: -8%;
   z-index: -2;
-  // Soft ambient field — wallpaper-like, not neon blobs
+  // Richer field so glass has color to refract (Golden Gate vitality)
   background:
-    radial-gradient(ellipse 100% 80% at 8% 0%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 55%),
-    radial-gradient(ellipse 90% 70% at 100% 100%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 55% at 70% 20%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 48%);
+    radial-gradient(ellipse 110% 85% at 6% -4%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 58%),
+    radial-gradient(ellipse 95% 75% at 108% 108%, var(--glass-orb-tint-2, var(--glass-orb-2)) 0%, transparent 52%),
+    radial-gradient(ellipse 72% 58% at 72% 16%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 50%);
   pointer-events: none;
+  animation: glass-orb-drift 28s ease-in-out infinite;
 }
 
 body::after {
@@ -250,10 +256,17 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse 55% 40% at 20% 90%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 35% at 85% 30%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 55%);
-  opacity: 0.65;
+    radial-gradient(ellipse 58% 42% at 18% 92%, var(--glass-orb-tint-1, var(--glass-orb-1)) 0%, transparent 62%),
+    radial-gradient(ellipse 48% 38% at 88% 28%, var(--glass-orb-tint-3, var(--glass-orb-3)) 0%, transparent 56%);
+  opacity: 0.72;
   pointer-events: none;
+  animation: glass-orb-drift 34s ease-in-out infinite reverse;
+}
+
+@keyframes glass-orb-drift {
+  0%,
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1.6%, -1.2%, 0) scale(1.05); }
 }
 
 // Liquid Glass material layers (Regular):
@@ -274,44 +287,42 @@ body::after {
 @mixin glass-surface($radius: var(--glass-radius), $overflow: hidden) {
   position: relative;
   isolation: isolate;
+  // Golden Gate fill: 90° top catch + diffusion (not a 45° diagonal sheen)
   background:
     linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--glass-highlight) 32%, transparent) 0%,
-      transparent 38%
+      180deg,
+      color-mix(in srgb, var(--glass-highlight) 48%, transparent) 0%,
+      transparent 30%
     ),
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--glass-bg) 88%, transparent) 0%,
+      color-mix(in srgb, var(--glass-bg) 86%, transparent) 0%,
       var(--glass-bg) 100%
     );
-  // Diffusion-first blur (iOS 27 readability fix): keep saturate high for vitality
   backdrop-filter:
     blur(var(--glass-blur))
     saturate(var(--glass-saturate))
-    brightness(1.02);
+    brightness(1.05)
+    contrast(1.04);
   -webkit-backdrop-filter:
     blur(var(--glass-blur))
     saturate(var(--glass-saturate))
-    brightness(1.02);
-  // Defined hairline border (iOS 27: borders over pure drop-shadow)
+    brightness(1.05)
+    contrast(1.04);
   border: 0.5px solid var(--glass-border);
   border-radius: $radius;
+  // SDR-readable glass: light top/bottom strokes, darker sides, small shadow.
   box-shadow:
-    // outer separation on plain backgrounds
+    0 1px 1px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
+    0 10px 28px color-mix(in srgb, var(--glass-shadow) 62%, transparent),
     0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.08)),
-    0 1px 2px var(--glass-shadow),
-    0 12px 36px var(--glass-shadow),
-    // bright outer rim
-    0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 70%, transparent),
-    // darkened edge ring
-    0 0 0 1.25px color-mix(in srgb, var(--glass-lip) 42%, transparent),
-    // top catch-light + bottom lip
-    inset 0 0.6px 0 var(--glass-highlight),
-    inset 0 -1.2px 0 var(--glass-lip),
-    // chromatic refraction fringe (subtle)
-    inset 0.6px 0 0 var(--glass-refract-a, transparent),
-    inset -0.6px 0 0 var(--glass-refract-b, transparent);
+    inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
+    inset 0 -1px 0 var(--glass-lip),
+    inset 1.15px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14)),
+    inset -1.15px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14)),
+    inset 0 10px 22px color-mix(in srgb, var(--glass-highlight) 28%, transparent),
+    inset 0.7px 0 0 var(--glass-refract-a, transparent),
+    inset -0.7px 0 0 var(--glass-refract-b, transparent);
   overflow: $overflow;
   transition:
     background 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -321,36 +332,25 @@ body::after {
     backdrop-filter 0.35s ease,
     -webkit-backdrop-filter 0.35s ease;
 
-  // Highlight + specular layer
   &::before {
     content: "";
     position: absolute;
     inset: 0;
     background:
-      // pointer-driven specular pool
       radial-gradient(
-        ellipse 130% 95% at var(--glass-specular-x, 32%) var(--glass-specular-y, 12%),
+        ellipse 160% 70% at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
         var(--glass-specular) 0%,
-        transparent 52%
+        transparent 56%
       ),
-      // ambient traveling sheen (driven by --glass-specular-x slow drift + pointer)
-      linear-gradient(
-        118deg,
-        var(--glass-edge-sheen) 0%,
-        transparent 26%,
-        transparent 68%,
-        color-mix(in srgb, var(--glass-edge-sheen) 45%, transparent) 100%
-      ),
-      // soft top illumination
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--glass-highlight) 40%, transparent) 0%,
-        transparent 46%
+        var(--glass-edge-sheen) 0%,
+        transparent 34%
       );
     border-radius: inherit;
     pointer-events: none;
     z-index: -1;
-    opacity: 0.94;
+    opacity: 0.96;
     transition: opacity 0.2s ease;
   }
 
@@ -358,19 +358,17 @@ body::after {
     opacity: 1;
   }
 
-  // Thickness / rim layer
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
     box-shadow:
-      inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 88%, transparent),
-      inset 0 0 0 1.75px color-mix(in srgb, var(--glass-lip) 48%, transparent),
-      inset 0 10px 32px var(--glass-inner-glow),
-      inset 0 -14px 36px color-mix(in srgb, var(--glass-lip) 70%, transparent),
-      // bottom caustic
-      inset 0 -1px 12px color-mix(in srgb, var(--glass-refract-a, transparent) 35%, transparent);
+      inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 90%, transparent),
+      inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 40%, transparent),
+      inset 0 12px 28px var(--glass-inner-glow),
+      inset 0 -16px 30px color-mix(in srgb, var(--glass-lip) 58%, transparent),
+      inset 0 -1px 14px color-mix(in srgb, var(--glass-refract-a, transparent) 40%, transparent);
     pointer-events: none;
     z-index: -1;
   }
@@ -400,11 +398,12 @@ body::after {
   border-radius: $radius;
   box-shadow:
     0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.06)),
-    0 8px 28px var(--glass-shadow),
+    0 6px 22px color-mix(in srgb, var(--glass-shadow) 70%, transparent),
     0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 50%, transparent),
-    inset 0 0.5px 0 var(--glass-highlight),
-    inset 0 -0.75px 0 var(--glass-lip),
-    inset 0.5px 0 0 color-mix(in srgb, var(--glass-refract-a, transparent) 50%, transparent);
+    inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
+    inset 0 -0.85px 0 var(--glass-lip),
+    inset 1px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.10)),
+    inset -1px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.10));
   overflow: hidden;
   transition:
     background 0.28s ease,
@@ -416,7 +415,7 @@ body::after {
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      ellipse 120% 90% at var(--glass-specular-x, 32%) var(--glass-specular-y, 12%),
+      ellipse 150% 65% at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
       color-mix(in srgb, var(--glass-specular) 70%, transparent) 0%,
       transparent 58%
     );
@@ -698,7 +697,9 @@ body.glass-nav-compact {
     padding-bottom: 0.3rem;
     margin-bottom: 0.2rem;
     transform: scale(0.97);
-    opacity: 0.94;
+    // Scroll-edge densify (27): more diffusion, keep the bar above content
+    backdrop-filter: blur(calc(var(--glass-blur) * 1.28)) saturate(var(--glass-saturate)) brightness(1.02);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.28)) saturate(var(--glass-saturate)) brightness(1.02);
 
     .navbar-brand {
       font-size: 0.95rem;
@@ -793,10 +794,11 @@ body.glass-nav-expanded {
   backdrop-filter: blur(16px) saturate(190%);
   -webkit-backdrop-filter: blur(16px) saturate(190%);
   box-shadow:
-    0 3px 14px color-mix(in srgb, #{$color} 28%, transparent),
-    0 0 0 0.5px color-mix(in srgb, #ffffff 35%, transparent),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.48),
-    inset 0 -0.5px 0 rgba(0, 0, 0, 0.08);
+    0 2px 10px color-mix(in srgb, #{$color} 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    inset 1px 0 0 rgba(0, 0, 0, 0.12),
+    inset -1px 0 0 rgba(0, 0, 0, 0.12);
 
   &:hover,
   &:focus {
@@ -810,10 +812,11 @@ body.glass-nav-expanded {
       color-mix(in srgb, #{$color} 88%, transparent) !important;
     border-color: color-mix(in srgb, #{$color} 46%, rgba(255, 255, 255, 0.55)) !important;
     box-shadow:
-      0 5px 20px color-mix(in srgb, #{$color} 34%, transparent),
-      0 0 0 0.5px color-mix(in srgb, #ffffff 42%, transparent),
-      inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
-      inset 0 -0.5px 0 rgba(0, 0, 0, 0.08);
+      0 4px 16px color-mix(in srgb, #{$color} 28%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.16),
+      inset 1px 0 0 rgba(0, 0, 0, 0.12),
+      inset -1px 0 0 rgba(0, 0, 0, 0.12);
   }
 
   &:focus-visible {
@@ -3782,10 +3785,10 @@ body .controls-pane {
 
 // Ambient specular drift (iOS-like vitality without device motion APIs)
 @keyframes glass-ambient-specular {
-  0%   { --glass-specular-x: 22%; --glass-specular-y: 10%; }
-  35%  { --glass-specular-x: 68%; --glass-specular-y: 18%; }
-  65%  { --glass-specular-x: 48%; --glass-specular-y: 8%; }
-  100% { --glass-specular-x: 22%; --glass-specular-y: 10%; }
+  0%   { --glass-specular-x: 18%; --glass-specular-y: 0%; }
+  40%  { --glass-specular-x: 78%; --glass-specular-y: 4%; }
+  70%  { --glass-specular-x: 52%; --glass-specular-y: 0%; }
+  100% { --glass-specular-x: 18%; --glass-specular-y: 0%; }
 }
 
 // Only when pointer is not over the surface — JS toggles .glass-specular-active
@@ -4005,6 +4008,11 @@ body .controls-pane {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none !important;
+  }
+
   .card,
   .well,
   .form-control,

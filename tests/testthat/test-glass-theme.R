@@ -562,4 +562,6 @@ test_that("compiled CSS includes scenes, wells, and forced-colors", {
   expect_match(css, "glass-accent-well")
   expect_match(css, "forced-colors")
   expect_match(css, "prefers-contrast")
+  expect_match(css, "--glass-stroke-side")
+  expect_match(css, "glass-orb-drift")
 })
