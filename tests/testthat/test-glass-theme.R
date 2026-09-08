@@ -79,7 +79,8 @@ test_that("glass_theme material clear is marked in head and CSS", {
   deps <- bslib::bs_theme_dependencies(th)
   preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
   expect_length(preset_deps, 1)
-  expect_match(preset_deps[[1]]$head, 'glassMaterial="clear"')
+  expect_match(preset_deps[[1]]$head, 'var material="clear"', fixed = TRUE)
+  expect_match(preset_deps[[1]]$head, "glassMaterial=material", fixed = TRUE)
 
   css_chunks <- character()
   for (d in deps) {
