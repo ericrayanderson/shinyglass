@@ -69,4 +69,7 @@ Apps may take a moment to wake up.
 
 Built for Bootstrap 5 and bslib. See [compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html) for supported widgets and older layouts.
 
-More: [examples](inst/examples/) · [experimental Python package](python/) · [testing](inst/scripts/VISUAL-QA.md) · [deployment](inst/scripts/SHINYAPPS-DEPLOY.md)
+More: [examples](https://github.com/ericrayanderson/shinyglass/tree/main/inst/examples) ·
+[experimental Python package](https://github.com/ericrayanderson/shinyglass/tree/main/python) ·
+[testing](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/VISUAL-QA.md) ·
+[deployment](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/SHINYAPPS-DEPLOY.md)
