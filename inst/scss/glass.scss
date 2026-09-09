@@ -140,16 +140,17 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-hover: rgba(255, 255, 255, 0.36);
   --glass-bg-content: rgba(255, 255, 255, 0.34);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.48);
-  // Defined borders (iOS 27 relies less on drop-shadow alone)
+  // Defined borders (iOS 27 relies less on drop-shadow alone).
+  // 27 refinement: darker outer/lip/side stroke, brighter rim + specular.
   --glass-border: rgba(255, 255, 255, 0.72);
-  --glass-border-outer: rgba(0, 0, 0, 0.08);
-  --glass-rim: rgba(255, 255, 255, 0.92);
-  --glass-lip: rgba(0, 0, 0, 0.12);
+  --glass-border-outer: rgba(0, 0, 0, 0.12);
+  --glass-rim: rgba(255, 255, 255, 0.96);
+  --glass-lip: rgba(0, 0, 0, 0.17);
   --glass-shadow: rgba(0, 0, 0, 0.10);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.16);
-  --glass-highlight: rgba(255, 255, 255, 0.96);
-  --glass-specular: rgba(255, 255, 255, 0.78);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.58);
+  --glass-highlight: rgba(255, 255, 255, 1);
+  --glass-specular: rgba(255, 255, 255, 0.90);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.64);
   // Subtle chromatic edge (lensing cue)
   --glass-refract-a: rgba(120, 200, 255, 0.22);
   --glass-refract-b: rgba(255, 140, 200, 0.14);
@@ -160,8 +161,8 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-2: rgba(175, 82, 222, 0.22);
   --glass-orb-3: rgba(255, 149, 0, 0.16);
   --glass-inner-glow: rgba(255, 255, 255, 0.36);
-  --glass-stroke-side: rgba(20, 20, 24, 0.16);
-  --glass-stroke-tb: rgba(255, 255, 255, 0.92);
+  --glass-stroke-side: rgba(20, 20, 24, 0.22);
+  --glass-stroke-tb: rgba(255, 255, 255, 0.96);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(29, 29, 31, 0.72);
@@ -179,15 +180,15 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-hover: rgba(255, 255, 255, 0.22);
   --glass-bg-content: rgba(255, 255, 255, 0.12);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.18);
-  --glass-border: rgba(255, 255, 255, 0.32);
-  --glass-border-outer: rgba(0, 0, 0, 0.55);
-  --glass-rim: rgba(255, 255, 255, 0.48);
-  --glass-lip: rgba(0, 0, 0, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.36);
+  --glass-border-outer: rgba(0, 0, 0, 0.64);
+  --glass-rim: rgba(255, 255, 255, 0.58);
+  --glass-lip: rgba(0, 0, 0, 0.66);
   --glass-shadow: rgba(0, 0, 0, 0.52);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.68);
-  --glass-highlight: rgba(255, 255, 255, 0.36);
-  --glass-specular: rgba(255, 255, 255, 0.40);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.28);
+  --glass-highlight: rgba(255, 255, 255, 0.46);
+  --glass-specular: rgba(255, 255, 255, 0.54);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.34);
   --glass-refract-a: rgba(100, 200, 255, 0.18);
   --glass-refract-b: rgba(220, 140, 255, 0.12);
   --glass-menu-bg: rgba(58, 58, 60, 0.86);
@@ -196,9 +197,9 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-1: rgba(10, 132, 255, 0.42);
   --glass-orb-2: rgba(191, 90, 242, 0.28);
   --glass-orb-3: rgba(255, 159, 10, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.18);
-  --glass-stroke-side: rgba(0, 0, 0, 0.62);
-  --glass-stroke-tb: rgba(255, 255, 255, 0.34);
+  --glass-inner-glow: rgba(255, 255, 255, 0.20);
+  --glass-stroke-side: rgba(0, 0, 0, 0.74);
+  --glass-stroke-tb: rgba(255, 255, 255, 0.42);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(245, 245, 247, 0.72);
@@ -315,11 +316,11 @@ body::after {
   box-shadow:
     0 1px 1px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
     0 10px 28px color-mix(in srgb, var(--glass-shadow) 62%, transparent),
-    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.08)),
+    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.12)),
     inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
     inset 0 -1px 0 var(--glass-lip),
-    inset 1.15px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14)),
-    inset -1.15px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14)),
+    inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
+    inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
     inset 0 10px 22px color-mix(in srgb, var(--glass-highlight) 28%, transparent),
     inset 0.7px 0 0 var(--glass-refract-a, transparent),
     inset -0.7px 0 0 var(--glass-refract-b, transparent);
@@ -340,7 +341,7 @@ body::after {
       radial-gradient(
         ellipse 160% 70% at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
         var(--glass-specular) 0%,
-        transparent 56%
+        transparent 50%
       ),
       linear-gradient(
         180deg,
@@ -350,7 +351,7 @@ body::after {
     border-radius: inherit;
     pointer-events: none;
     z-index: -1;
-    opacity: 0.96;
+    opacity: 1;
     transition: opacity 0.2s ease;
   }
 
@@ -365,9 +366,9 @@ body::after {
     border-radius: inherit;
     box-shadow:
       inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 90%, transparent),
-      inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 40%, transparent),
+      inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 52%, transparent),
       inset 0 12px 28px var(--glass-inner-glow),
-      inset 0 -16px 30px color-mix(in srgb, var(--glass-lip) 58%, transparent),
+      inset 0 -16px 30px color-mix(in srgb, var(--glass-lip) 70%, transparent),
       inset 0 -1px 14px color-mix(in srgb, var(--glass-refract-a, transparent) 40%, transparent);
     pointer-events: none;
     z-index: -1;
@@ -688,7 +689,49 @@ body.bslib-page-navbar > .navbar,
   }
 }
 
-// body.glass-nav-compact / glass-nav-expanded (see shiny-glass.js)
+// body.glass-nav-compact / glass-nav-expanded / glass-scroll-edge
+// (see shiny-glass.js). Compact is motion (scroll-down); scroll-edge is
+// contrast while content sits under floating chrome (iOS 27 toolbar).
+body.glass-scroll-edge {
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  &.bslib-page-navbar > .navbar,
+  .bslib-page-sidebar > .navbar {
+    // Uniform film so busy scenes do not punch through nav labels
+    --glass-scroll-edge-fill: color-mix(in srgb, var(--glass-body-bg) 42%, var(--glass-bg));
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--glass-scroll-edge-fill) 88%, var(--glass-highlight)) 0%,
+        var(--glass-scroll-edge-fill) 100%
+      ) !important;
+    backdrop-filter:
+      blur(calc(var(--glass-blur) * 1.36))
+      saturate(calc(var(--glass-saturate) * 1.08))
+      brightness(1.02)
+      contrast(1.06);
+    -webkit-backdrop-filter:
+      blur(calc(var(--glass-blur) * 1.36))
+      saturate(calc(var(--glass-saturate) * 1.08))
+      brightness(1.02)
+      contrast(1.06);
+    box-shadow:
+      0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.12)),
+      0 14px 36px color-mix(in srgb, var(--glass-body-bg) 55%, transparent),
+      0 28px 48px -12px color-mix(in srgb, var(--glass-body-bg) 40%, transparent),
+      0 1px 0 color-mix(in srgb, var(--glass-lip) 55%, transparent),
+      inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
+      inset 0 -1.5px 0 color-mix(in srgb, var(--glass-lip) 80%, transparent),
+      inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
+      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18));
+  }
+
+  // Sidebar sits over page orbs; densify slightly when the page has scrolled
+  .bslib-sidebar-layout > .sidebar {
+    background-color: color-mix(in srgb, var(--glass-body-bg) 28%, var(--glass-bg)) !important;
+  }
+}
+
 body.glass-nav-compact {
   .navbar.navbar-static-top,
   .navbar.navbar-default,
@@ -3498,10 +3541,17 @@ body .controls-pane {
 
   .bslib-sidebar-layout > .sidebar,
   .bslib-page-sidebar > .navbar {
+    // Keep rim/lip/side-stroke (do not drop to shadow-only in dark)
     box-shadow:
+      0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.1)),
       0 20px 56px var(--glass-elevated-shadow),
       0 6px 16px var(--glass-shadow),
-      inset 0 1px 0 var(--glass-highlight);
+      0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 72%, transparent),
+      0 0 0 1.35px color-mix(in srgb, var(--glass-lip) 45%, transparent),
+      inset 0 0.7px 0 var(--glass-highlight),
+      inset 0 -1.25px 0 var(--glass-lip),
+      inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14)),
+      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.14));
   }
 
   .stati,
@@ -3805,21 +3855,33 @@ body .controls-pane {
   }
 }
 
-// Legibility veil when content scrolls under floating sidebars/nav (subtle)
+// Legibility veil when content scrolls under floating sidebars/nav
 .bslib-sidebar-layout > .main::before {
   content: "";
   position: sticky;
   top: 0;
   display: block;
-  height: 0.75rem;
-  margin-bottom: -0.75rem;
+  height: 1.35rem;
+  margin-bottom: -1.35rem;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--glass-body-bg) 55%, transparent),
+    color-mix(in srgb, var(--glass-body-bg) 72%, transparent),
+    color-mix(in srgb, var(--glass-body-bg) 28%, transparent) 55%,
     transparent
   );
   pointer-events: none;
   z-index: 3;
+}
+
+body.glass-scroll-edge .bslib-sidebar-layout > .main::before {
+  height: 1.75rem;
+  margin-bottom: -1.75rem;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--glass-body-bg) 82%, transparent),
+    color-mix(in srgb, var(--glass-body-bg) 36%, transparent) 60%,
+    transparent
+  );
 }
 
 // iOS 27-style Liquid Glass intensity slider (glass_intensity_slider())
@@ -4041,6 +4103,8 @@ body .controls-pane {
     transform: none !important;
     opacity: 1 !important;
   }
+
+  // Scroll-edge densify is contrast, not motion — keep the fill, drop scale.
 }
 
 // ---------------------------------------------------------------------------
@@ -4507,7 +4571,9 @@ body .controls-pane {
   .card,
   .navbar,
   .modal-content,
-  .bslib-sidebar-layout > .sidebar {
+  .bslib-sidebar-layout > .sidebar,
+  body.glass-scroll-edge .navbar,
+  body.glass-scroll-edge .bslib-sidebar-layout > .sidebar {
     background: Canvas !important;
     color: CanvasText !important;
     backdrop-filter: none !important;

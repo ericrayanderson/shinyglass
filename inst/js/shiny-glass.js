@@ -308,19 +308,20 @@
   }
 
   // Endpoint packs for Ultra Clear (0) vs Tinted (1), per preset.
-  // iOS 27: clear stays readable via blur; tinted is denser fill + stronger edge.
+  // iOS 27 refinement: darker lip/edge + brighter specular; fill alphas unchanged
+  // so Ultra Clear stays readable via blur and Tinted stays a denser film.
   function intensityEndpoints(preset) {
     if (preset === "dark") {
       return {
         clear: {
           bgA: 0.08, bgHoverA: 0.14, contentA: 0.07, contentHoverA: 0.12,
-          borderA: 0.26, rimA: 0.38, lipA: 0.42, highlightA: 0.30, specularA: 0.34,
-          edgeSheenA: 0.22, innerGlowA: 0.10, menuA: 0.62, blurScale: 1.16
+          borderA: 0.30, rimA: 0.46, lipA: 0.52, highlightA: 0.38, specularA: 0.44,
+          edgeSheenA: 0.26, innerGlowA: 0.12, menuA: 0.62, blurScale: 1.16
         },
         tinted: {
           bgA: 0.26, bgHoverA: 0.34, contentA: 0.22, contentHoverA: 0.30,
-          borderA: 0.46, rimA: 0.58, lipA: 0.70, highlightA: 0.48, specularA: 0.52,
-          edgeSheenA: 0.36, innerGlowA: 0.18, menuA: 0.92, blurScale: 1.26
+          borderA: 0.52, rimA: 0.68, lipA: 0.82, highlightA: 0.58, specularA: 0.66,
+          edgeSheenA: 0.40, innerGlowA: 0.20, menuA: 0.92, blurScale: 1.26
         },
         fill: { r: 255, g: 255, b: 255 },
         menu: { r: 58, g: 58, b: 60 },
@@ -330,13 +331,13 @@
     return {
       clear: {
         bgA: 0.10, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
-        borderA: 0.52, rimA: 0.78, lipA: 0.12, highlightA: 0.90, specularA: 0.64,
-        edgeSheenA: 0.42, innerGlowA: 0.20, menuA: 0.68, blurScale: 1.16
+        borderA: 0.58, rimA: 0.84, lipA: 0.18, highlightA: 0.96, specularA: 0.76,
+        edgeSheenA: 0.48, innerGlowA: 0.22, menuA: 0.68, blurScale: 1.16
       },
       tinted: {
         bgA: 0.52, bgHoverA: 0.66, contentA: 0.60, contentHoverA: 0.72,
-        borderA: 0.86, rimA: 0.98, lipA: 0.22, highlightA: 1.00, specularA: 0.88,
-        edgeSheenA: 0.68, innerGlowA: 0.38, menuA: 0.95, blurScale: 1.26
+        borderA: 0.90, rimA: 1.00, lipA: 0.32, highlightA: 1.00, specularA: 0.98,
+        edgeSheenA: 0.72, innerGlowA: 0.40, menuA: 0.95, blurScale: 1.26
       },
       fill: { r: 255, g: 255, b: 255 },
       menu: { r: 255, g: 255, b: 255 },
@@ -450,6 +451,7 @@
       if (tintTimer) { clearTimeout(tintTimer); tintTimer = null; }
       rootEl().classList.remove("glass-pointer-active");
       if (document.body) document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
+      // glass-scroll-edge is contrast, not motion — leave it for updateNavMorph.
       clearTint();
     } else {
       scheduleTintUpdate();
@@ -907,16 +909,28 @@
       var body = document.body;
       if (!body) return;
 
-      if (
-        !navMorphEnabled() ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
+      var y = Math.max(0, window.scrollY);
+      // iOS 27 scroll-edge: uniform toolbar while content sits under floating
+      // chrome. Contrast-only — keep under reduced-motion and when nav_morph
+      // is off. Compact-on-scroll-down remains a separate motion treatment.
+      if (y > threshold) {
+        body.classList.add("glass-scroll-edge");
+      } else {
+        body.classList.remove("glass-scroll-edge");
+      }
+
+      var reducedMotion = false;
+      try {
+        reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      } catch (e) { /* ignore */ }
+
+      if (!navMorphEnabled() || reducedMotion) {
         body.classList.remove("glass-nav-compact", "glass-nav-expanded");
+        lastScrollY = y;
         ticking = false;
         return;
       }
 
-      var y = Math.max(0, window.scrollY);
       var scrollingDown = y > lastScrollY + 2;
       var scrollingUp = y < lastScrollY - 2;
 
