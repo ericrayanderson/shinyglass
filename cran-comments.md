@@ -1,6 +1,11 @@
 ## Submission
 
-This is an update from 0.2.0 (2026-08-21) to 0.3.0.
+This is a resubmission of 0.3.0 (update from 0.2.0, 2026-08-21).
+
+Uwe Ligges asked us to quote software names in DESCRIPTION and to
+fix README file URIs that pointed at paths excluded from the tarball
+(`python/`, `inst/scripts/`). Those are now GitHub URLs; 'ggplot2',
+'plotly', and 'gt' are single-quoted in Description.
 
 ### User-facing changes
 
@@ -34,10 +39,12 @@ No breaking API changes from 0.2.0.
 macOS release, windows release). CI uses `--no-manual`; the submitted
 tarball is from `R CMD build` with vignettes.
 
-A possible incoming "days since last update" NOTE (~18 days after
-0.2.0) is expected. That interval is short but the release is a real
-feature set (persistence, plot helpers, accessibility, material), not
-a drive-by tweak.
+Incoming pretest on the first 0.3.0 upload was 1 NOTE (unquoted
+ggplot/plotly; README URIs). Those are addressed above. A possible
+"days since last update" NOTE (~19 days after 0.2.0) is still
+expected. That interval is short but the release is a real feature
+set (persistence, plot helpers, accessibility, material), not a
+drive-by tweak.
 
 ## Downstream dependencies
 
