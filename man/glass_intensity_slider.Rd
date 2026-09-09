@@ -45,7 +45,9 @@ A Shiny UI tag hierarchy.
 \description{
 UI control matching iOS 27 \strong{Settings -> Appearance -> Liquid Glass}: a
 continuous slider from \strong{Ultra Clear} (\code{0}) to \strong{Tinted} (\code{1}) that
-live-updates the glass material without a page reload.
+live-updates the glass material without a page reload. Browsers cannot read
+the OS Appearance slider, so this in-app control is the supported way to
+match that look.
 }
 \details{
 The client applies changes immediately via \code{window.shinyglass.setIntensity()}.
