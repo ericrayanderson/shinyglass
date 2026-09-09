@@ -74,12 +74,13 @@ Built for Bootstrap 5 and bslib. See
 for supported widgets and older layouts.
 
 More:
-[examples](https://ericrayanderson.github.io/shinyglass/inst/examples/)
+[examples](https://github.com/ericrayanderson/shinyglass/tree/main/inst/examples)
 · [experimental Python
-package](https://ericrayanderson.github.io/shinyglass/python/) ·
-[testing](https://ericrayanderson.github.io/shinyglass/inst/scripts/VISUAL-QA.md)
+package](https://github.com/ericrayanderson/shinyglass/tree/main/python)
 ·
-[deployment](https://ericrayanderson.github.io/shinyglass/inst/scripts/SHINYAPPS-DEPLOY.md)
+[testing](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/VISUAL-QA.md)
+·
+[deployment](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/SHINYAPPS-DEPLOY.md)
 
 # Package index
 
