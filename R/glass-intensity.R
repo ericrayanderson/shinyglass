@@ -2,7 +2,9 @@
 #'
 #' UI control matching iOS 27 **Settings -> Appearance -> Liquid Glass**: a
 #' continuous slider from **Ultra Clear** (`0`) to **Tinted** (`1`) that
-#' live-updates the glass material without a page reload.
+#' live-updates the glass material without a page reload. Browsers cannot read
+#' the OS Appearance slider, so this in-app control is the supported way to
+#' match that look.
 #'
 #' The client applies changes immediately via `window.shinyglass.setIntensity()`.
 #' The value is also a normal Shiny input (`input[[inputId]]`) so the server can
@@ -140,7 +142,7 @@ glass_intensity_slider <- function(
     chips,
     htmltools::tags$span(
       class = "glass-intensity-hint",
-      "Drag to match iOS 27 Liquid Glass - Ultra Clear through Tinted."
+      "Matches Settings -> Appearance -> Liquid Glass (Ultra Clear through Tinted)."
     )
   )
 }

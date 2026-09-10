@@ -36,7 +36,8 @@ server <- function(input, output, session) \{
 Light and dark presets are available via \code{glass_theme(preset = "dark")},
 or \code{preset = "auto"} to follow the OS. Switch at runtime with
 \code{\link[=update_glass_theme]{update_glass_theme()}} or \code{\link[=glass_theme_toggle]{glass_theme_toggle()}}. Material density is
-controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted) or
+controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted, matching
+iOS 27 Settings -> Appearance -> Liquid Glass) or
 \code{glass_theme(intensity = )}. Accent color, blur, saturation, corner radius,
 and JS behaviors (\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
 
