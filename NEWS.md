@@ -32,6 +32,10 @@ This development build closes the remaining visual lag.
   The same z-index applies to portaled `.vscomp-*`, `.pop-comp-wrapper`,
   and bootstrap-select menus so backdrop-filter / overflow on cards cannot
   pin a dropdown over nearby chrome.
+* Example apps keep explicit layouts that read well at laptop width:
+  dashboard stacks the iris table under the plots; plotly + gt waits
+  until `xxl` for a 6/6 split and uses percent `cols_width()`; Olympics
+  Virtual Select repeats the portal args for clarity.
 
 # shinyglass 0.3.0
 
