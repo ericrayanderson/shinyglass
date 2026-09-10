@@ -29,7 +29,8 @@
 #' Light and dark presets are available via `glass_theme(preset = "dark")`,
 #' or `preset = "auto"` to follow the OS. Switch at runtime with
 #' [update_glass_theme()] or [glass_theme_toggle()]. Material density is
-#' controlled with [glass_intensity_slider()] (Ultra Clear to Tinted) or
+#' controlled with [glass_intensity_slider()] (Ultra Clear to Tinted, matching
+#' iOS 27 Settings -> Appearance -> Liquid Glass) or
 #' `glass_theme(intensity = )`. Accent color, blur, saturation, corner radius,
 #' and JS behaviors (`tint`, `specular`, `nav_morph`) are configurable.
 #'

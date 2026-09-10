@@ -166,6 +166,43 @@ test('persist writes preset and intensity; material and scene update live', asyn
   expect(value.scene).toBe('dusk');
 });
 
+test('scroll-edge stays under reduced-motion; compact does not apply', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await boot(page);
+  await page.evaluate(() => {
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => window.__glassY || 0 });
+    window.__glassY = 120;
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(true);
+  expect(await page.evaluate(() => document.body.classList.contains('glass-nav-compact'))).toBe(false);
+});
+
+test('scroll-edge class stays while content is under the bar; compact does not', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    document.body.style.height = '2400px';
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => window.__glassY || 0 });
+  });
+  await page.evaluate(() => {
+    window.__glassY = 120;
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(true);
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-nav-compact'))).toBe(true);
+  await page.evaluate(() => {
+    window.__glassY = 80;
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(true);
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-nav-compact'))).toBe(false);
+  await page.evaluate(() => {
+    window.__glassY = 10;
+    window.dispatchEvent(new Event('scroll'));
+  });
+  await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(false);
+});
+
 test('accent wells apply primary immediately', async ({ page }) => {
   await boot(page);
   await page.evaluate(() => {

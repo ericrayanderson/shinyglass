@@ -296,6 +296,8 @@ test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
   expect_match(css, "shiny-input-checkbox")
   expect_match(css, "glass-theme-toggle")
   expect_match(css, "--glass-body-color")
+  expect_match(css, "glass-scroll-edge")
+  expect_match(css, "prefers-reduced-transparency")
 })
 
 test_that("dark pack does not re-lock default button labels to $primary", {
@@ -414,6 +416,15 @@ test_that("glass_theme intensity is marked in head", {
   expect_match(preset_deps[[1]]$head, "var intensity=0\\.2000")
   expect_match(preset_deps[[1]]$head, "glassIntensity=String\\(intensity\\)")
   expect_match(preset_deps[[1]]$head, "--glass-intensity")
+})
+
+test_that("iOS 27 scroll-edge assets and Appearance copy ship", {
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "glass-scroll-edge")
+  expect_match(scss, "glass-scroll-edge")
+  html <- as.character(glass_intensity_slider("gi", preview = FALSE))
+  expect_match(html, "Appearance")
 })
 
 test_that("glass_intensity_slider returns a tag with range input", {

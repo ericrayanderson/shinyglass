@@ -23,8 +23,9 @@
 #' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
 #'   transparent; best over media-rich content with bold labels).
 #' @param intensity Liquid Glass intensity from `0` (Ultra Clear) to `1`
-#'   (Tinted), matching iOS 27 Appearance -> Liquid Glass. Default `0.45`.
-#'   Use [glass_intensity_slider()] for a live control.
+#'   (Tinted), matching iOS 27 Settings -> Appearance -> Liquid Glass.
+#'   Default `0.45`. The web cannot read the OS slider; use
+#'   [glass_intensity_slider()] for the in-app control.
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).

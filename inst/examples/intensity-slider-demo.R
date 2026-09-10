@@ -37,8 +37,9 @@ ui <- page_fillable(
       tags$p(
         class = "text-muted",
         style = "font-size:0.9rem;margin-bottom:0.75rem;",
-        "iOS 27 Appearance → Liquid Glass. Drag Ultra Clear → Tinted; ",
-        "surfaces update live (no reload)."
+        "Mirrors iOS 27 Settings → Appearance → Liquid Glass. ",
+        "The web cannot read the OS slider, so this in-app control is the match. ",
+        "Drag Ultra Clear → Tinted; surfaces update live (no reload)."
       ),
       glass_intensity_slider(
         "glass_intensity",
