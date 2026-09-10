@@ -65,9 +65,10 @@ glass_theme(
 - intensity:
 
   Liquid Glass intensity from `0` (Ultra Clear) to `1` (Tinted),
-  matching iOS 27 Appearance -\> Liquid Glass. Default `0.45`. Use
+  matching iOS 27 Settings -\> Appearance -\> Liquid Glass. Default
+  `0.45`. The web cannot read the OS slider; use
   [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-  for a live control.
+  for the in-app control.
 
 - tint:
 
