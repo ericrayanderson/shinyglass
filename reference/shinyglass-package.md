@@ -35,9 +35,8 @@ or
 [`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md).
 Material density is controlled with
 [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-(Ultra Clear to Tinted, matching iOS 27 Settings -\> Appearance -\>
-Liquid Glass) or `glass_theme(intensity = )`. Accent color, blur,
-saturation, corner radius, and JS behaviors (`tint`, `specular`,
+(Ultra Clear to Tinted) or `glass_theme(intensity = )`. Accent color,
+blur, saturation, corner radius, and JS behaviors (`tint`, `specular`,
 `nav_morph`) are configurable.
 
 For [teal](https://insightsengineering.github.io/teal/) apps, set

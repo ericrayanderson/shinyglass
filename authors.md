@@ -8,16 +8,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ericrayanderson/shinyglass/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ericrayanderson/shinyglass/blob/v0.3.0/DESCRIPTION)
 
 Anderson E (2026). *shinyglass: Liquid Glass Design Themes for 'shiny'
-Applications*. R package version 0.3.0.9000,
+Applications*. R package version 0.3.0,
 <https://ericrayanderson.github.io/shinyglass/>.
 
     @Manual{,
       title = {shinyglass: Liquid Glass Design Themes for 'shiny' Applications},
       author = {Eric Anderson},
       year = {2026},
-      note = {R package version 0.3.0.9000},
+      note = {R package version 0.3.0},
       url = {https://ericrayanderson.github.io/shinyglass/},
     }

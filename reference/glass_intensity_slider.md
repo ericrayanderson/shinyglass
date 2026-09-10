@@ -2,9 +2,7 @@
 
 UI control matching iOS 27 **Settings -\> Appearance -\> Liquid Glass**:
 a continuous slider from **Ultra Clear** (`0`) to **Tinted** (`1`) that
-live-updates the glass material without a page reload. Browsers cannot
-read the OS Appearance slider, so this in-app control is the supported
-way to match that look.
+live-updates the glass material without a page reload.
 
 ## Usage
 
