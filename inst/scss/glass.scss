@@ -533,10 +533,27 @@ pre,
   max-width: 100%;
 }
 
+// Portaled Virtual Select / pop-comp menus (dropboxWrapper=body) and similar
+// overlay pickers. z-index above glass cards/nav; opaque so options stay readable.
 body > .vscomp-dropbox-wrapper,
 body > .vscomp-dropbox-container,
-.vscomp-dropbox-container {
+.vscomp-dropbox-wrapper,
+.vscomp-dropbox-container,
+.pop-comp-wrapper,
+body > .dropdown-menu,
+.bootstrap-select .dropdown-menu {
   z-index: 1080;
+}
+
+.vscomp-dropbox,
+.vscomp-dropbox-container .vscomp-dropbox {
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem;
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    inset 0 1px 0 var(--glass-highlight);
 }
 
 .col-sm-8[role="main"],
@@ -1285,7 +1302,9 @@ a.shiny-download-link {
 form.well,
 .col-sm-4.well {
   .shiny-input-container:has(.form-select),
-  .shiny-input-container:has(.selectize-control) {
+  .shiny-input-container:has(.selectize-control),
+  .shiny-input-container:has(.vscomp-ele),
+  .shiny-input-container:has(.virtual-select) {
     position: relative;
     z-index: 1;
   }
@@ -1293,7 +1312,9 @@ form.well,
   .shiny-input-container.glass-select-open,
   .shiny-input-container:has(.form-select:focus),
   .shiny-input-container:has(.form-select:active),
-  .shiny-input-container:has(.selectize-input.input-active) {
+  .shiny-input-container:has(.selectize-input.input-active),
+  .shiny-input-container:has(.vscomp-wrapper.focused),
+  .shiny-input-container:has(.vscomp-wrapper:not(.closed)) {
     z-index: 1000;
   }
 }
@@ -2400,6 +2421,18 @@ small,
     margin-bottom: 0.5rem;
   }
 
+  .dataTables_scroll,
+  .dataTables_scrollHead,
+  .dataTables_scrollBody {
+    max-width: 100%;
+  }
+
+  .dataTables_scrollHeadInner,
+  .dataTables_scrollHeadInner table,
+  .dataTables_scrollBody table {
+    width: 100% !important;
+  }
+
   .dataTables_length select,
   .dataTables_filter input {
     @include glass-input();
@@ -2413,7 +2446,8 @@ small,
     border-collapse: separate;
     border-spacing: 0;
     width: 100% !important;
-    table-layout: auto;
+    // Share the card even in a 6/6 page_sidebar split (~1280px + sidebar).
+    table-layout: fixed !important;
 
     thead th,
     thead td {
@@ -3190,7 +3224,7 @@ body .Reactable {
   white-space: normal !important;
   overflow: visible !important;
   text-overflow: clip !important;
-  min-width: 4.5rem;
+  min-width: 3.25rem;
   padding-left: 0.55rem !important;
   padding-right: 0.55rem !important;
 }

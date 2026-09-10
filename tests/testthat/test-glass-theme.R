@@ -427,6 +427,8 @@ test_that("iOS 27 scroll-edge assets and Appearance copy ship", {
   expect_match(js, "glass-scroll-edge")
   expect_match(js, "glass-theme-settling")
   expect_match(js, "beginThemeSettle")
+  expect_match(js, "bindGlassOverlayMenus")
+  expect_match(js, "dropboxWrapper")
   expect_match(scss, "glass-scroll-edge")
   expect_match(scss, "glass-theme-settling")
   expect_match(scss, "overflow-x: clip")

@@ -69,11 +69,11 @@ ui <- page_sidebar(
       }
     )
   ),
-  # Stack beside a 280px sidebar at typical laptop widths (~1280px). A 6/6
-  # split there squeezed plotly (overflow:visible leaked a page scrollbar)
-  # and clipped gt headers. Side-by-side from Bootstrap xxl (1400px).
+  # Even split on desktop. Glass CSS keeps plotly/gt inside the card at
+  # ~1280px + sidebar (internal scroll + wrapping headers) so this 6/6
+  # split does not grow a page scrollbar or clip "Petal Length".
   layout_columns(
-    col_widths = breakpoints(xs = c(12, 12), xxl = c(6, 6)),
+    col_widths = breakpoints(xs = c(12, 12), md = c(6, 6)),
     gap = "0.75rem",
     card(
       full_screen = TRUE,
@@ -150,10 +150,10 @@ server <- function(input, output, session) {
         cols_align(align = "left", columns = Species) |>
         cols_align(align = "right", columns = where(is.numeric)) |>
         cols_width(
-          Species ~ pct(22),
-          Sepal.Length ~ pct(26),
-          Sepal.Width ~ pct(26),
-          Petal.Length ~ pct(26)
+          Species ~ px(96),
+          Sepal.Length ~ px(104),
+          Sepal.Width ~ px(104),
+          Petal.Length ~ px(104)
         ) |>
         opt_row_striping() |>
         tab_options(

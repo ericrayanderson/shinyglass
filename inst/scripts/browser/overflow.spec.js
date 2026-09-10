@@ -74,6 +74,50 @@ async function bootOverflow(page, { width = 1280, height = 800 } = {}) {
   await page.evaluate(() => new Promise(resolve => $(resolve)));
 }
 
+test('1280px side-by-side page_sidebar card keeps five DT columns on-page', async ({ page }) => {
+  await bootOverflow(page, { width: 1280, height: 800 });
+  await page.evaluate(() => {
+    const main = document.querySelector('.bslib-page-main');
+    main.innerHTML = `
+      <div class="bslib-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;min-width:0">
+        <div class="card"><div class="js-plotly-plot">
+          <svg class="main-svg" width="900" height="120" viewBox="0 0 900 120">
+            <text class="gtitle" x="20" y="24">plotly</text>
+          </svg>
+        </div></div>
+        <div class="card">
+          <div class="dataTables_wrapper">
+            <table class="dataTable">
+              <thead><tr>
+                <th>Sepal Length</th><th>Sepal Width</th>
+                <th>Petal Length</th><th>Petal Width</th><th>Species</th>
+              </tr></thead>
+              <tbody><tr>
+                <td>5.1</td><td>3.5</td><td>1.4</td><td>0.2</td><td>setosa</td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  });
+  const metrics = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+    tableLayout: getComputedStyle(document.querySelector('table.dataTable')).tableLayout,
+    headers: [...document.querySelectorAll('table.dataTable thead th')].map((th) => ({
+      visible: th.getClientRects().length > 0,
+      width: th.getBoundingClientRect().width,
+    })),
+    tableWidth: document.querySelector('table.dataTable').getBoundingClientRect().width,
+    cardWidth: document.querySelectorAll('.card')[1].getBoundingClientRect().width,
+  }));
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  expect(metrics.tableLayout).toBe('fixed');
+  expect(metrics.headers).toHaveLength(5);
+  expect(metrics.headers.every((h) => h.visible && h.width > 24)).toBe(true);
+  expect(metrics.tableWidth).toBeLessThanOrEqual(metrics.cardWidth + 2);
+});
+
 test('1280px dashboard-like layout does not grow a page scrollbar', async ({ page }) => {
   await bootOverflow(page, { width: 1280, height: 800 });
   const metrics = await page.evaluate(() => ({
