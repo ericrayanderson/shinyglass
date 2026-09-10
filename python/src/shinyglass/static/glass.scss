@@ -228,11 +228,20 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-border: rgba(255, 255, 255, 0.20);
 }
 
+// clip (not hidden) so wide tables cannot grow page scrollWidth and sticky
+// nav still works. Internal hosts (DT / gt / plotly) scroll instead.
+html {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 body {
   background: var(--glass-page-bg) !important;
   background-color: var(--glass-body-bg) !important;
   color: var(--glass-body-color) !important;
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -482,6 +491,52 @@ body::after {
 .layout-column-wrap,
 .layout-column-plot {
   gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bslib-sidebar-layout,
+.bslib-sidebar-layout > .main,
+.bslib-sidebar-layout > .main.bslib-page-main,
+.bslib-grid,
+.bslib-grid.grid,
+.bslib-grid > *,
+.card,
+.bslib-card,
+.bslib-value-box {
+  min-width: 0;
+}
+
+.card:has(.dataTables_wrapper),
+.bslib-card:has(.dataTables_wrapper),
+.card:has(.gt_table),
+.bslib-card:has(.gt_table),
+.card:has(.js-plotly-plot),
+.bslib-card:has(.js-plotly-plot) {
+  overflow-x: auto;
+}
+
+.shiny-date-range-input .input-daterange {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+pre,
+.shiny-text-output,
+.shiny-verbatim {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.vscomp-ele,
+.vscomp-wrapper {
+  max-width: 100%;
+}
+
+body > .vscomp-dropbox-wrapper,
+body > .vscomp-dropbox-container,
+.vscomp-dropbox-container {
+  z-index: 1080;
 }
 
 .col-sm-8[role="main"],
@@ -2333,7 +2388,9 @@ small,
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.85rem 1rem;
   margin-bottom: 0.75rem;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
 
   .dataTables_length,
   .dataTables_filter,
@@ -2356,6 +2413,7 @@ small,
     border-collapse: separate;
     border-spacing: 0;
     width: 100% !important;
+    table-layout: auto;
 
     thead th,
     thead td {
@@ -2365,6 +2423,9 @@ small,
       font-weight: 600;
       letter-spacing: -0.01em;
       padding: 0.65rem 0.85rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
 
     tbody tr {
@@ -2376,6 +2437,8 @@ small,
         color: inherit;
         padding: 0.55rem 0.85rem;
         vertical-align: middle;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
 
       &:nth-child(even) > td {
@@ -2978,10 +3041,12 @@ body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   background: color-mix(in srgb, var(--glass-bg) 55%, transparent) !important;
   // Extra bottom padding so axis titles / tick labels aren't clipped by the
-  // glass-surface overflow:hidden from the mixin.
+  // glass-surface overflow:hidden from the mixin. Scroll internally rather
+  // than growing the page (overflow:visible leaked at ~1280px + sidebar).
   padding: 0.45rem 0.45rem 0.85rem;
   margin-bottom: 0.75rem;
-  overflow: visible !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -3049,6 +3114,20 @@ body .Reactable {
 .js-plotly-plot .hovertext,
 .js-plotly-plot .hoverlayer {
   font-family: inherit;
+}
+
+// Snap axis / title ink to the live pack. SVG fill does not follow
+// --glass-body-color on its own, so theme tweens left stale dark/light
+// labels on the new wallpaper until Plotly relayout.
+.js-plotly-plot .xtick text,
+.js-plotly-plot .ytick text,
+.js-plotly-plot .xtitle,
+.js-plotly-plot .ytitle,
+.js-plotly-plot .g-xtitle text,
+.js-plotly-plot .g-ytitle text,
+.js-plotly-plot .gtitle {
+  fill: var(--glass-body-color) !important;
+  transition: none !important;
 }
 
 // ---------------------------------------------------------------------------
@@ -4512,6 +4591,16 @@ body.glass-scroll-edge .bslib-sidebar-layout > .main::before {
 
 :root[data-glass-preset="dark"] .glass-accent-well {
   border-color: rgba(255, 255, 255, 0.28);
+}
+
+// Hide baked-in ggplot ink while glass fills tween to the new pack.
+// Plotly axis text is snapped above; images cannot recolor in CSS.
+html.glass-theme-settling {
+  .shiny-plot-output img,
+  .shiny-image-output img {
+    opacity: 0;
+    transition: none;
+  }
 }
 
 .glass-page-controls {

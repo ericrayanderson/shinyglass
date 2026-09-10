@@ -85,33 +85,28 @@ ui <- page_sidebar(
       theme = "info"
     )
   ),
-  # Full-width stack below md; two columns from md up
-  layout_columns(
-    col_widths = breakpoints(
-      xs = c(12, 12),
-      md = c(6, 6)
-    ),
-    gap = "0.75rem",
-    navset_card_tab(
-      id = "tabs",
-      nav_panel(
-        "Distribution",
-        card_body(
-          plotOutput("dist_plot", height = "280px")
-        )
-      ),
-      nav_panel(
-        "Scatter",
-        card_body(
-          plotOutput("scatter_plot", height = "280px")
-        )
+  # Plots and the 5-column table each get the full main column. A 6/6 split
+  # at ~1280px (280px sidebar) hid most iris columns behind a sliver of
+  # scrollX. Stacking keeps every header visible without a redesign.
+  navset_card_tab(
+    id = "tabs",
+    nav_panel(
+      "Distribution",
+      card_body(
+        plotOutput("dist_plot", height = "280px")
       )
     ),
-    card(
-      full_screen = TRUE,
-      card_header("Iris data"),
-      DT::DTOutput("data_table")
+    nav_panel(
+      "Scatter",
+      card_body(
+        plotOutput("scatter_plot", height = "280px")
+      )
     )
+  ),
+  card(
+    full_screen = TRUE,
+    card_header("Iris data"),
+    DT::DTOutput("data_table")
   )
 )
 
@@ -177,10 +172,12 @@ server <- function(input, output, session) {
       fillContainer = FALSE,
       rownames = FALSE,
       options = list(
-        pageLength = 6,
+        pageLength = 8,
         dom = "tip",
-        scrollX = TRUE,
-        autoWidth = TRUE
+        # Share the full card width; glass CSS wraps headers instead of
+        # creating a nested scrollX strip that hid later columns.
+        scrollX = FALSE,
+        autoWidth = FALSE
       )
     )
   })
