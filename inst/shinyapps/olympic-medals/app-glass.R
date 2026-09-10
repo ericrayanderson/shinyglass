@@ -27,9 +27,18 @@ ui <- fluidPage(
       href = "rings.jpg"
     ),
     tags$style(HTML("
+      .olympics-hero {
+        position: relative;
+        z-index: 1;
+      }
       .olympics-hero img {
         max-width: min(200px, 55vw);
         height: auto;
+      }
+      .olympics-filters {
+        position: relative;
+        z-index: 4;
+        margin-top: 0.85rem;
       }
       .olympics-wrap {
         max-width: 960px;
@@ -87,7 +96,11 @@ ui <- fluidPage(
             choices = unique(medals_summer$discipline_title),
             multiple = TRUE,
             selected = NULL,
-            width = "100%"
+            width = "100%",
+            # Explicit: package JS already defaults these for any glass app.
+            position = "bottom",
+            dropboxWrapper = "body",
+            zIndex = 1080
           )
         ),
         column(
@@ -99,7 +112,10 @@ ui <- fluidPage(
             choices = unique(medals_summer$slug_game),
             multiple = TRUE,
             selected = NULL,
-            width = "100%"
+            width = "100%",
+            position = "bottom",
+            dropboxWrapper = "body",
+            zIndex = 1080
           )
         ),
         column(

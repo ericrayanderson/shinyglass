@@ -85,35 +85,28 @@ ui <- page_sidebar(
       theme = "info"
     )
   ),
-  # Full-width stack below md; two columns from md up. Glass DT CSS shares
-  # the card width and wraps headers so five iris columns stay visible even
-  # in a ~1280px page_sidebar split.
-  layout_columns(
-    col_widths = breakpoints(
-      xs = c(12, 12),
-      md = c(6, 6)
-    ),
-    gap = "0.75rem",
-    navset_card_tab(
-      id = "tabs",
-      nav_panel(
-        "Distribution",
-        card_body(
-          plotOutput("dist_plot", height = "280px")
-        )
-      ),
-      nav_panel(
-        "Scatter",
-        card_body(
-          plotOutput("scatter_plot", height = "280px")
-        )
+  # Stack plots and the 5-column table so iris headers stay scannable at
+  # ~1280px with a 280px sidebar. Package CSS still wraps/contains DT if
+  # an app keeps a 6/6 split.
+  navset_card_tab(
+    id = "tabs",
+    nav_panel(
+      "Distribution",
+      card_body(
+        plotOutput("dist_plot", height = "280px")
       )
     ),
-    card(
-      full_screen = TRUE,
-      card_header("Iris data"),
-      DT::DTOutput("data_table")
+    nav_panel(
+      "Scatter",
+      card_body(
+        plotOutput("scatter_plot", height = "280px")
+      )
     )
+  ),
+  card(
+    full_screen = TRUE,
+    card_header("Iris data"),
+    DT::DTOutput("data_table")
   )
 )
 
@@ -179,10 +172,11 @@ server <- function(input, output, session) {
       fillContainer = FALSE,
       rownames = FALSE,
       options = list(
-        pageLength = 6,
+        pageLength = 8,
         dom = "tip",
-        scrollX = TRUE,
-        autoWidth = TRUE
+        # Share the full card; package CSS wraps headers if a host is narrow.
+        scrollX = FALSE,
+        autoWidth = FALSE
       )
     )
   })
