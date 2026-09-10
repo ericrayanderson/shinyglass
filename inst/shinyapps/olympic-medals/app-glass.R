@@ -27,18 +27,9 @@ ui <- fluidPage(
       href = "rings.jpg"
     ),
     tags$style(HTML("
-      .olympics-hero {
-        position: relative;
-        z-index: 1;
-      }
       .olympics-hero img {
         max-width: min(200px, 55vw);
         height: auto;
-      }
-      .olympics-filters {
-        position: relative;
-        z-index: 4;
-        margin-top: 0.85rem;
       }
       .olympics-wrap {
         max-width: 960px;
@@ -96,13 +87,7 @@ ui <- fluidPage(
             choices = unique(medals_summer$discipline_title),
             multiple = TRUE,
             selected = NULL,
-            width = "100%",
-            # Portal to body so backdrop-filter / overflow on the glass card
-            # cannot pin the menu over the rings + title. Force below the
-            # control rather than auto-flipping to the top edge.
-            position = "bottom",
-            dropboxWrapper = "body",
-            zIndex = 1080
+            width = "100%"
           )
         ),
         column(
@@ -114,10 +99,7 @@ ui <- fluidPage(
             choices = unique(medals_summer$slug_game),
             multiple = TRUE,
             selected = NULL,
-            width = "100%",
-            position = "bottom",
-            dropboxWrapper = "body",
-            zIndex = 1080
+            width = "100%"
           )
         ),
         column(

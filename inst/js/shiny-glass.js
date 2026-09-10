@@ -1559,6 +1559,110 @@
     }
   );
 
+  // Virtual Select / similar menus: glass cards use overflow + backdrop-filter,
+  // which create a containing block and flip popovers over nearby chrome.
+  // Default the dropbox onto document.body (app-explicit options still win).
+  var GLASS_MENU_Z = 1080;
+
+  function virtualSelectConfigFromScript(script) {
+    try {
+      var data = JSON.parse(script.textContent || "{}");
+      return data && typeof data === "object" ? data : {};
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applyVirtualSelectConfigDefaults(config) {
+    if (!config || typeof config !== "object") return false;
+    var changed = false;
+    if (!config.keepAlwaysOpen) {
+      if (config.dropboxWrapper == null) {
+        config.dropboxWrapper = "body";
+        changed = true;
+      }
+      if (config.zIndex == null) {
+        config.zIndex = GLASS_MENU_Z;
+        changed = true;
+      }
+    }
+    if (config.position == null) {
+      config.position = "bottom";
+      changed = true;
+    }
+    return changed;
+  }
+
+  function patchVirtualSelectJsonConfigs(scope) {
+    var root = scope && scope.querySelectorAll ? scope : document;
+    root.querySelectorAll(".virtual-select script[type='application/json']").forEach(function (script) {
+      if (script.dataset.glassPatched === "true") return;
+      var data = virtualSelectConfigFromScript(script);
+      if (!data) return;
+      if (!data.config) data.config = {};
+      if (applyVirtualSelectConfigDefaults(data.config)) {
+        script.textContent = JSON.stringify(data);
+      }
+      script.dataset.glassPatched = "true";
+    });
+  }
+
+  function installVirtualSelectGlassDefaults() {
+    var VS = window.VirtualSelect;
+    if (!VS) return false;
+    if (typeof VS.setGlobalDefaults === "function") {
+      var current = typeof VS.getGlobalDefaults === "function" ? VS.getGlobalDefaults() : {};
+      var patch = {};
+      if (current.dropboxWrapper == null) patch.dropboxWrapper = "body";
+      if (current.zIndex == null) patch.zIndex = GLASS_MENU_Z;
+      if (current.position == null) patch.position = "bottom";
+      if (Object.keys(patch).length) {
+        try {
+          VS.setGlobalDefaults(patch);
+        } catch (eSet) {
+          /* older builds */
+        }
+      }
+    }
+    if (typeof VS.init === "function" && !VS.init.__glassDefaults) {
+      var origInit = VS.init.bind(VS);
+      VS.init = function (options) {
+        options = options || {};
+        applyVirtualSelectConfigDefaults(options);
+        return origInit(options);
+      };
+      VS.init.__glassDefaults = true;
+    }
+    return true;
+  }
+
+  function watchVirtualSelectLibrary() {
+    if (installVirtualSelectGlassDefaults()) return;
+    try {
+      var stored;
+      Object.defineProperty(window, "VirtualSelect", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+          return stored;
+        },
+        set: function (v) {
+          stored = v;
+          installVirtualSelectGlassDefaults();
+        },
+      });
+    } catch (eDef) {
+      /* non-configurable */
+    }
+  }
+
+  function bindGlassOverlayMenus(scope) {
+    patchVirtualSelectJsonConfigs(scope || document);
+    installVirtualSelectGlassDefaults();
+  }
+
+  watchVirtualSelectLibrary();
+
   // Frost the page while the native file picker is open (mirrors modal-backdrop).
   function ensureFileScrim() {
     var el = document.getElementById("glass-file-scrim");
@@ -1609,6 +1713,7 @@
     // The early head script already sets the preset; still initialize listeners.
     applyPreset(mode, { force: true });
     bindPresetSelects(document);
+    bindGlassOverlayMenus(document);
 
     // Re-apply primary from head/data if present
     if (rootEl().dataset.glassPrimary) {
@@ -1656,9 +1761,11 @@
         var needsTint = false;
         var needsWidgetGlass = false;
         var needsBindings = false;
+        var needsMenus = false;
         var media = ".shiny-plot-output img, .shiny-image-output img, .glass-content-hero img, canvas";
         var widgets = ".stati, .Reactable";
         var controls = ".glass-intensity-slider, select[data-glass-preset-input], select#preset";
+        var menus = ".virtual-select, .vscomp-ele, script[type='application/json']";
         function contains(el, selector) {
           return el.nodeType === 1 && (el.matches(selector) || !!el.querySelector(selector));
         }
@@ -1691,6 +1798,7 @@
             }
             if (contains(node, widgets)) needsWidgetGlass = true;
             if (contains(node, controls)) needsBindings = true;
+            if (contains(node, menus)) needsMenus = true;
           });
           Array.prototype.forEach.call(mutation.removedNodes, function (node) {
             if (contains(node, media)) needsTint = true;
@@ -1701,6 +1809,7 @@
           bindIntensitySliders();
           bindPresetSelects(document);
         }
+        if (needsMenus) bindGlassOverlayMenus(document);
         if (needsTint) scheduleTintUpdate();
         if (needsWidgetGlass) scheduleWidgetOverrides();
       });
