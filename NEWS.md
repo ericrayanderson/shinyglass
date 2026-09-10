@@ -20,6 +20,13 @@ This development build closes the remaining visual lag.
   the supported way to match that look.
 * Dark bslib sidebar and page-sidebar nav keep rim/lip/side-stroke edges
   instead of dropping to a shadow-only look.
+* Demo QA polish from the 0.3.0.9000 shinyapps pass: page-level horizontal
+  scroll at ~1280px is clipped so DT / gt / plotly scroll inside their
+  hosts; the dashboard iris table is full-width with wrapping headers
+  instead of a nested `scrollX` strip; theme switches hide stale ggplot
+  ink until the new image arrives and snap plotly axis text to the live
+  pack; the Olympics discipline picker opens below the logo (`position =
+  "bottom"`, `dropboxWrapper = "body"`).
 
 # shinyglass 0.3.0
 

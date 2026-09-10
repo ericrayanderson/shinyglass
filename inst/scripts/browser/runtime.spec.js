@@ -203,6 +203,27 @@ test('scroll-edge class stays while content is under the bar; compact does not',
   await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(false);
 });
 
+test('theme switch hides stale plot ink until the image src changes', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    const wrap = document.createElement('div');
+    wrap.className = 'shiny-plot-output';
+    const img = document.createElement('img');
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    wrap.appendChild(img);
+    document.body.appendChild(wrap);
+  });
+  await page.evaluate(() => shinyglass.setPreset('dark'));
+  expect(await page.evaluate(() => document.documentElement.classList.contains('glass-theme-settling'))).toBe(true);
+  await page.evaluate(() => {
+    document.querySelector('.shiny-plot-output img').src =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+  });
+  await expect.poll(
+    () => page.evaluate(() => document.documentElement.classList.contains('glass-theme-settling'))
+  ).toBe(false);
+});
+
 test('accent wells apply primary immediately', async ({ page }) => {
   await boot(page);
   await page.evaluate(() => {

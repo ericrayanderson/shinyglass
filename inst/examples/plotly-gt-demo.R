@@ -69,10 +69,11 @@ ui <- page_sidebar(
       }
     )
   ),
-  # Even split on desktop so the gt card is wide enough for full column labels
-  # (a 7/5 split was clipping "Petal Length" under overflow:hidden glass).
+  # Stack beside a 280px sidebar at typical laptop widths (~1280px). A 6/6
+  # split there squeezed plotly (overflow:visible leaked a page scrollbar)
+  # and clipped gt headers. Side-by-side from Bootstrap xxl (1400px).
   layout_columns(
-    col_widths = breakpoints(xs = c(12, 12), md = c(6, 6)),
+    col_widths = breakpoints(xs = c(12, 12), xxl = c(6, 6)),
     gap = "0.75rem",
     card(
       full_screen = TRUE,
@@ -149,10 +150,10 @@ server <- function(input, output, session) {
         cols_align(align = "left", columns = Species) |>
         cols_align(align = "right", columns = where(is.numeric)) |>
         cols_width(
-          Species ~ px(96),
-          Sepal.Length ~ px(104),
-          Sepal.Width ~ px(104),
-          Petal.Length ~ px(104)
+          Species ~ pct(22),
+          Sepal.Length ~ pct(26),
+          Sepal.Width ~ pct(26),
+          Petal.Length ~ pct(26)
         ) |>
         opt_row_striping() |>
         tab_options(

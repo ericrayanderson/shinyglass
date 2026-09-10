@@ -21,6 +21,7 @@
   }
 
   var persistTimer = null;
+  var settleTimer = null;
 
   function persistEnabled() {
     return rootEl().dataset.glassPersist === "true";
@@ -218,6 +219,11 @@
     if (prev !== resolved) {
       clearTint();
       scheduleTintUpdate();
+      // Hide stale ggplot PNG ink while glass fills tween to the new pack.
+      // Skip the initial applyPreset(force) paint (empty prev).
+      if (prev) {
+        beginThemeSettle();
+      }
     }
     // Intensity endpoints differ by preset
     setIntensity(intensityState, { syncInputs: true });
@@ -237,6 +243,29 @@
     } catch (e) {
       /* IE / very old — ignore */
     }
+  }
+
+  function endThemeSettle() {
+    if (settleTimer) {
+      clearTimeout(settleTimer);
+      settleTimer = null;
+    }
+    rootEl().classList.remove("glass-theme-settling");
+  }
+
+  function endThemeSettleSoon() {
+    if (!rootEl().classList.contains("glass-theme-settling")) return;
+    if (settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(endThemeSettle, 100);
+  }
+
+  // Keep stale plot images hidden until a new src loads or Shiny goes idle.
+  // Do not clear just because the current (old) image is already complete.
+  function beginThemeSettle() {
+    var root = rootEl();
+    root.classList.add("glass-theme-settling");
+    if (settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(endThemeSettle, 1200);
   }
 
   function setTintEnabled(on) {
@@ -1599,6 +1628,19 @@
     applyWidgetGlassOverrides();
     bindIntensitySliders();
 
+    $(document).on("shiny:value.glassSettle", function (ev) {
+      if (!rootEl().classList.contains("glass-theme-settling")) return;
+      var el = ev && ev.target;
+      if (!el || el.nodeType !== 1) return;
+      if (
+        el.matches(
+          ".shiny-plot-output, .shiny-image-output, .js-plotly-plot, .plotly, .plotly.html-widget-output"
+        )
+      ) {
+        endThemeSettleSoon();
+      }
+    });
+
     ["(prefers-reduced-motion: reduce)", "(prefers-reduced-transparency: reduce)"].forEach(function (query) {
       var mql = window.matchMedia(query);
       if (mql.addEventListener) mql.addEventListener("change", syncAccessibilityPreferences);
@@ -1627,13 +1669,26 @@
             if (mutation.attributeName === "src" && target.matches(media)) {
               imageSamples.delete(target);
               needsTint = true;
+              if (rootEl().classList.contains("glass-theme-settling")) {
+                if (target.complete) {
+                  endThemeSettleSoon();
+                } else {
+                  target.addEventListener("load", endThemeSettleSoon, { once: true });
+                  target.addEventListener("error", endThemeSettleSoon, { once: true });
+                }
+              }
             }
             if (target.matches(widgets) || target.closest(widgets)) needsWidgetGlass = true;
             return;
           }
           // Inspect only changed subtrees, not the entire mutation target.
           Array.prototype.forEach.call(mutation.addedNodes, function (node) {
-            if (contains(node, media)) needsTint = true;
+            if (contains(node, media)) {
+              needsTint = true;
+              if (rootEl().classList.contains("glass-theme-settling")) {
+                endThemeSettleSoon();
+              }
+            }
             if (contains(node, widgets)) needsWidgetGlass = true;
             if (contains(node, controls)) needsBindings = true;
           });
