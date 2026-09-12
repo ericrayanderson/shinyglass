@@ -298,6 +298,9 @@ test_that("compiled CSS prefers reduced-motion and runtime primary hooks", {
   expect_match(css, "--glass-body-color")
   expect_match(css, "glass-scroll-edge")
   expect_match(css, "prefers-reduced-transparency")
+  expect_match(css, "glass-theme-settling")
+  expect_match(css, "overflow-x:\\s*clip")
+  expect_match(css, "vscomp-dropbox")
 })
 
 test_that("dark pack does not re-lock default button labels to $primary", {
@@ -422,7 +425,13 @@ test_that("iOS 27 scroll-edge assets and Appearance copy ship", {
   js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
   scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(js, "glass-scroll-edge")
+  expect_match(js, "glass-theme-settling")
+  expect_match(js, "beginThemeSettle")
+  expect_match(js, "bindGlassOverlayMenus")
+  expect_match(js, "dropboxWrapper")
   expect_match(scss, "glass-scroll-edge")
+  expect_match(scss, "glass-theme-settling")
+  expect_match(scss, "overflow-x: clip")
   html <- as.character(glass_intensity_slider("gi", preview = FALSE))
   expect_match(html, "Appearance")
 })

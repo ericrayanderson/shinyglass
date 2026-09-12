@@ -20,6 +20,22 @@ This development build closes the remaining visual lag.
   the supported way to match that look.
 * Dark bslib sidebar and page-sidebar nav keep rim/lip/side-stroke edges
   instead of dropping to a shadow-only look.
+* Layout polish for any `glass_theme()` app (not demo-specific): page-level
+  horizontal overflow is clipped so wide DT / gt / plotly hosts scroll
+  inside the card; DT tables use fixed layout and wrapping headers so
+  columns stay discoverable in a `page_sidebar` split at ~1280px; theme
+  switches hide stale ggplot ink until the new image arrives and snap
+  plotly axis text to the live pack.
+* Overlay menus escape glass containment: shinyWidgets Virtual Select
+  defaults to `dropboxWrapper = "body"`, `position = "bottom"`, and
+  `zIndex = 1080` unless the app sets those options (or `keepAlwaysOpen`).
+  The same z-index applies to portaled `.vscomp-*`, `.pop-comp-wrapper`,
+  and bootstrap-select menus so backdrop-filter / overflow on cards cannot
+  pin a dropdown over nearby chrome.
+* Example apps keep explicit layouts that read well at laptop width:
+  dashboard stacks the iris table under the plots; plotly + gt waits
+  until `xxl` for a 6/6 split and uses percent `cols_width()`; Olympics
+  Virtual Select repeats the portal args for clarity.
 
 # shinyglass 0.3.0
 

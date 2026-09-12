@@ -203,6 +203,84 @@ test('scroll-edge class stays while content is under the bar; compact does not',
   await expect.poll(() => page.evaluate(() => document.body.classList.contains('glass-scroll-edge'))).toBe(false);
 });
 
+test('Virtual Select defaults portal to body; explicit options win', async ({ page }) => {
+  await boot(page);
+  const result = await page.evaluate(() => {
+    window.VirtualSelect = {
+      _g: {},
+      init(options) {
+        return { ...options };
+      },
+      setGlobalDefaults(props) {
+        this._g = { ...this._g, ...props };
+      },
+      getGlobalDefaults() {
+        return { ...this._g };
+      },
+    };
+    const injected = window.VirtualSelect.init({ ele: '#x' });
+    const explicit = window.VirtualSelect.init({
+      ele: '#y',
+      dropboxWrapper: 'self',
+      position: 'auto',
+      zIndex: 5,
+    });
+    const alwaysOpen = window.VirtualSelect.init({ ele: '#z', keepAlwaysOpen: true });
+    return {
+      defaults: window.VirtualSelect.getGlobalDefaults(),
+      injected,
+      explicit,
+      alwaysOpen,
+    };
+  });
+  expect(result.defaults.dropboxWrapper).toBe('body');
+  expect(result.defaults.zIndex).toBe(1080);
+  expect(result.injected.dropboxWrapper).toBe('body');
+  expect(result.injected.position).toBe('bottom');
+  expect(result.explicit.dropboxWrapper).toBe('self');
+  expect(result.explicit.position).toBe('auto');
+  expect(result.explicit.zIndex).toBe(5);
+  expect(result.alwaysOpen.dropboxWrapper).toBeUndefined();
+
+  await page.evaluate(() => {
+    const host = document.createElement('div');
+    host.className = 'virtual-select';
+    const script = document.createElement('script');
+    script.type = 'application/json';
+    script.textContent = JSON.stringify({ config: { multiple: true } });
+    host.appendChild(script);
+    document.body.appendChild(host);
+  });
+  await expect.poll(() =>
+    page.evaluate(() => {
+      const script = document.querySelector('.virtual-select script[type="application/json"]');
+      if (!script) return null;
+      return JSON.parse(script.textContent).config.dropboxWrapper;
+    })
+  ).toBe('body');
+});
+
+test('theme switch hides stale plot ink until the image src changes', async ({ page }) => {
+  await boot(page);
+  await page.evaluate(() => {
+    const wrap = document.createElement('div');
+    wrap.className = 'shiny-plot-output';
+    const img = document.createElement('img');
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    wrap.appendChild(img);
+    document.body.appendChild(wrap);
+  });
+  await page.evaluate(() => shinyglass.setPreset('dark'));
+  expect(await page.evaluate(() => document.documentElement.classList.contains('glass-theme-settling'))).toBe(true);
+  await page.evaluate(() => {
+    document.querySelector('.shiny-plot-output img').src =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+  });
+  await expect.poll(
+    () => page.evaluate(() => document.documentElement.classList.contains('glass-theme-settling'))
+  ).toBe(false);
+});
+
 test('accent wells apply primary immediately', async ({ page }) => {
   await boot(page);
   await page.evaluate(() => {

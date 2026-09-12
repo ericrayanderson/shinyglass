@@ -21,6 +21,7 @@
   }
 
   var persistTimer = null;
+  var settleTimer = null;
 
   function persistEnabled() {
     return rootEl().dataset.glassPersist === "true";
@@ -218,6 +219,11 @@
     if (prev !== resolved) {
       clearTint();
       scheduleTintUpdate();
+      // Hide stale ggplot PNG ink while glass fills tween to the new pack.
+      // Skip the initial applyPreset(force) paint (empty prev).
+      if (prev) {
+        beginThemeSettle();
+      }
     }
     // Intensity endpoints differ by preset
     setIntensity(intensityState, { syncInputs: true });
@@ -237,6 +243,29 @@
     } catch (e) {
       /* IE / very old — ignore */
     }
+  }
+
+  function endThemeSettle() {
+    if (settleTimer) {
+      clearTimeout(settleTimer);
+      settleTimer = null;
+    }
+    rootEl().classList.remove("glass-theme-settling");
+  }
+
+  function endThemeSettleSoon() {
+    if (!rootEl().classList.contains("glass-theme-settling")) return;
+    if (settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(endThemeSettle, 100);
+  }
+
+  // Keep stale plot images hidden until a new src loads or Shiny goes idle.
+  // Do not clear just because the current (old) image is already complete.
+  function beginThemeSettle() {
+    var root = rootEl();
+    root.classList.add("glass-theme-settling");
+    if (settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(endThemeSettle, 1200);
   }
 
   function setTintEnabled(on) {
@@ -1530,6 +1559,110 @@
     }
   );
 
+  // Virtual Select / similar menus: glass cards use overflow + backdrop-filter,
+  // which create a containing block and flip popovers over nearby chrome.
+  // Default the dropbox onto document.body (app-explicit options still win).
+  var GLASS_MENU_Z = 1080;
+
+  function virtualSelectConfigFromScript(script) {
+    try {
+      var data = JSON.parse(script.textContent || "{}");
+      return data && typeof data === "object" ? data : {};
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applyVirtualSelectConfigDefaults(config) {
+    if (!config || typeof config !== "object") return false;
+    var changed = false;
+    if (!config.keepAlwaysOpen) {
+      if (config.dropboxWrapper == null) {
+        config.dropboxWrapper = "body";
+        changed = true;
+      }
+      if (config.zIndex == null) {
+        config.zIndex = GLASS_MENU_Z;
+        changed = true;
+      }
+    }
+    if (config.position == null) {
+      config.position = "bottom";
+      changed = true;
+    }
+    return changed;
+  }
+
+  function patchVirtualSelectJsonConfigs(scope) {
+    var root = scope && scope.querySelectorAll ? scope : document;
+    root.querySelectorAll(".virtual-select script[type='application/json']").forEach(function (script) {
+      if (script.dataset.glassPatched === "true") return;
+      var data = virtualSelectConfigFromScript(script);
+      if (!data) return;
+      if (!data.config) data.config = {};
+      if (applyVirtualSelectConfigDefaults(data.config)) {
+        script.textContent = JSON.stringify(data);
+      }
+      script.dataset.glassPatched = "true";
+    });
+  }
+
+  function installVirtualSelectGlassDefaults() {
+    var VS = window.VirtualSelect;
+    if (!VS) return false;
+    if (typeof VS.setGlobalDefaults === "function") {
+      var current = typeof VS.getGlobalDefaults === "function" ? VS.getGlobalDefaults() : {};
+      var patch = {};
+      if (current.dropboxWrapper == null) patch.dropboxWrapper = "body";
+      if (current.zIndex == null) patch.zIndex = GLASS_MENU_Z;
+      if (current.position == null) patch.position = "bottom";
+      if (Object.keys(patch).length) {
+        try {
+          VS.setGlobalDefaults(patch);
+        } catch (eSet) {
+          /* older builds */
+        }
+      }
+    }
+    if (typeof VS.init === "function" && !VS.init.__glassDefaults) {
+      var origInit = VS.init.bind(VS);
+      VS.init = function (options) {
+        options = options || {};
+        applyVirtualSelectConfigDefaults(options);
+        return origInit(options);
+      };
+      VS.init.__glassDefaults = true;
+    }
+    return true;
+  }
+
+  function watchVirtualSelectLibrary() {
+    if (installVirtualSelectGlassDefaults()) return;
+    try {
+      var stored;
+      Object.defineProperty(window, "VirtualSelect", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+          return stored;
+        },
+        set: function (v) {
+          stored = v;
+          installVirtualSelectGlassDefaults();
+        },
+      });
+    } catch (eDef) {
+      /* non-configurable */
+    }
+  }
+
+  function bindGlassOverlayMenus(scope) {
+    patchVirtualSelectJsonConfigs(scope || document);
+    installVirtualSelectGlassDefaults();
+  }
+
+  watchVirtualSelectLibrary();
+
   // Frost the page while the native file picker is open (mirrors modal-backdrop).
   function ensureFileScrim() {
     var el = document.getElementById("glass-file-scrim");
@@ -1580,6 +1713,7 @@
     // The early head script already sets the preset; still initialize listeners.
     applyPreset(mode, { force: true });
     bindPresetSelects(document);
+    bindGlassOverlayMenus(document);
 
     // Re-apply primary from head/data if present
     if (rootEl().dataset.glassPrimary) {
@@ -1599,6 +1733,19 @@
     applyWidgetGlassOverrides();
     bindIntensitySliders();
 
+    $(document).on("shiny:value.glassSettle", function (ev) {
+      if (!rootEl().classList.contains("glass-theme-settling")) return;
+      var el = ev && ev.target;
+      if (!el || el.nodeType !== 1) return;
+      if (
+        el.matches(
+          ".shiny-plot-output, .shiny-image-output, .js-plotly-plot, .plotly, .plotly.html-widget-output"
+        )
+      ) {
+        endThemeSettleSoon();
+      }
+    });
+
     ["(prefers-reduced-motion: reduce)", "(prefers-reduced-transparency: reduce)"].forEach(function (query) {
       var mql = window.matchMedia(query);
       if (mql.addEventListener) mql.addEventListener("change", syncAccessibilityPreferences);
@@ -1614,9 +1761,11 @@
         var needsTint = false;
         var needsWidgetGlass = false;
         var needsBindings = false;
+        var needsMenus = false;
         var media = ".shiny-plot-output img, .shiny-image-output img, .glass-content-hero img, canvas";
         var widgets = ".stati, .Reactable";
         var controls = ".glass-intensity-slider, select[data-glass-preset-input], select#preset";
+        var menus = ".virtual-select, .vscomp-ele, script[type='application/json']";
         function contains(el, selector) {
           return el.nodeType === 1 && (el.matches(selector) || !!el.querySelector(selector));
         }
@@ -1627,15 +1776,29 @@
             if (mutation.attributeName === "src" && target.matches(media)) {
               imageSamples.delete(target);
               needsTint = true;
+              if (rootEl().classList.contains("glass-theme-settling")) {
+                if (target.complete) {
+                  endThemeSettleSoon();
+                } else {
+                  target.addEventListener("load", endThemeSettleSoon, { once: true });
+                  target.addEventListener("error", endThemeSettleSoon, { once: true });
+                }
+              }
             }
             if (target.matches(widgets) || target.closest(widgets)) needsWidgetGlass = true;
             return;
           }
           // Inspect only changed subtrees, not the entire mutation target.
           Array.prototype.forEach.call(mutation.addedNodes, function (node) {
-            if (contains(node, media)) needsTint = true;
+            if (contains(node, media)) {
+              needsTint = true;
+              if (rootEl().classList.contains("glass-theme-settling")) {
+                endThemeSettleSoon();
+              }
+            }
             if (contains(node, widgets)) needsWidgetGlass = true;
             if (contains(node, controls)) needsBindings = true;
+            if (contains(node, menus)) needsMenus = true;
           });
           Array.prototype.forEach.call(mutation.removedNodes, function (node) {
             if (contains(node, media)) needsTint = true;
@@ -1646,6 +1809,7 @@
           bindIntensitySliders();
           bindPresetSelects(document);
         }
+        if (needsMenus) bindGlassOverlayMenus(document);
         if (needsTint) scheduleTintUpdate();
         if (needsWidgetGlass) scheduleWidgetOverrides();
       });
