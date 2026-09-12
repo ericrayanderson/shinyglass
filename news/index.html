@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,23 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/v0.3.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="shinyglass-0309000">shinyglass 0.3.0.9000<a class="anchor" aria-label="anchor" href="#shinyglass-0309000"></a></h2>
+<div class="section level3">
+<h3 id="development-unreleased-0-3-0-9000">Development (unreleased)<a class="anchor" aria-label="anchor" href="#development-unreleased-0-3-0-9000"></a></h3>
+<p>iOS 27 Liquid Glass alignment (announced 9 Sep 2026; public release 14 Sep 2026). Liquid Glass shipped in iOS 26; 0.3.0 already covers the continuous Ultra Clear to Tinted slider, diffusion blur, rim/lip, chromatic edges, and accessibility. This development build closes the remaining visual lag.</p>
+<ul><li>Darker edge ring (lip, side stroke, outer border) and brighter specular / highlight tokens for depth and separation, in both CSS packs and the Ultra Clear → Tinted intensity lerp. Light/dark fill alphas are unchanged.</li>
+<li>Stronger uniform toolbar / scroll-edge treatment when content scrolls under floating nav chrome (<code>body.glass-scroll-edge</code>). This is a contrast treatment, not a motion effect: it stays on while content is under the bar (unlike compact-on-scroll-down), remains under <code>prefers-reduced-motion</code>, and does not override <code>prefers-reduced-transparency</code> (still forces Tinted).</li>
+<li>Docs: the in-app intensity control mirrors iOS 27 Settings → Appearance → Liquid Glass. Browsers cannot read the OS slider, so the app control is the supported way to match that look.</li>
+<li>Dark bslib sidebar and page-sidebar nav keep rim/lip/side-stroke edges instead of dropping to a shadow-only look.</li>
+<li>Layout polish for any <code><a href="../reference/glass_theme.html">glass_theme()</a></code> app (not demo-specific): page-level horizontal overflow is clipped so wide DT / gt / plotly hosts scroll inside the card; DT tables use fixed layout and wrapping headers so columns stay discoverable in a <code>page_sidebar</code> split at ~1280px; theme switches hide stale ggplot ink until the new image arrives and snap plotly axis text to the live pack.</li>
+<li>Overlay menus escape glass containment: shinyWidgets Virtual Select defaults to <code>dropboxWrapper = "body"</code>, <code>position = "bottom"</code>, and <code>zIndex = 1080</code> unless the app sets those options (or <code>keepAlwaysOpen</code>). The same z-index applies to portaled <code>.vscomp-*</code>, <code>.pop-comp-wrapper</code>, and bootstrap-select menus so backdrop-filter / overflow on cards cannot pin a dropdown over nearby chrome.</li>
+<li>Example apps keep explicit layouts that read well at laptop width: dashboard stacks the iris table under the plots; plotly + gt waits until <code>xxl</code> for a 6/6 split and uses percent <code>cols_width()</code>; Olympics Virtual Select repeats the portal args for clarity.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="shinyglass-030">shinyglass 0.3.0<a class="anchor" aria-label="anchor" href="#shinyglass-030"></a></h2><p class="text-muted">CRAN release: 2026-09-09</p>
 <div class="section level3">

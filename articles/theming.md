@@ -109,8 +109,10 @@ glass_theme(
 `material = "regular"` is the adaptive Tahoe-style fill (default). Use
 `"clear"` when chrome sits over rich media and labels stay bold.
 
-Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted control
-(same idea as iOS 27 Settings → Appearance → Liquid Glass):
+Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted
+control. It mirrors iOS 27 **Settings → Appearance → Liquid Glass**. The
+web cannot read that OS slider, so the in-app control is intentional —
+it is the supported way to match the system look from a Shiny app:
 
 ``` r
 
@@ -203,6 +205,10 @@ When the user prefers reduced motion (`prefers-reduced-motion: reduce`):
 - Pointer specular tracking is skipped
 - Content tint sampling is skipped
 - Decorative transitions on cards/inputs/nav are removed
+
+The scroll-edge toolbar densify (`body.glass-scroll-edge`) stays on: it
+is a contrast treatment for content under floating bars, not a motion
+effect. Reduced transparency still forces the Tinted intensity endpoint.
 
 This is automatic and responds to OS preference changes while the app is
 open. Reduced-transparency changes also update the surfaces without

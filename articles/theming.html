@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@
       <h1>Theming and light/dark</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/v0.3.0/vignettes/theming.Rmd" class="external-link"><code>vignettes/theming.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/main/vignettes/theming.Rmd" class="external-link"><code>vignettes/theming.Rmd</code></a></small>
       <div class="d-none name"><code>theming.Rmd</code></div>
     </div>
 
@@ -205,7 +205,10 @@ server can stay in sync.</p>
 (default). Use <code>"clear"</code> when chrome sits over rich media and
 labels stay bold.</p>
 <p>Use [glass_intensity_slider()] for a live Ultra Clear → Tinted
-control (same idea as iOS 27 Settings → Appearance → Liquid Glass):</p>
+control. It mirrors iOS 27 <strong>Settings → Appearance → Liquid
+Glass</strong>. The web cannot read that OS slider, so the in-app
+control is intentional — it is the supported way to match the system
+look from a Shiny app:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span>, value <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span></span></code></pre></div>
 <p>All three JS behaviors default to <code>TRUE</code> (same as 0.1.x).
@@ -295,6 +298,10 @@ those packages. [glass_plot_colors()] returns <code>ink</code>,
 <li>Content tint sampling is skipped</li>
 <li>Decorative transitions on cards/inputs/nav are removed</li>
 </ul>
+<p>The scroll-edge toolbar densify (<code>body.glass-scroll-edge</code>)
+stays on: it is a contrast treatment for content under floating bars,
+not a motion effect. Reduced transparency still forces the Tinted
+intensity endpoint.</p>
 <p>This is automatic and responds to OS preference changes while the app
 is open. Reduced-transparency changes also update the surfaces without
 changing the requested slider value.</p>

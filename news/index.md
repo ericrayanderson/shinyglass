@@ -1,5 +1,49 @@
 # Changelog
 
+## shinyglass 0.3.0.9000
+
+### Development (unreleased)
+
+iOS 27 Liquid Glass alignment (announced 9 Sep 2026; public release 14
+Sep 2026). Liquid Glass shipped in iOS 26; 0.3.0 already covers the
+continuous Ultra Clear to Tinted slider, diffusion blur, rim/lip,
+chromatic edges, and accessibility. This development build closes the
+remaining visual lag.
+
+- Darker edge ring (lip, side stroke, outer border) and brighter
+  specular / highlight tokens for depth and separation, in both CSS
+  packs and the Ultra Clear → Tinted intensity lerp. Light/dark fill
+  alphas are unchanged.
+- Stronger uniform toolbar / scroll-edge treatment when content scrolls
+  under floating nav chrome (`body.glass-scroll-edge`). This is a
+  contrast treatment, not a motion effect: it stays on while content is
+  under the bar (unlike compact-on-scroll-down), remains under
+  `prefers-reduced-motion`, and does not override
+  `prefers-reduced-transparency` (still forces Tinted).
+- Docs: the in-app intensity control mirrors iOS 27 Settings →
+  Appearance → Liquid Glass. Browsers cannot read the OS slider, so the
+  app control is the supported way to match that look.
+- Dark bslib sidebar and page-sidebar nav keep rim/lip/side-stroke edges
+  instead of dropping to a shadow-only look.
+- Layout polish for any
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+  app (not demo-specific): page-level horizontal overflow is clipped so
+  wide DT / gt / plotly hosts scroll inside the card; DT tables use
+  fixed layout and wrapping headers so columns stay discoverable in a
+  `page_sidebar` split at ~1280px; theme switches hide stale ggplot ink
+  until the new image arrives and snap plotly axis text to the live
+  pack.
+- Overlay menus escape glass containment: shinyWidgets Virtual Select
+  defaults to `dropboxWrapper = "body"`, `position = "bottom"`, and
+  `zIndex = 1080` unless the app sets those options (or
+  `keepAlwaysOpen`). The same z-index applies to portaled `.vscomp-*`,
+  `.pop-comp-wrapper`, and bootstrap-select menus so backdrop-filter /
+  overflow on cards cannot pin a dropdown over nearby chrome.
+- Example apps keep explicit layouts that read well at laptop width:
+  dashboard stacks the iris table under the plots; plotly + gt waits
+  until `xxl` for a 6/6 split and uses percent `cols_width()`; Olympics
+  Virtual Select repeats the portal args for clarity.
+
 ## shinyglass 0.3.0
 
 CRAN release: 2026-09-09
