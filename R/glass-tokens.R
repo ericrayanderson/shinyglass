@@ -27,13 +27,17 @@ glass_scenes <- function() {
 }
 
 .glass_normalize_scene <- function(scene) {
-  if (is.null(scene)) {
-    return("default")
+  choices <- .glass_scene_names()
+  if (is.null(scene) || length(scene) == 0L) {
+    return(choices[[1]])
   }
-  # match.arg() also accepts the full default vector from glass_theme()
-  # (picks the first choice). Do not use && / nzchar() on that vector —
-  # R 4.4+ rejects length > 1 in &&.
-  match.arg(scene, .glass_scene_names())
+  scene <- as.character(scene)
+  # glass_theme() default is the full choices vector; match.arg() only
+  # accepts length > 1 when arg is identical to choices.
+  if (length(scene) > 1L) {
+    scene <- scene[[1]]
+  }
+  match.arg(scene, choices)
 }
 
 #' Scene picker for wallpaper packs

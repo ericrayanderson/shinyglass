@@ -636,6 +636,7 @@ test_that("update_glass_theme sends plot_surface", {
 test_that("default glass_theme() scene and empty tokens do not error", {
   skip_if_not_installed("bslib")
   expect_s3_class(glass_theme(), "bs_theme")
+  expect_equal(.glass_normalize_scene(.glass_scene_names()), "default")
   expect_equal(.glass_normalize_scene(c("default", "tahoe", "dusk")), "default")
   expect_equal(.glass_normalize_token_list(NULL), list())
 })
