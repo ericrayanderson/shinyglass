@@ -127,11 +127,13 @@ class GlassTheme(Theme):
         preset: Preset,
         *args,
         precompiled_css: Path | None = None,
+        plot_surface: str = "clear",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._glass_preset = preset
         self._precompiled_css = precompiled_css
+        self._plot_surface = "opaque" if plot_surface == "opaque" else "clear"
 
     def _html_dependencies(self) -> list[HTMLDependency]:
         if self._precompiled_css is not None:
@@ -166,6 +168,7 @@ class GlassTheme(Theme):
                     "return mode==='dark'?'dark':'light';}"
                     "root.dataset.glassPreset=resolve(p);"
                     f"root.dataset.glassIntensity='{_DEFAULT_INTENSITY}';"
+                    f"root.dataset.glassPlotSurface='{self._plot_surface}';"
                     "})();</script>"
                 ),
             )
@@ -194,6 +197,7 @@ def glass_theme(
     saturation: float | int = _DEFAULT_SATURATION,
     radius: str = _DEFAULT_RADIUS,
     intensity: float = _DEFAULT_INTENSITY,
+    plot_surface: str = "clear",
     *,
     base: str | None = None,
     _allow_compile: bool = False,
@@ -222,12 +226,17 @@ def glass_theme(
         Default border radius for glass surfaces (CSS length).
     intensity
         Ultra Clear (``0``) to Tinted (``1``). Default ``0.45``.
+    plot_surface
+        ``"clear"`` (default, wallpaper show-through) or ``"opaque"``
+        (denser plot / table panels).
     base
         Shiny ``Theme`` preset base. Defaults to ``"bootstrap"`` (light) or
         ``"darkly"`` (dark). Ignored when loading precompiled CSS.
     """
     if preset not in ("light", "dark", "auto"):
         raise ValueError('preset must be "light", "dark", or "auto"')
+    if plot_surface not in ("clear", "opaque"):
+        raise ValueError('plot_surface must be "clear" or "opaque"')
 
     use_precompiled = (
         not _allow_compile
@@ -245,6 +254,7 @@ def glass_theme(
             "bootstrap",  # unused when precompiled; required by Theme.__init__
             name=f"shinyglass-{preset}",
             precompiled_css=css_path,
+            plot_surface=plot_surface,
         )
 
     # Runtime Sass compile path (custom knobs, vendor script, or no static/)
@@ -266,6 +276,7 @@ def glass_theme(
         name=f"shinyglass-{preset}",
         include_paths=[str(scss.parent)],
         precompiled_css=None,
+        plot_surface=plot_surface,
     )
 
     theme = theme.add_defaults(

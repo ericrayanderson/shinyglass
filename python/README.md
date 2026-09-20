@@ -55,6 +55,7 @@ app = App(app_ui, None)
 | `saturation` | `200` | Backdrop saturate % |
 | `radius` | `"1.5rem"` | Corner radius |
 | `intensity` | `0.45` | Ultra Clear (`0`) to Tinted (`1`); mirrors iOS 27 Settings → Appearance → Liquid Glass (the web cannot read the OS slider) |
+| `plot_surface` | `"clear"` | `"opaque"` densifies plot / table hosts (~94% panel); chrome stays glass |
 
 ## Demo
 

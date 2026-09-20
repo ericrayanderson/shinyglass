@@ -4,13 +4,18 @@
 \alias{plotly_glass}
 \title{plotly layout that matches glass chrome}
 \usage{
-plotly_glass(p = NULL, preset = NULL, input = NULL)
+plotly_glass(
+  p = NULL,
+  preset = NULL,
+  input = NULL,
+  surface = c("clear", "opaque")
+)
 }
 \arguments{
 \item{p}{Optional plotly object. When \code{NULL}, returns a named list of
 layout arguments.}
 
-\item{preset, input}{See \code{\link[=glass_plot_colors]{glass_plot_colors()}}.}
+\item{preset, input, surface}{See \code{\link[=glass_plot_colors]{glass_plot_colors()}}.}
 }
 \value{
 \code{p} with layout applied, or a list of layout arguments.

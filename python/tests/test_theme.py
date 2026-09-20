@@ -70,6 +70,27 @@ def test_invalid_preset():
         glass_theme(preset="neon")  # type: ignore[arg-type]
 
 
+def test_plot_surface_marked_in_head():
+    theme = glass_theme(plot_surface="opaque")
+    preset = next(d for d in theme._html_dependencies() if d.name == "shinyglass-preset")
+    markup = str(preset.head or "")
+    assert "glassPlotSurface='opaque'" in markup
+    with pytest.raises(ValueError, match="plot_surface"):
+        glass_theme(plot_surface="frosted")
+
+
+def test_vendored_scss_has_ios27_nudge_and_plot_panel():
+    scss = scss_path().read_text(encoding="utf-8")
+    assert "--glass-border: rgba(255, 255, 255, 0.78)" in scss
+    assert "--glass-border: rgba(255, 255, 255, 0.44)" in scss
+    assert "--glass-specular: rgba(255, 255, 255, 0.64)" in scss
+    assert "data-glass-plot-surface" in scss
+    assert "glass-plot-surface-opaque" in scss
+    js = js_dir().joinpath("shiny-glass.js").read_text(encoding="utf-8")
+    assert "setPlotSurface" in js
+    assert "borderA: 0.36" in js
+
+
 def test_auto_preset_uses_light_pack_and_marks_mode():
     theme = glass_theme(preset="auto")
     assert theme._glass_preset == "auto"

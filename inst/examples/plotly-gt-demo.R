@@ -36,7 +36,7 @@ glass_preset <- match.arg(
 
 ui <- page_sidebar(
   title = "plotly + gt + glass",
-  theme = glass_theme(preset = glass_preset),
+  theme = glass_theme(preset = glass_preset, plot_surface = "opaque"),
   fillable = TRUE,
   if (has_waiter) use_waiter() else NULL,
   if (has_waiter) waiter_show_on_load(spin_fading_circles(), color = "rgba(0,0,0,0.35)") else NULL,
@@ -59,6 +59,11 @@ ui <- page_sidebar(
       width = "100%"
     ),
     actionButton("reload", "Refresh plot", class = "btn-primary", width = "100%"),
+    tags$hr(),
+    tags$small(
+      class = "text-muted",
+      "Plot / table hosts use plot_surface = \"opaque\" so dense charts stay readable; chrome stays Liquid Glass."
+    ),
     tags$hr(),
     tags$small(
       class = "text-muted",

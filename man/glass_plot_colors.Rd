@@ -4,16 +4,21 @@
 \alias{glass_plot_colors}
 \title{Ink and grid colors for the current glass appearance}
 \usage{
-glass_plot_colors(preset = NULL, input = NULL)
+glass_plot_colors(preset = NULL, input = NULL, surface = c("clear", "opaque"))
 }
 \arguments{
 \item{preset}{\code{"light"} or \code{"dark"}. When \code{NULL}, uses
 \code{\link[=glass_resolved_preset]{glass_resolved_preset()}} on \code{input}.}
 
 \item{input}{Optional Shiny \code{input} (used when \code{preset} is \code{NULL}).}
+
+\item{surface}{\code{"clear"} (transparent paper, default) or \code{"opaque"}
+(~94\% panel fill). Pair \code{"opaque"} with \code{\link[=glass_theme]{glass_theme()}}
+\code{plot_surface = "opaque"} when the host CSS is not enough (for example
+exported ggplot images).}
 }
 \value{
-A list with \code{preset}, \code{ink}, \code{grid}, \code{fill}, and \code{paper}.
+A list with \code{preset}, \code{ink}, \code{grid}, \code{fill}, \code{paper}, and \code{surface}.
 }
 \description{
 Ink and grid colors for the current glass appearance

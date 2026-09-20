@@ -4,12 +4,17 @@
 \alias{gt_theme_glass}
 \title{gt table options that match glass chrome}
 \usage{
-gt_theme_glass(data, preset = NULL, input = NULL)
+gt_theme_glass(
+  data,
+  preset = NULL,
+  input = NULL,
+  surface = c("clear", "opaque")
+)
 }
 \arguments{
 \item{data}{A \code{\link[gt:gt]{gt::gt()}} table (or data frame, which is passed to \code{gt()}).}
 
-\item{preset, input}{See \code{\link[=glass_plot_colors]{glass_plot_colors()}}.}
+\item{preset, input, surface}{See \code{\link[=glass_plot_colors]{glass_plot_colors()}}.}
 }
 \value{
 A gt table.

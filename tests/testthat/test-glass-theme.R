@@ -557,6 +557,11 @@ test_that("glass_plot_colors and theme_glass follow preset", {
   expect_equal(pal$ink, "#f5f5f7")
   pal_l <- glass_plot_colors("light")
   expect_equal(pal_l$paper, "rgba(0,0,0,0)")
+  pal_o <- glass_plot_colors("light", surface = "opaque")
+  expect_equal(pal_o$surface, "opaque")
+  expect_equal(pal_o$paper, "rgba(245,245,247,0.94)")
+  pal_od <- glass_plot_colors("dark", surface = "opaque")
+  expect_equal(pal_od$paper, "rgba(28,28,30,0.94)")
   skip_if_not_installed("ggplot2")
   th <- theme_glass("dark")
   expect_s3_class(th, "theme")
@@ -564,6 +569,10 @@ test_that("glass_plot_colors and theme_glass follow preset", {
     ggplot2::geom_point() +
     theme_glass("light")
   expect_silent(ggplot2::ggplotGrob(p))
+  p_opaque <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) +
+    ggplot2::geom_point() +
+    theme_glass("light", surface = "opaque")
+  expect_silent(ggplot2::ggplotGrob(p_opaque))
 })
 
 test_that("compiled CSS includes scenes, wells, and forced-colors", {
@@ -589,4 +598,43 @@ test_that("compiled CSS includes scenes, wells, and forced-colors", {
   expect_match(css, "prefers-contrast")
   expect_match(css, "--glass-stroke-side")
   expect_match(css, "glass-orb-drift")
+  expect_match(css, "data-glass-plot-surface")
+  expect_match(css, "glass-plot-surface-opaque")
+  expect_match(css, "--glass-plot-panel")
+})
+
+test_that("plot_surface is marked in the head script", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(plot_surface = "opaque")
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, 'var plotSurface="opaque"', fixed = TRUE)
+  expect_match(head, "glassPlotSurface=plotSurface", fixed = TRUE)
+  expect_error(glass_theme(plot_surface = "frosted"))
+})
+
+test_that("update_glass_theme sends plot_surface", {
+  skip_if_not_installed("shiny")
+  msgs <- list()
+  session <- list(
+    sendCustomMessage = function(type, message) {
+      msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+    }
+  )
+  class(session) <- "ShinySession"
+  update_glass_theme(session, plot_surface = "opaque")
+  expect_equal(msgs[[1]]$type, "shinyglass")
+  expect_equal(msgs[[1]]$message$plot_surface, "opaque")
+})
+
+test_that("compiled CSS and JS ship shipping-iOS-27 edge tokens", {
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "setPlotSurface")
+  expect_match(js, "borderA: 0.36")
+  expect_match(js, "specularA: 0.52")
+  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.78\\)")
+  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.44\\)")
+  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 1\\)")
+  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.64\\)")
 })

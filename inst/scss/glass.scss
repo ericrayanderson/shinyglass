@@ -141,16 +141,16 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-content: rgba(255, 255, 255, 0.34);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.48);
   // Defined borders (iOS 27 relies less on drop-shadow alone).
-  // 27 refinement: darker outer/lip/side stroke, brighter rim + specular.
-  --glass-border: rgba(255, 255, 255, 0.72);
-  --glass-border-outer: rgba(0, 0, 0, 0.12);
-  --glass-rim: rgba(255, 255, 255, 0.96);
-  --glass-lip: rgba(0, 0, 0, 0.17);
+  // Shipping iOS 27 QA: darker outer lip + raised border alpha, brighter rim.
+  --glass-border: rgba(255, 255, 255, 0.78);
+  --glass-border-outer: rgba(0, 0, 0, 0.15);
+  --glass-rim: rgba(255, 255, 255, 1);
+  --glass-lip: rgba(0, 0, 0, 0.20);
   --glass-shadow: rgba(0, 0, 0, 0.10);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.16);
   --glass-highlight: rgba(255, 255, 255, 1);
-  --glass-specular: rgba(255, 255, 255, 0.90);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.64);
+  --glass-specular: rgba(255, 255, 255, 1);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.74);
   // Subtle chromatic edge (lensing cue)
   --glass-refract-a: rgba(120, 200, 255, 0.22);
   --glass-refract-b: rgba(255, 140, 200, 0.14);
@@ -160,9 +160,9 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-1: rgba(0, 122, 255, 0.30);
   --glass-orb-2: rgba(175, 82, 222, 0.22);
   --glass-orb-3: rgba(255, 149, 0, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.36);
-  --glass-stroke-side: rgba(20, 20, 24, 0.22);
-  --glass-stroke-tb: rgba(255, 255, 255, 0.96);
+  --glass-inner-glow: rgba(255, 255, 255, 0.40);
+  --glass-stroke-side: rgba(20, 20, 24, 0.26);
+  --glass-stroke-tb: rgba(255, 255, 255, 1);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(29, 29, 31, 0.72);
@@ -180,15 +180,15 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-hover: rgba(255, 255, 255, 0.22);
   --glass-bg-content: rgba(255, 255, 255, 0.12);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.18);
-  --glass-border: rgba(255, 255, 255, 0.36);
-  --glass-border-outer: rgba(0, 0, 0, 0.64);
-  --glass-rim: rgba(255, 255, 255, 0.58);
-  --glass-lip: rgba(0, 0, 0, 0.66);
+  --glass-border: rgba(255, 255, 255, 0.44);
+  --glass-border-outer: rgba(0, 0, 0, 0.72);
+  --glass-rim: rgba(255, 255, 255, 0.68);
+  --glass-lip: rgba(0, 0, 0, 0.74);
   --glass-shadow: rgba(0, 0, 0, 0.52);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.68);
-  --glass-highlight: rgba(255, 255, 255, 0.46);
-  --glass-specular: rgba(255, 255, 255, 0.54);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.34);
+  --glass-highlight: rgba(255, 255, 255, 0.54);
+  --glass-specular: rgba(255, 255, 255, 0.64);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.40);
   --glass-refract-a: rgba(100, 200, 255, 0.18);
   --glass-refract-b: rgba(220, 140, 255, 0.12);
   --glass-menu-bg: rgba(58, 58, 60, 0.86);
@@ -197,9 +197,9 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-1: rgba(10, 132, 255, 0.42);
   --glass-orb-2: rgba(191, 90, 242, 0.28);
   --glass-orb-3: rgba(255, 159, 10, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.20);
-  --glass-stroke-side: rgba(0, 0, 0, 0.74);
-  --glass-stroke-tb: rgba(255, 255, 255, 0.42);
+  --glass-inner-glow: rgba(255, 255, 255, 0.24);
+  --glass-stroke-side: rgba(0, 0, 0, 0.84);
+  --glass-stroke-tb: rgba(255, 255, 255, 0.50);
   --bs-body-bg: var(--glass-body-bg);
   --bs-body-color: var(--glass-body-color);
   --bs-secondary-color: rgba(245, 245, 247, 0.72);
@@ -217,7 +217,7 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-hover: rgba(255, 255, 255, 0.22);
   --glass-bg-content: rgba(255, 255, 255, 0.28);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.40);
-  --glass-border: rgba(255, 255, 255, 0.48);
+  --glass-border: rgba(255, 255, 255, 0.54);
 }
 
 :root[data-glass-material="clear"][data-glass-preset="dark"] {
@@ -225,7 +225,7 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-hover: rgba(255, 255, 255, 0.11);
   --glass-bg-content: rgba(255, 255, 255, 0.08);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.14);
-  --glass-border: rgba(255, 255, 255, 0.20);
+  --glass-border: rgba(255, 255, 255, 0.28);
 }
 
 // clip (not hidden) so wide tables cannot grow page scrollWidth and sticky
@@ -325,11 +325,11 @@ body::after {
   box-shadow:
     0 1px 1px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
     0 10px 28px color-mix(in srgb, var(--glass-shadow) 62%, transparent),
-    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.12)),
+    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.15)),
     inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
     inset 0 -1px 0 var(--glass-lip),
-    inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
-    inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
+    inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
+    inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
     inset 0 10px 22px color-mix(in srgb, var(--glass-highlight) 28%, transparent),
     inset 0.7px 0 0 var(--glass-refract-a, transparent),
     inset -0.7px 0 0 var(--glass-refract-b, transparent);
@@ -788,14 +788,14 @@ body.glass-scroll-edge {
       brightness(1.02)
       contrast(1.06);
     box-shadow:
-      0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.12)),
+      0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.15)),
       0 14px 36px color-mix(in srgb, var(--glass-body-bg) 55%, transparent),
       0 28px 48px -12px color-mix(in srgb, var(--glass-body-bg) 40%, transparent),
       0 1px 0 color-mix(in srgb, var(--glass-lip) 55%, transparent),
       inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
       inset 0 -1.5px 0 color-mix(in srgb, var(--glass-lip) 80%, transparent),
-      inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
-      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18));
+      inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
+      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22));
   }
 
   // Sidebar sits over page orbs; densify slightly when the page has scrolled
@@ -3286,6 +3286,109 @@ body .Reactable {
 .shiny-html-output:has(.gt_table) {
   // restore a little inset so glass rim of .gt_table still breathes
   padding: 0.15rem !important;
+}
+
+// ---------------------------------------------------------------------------
+// Opaque / regular plot + table panels
+//
+// HIG: Liquid Glass on nav/controls; denser material for charts and tables.
+// Default remains clear (wallpaper show-through). Opt in with
+// glass_theme(plot_surface = "opaque"), update_glass_theme(plot_surface =),
+// or the .glass-plot-surface-opaque helper on a host / ancestor.
+// ---------------------------------------------------------------------------
+
+:root {
+  --glass-plot-panel: color-mix(in srgb, var(--glass-body-bg) 94%, var(--glass-menu-bg));
+}
+
+:root[data-glass-preset="dark"] {
+  --glass-plot-panel: color-mix(in srgb, var(--glass-body-bg) 92%, #1c1c1e);
+}
+
+@mixin glass-plot-panel-opaque {
+  background: var(--glass-plot-panel) !important;
+  background-color: var(--glass-plot-panel) !important;
+  color: var(--glass-body-color) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@mixin glass-plot-panel-hosts {
+  .shiny-plot-output,
+  .shiny-image-output,
+  .js-plotly-plot,
+  .plotly.html-widget,
+  .plotly.html-widget-output,
+  .dataTables_wrapper,
+  .gt_table,
+  .handsontable,
+  .billboarder-output,
+  .apexchart-output {
+    @include glass-plot-panel-opaque;
+  }
+
+  // Nested hosts drop the extra glass frame by default so wallpaper shows
+  // through. Opaque mode restores a readable panel without a second rim.
+  .card .shiny-plot-output,
+  .card .shiny-image-output,
+  .bslib-card .shiny-plot-output,
+  .bslib-card .shiny-image-output,
+  .card .dataTables_wrapper,
+  .bslib-card .dataTables_wrapper,
+  .card .shiny-html-output:has(.dataTables_wrapper),
+  .bslib-card .shiny-html-output:has(.dataTables_wrapper),
+  .card .shiny-html-output:has(.gt_table),
+  .bslib-card .shiny-html-output:has(.gt_table),
+  .card .js-plotly-plot,
+  .bslib-card .js-plotly-plot,
+  .card .plotly.html-widget,
+  .bslib-card .plotly.html-widget {
+    @include glass-plot-panel-opaque;
+    border: none !important;
+    box-shadow: none !important;
+
+    &::before,
+    &::after {
+      content: none !important;
+      display: none !important;
+    }
+  }
+
+  .gt_heading,
+  .gt_title,
+  .gt_subtitle,
+  .gt_caption,
+  .gt_row,
+  .gt_stub,
+  .gt_table_body {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  .gt_col_headings,
+  .gt_col_heading,
+  .gt_column_spanner,
+  .gt_column_spanner_outer,
+  .gt_stub_head {
+    background: color-mix(in srgb, var(--glass-plot-panel) 88%, var(--glass-bg-hover)) !important;
+    background-color: color-mix(in srgb, var(--glass-plot-panel) 88%, var(--glass-bg-hover)) !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  .js-plotly-plot .plotly,
+  .js-plotly-plot .plot-container {
+    background: transparent !important;
+  }
+}
+
+:root[data-glass-plot-surface="opaque"] {
+  @include glass-plot-panel-hosts;
+}
+
+.glass-plot-surface-opaque {
+  @include glass-plot-panel-opaque;
+  @include glass-plot-panel-hosts;
 }
 
 // ---------------------------------------------------------------------------
