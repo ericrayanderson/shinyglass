@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "shinyglass"
-version = "0.1.0.9000"
+version = "0.4.0"
 description = "Liquid Glass themes for Shiny for Python"
 readme = "README.md"
 requires-python = ">=3.9"

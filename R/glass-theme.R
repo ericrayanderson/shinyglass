@@ -54,14 +54,11 @@
 #'
 #' @examples
 #' theme <- glass_theme()
-#' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
-#' auto <- glass_theme(preset = "auto", tint = FALSE)
-#' clear <- glass_theme(material = "clear")
-#' plots <- glass_theme(plot_surface = "opaque")
-#' remembered <- glass_theme(persist = TRUE, scene = "tahoe")
-#' aurora <- glass_theme(scene = "aurora")
-#' capture <- glass_theme(flatten = TRUE)
-#' custom <- glass_theme(tokens = list(blur = "28px", radius = "1.25rem"))
+#' opaque <- glass_theme(
+#'   plot_surface = "opaque",
+#'   scene = "aurora",
+#'   tokens = list(blur = "28px")
+#' )
 #'
 #' if (interactive()) {
 #'   library(shiny)

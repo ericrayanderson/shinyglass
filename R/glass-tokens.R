@@ -9,7 +9,7 @@
 #' @export
 #' @examples
 #' names(glass_scenes())
-#' glass_theme(scene = "aurora")
+#' glass_scenes()[["aurora"]]
 glass_scenes <- function() {
   c(
     default = "Default orbs",

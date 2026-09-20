@@ -13,6 +13,7 @@ CRAN
 css
 darkly
 DataTables
+densifies
 Datepicker
 devtools
 dreamRs
@@ -80,6 +81,7 @@ shinydashboardPlus
 shinyglass
 Shinylive
 shinyWidgets
+show-through
 showModal
 specular
 SweetAlert
@@ -99,6 +101,7 @@ urlchecker
 vendored
 viewport
 viewports
+Virtual
 waiter
 wallpaper
 WCAG

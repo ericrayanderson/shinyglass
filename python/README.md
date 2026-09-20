@@ -115,5 +115,5 @@ The Python CI jobs verify editable and isolated wheel installations.
 
 ## Not yet
 
-- Published PyPI release (version still `0.1.0.9000` dev)
+- Published PyPI release (package version tracks R **0.4.0**; not on PyPI)
 - Full R demo gallery parity

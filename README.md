@@ -16,11 +16,13 @@ Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstu
 
 ## Install
 
+CRAN **0.4.0**:
+
 ```r
 install.packages("shinyglass")
 ```
 
-For the latest development features:
+Development builds (GitHub):
 
 ```r
 # install.packages("remotes")
