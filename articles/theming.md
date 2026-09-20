@@ -60,11 +60,17 @@ server <- function(input, output, session) {
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 accepts:
 
-| Argument  | Effect                                            |
-|-----------|---------------------------------------------------|
-| `preset`  | `"light"` / `"dark"` / `"auto"`                   |
-| `tint`    | Content-aware ambient color from plots/images     |
+| Argument | Effect |
+|----|----|
+| `preset` | `"light"` / `"dark"` / `"auto"` |
+| `tint` | Content-aware ambient color from plots/images |
 | `primary` | Live accent via CSS variables (`--bs-primary`, …) |
+| `intensity` | Ultra Clear (`0`) → Tinted (`1`) |
+| `material` | `"regular"` / `"clear"` |
+| `plot_surface` | `"clear"` / `"opaque"` |
+| `scene` | Named wallpaper pack ([`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)) |
+| `flatten` | Print / capture mode (see \[glass_flatten()\]) |
+| `tokens` | Named `--glass-*` overrides (\[glass_css_tokens()\]) |
 
 `primary` updates Bootstrap accent CSS variables so buttons, checked
 controls, and other accent surfaces follow without a reload. A few
@@ -118,6 +124,52 @@ stronger materials for content). That is also the CSS class
 `update_glass_theme(session, plot_surface = "opaque")` /
 `window.shinyglass.setPlotSurface("opaque")` switch it live.
 
+## Plot and table surfaces
+
+Apple HIG keeps Liquid Glass on chrome (nav, sidebars, controls) and
+uses a denser material for content that must stay readable. shinyglass
+follows that split:
+
+| Host | Clear (default) | Opaque |
+|----|----|----|
+| ggplot ([`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)) | Transparent paper | ~94% panel fill |
+| plotly ([`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md)) | Transparent paper/plot | Same paper token |
+| gt ([`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)) | Transparent table chrome | Panel + header wash |
+| DT | CSS host is translucent | `--glass-plot-panel` fill |
+
+[`glass_plot_surface_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_surface_input.md)
+is the drop-in control. Optional
+[`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md)
+keeps DataTables inside the card (`scrollX`, wrapping headers) — the
+visible skin is still package CSS, not a DT theme dialect.
+
+``` r
+
+ui <- fluidPage(
+  theme = glass_theme(plot_surface = "opaque"),
+  glass_plot_surface_input(),
+  plotOutput("p"),
+  DT::DTOutput("tbl")
+)
+```
+
+## Public CSS tokens
+
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
+lists stable `--glass-*` variables. Override them without forking SCSS:
+
+``` r
+
+th <- glass_theme(tokens = list(blur = "28px", radius = "1.25rem"))
+# or later:
+# th <- glass_add_tokens(th, list(`--glass-bg` = "rgba(255,255,255,0.3)"))
+```
+
+`glass_token_pack("light")` / `glass_token_pack("dark")` returns the
+default values for a pack. Live updates:
+`update_glass_theme(session, tokens = list(blur = "40px"))` or
+`window.shinyglass.setTokens({ "--glass-blur": "40px" })`.
+
 Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted
 control. It mirrors iOS 27 **Settings → Appearance → Liquid Glass**. The
 web cannot read that OS slider, so the in-app control is intentional —
@@ -167,6 +219,9 @@ window.shinyglass.setPrimary("#AF52DE");
 window.shinyglass.getPrimary();
 window.shinyglass.setPlotSurface("opaque"); // or "clear"
 window.shinyglass.getPlotSurface();
+window.shinyglass.setScene("aurora");
+window.shinyglass.enterFlatten();
+window.shinyglass.setTokens({ "--glass-blur": "28px" });
 ```
 
 ## Teal
@@ -187,10 +242,32 @@ restores the last look.
 
 ## Wallpaper scenes
 
-`glass_theme(scene = "tahoe")` (or `"dusk"` / `"mesh"`) swaps the page
-gradient and orbs. `wallpaper = "https://..."` paints a frosted photo
-behind the glass. Change scene live with
-`update_glass_theme(session, scene = "dusk")`.
+`glass_theme(scene = "tahoe")` (or `"dusk"` / `"mesh"` / `"aurora"` /
+`"harbor"` / `"grove"`) swaps the page gradient and orbs. See
+\[glass_scenes()\] for ids and labels. `wallpaper = "https://..."`
+paints a frosted photo behind the glass: the photo is blurred and washed
+(`--glass-wallpaper-wash`) so body ink (`#1d1d1f` light / `#f5f5f7`
+dark) stays above a 4.5:1 floor on glass surfaces and a 3:1 floor on
+large chrome. Do not place raw body text on an unwashed photo. Change
+scene live with `update_glass_theme(session, scene = "aurora")` or
+\[glass_scene_input()\].
+
+## Print / export flatten
+
+Backdrop blur and translucent fills break chromote screenshots,
+print-to-PDF, and static HTML. Enter flatten to swap glass fills to the
+opaque menu pack and drop `backdrop-filter`:
+
+``` r
+
+glass_flatten(session, TRUE)   # or update_glass_theme(session, flatten = TRUE)
+# window.shinyglass.enterFlatten()
+# ?glass_flatten=1
+```
+
+`@media print` applies the same rules automatically. Call
+`glass_flatten(session, FALSE)` or `window.shinyglass.exitFlatten()` to
+restore live glass.
 
 ## Plots that match the chrome
 

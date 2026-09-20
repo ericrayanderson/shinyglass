@@ -26,8 +26,10 @@ glass_theme(
   nav_morph = TRUE,
   ambient_motion = TRUE,
   persist = FALSE,
-  scene = c("default", "tahoe", "dusk", "mesh"),
+  scene = c("default", "tahoe", "dusk", "mesh", "aurora", "harbor", "grove"),
   wallpaper = NULL,
+  flatten = FALSE,
+  tokens = NULL,
   ...
 )
 ```
@@ -105,12 +107,29 @@ glass_theme(
 
 - scene:
 
-  Wallpaper scene: `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+  Wallpaper scene id from
+  [`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)
+  (`"default"`, `"tahoe"`, `"dusk"`, `"mesh"`, `"aurora"`, `"harbor"`,
+  `"grove"`).
 
 - wallpaper:
 
   Optional image URL painted as a frosted photo behind the glass (https,
-  data URI, or site-relative path).
+  data URI, or site-relative path). Photos are blurred and washed so
+  body ink stays above the contrast floor (see
+  [`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)).
+
+- flatten:
+
+  `TRUE` starts in print/export flatten mode (no backdrop blur). See
+  [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md).
+
+- tokens:
+
+  Named list of public CSS token overrides (see
+  [`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
+  /
+  [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)).
 
 - ...:
 

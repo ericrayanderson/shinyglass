@@ -18,7 +18,9 @@ update_glass_theme(
   material = NULL,
   plot_surface = NULL,
   ambient_motion = NULL,
-  scene = NULL
+  scene = NULL,
+  flatten = NULL,
+  tokens = NULL
 )
 ```
 
@@ -60,7 +62,19 @@ update_glass_theme(
 
 - scene:
 
-  Optional `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+  Optional scene id from
+  [`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md).
+
+- flatten:
+
+  Optional logical. See
+  [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md).
+
+- tokens:
+
+  Optional named list of CSS token overrides (see
+  [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)).
+  Applied live via CSS variables.
 
 ## Value
 

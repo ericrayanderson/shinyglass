@@ -21,6 +21,7 @@ glass_page(
   scene = "tahoe",
   wallpaper = NULL,
   plot_surface = "clear",
+  flatten = FALSE,
   controls = TRUE,
   theme = NULL
 )
@@ -38,7 +39,7 @@ glass_page(
   Optional page title
   ([`shiny::titlePanel()`](https://rdrr.io/pkg/shiny/man/titlePanel.html)).
 
-- preset, intensity, persist, scene, wallpaper, plot_surface:
+- preset, intensity, persist, scene, wallpaper, plot_surface, flatten:
 
   Forwarded to
   [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).

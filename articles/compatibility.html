@@ -72,7 +72,7 @@
 It targets Bootstrap 5 / bslib surfaces first, then overlays denser
 dashboard stacks where practical.</p>
 <div class="section level2">
-<h2 id="support-matrix-as-of-0-3">Support matrix (as of 0.3)<a class="anchor" aria-label="anchor" href="#support-matrix-as-of-0-3"></a>
+<h2 id="support-matrix-as-of-0-3-0-9000-0-4-0-prep">Support matrix (as of 0.3.0.9000 / 0.4.0 prep)<a class="anchor" aria-label="anchor" href="#support-matrix-as-of-0-3-0-9000-0-4-0-prep"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -223,8 +223,13 @@ missing):</p>
 <li>Prefer bslib page functions when you can — glass was designed around
 them.</li>
 <li>For plotly dark mode, pass transparent <code>paper_bgcolor</code> /
-<code>plot_bgcolor</code> in <code><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout()</a></code> (see
-<code>plotly-gt-demo.R</code>); CSS handles the modebar.</li>
+<code>plot_bgcolor</code> in <code><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout()</a></code> (or
+<code><a href="../reference/plotly_glass.html">plotly_glass()</a></code>) — see <code>plotly-gt-demo.R</code>; CSS
+handles the modebar. Use <code>plot_surface = "opaque"</code> when the
+chart itself needs a panel.</li>
+<li>For print / chromote / PDF, call <code><a href="../reference/glass_flatten.html">glass_flatten()</a></code> or
+open with <code>?glass_flatten=1</code> so backdrop blur does not wash
+out the capture.</li>
 <li>For dark mode in dense AdminLTE apps, re-check value/info box
 contrast after switching preset at runtime.</li>
 <li>

@@ -161,6 +161,34 @@ recompile and no full page reload.</p>
 <td><code>primary</code></td>
 <td>Live accent via CSS variables (<code>--bs-primary</code>, …)</td>
 </tr>
+<tr class="even">
+<td><code>intensity</code></td>
+<td>Ultra Clear (<code>0</code>) → Tinted (<code>1</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>material</code></td>
+<td>
+<code>"regular"</code> / <code>"clear"</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>plot_surface</code></td>
+<td>
+<code>"clear"</code> / <code>"opaque"</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>scene</code></td>
+<td>Named wallpaper pack (<code><a href="../reference/glass_scenes.html">glass_scenes()</a></code>)</td>
+</tr>
+<tr class="even">
+<td><code>flatten</code></td>
+<td>Print / capture mode (see [glass_flatten()])</td>
+</tr>
+<tr class="odd">
+<td><code>tokens</code></td>
+<td>Named <code>--glass-*</code> overrides ([glass_css_tokens()])</td>
+</tr>
 </tbody>
 </table>
 <p><code>primary</code> updates Bootstrap accent CSS variables so
@@ -214,12 +242,81 @@ host or ancestor, and
 <code>update_glass_theme(session, plot_surface = "opaque")</code> /
 <code>window.shinyglass.setPlotSurface("opaque")</code> switch it
 live.</p>
+</div>
+<div class="section level2">
+<h2 id="plot-and-table-surfaces">Plot and table surfaces<a class="anchor" aria-label="anchor" href="#plot-and-table-surfaces"></a>
+</h2>
+<p>Apple HIG keeps Liquid Glass on chrome (nav, sidebars, controls) and
+uses a denser material for content that must stay readable. shinyglass
+follows that split:</p>
+<table class="table">
+<colgroup>
+<col width="19%">
+<col width="54%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th>Host</th>
+<th>Clear (default)</th>
+<th>Opaque</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ggplot (<code><a href="../reference/theme_glass.html">theme_glass()</a></code>)</td>
+<td>Transparent paper</td>
+<td>~94% panel fill</td>
+</tr>
+<tr class="even">
+<td>plotly (<code><a href="../reference/plotly_glass.html">plotly_glass()</a></code>)</td>
+<td>Transparent paper/plot</td>
+<td>Same paper token</td>
+</tr>
+<tr class="odd">
+<td>gt (<code><a href="../reference/gt_theme_glass.html">gt_theme_glass()</a></code>)</td>
+<td>Transparent table chrome</td>
+<td>Panel + header wash</td>
+</tr>
+<tr class="even">
+<td>DT</td>
+<td>CSS host is translucent</td>
+<td>
+<code>--glass-plot-panel</code> fill</td>
+</tr>
+</tbody>
+</table>
+<p><code><a href="../reference/glass_plot_surface_input.html">glass_plot_surface_input()</a></code> is the drop-in control.
+Optional <code><a href="../reference/dt_options_glass.html">dt_options_glass()</a></code> keeps DataTables inside the
+card (<code>scrollX</code>, wrapping headers) — the visible skin is
+still package CSS, not a DT theme dialect.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>plot_surface <span class="op">=</span> <span class="st">"opaque"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/glass_plot_surface_input.html">glass_plot_surface_input</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"p"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/dataTableOutput.html" class="external-link">DTOutput</a></span><span class="op">(</span><span class="st">"tbl"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="public-css-tokens">Public CSS tokens<a class="anchor" aria-label="anchor" href="#public-css-tokens"></a>
+</h2>
+<p><code><a href="../reference/glass_css_tokens.html">glass_css_tokens()</a></code> lists stable <code>--glass-*</code>
+variables. Override them without forking SCSS:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>tokens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>blur <span class="op">=</span> <span class="st">"28px"</span>, radius <span class="op">=</span> <span class="st">"1.25rem"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># or later:</span></span>
+<span><span class="co"># th &lt;- glass_add_tokens(th, list(`--glass-bg` = "rgba(255,255,255,0.3)"))</span></span></code></pre></div>
+<p><code>glass_token_pack("light")</code> /
+<code>glass_token_pack("dark")</code> returns the default values for a
+pack. Live updates:
+<code>update_glass_theme(session, tokens = list(blur = "40px"))</code>
+or
+<code>window.shinyglass.setTokens({ "--glass-blur": "40px" })</code>.</p>
 <p>Use [glass_intensity_slider()] for a live Ultra Clear → Tinted
 control. It mirrors iOS 27 <strong>Settings → Appearance → Liquid
 Glass</strong>. The web cannot read that OS slider, so the in-app
 control is intentional — it is the supported way to match the system
 look from a Shiny app:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span>, value <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span></span></code></pre></div>
 <p>All three JS behaviors default to <code>TRUE</code> (same as 0.1.x).
 They respect <code>prefers-reduced-motion: reduce</code> where relevant.
@@ -233,18 +330,18 @@ tint.</p>
 <p><strong>Breaking in 0.2.0:</strong> light/dark surfaces are dual CSS
 packs, not a Bootswatch <code>darkly</code> rebuild. Prefer CSS custom
 properties over Sass <code>$glass-*</code> tokens when customizing:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="in">:root</span> {</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">36</span><span class="dt">px</span><span class="op">;</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="va">--bs-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span>       <span class="co">/* also updated by update_glass_theme(primary=) */</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="va">--glass-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="in">:root</span> {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="co">/* shared knobs also set by glass_theme(blur=..., radius=...) */</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="va">--glass-blur</span><span class="ch">:</span> <span class="dv">36</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="va">--glass-radius</span><span class="ch">:</span> <span class="dv">1.25</span><span class="dt">rem</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="va">--bs-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span>       <span class="co">/* also updated by update_glass_theme(primary=) */</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="va">--glass-primary</span><span class="ch">:</span> <span class="cn">#007AFF</span><span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>}</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="in">:root</span><span class="ex">[</span><span class="ss">data-glass-preset</span><span class="op">=</span><span class="st">"dark"</span><span class="ex">]</span> {</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="co">/* override a dark-pack value if needed */</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="va">--glass-bg</span><span class="ch">:</span> <span class="fu">rgba(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">0.1</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>}</span></code></pre></div>
 <p>Apps that overrode Sass-only <code>$glass-*</code> tokens should
 target <code>--glass-*</code> or <code>[data-glass-preset="dark"]</code>
 instead.</p>
@@ -252,19 +349,22 @@ instead.</p>
 <div class="section level2">
 <h2 id="client-helpers">Client helpers<a class="anchor" aria-label="anchor" href="#client-helpers"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPlotSurface</span>(<span class="st">"opaque"</span>)<span class="op">;</span> <span class="co">// or "clear"</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPlotSurface</span>()<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPreset</span>(<span class="st">"dark"</span>)<span class="op">;</span> <span class="co">// or "light" / "auto"</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPreset</span>()<span class="op">;</span>       <span class="co">// resolved "light" | "dark"</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPlotSurface</span>(<span class="st">"opaque"</span>)<span class="op">;</span> <span class="co">// or "clear"</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPlotSurface</span>()<span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setScene</span>(<span class="st">"aurora"</span>)<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">enterFlatten</span>()<span class="op">;</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTokens</span>({ <span class="st">"--glass-blur"</span><span class="op">:</span> <span class="st">"28px"</span> })<span class="op">;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="teal">Teal<a class="anchor" aria-label="anchor" href="#teal"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>teal.bs_theme <span class="op">=</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># then teal::init(...) as usual</span></span></code></pre></div>
 </div>
@@ -281,15 +381,36 @@ last look.</p>
 <h2 id="wallpaper-scenes">Wallpaper scenes<a class="anchor" aria-label="anchor" href="#wallpaper-scenes"></a>
 </h2>
 <p><code>glass_theme(scene = "tahoe")</code> (or <code>"dusk"</code> /
-<code>"mesh"</code>) swaps the page gradient and orbs.
+<code>"mesh"</code> / <code>"aurora"</code> / <code>"harbor"</code> /
+<code>"grove"</code>) swaps the page gradient and orbs. See
+[glass_scenes()] for ids and labels.
 <code>wallpaper = "https://..."</code> paints a frosted photo behind the
-glass. Change scene live with
-<code>update_glass_theme(session, scene = "dusk")</code>.</p>
+glass: the photo is blurred and washed
+(<code>--glass-wallpaper-wash</code>) so body ink (<code>#1d1d1f</code>
+light / <code>#f5f5f7</code> dark) stays above a 4.5:1 floor on glass
+surfaces and a 3:1 floor on large chrome. Do not place raw body text on
+an unwashed photo. Change scene live with
+<code>update_glass_theme(session, scene = "aurora")</code> or
+[glass_scene_input()].</p>
+</div>
+<div class="section level2">
+<h2 id="print-export-flatten">Print / export flatten<a class="anchor" aria-label="anchor" href="#print-export-flatten"></a>
+</h2>
+<p>Backdrop blur and translucent fills break chromote screenshots,
+print-to-PDF, and static HTML. Enter flatten to swap glass fills to the
+opaque menu pack and drop <code>backdrop-filter</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_flatten.html">glass_flatten</a></span><span class="op">(</span><span class="va">session</span>, <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># or update_glass_theme(session, flatten = TRUE)</span></span>
+<span><span class="co"># window.shinyglass.enterFlatten()</span></span>
+<span><span class="co"># ?glass_flatten=1</span></span></code></pre></div>
+<p><code>@media print</code> applies the same rules automatically. Call
+<code>glass_flatten(session, FALSE)</code> or
+<code>window.shinyglass.exitFlatten()</code> to restore live glass.</p>
 </div>
 <div class="section level2">
 <h2 id="plots-that-match-the-chrome">Plots that match the chrome<a class="anchor" aria-label="anchor" href="#plots-that-match-the-chrome"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">wt</span>, <span class="va">mpg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -324,7 +445,7 @@ changing the requested slider value.</p>
 <p>To disable only the idle decorative animation, use
 <code>glass_theme(ambient_motion = FALSE)</code>. To disable all
 optional effects, use:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>tint <span class="op">=</span> <span class="cn">FALSE</span>, specular <span class="op">=</span> <span class="cn">FALSE</span>, nav_morph <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>            ambient_motion <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>This retains glass surfaces and blur; it is not a zero-paint-cost

@@ -69,8 +69,10 @@ any other page function that accepts a bslib theme.</p>
 <span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  ambient_motion <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  persist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  scene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"tahoe"</span>, <span class="st">"dusk"</span>, <span class="st">"mesh"</span><span class="op">)</span>,</span>
+<span>  scene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"tahoe"</span>, <span class="st">"dusk"</span>, <span class="st">"mesh"</span>, <span class="st">"aurora"</span>, <span class="st">"harbor"</span>, <span class="st">"grove"</span><span class="op">)</span>,</span>
 <span>  wallpaper <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  flatten <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  tokens <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -147,12 +149,24 @@ and scene in <code>localStorage</code> for this app path. Default <code>FALSE</c
 
 
 <dt id="arg-scene">scene<a class="anchor" aria-label="anchor" href="#arg-scene"></a></dt>
-<dd><p>Wallpaper scene: <code>"default"</code>, <code>"tahoe"</code>, <code>"dusk"</code>, or <code>"mesh"</code>.</p></dd>
+<dd><p>Wallpaper scene id from <code><a href="glass_scenes.html">glass_scenes()</a></code> (<code>"default"</code>,
+<code>"tahoe"</code>, <code>"dusk"</code>, <code>"mesh"</code>, <code>"aurora"</code>, <code>"harbor"</code>, <code>"grove"</code>).</p></dd>
 
 
 <dt id="arg-wallpaper">wallpaper<a class="anchor" aria-label="anchor" href="#arg-wallpaper"></a></dt>
 <dd><p>Optional image URL painted as a frosted photo behind the
-glass (https, data URI, or site-relative path).</p></dd>
+glass (https, data URI, or site-relative path). Photos are blurred and
+washed so body ink stays above the contrast floor (see <code><a href="glass_css_tokens.html">glass_css_tokens()</a></code>).</p></dd>
+
+
+<dt id="arg-flatten">flatten<a class="anchor" aria-label="anchor" href="#arg-flatten"></a></dt>
+<dd><p><code>TRUE</code> starts in print/export flatten mode (no backdrop
+blur). See <code><a href="glass_flatten.html">glass_flatten()</a></code>.</p></dd>
+
+
+<dt id="arg-tokens">tokens<a class="anchor" aria-label="anchor" href="#arg-tokens"></a></dt>
+<dd><p>Named list of public CSS token overrides (see
+<code><a href="glass_css_tokens.html">glass_css_tokens()</a></code> / <code><a href="glass_add_tokens.html">glass_add_tokens()</a></code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

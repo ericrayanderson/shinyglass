@@ -38,8 +38,14 @@ Material density is controlled with
 (Ultra Clear to Tinted, matching iOS 27 Settings -\> Appearance -\>
 Liquid Glass) or `glass_theme(intensity = )`. Use
 `plot_surface = "opaque"` when plots and tables need a denser panel.
-Accent color, blur, saturation, corner radius, and JS behaviors (`tint`,
-`specular`, `nav_morph`) are configurable.
+Named scenes
+([`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)),
+flatten mode
+([`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md)),
+and public CSS tokens
+([`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md))
+are available. Accent color, blur, saturation, corner radius, and JS
+behaviors (`tint`, `specular`, `nav_morph`) are configurable.
 
 For [teal](https://insightsengineering.github.io/teal/) apps, set
 `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
@@ -51,7 +57,8 @@ For [teal](https://insightsengineering.github.io/teal/) apps, set
 [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md),
 [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md),
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md),
-[`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md)
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
 
 ## Author
 

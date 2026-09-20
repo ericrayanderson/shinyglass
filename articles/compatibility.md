@@ -4,7 +4,7 @@ shinyglass is a **theme layer**, not a universal skin. It targets
 Bootstrap 5 / bslib surfaces first, then overlays denser dashboard
 stacks where practical.
 
-## Support matrix (as of 0.3)
+## Support matrix (as of 0.3.0.9000 / 0.4.0 prep)
 
 | Stack | Status | Notes |
 |----|----|----|
@@ -61,7 +61,14 @@ Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_
   them.
 - For plotly dark mode, pass transparent `paper_bgcolor` /
   `plot_bgcolor` in [`layout()`](https://rdrr.io/r/graphics/layout.html)
-  (see `plotly-gt-demo.R`); CSS handles the modebar.
+  (or
+  [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md))
+  — see `plotly-gt-demo.R`; CSS handles the modebar. Use
+  `plot_surface = "opaque"` when the chart itself needs a panel.
+- For print / chromote / PDF, call
+  [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md)
+  or open with `?glass_flatten=1` so backdrop blur does not wash out the
+  capture.
 - For dark mode in dense AdminLTE apps, re-check value/info box contrast
   after switching preset at runtime.
 - `preset = "auto"` is ideal for demos; pin `"light"` or `"dark"` for

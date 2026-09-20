@@ -61,7 +61,9 @@ Requires a page that used <code><a href="glass_theme.html">glass_theme()</a></co
 <span>  material <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_surface <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ambient_motion <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scene <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  scene <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  flatten <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tokens <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,7 +106,16 @@ Tinted (<code>1</code>).</p></dd>
 
 
 <dt id="arg-scene">scene<a class="anchor" aria-label="anchor" href="#arg-scene"></a></dt>
-<dd><p>Optional <code>"default"</code>, <code>"tahoe"</code>, <code>"dusk"</code>, or <code>"mesh"</code>.</p></dd>
+<dd><p>Optional scene id from <code><a href="glass_scenes.html">glass_scenes()</a></code>.</p></dd>
+
+
+<dt id="arg-flatten">flatten<a class="anchor" aria-label="anchor" href="#arg-flatten"></a></dt>
+<dd><p>Optional logical. See <code><a href="glass_flatten.html">glass_flatten()</a></code>.</p></dd>
+
+
+<dt id="arg-tokens">tokens<a class="anchor" aria-label="anchor" href="#arg-tokens"></a></dt>
+<dd><p>Optional named list of CSS token overrides (see
+<code><a href="glass_add_tokens.html">glass_add_tokens()</a></code>). Applied live via CSS variables.</p></dd>
 
 </dl></div>
     <div class="section level2">
