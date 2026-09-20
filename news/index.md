@@ -10,6 +10,24 @@ continuous Ultra Clear to Tinted slider, diffusion blur, rim/lip,
 chromatic edges, and accessibility. This development build closes the
 remaining visual lag.
 
+- Shipping iOS 27 QA (Sep 2026): darker outer lip / side stroke and a
+  slightly stronger border (about +0.06 light, +0.08 dark), plus
+  brighter rim and specular (~15–20%, especially in dark). Fill alphas
+  and the default intensity (`0.45`) stay put so Ultra Clear → Tinted
+  still reads as a film, not a tint crank.
+- `glass_theme(plot_surface = "opaque")` densifies plot, plotly, gt, and
+  DT hosts (~94% panel fill, readable ink) while chrome stays Liquid
+  Glass. Default `"clear"` keeps wallpaper show-through. Toggle live
+  with `update_glass_theme(plot_surface = )` /
+  `window.shinyglass.setPlotSurface()`, or mark a single host with
+  `.glass-plot-surface-opaque`.
+  [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md),
+  [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md),
+  and
+  [`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)
+  accept `surface = "opaque"` when the image itself needs a paper fill.
+  The plotly + gt demo uses the opaque panel; the dashboard exposes a
+  Plot / table surface control (default clear).
 - Darker edge ring (lip, side stroke, outer border) and brighter
   specular / highlight tokens for depth and separation, in both CSS
   packs and the Ultra Clear → Tinted intensity lerp. Light/dark fill

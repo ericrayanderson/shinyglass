@@ -7,7 +7,12 @@ preset. Requires plotly. Call as `plotly_glass(p)` or
 ## Usage
 
 ``` r
-plotly_glass(p = NULL, preset = NULL, input = NULL)
+plotly_glass(
+  p = NULL,
+  preset = NULL,
+  input = NULL,
+  surface = c("clear", "opaque")
+)
 ```
 
 ## Arguments
@@ -17,7 +22,7 @@ plotly_glass(p = NULL, preset = NULL, input = NULL)
   Optional plotly object. When `NULL`, returns a named list of layout
   arguments.
 
-- preset, input:
+- preset, input, surface:
 
   See
   [`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md).

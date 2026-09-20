@@ -1,12 +1,20 @@
 # ggplot2 theme that follows glass light/dark ink
 
 Transparent panel and plot backgrounds so the page wallpaper shows
-through glass cards. Requires ggplot2 (a Suggests dependency).
+through glass cards. Use `surface = "opaque"` for a near-solid panel
+when dense charts must stay readable. Requires ggplot2 (a Suggests
+dependency).
 
 ## Usage
 
 ``` r
-theme_glass(preset = NULL, base_size = 13, input = NULL, ...)
+theme_glass(
+  preset = NULL,
+  base_size = 13,
+  input = NULL,
+  surface = c("clear", "opaque"),
+  ...
+)
 ```
 
 ## Arguments
@@ -24,6 +32,11 @@ theme_glass(preset = NULL, base_size = 13, input = NULL, ...)
 - input:
 
   Optional Shiny `input`.
+
+- surface:
+
+  `"clear"` or `"opaque"`. See
+  [`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md).
 
 - ...:
 

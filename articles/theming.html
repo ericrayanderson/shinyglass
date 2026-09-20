@@ -196,6 +196,7 @@ server can stay in sync.</p>
 <span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  radius <span class="op">=</span> <span class="st">"1.5rem"</span>,</span>
 <span>  material <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># or "clear" over media-rich content</span></span>
+<span>  plot_surface <span class="op">=</span> <span class="st">"clear"</span>, <span class="co"># or "opaque" for dense charts/tables</span></span>
 <span>  intensity <span class="op">=</span> <span class="fl">0.45</span>,     <span class="co"># 0 Ultra Clear → 1 Tinted (iOS 27)</span></span>
 <span>  tint <span class="op">=</span> <span class="cn">TRUE</span>,      <span class="co"># sample plot/image colors into glass surfaces</span></span>
 <span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># pointer specular highlight</span></span>
@@ -204,6 +205,15 @@ server can stay in sync.</p>
 <p><code>material = "regular"</code> is the adaptive Tahoe-style fill
 (default). Use <code>"clear"</code> when chrome sits over rich media and
 labels stay bold.</p>
+<p><code>plot_surface = "clear"</code> is the default: plot and table
+hosts stay translucent so the wallpaper shows through. Use
+<code>"opaque"</code> when dense charts or tables need a regular ~94%
+panel (HIG: glass for nav/controls, stronger materials for content).
+That is also the CSS class <code>.glass-plot-surface-opaque</code> on a
+host or ancestor, and
+<code>update_glass_theme(session, plot_surface = "opaque")</code> /
+<code>window.shinyglass.setPlotSurface("opaque")</code> switch it
+live.</p>
 <p>Use [glass_intensity_slider()] for a live Ultra Clear → Tinted
 control. It mirrors iOS 27 <strong>Settings → Appearance → Liquid
 Glass</strong>. The web cannot read that OS slider, so the in-app
@@ -247,7 +257,9 @@ instead.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getMode</span>()<span class="op">;</span>         <span class="co">// requested mode incl. "auto"</span></span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setTint</span>(<span class="kw">false</span>)<span class="op">;</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPrimary</span>(<span class="st">"#AF52DE"</span>)<span class="op">;</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span></code></pre></div>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPrimary</span>()<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">setPlotSurface</span>(<span class="st">"opaque"</span>)<span class="op">;</span> <span class="co">// or "clear"</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">.</span><span class="fu">getPlotSurface</span>()<span class="op">;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="teal">Teal<a class="anchor" aria-label="anchor" href="#teal"></a>
@@ -261,8 +273,9 @@ instead.</p>
 </h2>
 <p><code>glass_theme(persist = TRUE)</code> (and
 <code><a href="../reference/glass_page.html">glass_page()</a></code>, which defaults to on) writes preset,
-intensity, accent, material, and scene to <code>localStorage</code> for
-this app path so a refresh restores the last look.</p>
+intensity, accent, material, plot surface, and scene to
+<code>localStorage</code> for this app path so a refresh restores the
+last look.</p>
 </div>
 <div class="section level2">
 <h2 id="wallpaper-scenes">Wallpaper scenes<a class="anchor" aria-label="anchor" href="#wallpaper-scenes"></a>
@@ -285,7 +298,10 @@ glass. Change scene live with
 <p>[theme_glass()] is a ggplot2 theme with transparent panels and
 light/dark ink. [plotly_glass()] and [gt_theme_glass()] do the same for
 those packages. [glass_plot_colors()] returns <code>ink</code>,
-<code>grid</code>, <code>fill</code>, and <code>paper</code>.</p>
+<code>grid</code>, <code>fill</code>, and <code>paper</code>. Pass
+<code>surface = "opaque"</code> (or
+<code>glass_theme(plot_surface = "opaque")</code>) when the panel itself
+should be a regular fill instead of show-through glass.</p>
 </div>
 <div class="section level2">
 <h2 id="reduced-motion">Reduced motion<a class="anchor" aria-label="anchor" href="#reduced-motion"></a>

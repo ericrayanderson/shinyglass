@@ -99,6 +99,7 @@ glass_theme(
   saturation = 200,
   radius = "1.5rem",
   material = "regular", # or "clear" over media-rich content
+  plot_surface = "clear", # or "opaque" for dense charts/tables
   intensity = 0.45,     # 0 Ultra Clear → 1 Tinted (iOS 27)
   tint = TRUE,      # sample plot/image colors into glass surfaces
   specular = TRUE,  # pointer specular highlight
@@ -108,6 +109,14 @@ glass_theme(
 
 `material = "regular"` is the adaptive Tahoe-style fill (default). Use
 `"clear"` when chrome sits over rich media and labels stay bold.
+
+`plot_surface = "clear"` is the default: plot and table hosts stay
+translucent so the wallpaper shows through. Use `"opaque"` when dense
+charts or tables need a regular ~94% panel (HIG: glass for nav/controls,
+stronger materials for content). That is also the CSS class
+`.glass-plot-surface-opaque` on a host or ancestor, and
+`update_glass_theme(session, plot_surface = "opaque")` /
+`window.shinyglass.setPlotSurface("opaque")` switch it live.
 
 Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted
 control. It mirrors iOS 27 **Settings → Appearance → Liquid Glass**. The
@@ -156,6 +165,8 @@ window.shinyglass.getMode();         // requested mode incl. "auto"
 window.shinyglass.setTint(false);
 window.shinyglass.setPrimary("#AF52DE");
 window.shinyglass.getPrimary();
+window.shinyglass.setPlotSurface("opaque"); // or "clear"
+window.shinyglass.getPlotSurface();
 ```
 
 ## Teal
@@ -170,9 +181,9 @@ options(teal.bs_theme = glass_theme(preset = "auto"))
 
 `glass_theme(persist = TRUE)` (and
 [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
-which defaults to on) writes preset, intensity, accent, material, and
-scene to `localStorage` for this app path so a refresh restores the last
-look.
+which defaults to on) writes preset, intensity, accent, material, plot
+surface, and scene to `localStorage` for this app path so a refresh
+restores the last look.
 
 ## Wallpaper scenes
 
@@ -195,7 +206,9 @@ output$p <- renderPlot({
 \[theme_glass()\] is a ggplot2 theme with transparent panels and
 light/dark ink. \[plotly_glass()\] and \[gt_theme_glass()\] do the same
 for those packages. \[glass_plot_colors()\] returns `ink`, `grid`,
-`fill`, and `paper`.
+`fill`, and `paper`. Pass `surface = "opaque"` (or
+`glass_theme(plot_surface = "opaque")`) when the panel itself should be
+a regular fill instead of show-through glass.
 
 ## Reduced motion
 

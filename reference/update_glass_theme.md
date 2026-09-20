@@ -16,6 +16,7 @@ update_glass_theme(
   primary = NULL,
   intensity = NULL,
   material = NULL,
+  plot_surface = NULL,
   ambient_motion = NULL,
   scene = NULL
 )
@@ -48,6 +49,10 @@ update_glass_theme(
 - material:
 
   Optional `"regular"` or `"clear"`.
+
+- plot_surface:
+
+  Optional `"clear"` or `"opaque"`.
 
 - ambient_motion:
 

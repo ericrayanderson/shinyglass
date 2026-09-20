@@ -19,6 +19,7 @@ glass_theme(
   saturation = 200,
   radius = "1.5rem",
   material = c("regular", "clear"),
+  plot_surface = c("clear", "opaque"),
   intensity = 0.45,
   tint = TRUE,
   specular = TRUE,
@@ -62,6 +63,14 @@ glass_theme(
   `"regular"` (adaptive, most UI) or `"clear"` (more transparent; best
   over media-rich content with bold labels).
 
+- plot_surface:
+
+  `"clear"` (default) keeps plot/table hosts translucent so wallpaper
+  shows through. `"opaque"` densifies `.shiny-plot-output`, plotly, gt,
+  and DT hosts (~94% panel fill, readable ink) while leaving nav and
+  controls on Liquid Glass. Also available as the CSS class
+  `.glass-plot-surface-opaque` on a host or ancestor.
+
 - intensity:
 
   Liquid Glass intensity from `0` (Ultra Clear) to `1` (Tinted),
@@ -89,8 +98,8 @@ glass_theme(
 
 - persist:
 
-  Remember preset, intensity, accent, material, and scene in
-  `localStorage` for this app path. Default `FALSE` (opt in).
+  Remember preset, intensity, accent, material, plot surface, and scene
+  in `localStorage` for this app path. Default `FALSE` (opt in).
   [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
   turns this on.
 
@@ -132,6 +141,7 @@ theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 auto <- glass_theme(preset = "auto", tint = FALSE)
 clear <- glass_theme(material = "clear")
+plots <- glass_theme(plot_surface = "opaque")
 remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 
 if (interactive()) {

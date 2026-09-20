@@ -61,6 +61,11 @@ The intensity slider mirrors iOS 27 **Settings → Appearance → Liquid
 Glass** (continuous Ultra Clear → Tinted). Browsers cannot read that OS
 slider, so the in-app control is the supported way to match the look.
 
+Dense charts and tables can opt into a regular panel with
+`glass_theme(plot_surface = "opaque")` while nav and controls stay on
+glass. The default `"clear"` look still shows the wallpaper through plot
+hosts.
+
 ## Live demos
 
 Apps may take a moment to wake up.

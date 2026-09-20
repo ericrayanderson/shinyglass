@@ -5,7 +5,12 @@ Transparent table chrome so glass cards show through. Requires gt.
 ## Usage
 
 ``` r
-gt_theme_glass(data, preset = NULL, input = NULL)
+gt_theme_glass(
+  data,
+  preset = NULL,
+  input = NULL,
+  surface = c("clear", "opaque")
+)
 ```
 
 ## Arguments
@@ -15,7 +20,7 @@ gt_theme_glass(data, preset = NULL, input = NULL)
   A [`gt::gt()`](https://gt.rstudio.com/reference/gt.html) table (or
   data frame, which is passed to `gt()`).
 
-- preset, input:
+- preset, input, surface:
 
   See
   [`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md).
