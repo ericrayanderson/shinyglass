@@ -12,9 +12,10 @@ the bump commit.
 - [ ] Examples run (`R CMD check` examples). Interactive-only chunks stay wrapped.
 - [ ] Vignettes build (`theming`, `compatibility`, `playground`).
 - [ ] `devtools::test()` and visual-qa workflow green (note known Playwright flakes).
-- [ ] R-CMD-check: ubuntu + windows + macOS green. macOS installs `knitr`
-      and `xfun` from source because R 4.6 CRAN binaries are zstd and
-      `pak` stable cannot extract them (same failure on `main`).
+- [ ] R-CMD-check: ubuntu (release + devel) + windows + macOS green.
+      macOS CI is pinned to R 4.5 because R 4.6 CRAN `knitr`/`xfun`
+      binaries are zstd and `pak` stable cannot extract them (same
+      failure on `main`).
 - [ ] NEWS.md finalized under a **0.4.0** heading (move items off 0.3.0.9000).
 - [ ] `cran-comments.md` refreshed for this upload.
 - [ ] Reverse dependencies: `revdepcheck::revdep_check()` if any appear on CRAN.

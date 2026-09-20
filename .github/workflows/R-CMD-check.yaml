@@ -21,7 +21,9 @@ jobs:
         config:
           - {os: ubuntu-latest,  r: 'devel'}
           - {os: ubuntu-latest,  r: 'release'}
-          - {os: macos-latest,   r: 'release'}
+          # R 4.6 macOS CRAN binaries for knitr/xfun are zstd .tgz; pak
+          # stable cannot extract them. 4.5 still ships gzip binaries.
+          - {os: macos-latest,   r: '4.5'}
           - {os: windows-latest, r: 'release'}
 
     env:
@@ -39,13 +41,9 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
-      # R 4.6 macOS CRAN binaries for knitr and xfun are zstd-compressed
-      # while still named .tgz. pak/pkgdepends only detects gzip/bzip2/xz/zip,
-      # so binary extract fails with "unknown archive type" (also on main).
-      # Install those two from source; everything else stays binary.
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::urlchecker, any::spelling, commonmark, xml2, any::knitr=?source, any::xfun=?source
+          extra-packages: any::rcmdcheck, any::urlchecker, any::spelling, commonmark, xml2
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2

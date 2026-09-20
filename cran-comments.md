@@ -31,11 +31,11 @@ current look.
 * visual-qa: testthat + dual-theme contrast audit + Playwright runtime
   (including 480px overflow checks)
 
-Known macOS CI note: R 4.6 CRAN binaries for `knitr` and `xfun` are
-zstd-compressed `.tgz` files. `pak` stable cannot extract those
-("unknown archive type"; same failure on `main`). The R-CMD-check
-workflow installs `knitr` and `xfun` from source. Ubuntu, Windows,
-and the rest of this PR's checks are green.
+Known macOS CI note: R 4.6 (`release`) CRAN binaries for `knitr` and
+`xfun` are zstd-compressed `.tgz` files. `pak` stable cannot extract
+those ("unknown archive type"; same failure on `main`). The
+R-CMD-check macOS cell uses R 4.5, whose binaries are still gzip.
+Ubuntu release + devel and Windows stay on current R.
 
 ## R CMD check results
 
