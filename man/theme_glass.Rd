@@ -4,7 +4,13 @@
 \alias{theme_glass}
 \title{ggplot2 theme that follows glass light/dark ink}
 \usage{
-theme_glass(preset = NULL, base_size = 13, input = NULL, ...)
+theme_glass(
+  preset = NULL,
+  base_size = 13,
+  input = NULL,
+  surface = c("clear", "opaque"),
+  ...
+)
 }
 \arguments{
 \item{preset}{\code{"light"} or \code{"dark"}. When \code{NULL}, uses
@@ -14,6 +20,8 @@ theme_glass(preset = NULL, base_size = 13, input = NULL, ...)
 
 \item{input}{Optional Shiny \code{input}.}
 
+\item{surface}{\code{"clear"} or \code{"opaque"}. See \code{\link[=glass_plot_colors]{glass_plot_colors()}}.}
+
 \item{...}{Additional \code{\link[ggplot2:theme]{ggplot2::theme()}} arguments.}
 }
 \value{
@@ -21,7 +29,8 @@ A ggplot2 theme object.
 }
 \description{
 Transparent panel and plot backgrounds so the page wallpaper shows through
-glass cards. Requires ggplot2 (a Suggests dependency).
+glass cards. Use \code{surface = "opaque"} for a near-solid panel when dense
+charts must stay readable. Requires ggplot2 (a Suggests dependency).
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {

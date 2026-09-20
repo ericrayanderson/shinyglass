@@ -22,6 +22,11 @@
 #'   Prefer larger concentric radii (default `1.5rem`).
 #' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
 #'   transparent; best over media-rich content with bold labels).
+#' @param plot_surface `"clear"` (default) keeps plot/table hosts translucent
+#'   so wallpaper shows through. `"opaque"` densifies `.shiny-plot-output`,
+#'   plotly, gt, and DT hosts (~94% panel fill, readable ink) while leaving
+#'   nav and controls on Liquid Glass. Also available as the CSS class
+#'   `.glass-plot-surface-opaque` on a host or ancestor.
 #' @param intensity Liquid Glass intensity from `0` (Ultra Clear) to `1`
 #'   (Tinted), matching iOS 27 Settings -> Appearance -> Liquid Glass.
 #'   Default `0.45`. The web cannot read the OS slider; use
@@ -31,9 +36,9 @@
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
 #' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
 #'   to keep static glass surfaces. OS reduced-motion settings take priority.
-#' @param persist Remember preset, intensity, accent, material, and scene in
-#'   `localStorage` for this app path. Default `FALSE` (opt in). [glass_page()]
-#'   turns this on.
+#' @param persist Remember preset, intensity, accent, material, plot surface,
+#'   and scene in `localStorage` for this app path. Default `FALSE` (opt in).
+#'   [glass_page()] turns this on.
 #' @param scene Wallpaper scene: `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
 #' @param wallpaper Optional image URL painted as a frosted photo behind the
 #'   glass (https, data URI, or site-relative path).
@@ -46,6 +51,7 @@
 #' dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 #' auto <- glass_theme(preset = "auto", tint = FALSE)
 #' clear <- glass_theme(material = "clear")
+#' plots <- glass_theme(plot_surface = "opaque")
 #' remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 #'
 #' if (interactive()) {
@@ -75,6 +81,7 @@ glass_theme <- function(
     saturation = 200,
     radius = "1.5rem",
     material = c("regular", "clear"),
+    plot_surface = c("clear", "opaque"),
     intensity = 0.45,
     tint = TRUE,
     specular = TRUE,
@@ -86,6 +93,7 @@ glass_theme <- function(
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
+  plot_surface <- match.arg(plot_surface)
   scene <- match.arg(scene)
   intensity <- .glass_normalize_intensity(intensity)
   stopifnot(
@@ -177,6 +185,7 @@ glass_theme <- function(
     ambient_motion = ambient_motion,
     primary = primary,
     material = material,
+    plot_surface = plot_surface,
     intensity = intensity,
     persist = persist,
     scene = scene,
@@ -227,6 +236,7 @@ glass_theme <- function(
 #' @param intensity Optional numeric in \eqn{[0, 1]}: Ultra Clear (`0`) to
 #'   Tinted (`1`).
 #' @param material Optional `"regular"` or `"clear"`.
+#' @param plot_surface Optional `"clear"` or `"opaque"`.
 #' @param ambient_motion Optional logical.
 #' @param scene Optional `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
 #'
@@ -261,6 +271,7 @@ update_glass_theme <- function(
     primary = NULL,
     intensity = NULL,
     material = NULL,
+    plot_surface = NULL,
     ambient_motion = NULL,
     scene = NULL) {
   if (missing(session) || is.null(session)) {
@@ -281,6 +292,9 @@ update_glass_theme <- function(
   if (!is.null(material)) {
     material <- match.arg(material, c("regular", "clear"))
   }
+  if (!is.null(plot_surface)) {
+    plot_surface <- match.arg(plot_surface, c("clear", "opaque"))
+  }
   if (!is.null(ambient_motion)) {
     stopifnot(is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion))
   }
@@ -288,7 +302,8 @@ update_glass_theme <- function(
     scene <- match.arg(scene, c("default", "tahoe", "dusk", "mesh"))
   }
   if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
-      is.null(material) && is.null(ambient_motion) && is.null(scene)) {
+      is.null(material) && is.null(plot_surface) && is.null(ambient_motion) &&
+      is.null(scene)) {
     return(invisible(session))
   }
 
@@ -298,6 +313,7 @@ update_glass_theme <- function(
   if (!is.null(primary)) payload$primary <- primary
   if (!is.null(intensity)) payload$intensity <- intensity
   if (!is.null(material)) payload$material <- material
+  if (!is.null(plot_surface)) payload$plot_surface <- plot_surface
   if (!is.null(ambient_motion)) payload$ambient_motion <- ambient_motion
   if (!is.null(scene)) payload$scene <- scene
 
@@ -653,6 +669,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     nav_morph,
     primary = "#007AFF",
     material = "regular",
+    plot_surface = "clear",
     intensity = 0.45,
     ambient_motion = TRUE,
     persist = FALSE,
@@ -668,6 +685,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     sprintf("{r:%d,g:%d,b:%d}", rgb$r, rgb$g, rgb$b)
   }
   material <- if (identical(material, "clear")) "clear" else "regular"
+  plot_surface <- if (identical(plot_surface, "opaque")) "opaque" else "clear"
   intensity <- .glass_normalize_intensity(intensity)
   wall_js <- if (is.null(wallpaper)) "null" else jsonlite_quote(wallpaper)
   sprintf(
@@ -677,6 +695,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "var intensity=%s;",
       "var prim=%s;",
       "var material=%s;",
+      "var plotSurface=%s;",
       "var scene=%s;",
       "var persist=%s;",
       "var wallpaper=%s;",
@@ -690,6 +709,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "if(typeof st.intensity==='number')intensity=st.intensity;",
       "if(typeof st.primary==='string'&&st.primary)prim=st.primary;",
       "if(st.material==='clear'||st.material==='regular')material=st.material;",
+      "if(st.plotSurface==='clear'||st.plotSurface==='opaque')plotSurface=st.plotSurface;",
       "if(st.scene==='tahoe'||st.scene==='dusk'||st.scene==='mesh'||st.scene==='default')scene=st.scene;",
       "root.dataset.glassPersistRestored='true';}",
       "}catch(e){}",
@@ -706,6 +726,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "}",
       "root.dataset.glassPreset=resolve(p);",
       "root.dataset.glassMaterial=material;",
+      "root.dataset.glassPlotSurface=plotSurface;",
       "root.dataset.glassScene=scene;",
       "root.dataset.glassIntensity=String(intensity);",
       "root.style.setProperty('--glass-intensity',String(intensity));",
@@ -730,6 +751,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     sprintf("%.4f", intensity),
     jsonlite_quote(primary),
     jsonlite_quote(material),
+    jsonlite_quote(plot_surface),
     jsonlite_quote(scene),
     if (isTRUE(persist)) "true" else "false",
     wall_js,

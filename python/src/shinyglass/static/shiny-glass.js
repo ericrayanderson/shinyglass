@@ -44,7 +44,8 @@
           intensity: intensityState,
           primary: root.dataset.glassPrimary || "",
           material: root.dataset.glassMaterial || "regular",
-          scene: root.dataset.glassScene || "default"
+          scene: root.dataset.glassScene || "default",
+          plotSurface: root.dataset.glassPlotSurface || "clear"
         })
       );
     } catch (e) {
@@ -337,20 +338,20 @@
   }
 
   // Endpoint packs for Ultra Clear (0) vs Tinted (1), per preset.
-  // iOS 27 refinement: darker lip/edge + brighter specular; fill alphas unchanged
-  // so Ultra Clear stays readable via blur and Tinted stays a denser film.
+  // Shipping iOS 27 QA: darker lip/edge + brighter specular; fill alphas
+  // unchanged so Ultra Clear stays readable via blur and Tinted stays a film.
   function intensityEndpoints(preset) {
     if (preset === "dark") {
       return {
         clear: {
           bgA: 0.08, bgHoverA: 0.14, contentA: 0.07, contentHoverA: 0.12,
-          borderA: 0.30, rimA: 0.46, lipA: 0.52, highlightA: 0.38, specularA: 0.44,
-          edgeSheenA: 0.26, innerGlowA: 0.12, menuA: 0.62, blurScale: 1.16
+          borderA: 0.36, rimA: 0.54, lipA: 0.58, highlightA: 0.44, specularA: 0.52,
+          edgeSheenA: 0.30, innerGlowA: 0.14, menuA: 0.62, blurScale: 1.16
         },
         tinted: {
           bgA: 0.26, bgHoverA: 0.34, contentA: 0.22, contentHoverA: 0.30,
-          borderA: 0.52, rimA: 0.68, lipA: 0.82, highlightA: 0.58, specularA: 0.66,
-          edgeSheenA: 0.40, innerGlowA: 0.20, menuA: 0.92, blurScale: 1.26
+          borderA: 0.60, rimA: 0.78, lipA: 0.90, highlightA: 0.68, specularA: 0.78,
+          edgeSheenA: 0.46, innerGlowA: 0.23, menuA: 0.92, blurScale: 1.26
         },
         fill: { r: 255, g: 255, b: 255 },
         menu: { r: 58, g: 58, b: 60 },
@@ -360,13 +361,13 @@
     return {
       clear: {
         bgA: 0.10, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
-        borderA: 0.58, rimA: 0.84, lipA: 0.18, highlightA: 0.96, specularA: 0.76,
-        edgeSheenA: 0.48, innerGlowA: 0.22, menuA: 0.68, blurScale: 1.16
+        borderA: 0.64, rimA: 0.92, lipA: 0.21, highlightA: 1.00, specularA: 0.88,
+        edgeSheenA: 0.56, innerGlowA: 0.25, menuA: 0.68, blurScale: 1.16
       },
       tinted: {
         bgA: 0.52, bgHoverA: 0.66, contentA: 0.60, contentHoverA: 0.72,
-        borderA: 0.90, rimA: 1.00, lipA: 0.32, highlightA: 1.00, specularA: 0.98,
-        edgeSheenA: 0.72, innerGlowA: 0.40, menuA: 0.95, blurScale: 1.26
+        borderA: 0.96, rimA: 1.00, lipA: 0.36, highlightA: 1.00, specularA: 1.00,
+        edgeSheenA: 0.82, innerGlowA: 0.44, menuA: 0.95, blurScale: 1.26
       },
       fill: { r: 255, g: 255, b: 255 },
       menu: { r: 255, g: 255, b: 255 },
@@ -858,6 +859,12 @@
     persistStateSoon();
   }
 
+  function setPlotSurface(surface) {
+    surface = surface === "opaque" ? "opaque" : "clear";
+    rootEl().dataset.glassPlotSurface = surface;
+    persistStateSoon();
+  }
+
   function syncAccentWells(hex) {
     hex = String(hex || "").toLowerCase();
     document.querySelectorAll(".glass-accent-well").forEach(function (el) {
@@ -908,6 +915,12 @@
   };
   window.shinyglass.getScene = function () {
     return rootEl().dataset.glassScene || "default";
+  };
+  window.shinyglass.setPlotSurface = function (surface) {
+    setPlotSurface(surface);
+  };
+  window.shinyglass.getPlotSurface = function () {
+    return rootEl().dataset.glassPlotSurface || "clear";
   };
 
   // raise native <select> above later card content
@@ -1148,6 +1161,7 @@
       if (msg.material != null) setMaterial(msg.material);
       if (msg.ambient_motion != null) setAmbientMotion(!!msg.ambient_motion);
       if (msg.scene != null) setScene(msg.scene);
+      if (msg.plot_surface != null) setPlotSurface(msg.plot_surface);
     }
   }
 
@@ -1536,6 +1550,19 @@
       if (v == null || v === "") return;
       if (window.shinyglass && typeof window.shinyglass.setPreset === "function") {
         window.shinyglass.setPreset(v);
+      }
+    }
+  );
+
+  // Plot / table surface select — client-first, same host-rewrite hole as preset.
+  $(document).on(
+    "change.glassPlotSurface",
+    "select[data-glass-plot-surface-input], [data-glass-plot-surface-input] select",
+    function () {
+      var v = $(this).val();
+      if (v !== "opaque" && v !== "clear") return;
+      if (window.shinyglass && typeof window.shinyglass.setPlotSurface === "function") {
+        window.shinyglass.setPlotSurface(v);
       }
     }
   );

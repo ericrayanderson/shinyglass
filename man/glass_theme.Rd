@@ -11,6 +11,7 @@ glass_theme(
   saturation = 200,
   radius = "1.5rem",
   material = c("regular", "clear"),
+  plot_surface = c("clear", "opaque"),
   intensity = 0.45,
   tint = TRUE,
   specular = TRUE,
@@ -40,6 +41,12 @@ Prefer larger concentric radii (default \verb{1.5rem}).}
 \item{material}{\code{"regular"} (adaptive, most UI) or \code{"clear"} (more
 transparent; best over media-rich content with bold labels).}
 
+\item{plot_surface}{\code{"clear"} (default) keeps plot/table hosts translucent
+so wallpaper shows through. \code{"opaque"} densifies \code{.shiny-plot-output},
+plotly, gt, and DT hosts (~94\% panel fill, readable ink) while leaving
+nav and controls on Liquid Glass. Also available as the CSS class
+\code{.glass-plot-surface-opaque} on a host or ancestor.}
+
 \item{intensity}{Liquid Glass intensity from \code{0} (Ultra Clear) to \code{1}
 (Tinted), matching iOS 27 Settings -> Appearance -> Liquid Glass.
 Default \code{0.45}. The web cannot read the OS slider; use
@@ -54,9 +61,9 @@ Default \code{0.45}. The web cannot read the OS slider; use
 \item{ambient_motion}{Animate the decorative ambient sheen. Set \code{FALSE}
 to keep static glass surfaces. OS reduced-motion settings take priority.}
 
-\item{persist}{Remember preset, intensity, accent, material, and scene in
-\code{localStorage} for this app path. Default \code{FALSE} (opt in). \code{\link[=glass_page]{glass_page()}}
-turns this on.}
+\item{persist}{Remember preset, intensity, accent, material, plot surface,
+and scene in \code{localStorage} for this app path. Default \code{FALSE} (opt in).
+\code{\link[=glass_page]{glass_page()}} turns this on.}
 
 \item{scene}{Wallpaper scene: \code{"default"}, \code{"tahoe"}, \code{"dusk"}, or \code{"mesh"}.}
 
@@ -86,6 +93,7 @@ theme <- glass_theme()
 dark <- glass_theme(preset = "dark", primary = "#BF5AF2")
 auto <- glass_theme(preset = "auto", tint = FALSE)
 clear <- glass_theme(material = "clear")
+plots <- glass_theme(plot_surface = "opaque")
 remembered <- glass_theme(persist = TRUE, scene = "tahoe")
 
 if (interactive()) {

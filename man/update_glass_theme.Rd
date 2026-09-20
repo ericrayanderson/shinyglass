@@ -11,6 +11,7 @@ update_glass_theme(
   primary = NULL,
   intensity = NULL,
   material = NULL,
+  plot_surface = NULL,
   ambient_motion = NULL,
   scene = NULL
 )
@@ -29,6 +30,8 @@ the server function).}
 Tinted (\code{1}).}
 
 \item{material}{Optional \code{"regular"} or \code{"clear"}.}
+
+\item{plot_surface}{Optional \code{"clear"} or \code{"opaque"}.}
 
 \item{ambient_motion}{Optional logical.}
 

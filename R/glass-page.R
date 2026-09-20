@@ -6,8 +6,8 @@
 #'
 #' @param ... UI elements passed to [shiny::fluidPage()].
 #' @param title Optional page title ([shiny::titlePanel()]).
-#' @param preset,intensity,persist,scene,wallpaper Forwarded to [glass_theme()].
-#'   Persistence defaults to `TRUE` here.
+#' @param preset,intensity,persist,scene,wallpaper,plot_surface Forwarded to
+#'   [glass_theme()]. Persistence defaults to `TRUE` here.
 #' @param controls `TRUE` for the default control row (toggle, intensity,
 #'   accent), `FALSE` for none, or a character vector subset of
 #'   `"toggle"`, `"intensity"`, `"accent"`.
@@ -40,6 +40,7 @@ glass_page <- function(
     persist = TRUE,
     scene = "tahoe",
     wallpaper = NULL,
+    plot_surface = "clear",
     controls = TRUE,
     theme = NULL) {
   if (is.null(theme)) {
@@ -48,7 +49,8 @@ glass_page <- function(
       intensity = intensity,
       persist = persist,
       scene = scene,
-      wallpaper = wallpaper
+      wallpaper = wallpaper,
+      plot_surface = plot_surface
     )
   }
 

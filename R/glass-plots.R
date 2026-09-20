@@ -3,42 +3,61 @@
 #' @param preset `"light"` or `"dark"`. When `NULL`, uses
 #'   [glass_resolved_preset()] on `input`.
 #' @param input Optional Shiny `input` (used when `preset` is `NULL`).
+#' @param surface `"clear"` (transparent paper, default) or `"opaque"`
+#'   (~94% panel fill). Pair `"opaque"` with [glass_theme()]
+#'   `plot_surface = "opaque"` when the host CSS is not enough (for example
+#'   exported ggplot images).
 #'
-#' @return A list with `preset`, `ink`, `grid`, `fill`, and `paper`.
+#' @return A list with `preset`, `ink`, `grid`, `fill`, `paper`, and `surface`.
 #' @export
-glass_plot_colors <- function(preset = NULL, input = NULL) {
+glass_plot_colors <- function(preset = NULL, input = NULL,
+                             surface = c("clear", "opaque")) {
   if (is.null(preset)) {
     preset <- glass_resolved_preset(input)
   }
   preset <- match.arg(preset, c("light", "dark"))
+  surface <- match.arg(surface)
   if (identical(preset, "dark")) {
-    list(
+    pal <- list(
       preset = "dark",
       ink = "#f5f5f7",
       grid = "rgba(245,245,247,0.12)",
       fill = "#0A84FF",
-      paper = "rgba(0,0,0,0)"
+      paper = "rgba(0,0,0,0)",
+      surface = surface
     )
   } else {
-    list(
+    pal <- list(
       preset = "light",
       ink = "#1d1d1f",
       grid = "rgba(29,29,31,0.10)",
       fill = "#007AFF",
-      paper = "rgba(0,0,0,0)"
+      paper = "rgba(0,0,0,0)",
+      surface = surface
     )
   }
+  if (identical(surface, "opaque")) {
+    # ggplot2 accepts #RRGGBBAA; plotly/gt accept CSS rgba().
+    pal$paper <- if (identical(preset, "dark")) {
+      "rgba(28,28,30,0.94)"
+    } else {
+      "rgba(245,245,247,0.94)"
+    }
+  }
+  pal
 }
 
 #' ggplot2 theme that follows glass light/dark ink
 #'
 #' Transparent panel and plot backgrounds so the page wallpaper shows through
-#' glass cards. Requires ggplot2 (a Suggests dependency).
+#' glass cards. Use `surface = "opaque"` for a near-solid panel when dense
+#' charts must stay readable. Requires ggplot2 (a Suggests dependency).
 #'
 #' @param preset `"light"` or `"dark"`. When `NULL`, uses
 #'   [glass_resolved_preset()].
 #' @param base_size Base font size passed to [ggplot2::theme_minimal()].
 #' @param input Optional Shiny `input`.
+#' @param surface `"clear"` or `"opaque"`. See [glass_plot_colors()].
 #' @param ... Additional [ggplot2::theme()] arguments.
 #'
 #' @return A ggplot2 theme object.
@@ -50,17 +69,26 @@ glass_plot_colors <- function(preset = NULL, input = NULL) {
 #'     ggplot2::geom_point() +
 #'     theme_glass("light")
 #' }
-theme_glass <- function(preset = NULL, base_size = 13, input = NULL, ...) {
+theme_glass <- function(preset = NULL, base_size = 13, input = NULL,
+                        surface = c("clear", "opaque"), ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop('Install ggplot2 to use theme_glass(): install.packages("ggplot2")', call. = FALSE)
   }
-  pal <- glass_plot_colors(preset, input)
+  pal <- glass_plot_colors(preset, input, surface = surface)
   # grid does not accept CSS rgba(); use an #RRGGBBAA color.
   grid_col <- grDevices::adjustcolor(pal$ink, alpha.f = 0.12)
+  paper_fill <- if (identical(pal$surface, "opaque")) {
+    grDevices::adjustcolor(
+      if (identical(pal$preset, "dark")) "#1c1c1e" else "#f5f5f7",
+      alpha.f = 0.94
+    )
+  } else {
+    NA
+  }
   ggplot2::theme_minimal(base_size = base_size) +
     ggplot2::theme(
-      panel.background = ggplot2::element_rect(fill = NA, color = NA),
-      plot.background = ggplot2::element_rect(fill = NA, color = NA),
+      panel.background = ggplot2::element_rect(fill = paper_fill, color = NA),
+      plot.background = ggplot2::element_rect(fill = paper_fill, color = NA),
       legend.background = ggplot2::element_blank(),
       legend.key = ggplot2::element_blank(),
       panel.grid.major = ggplot2::element_line(color = grid_col, linewidth = 0.3),
@@ -84,12 +112,13 @@ theme_glass <- function(preset = NULL, base_size = 13, input = NULL, ...) {
 #'
 #' @param p Optional plotly object. When `NULL`, returns a named list of
 #'   layout arguments.
-#' @param preset,input See [glass_plot_colors()].
+#' @param preset,input,surface See [glass_plot_colors()].
 #'
 #' @return `p` with layout applied, or a list of layout arguments.
 #' @export
-plotly_glass <- function(p = NULL, preset = NULL, input = NULL) {
-  pal <- glass_plot_colors(preset, input)
+plotly_glass <- function(p = NULL, preset = NULL, input = NULL,
+                         surface = c("clear", "opaque")) {
+  pal <- glass_plot_colors(preset, input, surface = surface)
   layout_args <- list(
     paper_bgcolor = pal$paper,
     plot_bgcolor = pal$paper,
@@ -126,23 +155,25 @@ plotly_glass <- function(p = NULL, preset = NULL, input = NULL) {
 #' Transparent table chrome so glass cards show through. Requires gt.
 #'
 #' @param data A [gt::gt()] table (or data frame, which is passed to `gt()`).
-#' @param preset,input See [glass_plot_colors()].
+#' @param preset,input,surface See [glass_plot_colors()].
 #'
 #' @return A gt table.
 #' @export
-gt_theme_glass <- function(data, preset = NULL, input = NULL) {
+gt_theme_glass <- function(data, preset = NULL, input = NULL,
+                           surface = c("clear", "opaque")) {
   if (!requireNamespace("gt", quietly = TRUE)) {
     stop('Install gt to use gt_theme_glass(): install.packages("gt")', call. = FALSE)
   }
-  pal <- glass_plot_colors(preset, input)
+  pal <- glass_plot_colors(preset, input, surface = surface)
   if (!inherits(data, "gt_tbl")) {
     data <- gt::gt(data)
   }
+  table_bg <- if (identical(pal$surface, "opaque")) pal$paper else "transparent"
   gt::tab_options(
     data,
-    table.background.color = "transparent",
-    heading.background.color = "transparent",
-    column_labels.background.color = "transparent",
+    table.background.color = table_bg,
+    heading.background.color = table_bg,
+    column_labels.background.color = table_bg,
     row.striping.background_color = "transparent",
     table.font.color = pal$ink,
     table.border.top.color = "transparent",

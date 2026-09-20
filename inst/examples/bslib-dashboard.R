@@ -53,6 +53,19 @@ ui <- page_sidebar(
       width = "100%"
     ),
     glass_accent_input("accent", selected = "blue"),
+    tags$div(
+      `data-glass-plot-surface-input` = "plot_surface",
+      selectInput(
+        "plot_surface",
+        "Plot / table surface",
+        choices = c(
+          "Clear (show wallpaper)" = "clear",
+          "Opaque (readable)" = "opaque"
+        ),
+        selected = "clear",
+        width = "100%"
+      )
+    ),
     selectInput(
       "species",
       "Focus species",
@@ -123,6 +136,9 @@ server <- function(input, output, session) {
   observe_glass_intensity(input, session, "glass_intensity")
   observe_glass_preset_input(input, session, "preset")
   observe_glass_accent(input, session, "accent")
+  observeEvent(input$plot_surface, {
+    update_glass_theme(session, plot_surface = input$plot_surface)
+  }, ignoreInit = TRUE)
 
   output$metric_n <- renderText({
     format(nrow(filtered_data()), big.mark = ",")

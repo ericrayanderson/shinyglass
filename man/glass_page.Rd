@@ -12,6 +12,7 @@ glass_page(
   persist = TRUE,
   scene = "tahoe",
   wallpaper = NULL,
+  plot_surface = "clear",
   controls = TRUE,
   theme = NULL
 )
@@ -21,8 +22,8 @@ glass_page(
 
 \item{title}{Optional page title (\code{\link[shiny:titlePanel]{shiny::titlePanel()}}).}
 
-\item{preset, intensity, persist, scene, wallpaper}{Forwarded to \code{\link[=glass_theme]{glass_theme()}}.
-Persistence defaults to \code{TRUE} here.}
+\item{preset, intensity, persist, scene, wallpaper, plot_surface}{Forwarded to
+\code{\link[=glass_theme]{glass_theme()}}. Persistence defaults to \code{TRUE} here.}
 
 \item{controls}{\code{TRUE} for the default control row (toggle, intensity,
 accent), \code{FALSE} for none, or a character vector subset of
