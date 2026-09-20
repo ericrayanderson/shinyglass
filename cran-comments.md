@@ -31,6 +31,11 @@ current look.
 * visual-qa: testthat + dual-theme contrast audit + Playwright runtime
   (including 480px overflow checks)
 
+Known flake: `macos-latest` `setup-r-dependencies` can fail with pak
+`Cannot extract … unknown archive type` on a binary tarball (reproduced on
+`main` with `knitr`). The workflow retries that step once. Ubuntu, Windows,
+and the rest of this PR's checks are green.
+
 ## R CMD check results
 
 Record 0 errors / 0 warnings / notes here after a local `--as-cran` run on

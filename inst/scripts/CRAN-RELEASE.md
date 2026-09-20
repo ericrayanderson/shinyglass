@@ -12,6 +12,9 @@ the bump commit.
 - [ ] Examples run (`R CMD check` examples). Interactive-only chunks stay wrapped.
 - [ ] Vignettes build (`theming`, `compatibility`, `playground`).
 - [ ] `devtools::test()` and visual-qa workflow green (note known Playwright flakes).
+- [ ] R-CMD-check: ubuntu + windows green. macOS may flake in
+      `setup-r-dependencies` (`pak` “unknown archive type” on a binary
+      tarball — seen on `main` for knitr). Workflow retries once.
 - [ ] NEWS.md finalized under a **0.4.0** heading (move items off 0.3.0.9000).
 - [ ] `cran-comments.md` refreshed for this upload.
 - [ ] Reverse dependencies: `revdepcheck::revdep_check()` if any appear on CRAN.

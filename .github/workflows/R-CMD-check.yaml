@@ -39,7 +39,19 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      # macOS runners sometimes fail here with pak "Cannot extract … unknown
+      # archive type" on a binary tarball (seen on main for knitr). Retry once
+      # rather than failing the matrix cell on that flake.
       - uses: r-lib/actions/setup-r-dependencies@v2
+        id: install-deps
+        continue-on-error: true
+        with:
+          extra-packages: any::rcmdcheck, any::urlchecker, any::spelling, commonmark, xml2
+          needs: check
+
+      - name: Retry R package install
+        if: steps.install-deps.outcome == 'failure'
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck, any::urlchecker, any::spelling, commonmark, xml2
           needs: check
