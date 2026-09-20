@@ -47,16 +47,18 @@ Known CI notes (not package defects):
 
 ## R CMD check results
 
-<!-- CI / local --as-cran will fill this in. -->
-
 **0 errors | 0 warnings | 0 notes** expected on the 0.4.0 tarball aside
 from a possible incoming "days since last update" NOTE (~11 days after
 0.3.0). That interval is short but 0.4.0 is a real feature set (plot
 surfaces, bslib depth, scenes, flatten, tokens, mobile QA), not a
 drive-by tweak.
 
-Local: _pending_
-GitHub Actions: _pending_
+Local (Ubuntu 24.04, R 4.3.3, `--as-cran --no-manual`):
+**0 errors | 0 warnings | 1 NOTE**
+(`unable to verify current time` — sandbox clock check, not a package
+defect). Examples, tests, and vignettes OK.
+
+GitHub Actions: _pending on this PR_
 
 ## Downstream dependencies
 
