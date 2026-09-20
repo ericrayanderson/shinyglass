@@ -32,14 +32,17 @@
 #' controlled with [glass_intensity_slider()] (Ultra Clear to Tinted, matching
 #' iOS 27 Settings -> Appearance -> Liquid Glass) or
 #' `glass_theme(intensity = )`. Use `plot_surface = "opaque"` when plots and
-#' tables need a denser panel. Accent color, blur, saturation, corner radius,
-#' and JS behaviors (`tint`, `specular`, `nav_morph`) are configurable.
+#' tables need a denser panel. Named scenes (`glass_scenes()`), flatten mode
+#' ([glass_flatten()]), and public CSS tokens ([glass_css_tokens()]) are
+#' available. Accent color, blur, saturation, corner radius, and JS behaviors
+#' (`tint`, `specular`, `nav_morph`) are configurable.
 #'
 #' For [teal](https://insightsengineering.github.io/teal/) apps, set
 #' `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
 #'
 #' @seealso [glass_page()], [glass_theme()], [theme_glass()],
-#'   [glass_intensity_slider()], [update_glass_theme()]
+#'   [glass_intensity_slider()], [update_glass_theme()], [glass_flatten()],
+#'   [glass_css_tokens()]
 #'
 #' @keywords internal
 "_PACKAGE"

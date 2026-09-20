@@ -56,6 +56,9 @@ app = App(app_ui, None)
 | `radius` | `"1.5rem"` | Corner radius |
 | `intensity` | `0.45` | Ultra Clear (`0`) to Tinted (`1`); mirrors iOS 27 Settings → Appearance → Liquid Glass (the web cannot read the OS slider) |
 | `plot_surface` | `"clear"` | `"opaque"` densifies plot / table hosts (~94% panel); chrome stays glass |
+| `scene` | `"default"` | `tahoe` / `dusk` / `mesh` / `aurora` / `harbor` / `grove` |
+| `flatten` | `False` | Print / screenshot mode (or `?glass_flatten=1`) |
+| `persist` | `False` | Remember preset, intensity, scene, plot surface |
 
 ## Demo
 
@@ -98,8 +101,10 @@ all of the R runtime controls. Shared assets do not imply API parity.
 | Feature | R | Python |
 | --- | --- | --- |
 | Presets | Light / Dark / Auto | Light / Dark / Auto |
-| Live preset / accent updates | Public server and UI helpers | Shared JS (`setPreset` / `setIntensity`) |
-| Intensity / material controls | Public API and slider | Intensity default matches R; no Python widgets |
+| Live preset / accent updates | Public server and UI helpers | `update_glass_theme()` + shared JS |
+| Intensity / material controls | Public API and slider | `intensity=` + `glass_intensity_slider()` |
+| `plot_surface` / scenes / flatten | Public API | Same knobs on `glass_theme()` |
+| Scroll-edge chrome densify | Shared JS / CSS | Shared vendored JS / CSS |
 | Default blur / radius | 36 px / `1.5rem` | 36 px / `1.5rem` |
 | Default CSS delivery | bslib Sass compilation | Precompiled wheel assets |
 | Custom theme knobs | bslib / sass | Optional `[theme]` extra |

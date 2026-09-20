@@ -18,8 +18,10 @@ glass_theme(
   nav_morph = TRUE,
   ambient_motion = TRUE,
   persist = FALSE,
-  scene = c("default", "tahoe", "dusk", "mesh"),
+  scene = c("default", "tahoe", "dusk", "mesh", "aurora", "harbor", "grove"),
   wallpaper = NULL,
+  flatten = FALSE,
+  tokens = NULL,
   ...
 )
 }
@@ -65,10 +67,18 @@ to keep static glass surfaces. OS reduced-motion settings take priority.}
 and scene in \code{localStorage} for this app path. Default \code{FALSE} (opt in).
 \code{\link[=glass_page]{glass_page()}} turns this on.}
 
-\item{scene}{Wallpaper scene: \code{"default"}, \code{"tahoe"}, \code{"dusk"}, or \code{"mesh"}.}
+\item{scene}{Wallpaper scene id from \code{\link[=glass_scenes]{glass_scenes()}} (\code{"default"},
+\code{"tahoe"}, \code{"dusk"}, \code{"mesh"}, \code{"aurora"}, \code{"harbor"}, \code{"grove"}).}
 
 \item{wallpaper}{Optional image URL painted as a frosted photo behind the
-glass (https, data URI, or site-relative path).}
+glass (https, data URI, or site-relative path). Photos are blurred and
+washed so body ink stays above the contrast floor (see \code{\link[=glass_css_tokens]{glass_css_tokens()}}).}
+
+\item{flatten}{\code{TRUE} starts in print/export flatten mode (no backdrop
+blur). See \code{\link[=glass_flatten]{glass_flatten()}}.}
+
+\item{tokens}{Named list of public CSS token overrides (see
+\code{\link[=glass_css_tokens]{glass_css_tokens()}} / \code{\link[=glass_add_tokens]{glass_add_tokens()}}).}
 
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }

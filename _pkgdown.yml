@@ -71,13 +71,23 @@ reference:
   - glass_system_colors
   - glass_page
   - observe_glass
+  - glass_scenes
+  - glass_scene_input
+  - observe_glass_scene
+  - glass_css_tokens
+  - glass_token_pack
+  - glass_add_tokens
+  - glass_flatten
 - title: Plots and tables
-  desc: Match ggplot2, plotly, and gt to the glass light/dark pack.
+  desc: Match ggplot2, plotly, gt, and DT to the glass light/dark pack.
   contents:
   - theme_glass
   - plotly_glass
   - gt_theme_glass
   - glass_plot_colors
+  - glass_plot_surface_input
+  - observe_glass_plot_surface
+  - dt_options_glass
 
 articles:
 - title: Guides

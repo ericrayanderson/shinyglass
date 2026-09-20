@@ -14,8 +14,9 @@ Description: Provides drop-in Liquid Glass themes for 'shiny'. Call
     'Bootstrap' components. Includes light and dark presets with
     runtime switching and an OS-following 'auto' mode, an iOS-style
     intensity control from Ultra Clear to Tinted, optional
-    persistence of the look, named wallpaper scenes, and helpers to
-    match 'ggplot2', 'plotly', and 'gt' output to the glass pack.
+    persistence of the look, named wallpaper scenes, helpers to
+    match 'ggplot2', 'plotly', 'gt', and 'DT' output to the glass pack,
+    a flatten mode for print and screenshots, and documented CSS tokens.
 License: GPL-3
 URL: https://ericrayanderson.github.io/shinyglass/,
     https://github.com/ericrayanderson/shinyglass

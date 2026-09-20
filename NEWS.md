@@ -2,6 +2,45 @@
 
 ## Development (unreleased)
 
+0.4.0 milestone work (issues #37–#44). Version stays **0.3.0.9000** until an
+explicit CRAN bump — do not treat this heading as a submitted 0.4.0.
+
+* **Plot / table surfaces (#38):** `plot_surface = "clear"|"opaque"` is the
+  content-surface story for ggplot (`theme_glass(surface=)`), plotly
+  (`plotly_glass()`), gt (`gt_theme_glass()`), and DT hosts (CSS + optional
+  `dt_options_glass()`). `glass_plot_surface_input()` / 
+  `observe_glass_plot_surface()` toggle live with `update_glass_theme()` and
+  `window.shinyglass.setPlotSurface()`. HIG: glass chrome, denser panels for
+  charts and tables. Dashboard and plotly+gt demos show both modes.
+* **bslib depth (#39):** Stronger Liquid Glass for `page_navbar` / navsets,
+  nested cards and value boxes (glass-on-glass densify), sidebars, accordion,
+  tooltips/popovers, and modals. Focus-visible rings and overlay z-index
+  (tooltip 1090, popover 1085, menus 1080) apply to every `glass_theme()` app.
+* **Python parity (#40):** Intensity, `plot_surface`, scenes, flatten, persist,
+  and JS knobs are first-class on `glass_theme()`. `update_glass_theme()` and
+  `glass_intensity_slider()` ship. Shared SCSS/JS stay vendored in
+  `python/src/shinyglass/static/`.
+* **Scenes (#41):** Named packs `aurora`, `harbor`, and `grove` join
+  `tahoe` / `dusk` / `mesh`. `glass_scenes()` / `glass_scene_input()` list and
+  switch them. User `wallpaper=` photos are blurred and washed
+  (`--glass-wallpaper-wash`) so body ink stays above the documented contrast
+  floor (4.5:1 text / 3:1 large chrome).
+* **Flatten (#42):** `glass_flatten()`, `glass_theme(flatten=)`,
+  `update_glass_theme(flatten=)`, `window.shinyglass.setFlatten()` /
+  `.enterFlatten()` / `.exitFlatten()`, and `?glass_flatten=1` neutralize
+  backdrop blur for chromote, PDF, print, and shareable shots. `@media print`
+  does the same automatically.
+* **Public tokens (#43):** `glass_css_tokens()` documents stable `--glass-*`
+  variables. `glass_token_pack()` / `glass_add_tokens()` / `glass_theme(tokens=)`
+  / `update_glass_theme(tokens=)` override packs without forking SCSS.
+* **Narrow QA (#44):** Package CSS for ≤480px (stacked controls, wrapping
+  nav, full-width value boxes, olympics/dashboard containment). Playwright
+  `overflow.spec.js` covers a 480px dashboard-like and olympics-like layout.
+  Manual gate: `inst/scripts/VISUAL-QA.md`.
+* **CRAN candidate prep (#37):** Draft `cran-comments.md`,
+  `inst/scripts/CRAN-RELEASE.md` checklist, spell/URL hygiene. **Not submitted.**
+  Version remains 0.3.0.9000.
+
 iOS 27 Liquid Glass alignment (announced 9 Sep 2026; public release 14 Sep 2026).
 Liquid Glass shipped in iOS 26; 0.3.0 already covers the continuous Ultra Clear
 to Tinted slider, diffusion blur, rim/lip, chromatic edges, and accessibility.

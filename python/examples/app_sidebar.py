@@ -11,10 +11,11 @@ from __future__ import annotations
 
 from shiny import App, reactive, render, ui
 
-from shinyglass import glass_theme
+from shinyglass import glass_intensity_slider, glass_theme, update_glass_theme
 
 app_ui = ui.page_sidebar(
     ui.sidebar(
+        glass_intensity_slider("glass_intensity", value=0.45),
         ui.h4("Filters"),
         ui.input_select(
             "species",
@@ -24,6 +25,24 @@ app_ui = ui.page_sidebar(
         ),
         ui.input_slider("n", "Sample n", min=20, max=150, value=80),
         ui.input_switch("smooth", "Smooth", True),
+        ui.input_select(
+            "plot_surface",
+            "Plot / table surface",
+            choices={"clear": "Clear (show wallpaper)", "opaque": "Opaque (readable)"},
+            selected="clear",
+        ),
+        ui.input_select(
+            "scene",
+            "Scene",
+            choices={
+                "tahoe": "Tahoe",
+                "dusk": "Dusk",
+                "aurora": "Aurora",
+                "harbor": "Harbor",
+                "grove": "Grove",
+            },
+            selected="tahoe",
+        ),
         title="Glass sidebar",
         width=280,
     ),
@@ -55,7 +74,13 @@ app_ui = ui.page_sidebar(
     ),
     title="shinyglass (Python)",
     fillable=True,
-    theme=glass_theme(preset="auto"),
+    theme=glass_theme(
+        preset="auto",
+        intensity=0.45,
+        plot_surface="clear",
+        scene="tahoe",
+        persist=True,
+    ),
 )
 
 
@@ -106,6 +131,16 @@ def server(input, output, session):
         ax.set_ylabel("Count")
         fig.tight_layout()
         return fig
+
+    @reactive.effect
+    @reactive.event(input.plot_surface)
+    def _plot_surface():
+        update_glass_theme(session, plot_surface=input.plot_surface())
+
+    @reactive.effect
+    @reactive.event(input.scene)
+    def _scene():
+        update_glass_theme(session, scene=input.scene())
 
     @reactive.effect
     @reactive.event(input.go)

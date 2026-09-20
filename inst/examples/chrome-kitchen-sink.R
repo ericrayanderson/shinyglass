@@ -116,6 +116,8 @@ ui <- page_navbar(
       card(
         card_header("Server modal"),
         actionButton("show_server_modal", "showModal()", class = "btn-outline-primary"),
+        actionButton("flatten_on", "Flatten (print/capture)", class = "btn-outline-secondary"),
+        actionButton("flatten_off", "Live glass", class = "btn-outline-secondary"),
         div(
           class = "mt-2 d-flex flex-wrap gap-2 align-items-center",
           actionButton("disabled_btn", "Disabled", class = "btn-secondary", disabled = TRUE),
@@ -198,6 +200,8 @@ ui <- page_navbar(
 
 server <- function(input, output, session) {
   observe_glass_theme_toggle(input, session)
+  observeEvent(input$flatten_on, glass_flatten(session, TRUE), ignoreInit = TRUE)
+  observeEvent(input$flatten_off, glass_flatten(session, FALSE), ignoreInit = TRUE)
 
   notify <- function(type) {
     observeEvent(input[[paste0("notify_", type)]], {
