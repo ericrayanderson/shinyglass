@@ -117,27 +117,27 @@ glass_theme <- function(
   )
   primary <- .glass_normalize_color(primary)
   wallpaper <- .glass_normalize_wallpaper(wallpaper)
-  tokens <- .glass_normalize_token_list(tokens)
+  user_tokens <- .glass_normalize_token_list(tokens)
 
   # Sass still needs a single pack of $glass-* defaults at compile time.
   # Runtime light/dark comes from dual CSS variable packs in glass.scss.
   # Always use the Bootstrap base (not darkly) so switching preset does not
   # fight Bootswatch dark chrome.
-  tokens <- .glass_tokens("light", blur, saturation, radius)
+  pack <- .glass_tokens("light", blur, saturation, radius)
 
   theme <- bslib::bs_theme(
     version = 5,
     preset = "bootstrap",
     primary = primary,
-    "body-bg" = tokens$body_bg,
-    "body-color" = tokens$body_color,
+    "body-bg" = pack$body_bg,
+    "body-color" = pack$body_color,
     "font-family-sans-serif" = .glass_font_stack(),
     "border-radius" = "1.1rem",
     "border-radius-lg" = radius,
     "border-radius-sm" = "0.85rem",
     "card-border-width" = "1px",
-    "card-border-color" = tokens$glass_border,
-    "input-border-color" = tokens$glass_border,
+    "card-border-color" = pack$glass_border,
+    "input-border-color" = pack$glass_border,
     "navbar-padding-y" = "0.75rem",
     "btn-font-weight" = 600,
     "btn-font-size" = "0.9375rem",
@@ -164,22 +164,22 @@ glass_theme <- function(
   theme <- bslib::bs_add_variables(
     theme,
     # Shared knobs still used by Sass ($glass-blur, etc.)
-    "glass-bg" = tokens$glass_bg,
-    "glass-bg-hover" = tokens$glass_bg_hover,
-    "glass-border" = tokens$glass_border,
-    "glass-shadow" = tokens$glass_shadow,
-    "glass-elevated-shadow" = tokens$glass_elevated_shadow,
+    "glass-bg" = pack$glass_bg,
+    "glass-bg-hover" = pack$glass_bg_hover,
+    "glass-border" = pack$glass_border,
+    "glass-shadow" = pack$glass_shadow,
+    "glass-elevated-shadow" = pack$glass_elevated_shadow,
     "glass-blur" = paste0(blur, "px"),
     "glass-saturate" = paste0(saturation, "%"),
     "glass-radius" = radius,
-    "glass-highlight" = tokens$glass_highlight,
-    "glass-specular" = tokens$glass_specular,
-    "glass-menu-bg" = tokens$glass_menu_bg,
-    "glass-menu-color" = tokens$glass_menu_color,
-    "glass-page-bg" = tokens$page_bg,
-    "glass-orb-1" = tokens$orb_1,
-    "glass-orb-2" = tokens$orb_2,
-    "glass-orb-3" = tokens$orb_3
+    "glass-highlight" = pack$glass_highlight,
+    "glass-specular" = pack$glass_specular,
+    "glass-menu-bg" = pack$glass_menu_bg,
+    "glass-menu-color" = pack$glass_menu_color,
+    "glass-page-bg" = pack$page_bg,
+    "glass-orb-1" = pack$orb_1,
+    "glass-orb-2" = pack$orb_2,
+    "glass-orb-3" = pack$orb_3
   )
 
   glass_scss <- system.file("scss", "glass.scss", package = "shinyglass")
@@ -228,8 +228,8 @@ glass_theme <- function(
     sass::sass_layer(html = preset_dep),
     sass::sass_layer(html = glass_js)
   )
-  if (length(tokens)) {
-    theme <- glass_add_tokens(theme, tokens)
+  if (length(user_tokens)) {
+    theme <- glass_add_tokens(theme, user_tokens)
   }
   theme
 }
