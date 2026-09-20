@@ -62,6 +62,15 @@ in-app control is the supported way to match the look.
 Dense charts and tables can opt into a regular panel with
 `glass_theme(plot_surface = "opaque")` while nav and controls stay on glass.
 The default `"clear"` look still shows the wallpaper through plot hosts.
+Use `glass_plot_surface_input()` to toggle live (ggplot / plotly / gt / DT).
+
+Named wallpaper scenes (`tahoe`, `dusk`, `mesh`, `aurora`, `harbor`, `grove`)
+and optional `wallpaper=` photos stay behind a blur + wash so text meets the
+contrast floor. For chromote, PDF, or screenshots, call `glass_flatten()` or
+open the app with `?glass_flatten=1`.
+
+Power users can read `glass_css_tokens()` and override `--glass-*` variables
+with `glass_theme(tokens = list(blur = "28px"))` without forking SCSS.
 
 ## Live demos
 

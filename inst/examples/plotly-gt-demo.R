@@ -51,6 +51,11 @@ ui <- page_sidebar(
       choices = c("Light" = "light", "Dark" = "dark", "Auto" = "auto"),
       width = "100%"
     ),
+    glass_plot_surface_input("plot_surface", selected = "opaque", width = "100%"),
+    tags$small(
+      class = "text-muted",
+      "Toggle Clear to show wallpaper through hosts; Opaque is the HIG content panel."
+    ),
     selectInput(
       "species",
       "Species",
@@ -100,6 +105,7 @@ server <- function(input, output, session) {
   }
 
   observe_glass_preset_input(input, session, "preset")
+  observe_glass_plot_surface(input, session, "plot_surface")
 
   filtered <- reactive({
     input$reload

@@ -1,50 +1,47 @@
 ## Submission
 
-This is a resubmission of 0.3.0 (update from 0.2.0, 2026-08-21).
+This is a **draft** for a future 0.4.0 CRAN candidate. The package version
+on this branch remains **0.3.0.9000** (development). Do not submit this
+tarball to CRAN until the maintainer bumps Version and asks for a release.
 
-Uwe Ligges asked us to quote software names in DESCRIPTION and to
-fix README file URIs that pointed at paths excluded from the tarball
-(`python/`, `inst/scripts/`). Those are now GitHub URLs; 'ggplot2',
-'plotly', and 'gt' are single-quoted in Description.
+0.3.0 is on CRAN (update from 0.2.0, 2026-08-21). Incoming pretest notes
+from that upload (quoted software names; README URIs that pointed at
+`.Rbuildignore`'d paths) stay fixed.
 
-### User-facing changes
+### User-facing changes prepared for 0.4.0
 
-* `glass_theme(persist = TRUE)` remembers preset, intensity, accent,
-  material, and scene in `localStorage`.
-* `glass_page()` / `observe_glass()` one-call page with toggle, intensity
-  slider, and accent wells.
-* `theme_glass()`, `plotly_glass()`, `gt_theme_glass()`, and
-  `glass_plot_colors()` match plots and tables to the glass pack.
-* `glass_accent_input()` iOS-style color wells; named system colors.
-* Wallpaper scenes (`tahoe` / `dusk` / `mesh`) and optional `wallpaper =`.
-* Live `update_glass_theme()` for material, ambient motion, and scene.
-* `glass_theme(ambient_motion = FALSE)`; live reduced-motion /
-  reduced-transparency; forced-colors and `prefers-contrast: more`.
-* Golden Gate material (90° highlight, side-edge strokes, denser
-  scroll-edge chrome).
-* Olympics demo: readable subtitle (no raw HTML); plot uses `theme_glass()`.
+* `plot_surface` is the content-surface story for ggplot / plotly / gt / DT.
+* Deeper bslib Liquid Glass (navbar, navsets, cards, sidebars, accordion,
+  tooltips, modals) plus focus rings and stacking.
+* Scene pack: `aurora`, `harbor`, `grove` (plus existing tahoe / dusk / mesh);
+  washed user wallpapers with a documented contrast floor.
+* Flatten mode for print / chromote / PDF / static capture.
+* Public `--glass-*` tokens via `glass_css_tokens()` / `glass_add_tokens()`.
+* Narrow (≤480px) layout CSS for core demos.
+* Python experimental package (not in the CRAN tarball) closer to R parity.
 
-No breaking API changes from 0.2.0.
+No breaking API changes from 0.3.0 are intended. `glass_theme()` gains
+optional `flatten` and `tokens` arguments with defaults that preserve the
+current look.
 
 ## Test environments
 
 * GitHub Actions: ubuntu (release, devel), macOS (release), windows (release)
 * `R CMD check --as-cran` (CI uses `--no-manual`; source tarball for submit)
 * visual-qa: testthat + dual-theme contrast audit + Playwright runtime
+  (including 480px overflow checks)
+
+Known macOS CI note: R 4.6 (`release`) CRAN binaries for `knitr` and
+`xfun` are zstd-compressed `.tgz` files. `pak` stable cannot extract
+those ("unknown archive type"; same failure on `main`). The
+R-CMD-check macOS cell uses R 4.5, whose binaries are still gzip.
+Ubuntu release + devel and Windows stay on current R.
 
 ## R CMD check results
 
-**0 errors | 0 warnings | 0 notes** on local `R CMD check --as-cran`
-(macOS Tahoe, R 4.6.1) and GitHub Actions (ubuntu release + devel,
-macOS release, windows release). CI uses `--no-manual`; the submitted
-tarball is from `R CMD build` with vignettes.
-
-Incoming pretest on the first 0.3.0 upload was 1 NOTE (unquoted
-ggplot/plotly; README URIs). Those are addressed above. A possible
-"days since last update" NOTE (~19 days after 0.2.0) is still
-expected. That interval is short but the release is a real feature
-set (persistence, plot helpers, accessibility, material), not a
-drive-by tweak.
+Record 0 errors / 0 warnings / notes here after a local `--as-cran` run on
+the eventual 0.4.0 tarball. This draft is from the 0.3.0.9000 development
+tree.
 
 ## Downstream dependencies
 
@@ -55,3 +52,5 @@ None known.
 * Large README marketing assets stay on GitHub via `.Rbuildignore`.
 * Live demos: shinyglass-demo, -dashboard, -inputs, -plotly-gt, -olympics.
 * Experimental Python package is not in the CRAN tarball.
+* Release checklist: `inst/scripts/CRAN-RELEASE.md` (devtools-only; not
+  in the tarball).

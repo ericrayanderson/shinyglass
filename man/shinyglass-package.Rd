@@ -39,8 +39,10 @@ or \code{preset = "auto"} to follow the OS. Switch at runtime with
 controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted, matching
 iOS 27 Settings -> Appearance -> Liquid Glass) or
 \code{glass_theme(intensity = )}. Use \code{plot_surface = "opaque"} when plots and
-tables need a denser panel. Accent color, blur, saturation, corner radius,
-and JS behaviors (\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
+tables need a denser panel. Named scenes (\code{\link[=glass_scenes]{glass_scenes()}}), flatten mode
+(\code{\link[=glass_flatten]{glass_flatten()}}), and public CSS tokens (\code{\link[=glass_css_tokens]{glass_css_tokens()}}) are
+available. Accent color, blur, saturation, corner radius, and JS behaviors
+(\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
 
 For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \code{options(teal.bs_theme = glass_theme())} before calling \code{teal::init()}.
@@ -49,7 +51,7 @@ For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \seealso{
 \code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=theme_glass]{theme_glass()}},
 \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
-\code{\link[=glass_theme_toggle]{glass_theme_toggle()}}
+\code{\link[=glass_flatten]{glass_flatten()}}, \code{\link[=glass_css_tokens]{glass_css_tokens()}}
 }
 \author{
 \strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]

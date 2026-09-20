@@ -21,7 +21,9 @@ jobs:
         config:
           - {os: ubuntu-latest,  r: 'devel'}
           - {os: ubuntu-latest,  r: 'release'}
-          - {os: macos-latest,   r: 'release'}
+          # R 4.6 macOS CRAN binaries for knitr/xfun are zstd .tgz; pak
+          # stable cannot extract them. 4.5 still ships gzip binaries.
+          - {os: macos-latest,   r: '4.5'}
           - {os: windows-latest, r: 'release'}
 
     env:

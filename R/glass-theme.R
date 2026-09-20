@@ -39,9 +39,15 @@
 #' @param persist Remember preset, intensity, accent, material, plot surface,
 #'   and scene in `localStorage` for this app path. Default `FALSE` (opt in).
 #'   [glass_page()] turns this on.
-#' @param scene Wallpaper scene: `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+#' @param scene Wallpaper scene id from [glass_scenes()] (`"default"`,
+#'   `"tahoe"`, `"dusk"`, `"mesh"`, `"aurora"`, `"harbor"`, `"grove"`).
 #' @param wallpaper Optional image URL painted as a frosted photo behind the
-#'   glass (https, data URI, or site-relative path).
+#'   glass (https, data URI, or site-relative path). Photos are blurred and
+#'   washed so body ink stays above the contrast floor (see [glass_css_tokens()]).
+#' @param flatten `TRUE` starts in print/export flatten mode (no backdrop
+#'   blur). See [glass_flatten()].
+#' @param tokens Named list of public CSS token overrides (see
+#'   [glass_css_tokens()] / [glass_add_tokens()]).
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
@@ -53,6 +59,9 @@
 #' clear <- glass_theme(material = "clear")
 #' plots <- glass_theme(plot_surface = "opaque")
 #' remembered <- glass_theme(persist = TRUE, scene = "tahoe")
+#' aurora <- glass_theme(scene = "aurora")
+#' capture <- glass_theme(flatten = TRUE)
+#' custom <- glass_theme(tokens = list(blur = "28px", radius = "1.25rem"))
 #'
 #' if (interactive()) {
 #'   library(shiny)
@@ -88,43 +97,47 @@ glass_theme <- function(
     nav_morph = TRUE,
     ambient_motion = TRUE,
     persist = FALSE,
-    scene = c("default", "tahoe", "dusk", "mesh"),
+    scene = c("default", "tahoe", "dusk", "mesh", "aurora", "harbor", "grove"),
     wallpaper = NULL,
+    flatten = FALSE,
+    tokens = NULL,
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
   plot_surface <- match.arg(plot_surface)
-  scene <- match.arg(scene)
+  scene <- .glass_normalize_scene(scene)
   intensity <- .glass_normalize_intensity(intensity)
   stopifnot(
     is.logical(tint), length(tint) == 1L, !is.na(tint),
     is.logical(specular), length(specular) == 1L, !is.na(specular),
     is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph),
     is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion),
-    is.logical(persist), length(persist) == 1L, !is.na(persist)
+    is.logical(persist), length(persist) == 1L, !is.na(persist),
+    is.logical(flatten), length(flatten) == 1L, !is.na(flatten)
   )
   primary <- .glass_normalize_color(primary)
   wallpaper <- .glass_normalize_wallpaper(wallpaper)
+  user_tokens <- .glass_normalize_token_list(tokens)
 
   # Sass still needs a single pack of $glass-* defaults at compile time.
   # Runtime light/dark comes from dual CSS variable packs in glass.scss.
   # Always use the Bootstrap base (not darkly) so switching preset does not
   # fight Bootswatch dark chrome.
-  tokens <- .glass_tokens("light", blur, saturation, radius)
+  pack <- .glass_tokens("light", blur, saturation, radius)
 
   theme <- bslib::bs_theme(
     version = 5,
     preset = "bootstrap",
     primary = primary,
-    "body-bg" = tokens$body_bg,
-    "body-color" = tokens$body_color,
+    "body-bg" = pack$body_bg,
+    "body-color" = pack$body_color,
     "font-family-sans-serif" = .glass_font_stack(),
     "border-radius" = "1.1rem",
     "border-radius-lg" = radius,
     "border-radius-sm" = "0.85rem",
     "card-border-width" = "1px",
-    "card-border-color" = tokens$glass_border,
-    "input-border-color" = tokens$glass_border,
+    "card-border-color" = pack$glass_border,
+    "input-border-color" = pack$glass_border,
     "navbar-padding-y" = "0.75rem",
     "btn-font-weight" = 600,
     "btn-font-size" = "0.9375rem",
@@ -151,22 +164,22 @@ glass_theme <- function(
   theme <- bslib::bs_add_variables(
     theme,
     # Shared knobs still used by Sass ($glass-blur, etc.)
-    "glass-bg" = tokens$glass_bg,
-    "glass-bg-hover" = tokens$glass_bg_hover,
-    "glass-border" = tokens$glass_border,
-    "glass-shadow" = tokens$glass_shadow,
-    "glass-elevated-shadow" = tokens$glass_elevated_shadow,
+    "glass-bg" = pack$glass_bg,
+    "glass-bg-hover" = pack$glass_bg_hover,
+    "glass-border" = pack$glass_border,
+    "glass-shadow" = pack$glass_shadow,
+    "glass-elevated-shadow" = pack$glass_elevated_shadow,
     "glass-blur" = paste0(blur, "px"),
     "glass-saturate" = paste0(saturation, "%"),
     "glass-radius" = radius,
-    "glass-highlight" = tokens$glass_highlight,
-    "glass-specular" = tokens$glass_specular,
-    "glass-menu-bg" = tokens$glass_menu_bg,
-    "glass-menu-color" = tokens$glass_menu_color,
-    "glass-page-bg" = tokens$page_bg,
-    "glass-orb-1" = tokens$orb_1,
-    "glass-orb-2" = tokens$orb_2,
-    "glass-orb-3" = tokens$orb_3
+    "glass-highlight" = pack$glass_highlight,
+    "glass-specular" = pack$glass_specular,
+    "glass-menu-bg" = pack$glass_menu_bg,
+    "glass-menu-color" = pack$glass_menu_color,
+    "glass-page-bg" = pack$page_bg,
+    "glass-orb-1" = pack$orb_1,
+    "glass-orb-2" = pack$orb_2,
+    "glass-orb-3" = pack$orb_3
   )
 
   glass_scss <- system.file("scss", "glass.scss", package = "shinyglass")
@@ -189,7 +202,8 @@ glass_theme <- function(
     intensity = intensity,
     persist = persist,
     scene = scene,
-    wallpaper = wallpaper
+    wallpaper = wallpaper,
+    flatten = flatten
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -209,11 +223,15 @@ glass_theme <- function(
     script = "shiny-glass.js",
     all_files = FALSE
   )
-  bslib::bs_bundle(
+  theme <- bslib::bs_bundle(
     theme,
     sass::sass_layer(html = preset_dep),
     sass::sass_layer(html = glass_js)
   )
+  if (length(user_tokens)) {
+    theme <- glass_add_tokens(theme, user_tokens)
+  }
+  theme
 }
 
 #' Update glass theme options in a running app
@@ -238,7 +256,10 @@ glass_theme <- function(
 #' @param material Optional `"regular"` or `"clear"`.
 #' @param plot_surface Optional `"clear"` or `"opaque"`.
 #' @param ambient_motion Optional logical.
-#' @param scene Optional `"default"`, `"tahoe"`, `"dusk"`, or `"mesh"`.
+#' @param scene Optional scene id from [glass_scenes()].
+#' @param flatten Optional logical. See [glass_flatten()].
+#' @param tokens Optional named list of CSS token overrides (see
+#'   [glass_add_tokens()]). Applied live via CSS variables.
 #'
 #' @return `session`, invisibly.
 #'
@@ -273,7 +294,9 @@ update_glass_theme <- function(
     material = NULL,
     plot_surface = NULL,
     ambient_motion = NULL,
-    scene = NULL) {
+    scene = NULL,
+    flatten = NULL,
+    tokens = NULL) {
   if (missing(session) || is.null(session)) {
     stop("`session` is required.", call. = FALSE)
   }
@@ -299,11 +322,17 @@ update_glass_theme <- function(
     stopifnot(is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion))
   }
   if (!is.null(scene)) {
-    scene <- match.arg(scene, c("default", "tahoe", "dusk", "mesh"))
+    scene <- .glass_normalize_scene(scene)
+  }
+  if (!is.null(flatten)) {
+    stopifnot(is.logical(flatten), length(flatten) == 1L, !is.na(flatten))
+  }
+  if (!is.null(tokens)) {
+    tokens <- .glass_normalize_token_list(tokens)
   }
   if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
       is.null(material) && is.null(plot_surface) && is.null(ambient_motion) &&
-      is.null(scene)) {
+      is.null(scene) && is.null(flatten) && (is.null(tokens) || !length(tokens))) {
     return(invisible(session))
   }
 
@@ -316,6 +345,8 @@ update_glass_theme <- function(
   if (!is.null(plot_surface)) payload$plot_surface <- plot_surface
   if (!is.null(ambient_motion)) payload$ambient_motion <- ambient_motion
   if (!is.null(scene)) payload$scene <- scene
+  if (!is.null(flatten)) payload$flatten <- flatten
+  if (length(tokens)) payload$tokens <- tokens
 
   # Dual-channel delivery: structured shinyglass payload + legacy glassPreset
   # string. Some hosts rewrite or drop one channel but not both; the client
@@ -674,7 +705,8 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     ambient_motion = TRUE,
     persist = FALSE,
     scene = "default",
-    wallpaper = NULL) {
+    wallpaper = NULL,
+    flatten = FALSE) {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -688,6 +720,10 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   plot_surface <- if (identical(plot_surface, "opaque")) "opaque" else "clear"
   intensity <- .glass_normalize_intensity(intensity)
   wall_js <- if (is.null(wallpaper)) "null" else jsonlite_quote(wallpaper)
+  scene_map <- paste(
+    vapply(.glass_scene_names(), function(s) sprintf("%s:1", s), character(1)),
+    collapse = ","
+  )
   sprintf(
     paste0(
       "<script>(function(){",
@@ -699,6 +735,8 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "var scene=%s;",
       "var persist=%s;",
       "var wallpaper=%s;",
+      "var flatten=%s;",
+      "var scenes={%s};",
       "var root=document.documentElement;",
       "if(persist){",
       "try{",
@@ -710,10 +748,15 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "if(typeof st.primary==='string'&&st.primary)prim=st.primary;",
       "if(st.material==='clear'||st.material==='regular')material=st.material;",
       "if(st.plotSurface==='clear'||st.plotSurface==='opaque')plotSurface=st.plotSurface;",
-      "if(st.scene==='tahoe'||st.scene==='dusk'||st.scene==='mesh'||st.scene==='default')scene=st.scene;",
+      "if(st.scene&&scenes[st.scene])scene=st.scene;",
       "root.dataset.glassPersistRestored='true';}",
       "}catch(e){}",
       "}",
+      "try{",
+      "var q=new URLSearchParams(location.search||'');",
+      "var qf=q.get('glass_flatten');",
+      "if(qf==='1'||qf==='true'||qf==='on')flatten=true;",
+      "}catch(e){}",
       "root.dataset.glassPersist=persist?'true':'false';",
       "root.dataset.glassMode=p;",
       "function resolve(mode){",
@@ -728,6 +771,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "root.dataset.glassMaterial=material;",
       "root.dataset.glassPlotSurface=plotSurface;",
       "root.dataset.glassScene=scene;",
+      "root.dataset.glassFlatten=flatten?'true':'false';",
       "root.dataset.glassIntensity=String(intensity);",
       "root.style.setProperty('--glass-intensity',String(intensity));",
       "root.dataset.glassTint=%s;",
@@ -755,6 +799,8 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     jsonlite_quote(scene),
     if (isTRUE(persist)) "true" else "false",
     wall_js,
+    if (isTRUE(flatten)) "true" else "false",
+    scene_map,
     if (isTRUE(tint)) "\"true\"" else "\"false\"",
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",

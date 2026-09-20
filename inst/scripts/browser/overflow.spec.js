@@ -138,6 +138,67 @@ test('1280px dashboard-like layout does not grow a page scrollbar', async ({ pag
   expect(metrics.tableWidth).toBeGreaterThan(500);
 });
 
+test('480px dashboard-like layout does not grow a page scrollbar', async ({ page }) => {
+  await bootOverflow(page, { width: 480, height: 800 });
+  const metrics = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+    brandWidth: document.querySelector('.navbar-brand').getBoundingClientRect().width,
+    tableWidth: document.querySelector('table.dataTable').getBoundingClientRect().width,
+    cardWidth: document.querySelector('.card').getBoundingClientRect().width,
+  }));
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  expect(metrics.tableWidth).toBeLessThanOrEqual(metrics.cardWidth + 2);
+  expect(metrics.brandWidth).toBeLessThanOrEqual(200);
+});
+
+test('480px olympics-like hero and table stay in the viewport', async ({ page }) => {
+  await bootOverflow(page, { width: 480, height: 800 });
+  await page.evaluate(() => {
+    document.body.innerHTML = `
+      <div class="olympics-wrap container-fluid">
+        <div class="card">
+          <div class="text-center olympics-hero">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="100" alt="rings">
+            <h2 class="h3 mt-2">An overview of olympic medals</h2>
+          </div>
+          <div class="olympics-filters">
+            <button class="olympics-settings-btn btn btn-primary">Settings</button>
+          </div>
+          <div class="table-responsive">
+            <div class="Reactable">
+              <table class="rt-table"><thead><tr>
+                <th>Country</th><th>Gold</th><th>Silver</th><th>Bronze</th>
+              </tr></thead><tbody><tr>
+                <td>USA</td><td>39</td><td>41</td><td>33</td>
+              </tr></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+  const metrics = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+    wrapWidth: document.querySelector('.olympics-wrap').getBoundingClientRect().width,
+    tableOverflow: getComputedStyle(document.querySelector('.table-responsive')).overflowX,
+  }));
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  expect(metrics.wrapWidth).toBeLessThanOrEqual(metrics.clientWidth);
+  expect(['auto', 'scroll']).toContain(metrics.tableOverflow);
+});
+
+test('flatten mode drops backdrop-filter on cards', async ({ page }) => {
+  await bootOverflow(page, { width: 800, height: 600 });
+  await page.evaluate(() => shinyglass.setFlatten(true));
+  const after = await page.evaluate(() => ({
+    flatten: document.documentElement.dataset.glassFlatten,
+    filter: getComputedStyle(document.querySelector('.card')).backdropFilter,
+  }));
+  expect(after.flatten).toBe('true');
+  expect(after.filter === 'none' || after.filter === '').toBe(true);
+});
+
 test('theme switch snaps plotly axis ink and settles after plot reload', async ({ page }) => {
   await bootOverflow(page);
   const before = await page.evaluate(() => getComputedStyle(document.querySelector('.js-plotly-plot .gtitle')).fill);

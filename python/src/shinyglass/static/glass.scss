@@ -1863,6 +1863,99 @@ small,
   border-color: var(--glass-border) !important;
 }
 
+// ---------------------------------------------------------------------------
+// bslib depth (page_navbar / navsets / cards / value boxes / focus / stack)
+// Glass chrome stays on the outer frame; nested cards densify so glass-on-glass
+// does not wash out titles. Focus rings stay visible on every pack.
+// ---------------------------------------------------------------------------
+
+.navbar .dropdown-menu,
+.bslib-page-navbar .dropdown-menu,
+.navbar-nav .dropdown-menu {
+  z-index: 1080;
+}
+
+.tooltip {
+  z-index: 1090 !important;
+}
+
+.popover {
+  z-index: 1085 !important;
+}
+
+.modal {
+  z-index: 1055;
+}
+
+.bslib-sidebar-layout > .collapse-toggle {
+  z-index: 40;
+}
+
+.navset-card-tab > .nav,
+.navset-card-pill > .nav,
+.bslib-card > .card-header .nav,
+.bslib-navs-card-title {
+  background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+  border-color: var(--glass-border) !important;
+}
+
+.navset-pill .nav-link,
+.navset-underline .nav-link,
+.navset-card-tab .nav-link,
+.navset-card-pill .nav-link {
+  color: var(--glass-body-color) !important;
+  border-radius: 0.75rem;
+}
+
+.navset-pill .nav-link.active,
+.navset-card-tab .nav-link.active,
+.navset-card-pill .nav-link.active {
+  background: var(--glass-bg-hover) !important;
+  color: var(--glass-body-color) !important;
+}
+
+.navset-underline .nav-link.active {
+  box-shadow: inset 0 -2px 0 #{$glass-accent};
+}
+
+// Nested glass: inner cards / value boxes use a denser fill so stacked chrome
+// still separates. Outer cards keep the regular material.
+.card .card,
+.bslib-card .bslib-card,
+.card .bslib-value-box,
+.bslib-card .bslib-value-box {
+  background: color-mix(in srgb, var(--glass-bg-content, var(--glass-bg)) 82%, var(--glass-menu-bg)) !important;
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate)) !important;
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate)) !important;
+}
+
+.bslib-value-box:focus-within,
+.card:focus-within > .card-header,
+.accordion-item:focus-within {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 0 0.12rem color-mix(in srgb, #{$glass-accent} 28%, transparent);
+}
+
+.nav-link:focus-visible,
+.navbar-brand:focus-visible,
+.bslib-page-title:focus-visible,
+.accordion-button:focus-visible,
+.bslib-sidebar-layout > .collapse-toggle:focus-visible,
+.card:focus-visible,
+.bslib-card:focus-visible,
+.bslib-value-box:focus-visible,
+.modal-content:focus-visible {
+  outline: 3px solid color-mix(in srgb, #{$glass-accent} 72%, var(--glass-body-color));
+  outline-offset: 3px;
+}
+
+.bslib-sidebar-layout > .sidebar:focus-within {
+  box-shadow:
+    0 16px 48px var(--glass-elevated-shadow),
+    0 0 0 0.12rem color-mix(in srgb, #{$glass-accent} 22%, transparent);
+}
+
 // bslib / Bootstrap toast
 .toast {
   --bs-toast-bg: var(--glass-menu-bg);
@@ -4508,6 +4601,98 @@ body.glass-scroll-edge .bslib-sidebar-layout > .main::before {
   }
 }
 
+// Phones / narrow QA gate (≤480px): olympics + dashboard + any glass_theme app.
+@media (max-width: 480px) {
+  :root {
+    --glass-float-margin: 0.35rem;
+  }
+
+  .glass-page-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .glass-theme-toggle {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .glass-theme-toggle .btn,
+  .glass-theme-toggle .action-button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .glass-intensity-slider,
+  .glass-accent-input,
+  .glass-scene-input,
+  .glass-plot-surface-input {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .navbar-brand,
+  .bslib-page-title {
+    max-width: 11.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .navbar-nav,
+  .bslib-page-navbar .navbar-nav,
+  .navset-card-tab > .nav,
+  .navset-pill,
+  .navset-underline {
+    flex-wrap: wrap !important;
+    row-gap: 0.25rem;
+  }
+
+  .bslib-page-dashboard .bslib-grid,
+  .bslib-page-dashboard .layout-column-wrap,
+  .layout-column-wrap,
+  .bslib-grid.grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .bslib-value-box {
+    width: 100% !important;
+  }
+
+  .olympics-wrap {
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+    max-width: 100%;
+  }
+
+  .olympics-hero img {
+    max-width: #{'min(160px, 70vw)'} !important;
+  }
+
+  .olympics-filters .col-filter,
+  .olympics-settings-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .olympics-wrap .Reactable,
+  .olympics-wrap .rt-table {
+    font-size: 0.78rem;
+  }
+
+  .bslib-sidebar-layout > .sidebar {
+    margin: 0.35rem !important;
+    max-height: #{'min(62vh, 24rem)'} !important;
+  }
+
+  .modal-dialog {
+    margin: 0.35rem !important;
+    max-width: calc(100% - 0.7rem) !important;
+  }
+}
+
 // Mid-size phones / small tablets in portrait: still soften sidebar reserve
 @media (min-width: 576px) and (max-width: 767.98px) {
   .bslib-sidebar-layout {
@@ -4666,13 +4851,64 @@ body.glass-scroll-edge .bslib-sidebar-layout > .main::before {
   --glass-orb-3: rgba(48, 209, 88, 0.16);
 }
 
-// Optional photo wallpaper: frosted photo behind orbs.
+:root[data-glass-scene="aurora"][data-glass-preset="light"],
+:root[data-glass-scene="aurora"] {
+  --glass-page-bg: linear-gradient(165deg, #d7efe8 0%, #e8eef7 42%, #d9d4f2 100%);
+  --glass-orb-1: rgba(48, 209, 88, 0.32);
+  --glass-orb-2: rgba(90, 200, 250, 0.28);
+  --glass-orb-3: rgba(175, 82, 222, 0.22);
+}
+:root[data-glass-scene="aurora"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(165deg, #061410 0%, #070814 46%, #120818 100%);
+  --glass-orb-1: rgba(48, 209, 88, 0.28);
+  --glass-orb-2: rgba(100, 210, 255, 0.26);
+  --glass-orb-3: rgba(191, 90, 242, 0.24);
+}
+
+:root[data-glass-scene="harbor"][data-glass-preset="light"],
+:root[data-glass-scene="harbor"] {
+  --glass-page-bg: linear-gradient(180deg, #cfe4f2 0%, #eef4f8 40%, #d5e4dc 100%);
+  --glass-orb-1: rgba(0, 122, 255, 0.30);
+  --glass-orb-2: rgba(90, 200, 250, 0.26);
+  --glass-orb-3: rgba(52, 199, 89, 0.16);
+}
+:root[data-glass-scene="harbor"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(180deg, #07141c 0%, #05080c 44%, #0a1612 100%);
+  --glass-orb-1: rgba(10, 132, 255, 0.34);
+  --glass-orb-2: rgba(100, 210, 255, 0.22);
+  --glass-orb-3: rgba(48, 209, 88, 0.14);
+}
+
+:root[data-glass-scene="grove"][data-glass-preset="light"],
+:root[data-glass-scene="grove"] {
+  --glass-page-bg: linear-gradient(150deg, #e7efd4 0%, #f4efe4 48%, #e8d7b8 100%);
+  --glass-orb-1: rgba(52, 199, 89, 0.28);
+  --glass-orb-2: rgba(255, 204, 0, 0.20);
+  --glass-orb-3: rgba(255, 149, 0, 0.16);
+}
+:root[data-glass-scene="grove"][data-glass-preset="dark"] {
+  --glass-page-bg: linear-gradient(150deg, #101408 0%, #0a0a08 44%, #1a140c 100%);
+  --glass-orb-1: rgba(48, 209, 88, 0.22);
+  --glass-orb-2: rgba(255, 214, 10, 0.14);
+  --glass-orb-3: rgba(255, 159, 10, 0.14);
+}
+
+:root {
+  --glass-wallpaper-wash: rgba(245, 245, 247, 0.48);
+}
+:root[data-glass-preset="dark"] {
+  --glass-wallpaper-wash: rgba(0, 0, 0, 0.55);
+}
+
+// Optional photo wallpaper: frosted + washed so body ink stays readable.
 :root[data-glass-wallpaper="true"] body::before {
-  background-image: var(--glass-wallpaper);
+  background-image:
+    linear-gradient(var(--glass-wallpaper-wash), var(--glass-wallpaper-wash)),
+    var(--glass-wallpaper);
   background-size: cover;
   background-position: center;
-  filter: blur(40px) saturate(1.15);
-  opacity: 0.55;
+  filter: blur(48px) saturate(1.1) brightness(0.92);
+  opacity: 0.58;
   transform: scale(1.08);
 }
 
@@ -4806,5 +5042,90 @@ html.glass-theme-settling {
     -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
     border: 1px solid ButtonBorder !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Flatten / print / screenshot (glass_flatten(), ?glass_flatten=1, @media print)
+// Neutralize backdrop-filter translucency that breaks chromote / PDF / static
+// HTML. Keep ink and layout; swap fills to the opaque menu pack.
+// ---------------------------------------------------------------------------
+@mixin glass-flatten-mode {
+  --glass-blur: 0px;
+  --glass-saturate: 100%;
+
+  body::before,
+  body::after {
+    filter: none !important;
+    animation: none !important;
+    opacity: 0.22;
+  }
+
+  .card,
+  form.well,
+  .col-sm-4.well,
+  .navbar,
+  .navbar.navbar-static-top,
+  .navbar.navbar-default,
+  .bslib-page-sidebar > .navbar,
+  .bslib-sidebar-layout > .sidebar,
+  .modal-content,
+  .dropdown-menu,
+  .accordion-button,
+  .accordion-body,
+  .tooltip .tooltip-inner,
+  .popover,
+  .toast,
+  .shiny-notification,
+  .value-box,
+  .bslib-value-box,
+  .gt_table,
+  .dataTables_wrapper,
+  .js-plotly-plot,
+  .shiny-plot-output {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .card,
+  form.well,
+  .navbar,
+  .bslib-sidebar-layout > .sidebar,
+  .modal-content,
+  .dropdown-menu,
+  .accordion-button,
+  .popover,
+  .toast,
+  .shiny-notification {
+    background: var(--glass-menu-bg) !important;
+    background-color: var(--glass-menu-bg) !important;
+  }
+
+  .modal-backdrop,
+  .glass-file-scrim {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(15, 15, 20, 0.55) !important;
+  }
+}
+
+:root[data-glass-flatten="true"] {
+  @include glass-flatten-mode;
+}
+
+@media print {
+  :root {
+    @include glass-flatten-mode;
+  }
+
+  html,
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body::before,
+  body::after {
+    display: none !important;
   }
 }

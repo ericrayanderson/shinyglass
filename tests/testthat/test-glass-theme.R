@@ -593,6 +593,12 @@ test_that("compiled CSS includes scenes, wells, and forced-colors", {
   }
   css <- paste(css_chunks, collapse = "\n")
   expect_match(css, "data-glass-scene")
+  expect_match(css, "aurora")
+  expect_match(css, "harbor")
+  expect_match(css, "grove")
+  expect_match(css, "glass-wallpaper-wash")
+  expect_match(css, "data-glass-flatten")
+  expect_match(css, "max-width: 480px")
   expect_match(css, "glass-accent-well")
   expect_match(css, "forced-colors")
   expect_match(css, "prefers-contrast")
@@ -625,6 +631,90 @@ test_that("update_glass_theme sends plot_surface", {
   update_glass_theme(session, plot_surface = "opaque")
   expect_equal(msgs[[1]]$type, "shinyglass")
   expect_equal(msgs[[1]]$message$plot_surface, "opaque")
+})
+
+test_that("default glass_theme() scene and empty tokens do not error", {
+  skip_if_not_installed("bslib")
+  expect_s3_class(glass_theme(), "bs_theme")
+  expect_equal(.glass_normalize_scene(.glass_scene_names()), "default")
+  expect_equal(.glass_normalize_scene(c("default", "tahoe", "dusk")), "default")
+  expect_equal(.glass_normalize_token_list(NULL), list())
+})
+
+test_that("named scenes include aurora harbor grove", {
+  expect_true(all(c("aurora", "harbor", "grove") %in% names(glass_scenes())))
+  skip_if_not_installed("bslib")
+  th <- glass_theme(scene = "aurora")
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, 'var scene="aurora"', fixed = TRUE)
+  expect_error(glass_theme(scene = "neon"))
+  skip_if_not_installed("htmltools")
+  skip_if_not_installed("shiny")
+  ui <- as.character(glass_scene_input("sc", selected = "harbor"))
+  expect_match(ui, "data-glass-scene-input")
+  expect_match(ui, "harbor")
+})
+
+test_that("flatten is marked and update_glass_theme sends it", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme(flatten = TRUE)
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, "var flatten=true")
+  expect_match(head, "glassFlatten")
+  css <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(css, "data-glass-flatten")
+  expect_match(css, "@media print")
+  expect_match(css, "glass-flatten-mode")
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "setFlatten")
+  expect_match(js, "enterFlatten")
+  expect_match(js, "glass_flatten")
+  msgs <- list()
+  session <- list(sendCustomMessage = function(type, message) {
+    msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+  })
+  class(session) <- "ShinySession"
+  glass_flatten(session, TRUE)
+  expect_equal(msgs[[1]]$message$flatten, TRUE)
+})
+
+test_that("public tokens catalog and overrides", {
+  cat <- glass_css_tokens()
+  expect_true(all(c("token", "css_var", "category", "description") %in% names(cat)))
+  expect_true("--glass-blur" %in% cat$css_var)
+  expect_true("--glass-wallpaper-wash" %in% cat$css_var)
+  pack <- glass_token_pack("light")
+  expect_equal(pack[["--glass-body-color"]], "#1d1d1f")
+  dark <- glass_token_pack("dark")
+  expect_equal(dark[["--glass-body-color"]], "#f5f5f7")
+  expect_error(glass_add_tokens(glass_theme(), list(not_a_token = "1px")), "Unknown")
+  skip_if_not_installed("bslib")
+  th <- glass_theme(tokens = list(blur = "28px", radius = "1.25rem"))
+  deps <- bslib::bs_theme_dependencies(th)
+  token_deps <- deps[vapply(deps, function(d) d$name == "shinyglass-tokens", logical(1))]
+  expect_length(token_deps, 1)
+  expect_match(token_deps[[1]]$head, "--glass-blur:28px")
+  expect_match(token_deps[[1]]$head, "--glass-radius:1.25rem")
+  msgs <- list()
+  session <- list(sendCustomMessage = function(type, message) {
+    msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+  })
+  update_glass_theme(session, tokens = list(blur = "40px"))
+  expect_equal(msgs[[1]]$message$tokens[["--glass-blur"]], "40px")
+})
+
+test_that("plot surface input and DT options", {
+  skip_if_not_installed("shiny")
+  skip_if_not_installed("htmltools")
+  html <- as.character(glass_plot_surface_input("ps", selected = "opaque"))
+  expect_match(html, "data-glass-plot-surface-input")
+  expect_match(html, "opaque")
+  opts <- dt_options_glass(page_length = 5, scroll_x = TRUE)
+  expect_equal(opts$pageLength, 5)
+  expect_true(opts$scrollX)
+  expect_false(opts$autoWidth)
 })
 
 test_that("compiled CSS and JS ship shipping-iOS-27 edge tokens", {

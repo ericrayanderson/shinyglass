@@ -13,7 +13,9 @@ update_glass_theme(
   material = NULL,
   plot_surface = NULL,
   ambient_motion = NULL,
-  scene = NULL
+  scene = NULL,
+  flatten = NULL,
+  tokens = NULL
 )
 }
 \arguments{
@@ -35,7 +37,12 @@ Tinted (\code{1}).}
 
 \item{ambient_motion}{Optional logical.}
 
-\item{scene}{Optional \code{"default"}, \code{"tahoe"}, \code{"dusk"}, or \code{"mesh"}.}
+\item{scene}{Optional scene id from \code{\link[=glass_scenes]{glass_scenes()}}.}
+
+\item{flatten}{Optional logical. See \code{\link[=glass_flatten]{glass_flatten()}}.}
+
+\item{tokens}{Optional named list of CSS token overrides (see
+\code{\link[=glass_add_tokens]{glass_add_tokens()}}). Applied live via CSS variables.}
 }
 \value{
 \code{session}, invisibly.

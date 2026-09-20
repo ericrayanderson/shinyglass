@@ -853,8 +853,18 @@
     rootEl().dataset.glassAmbientMotion = on ? "true" : "false";
   }
 
+  var GLASS_SCENES = {
+    default: true,
+    tahoe: true,
+    dusk: true,
+    mesh: true,
+    aurora: true,
+    harbor: true,
+    grove: true
+  };
+
   function setScene(name) {
-    if (name !== "tahoe" && name !== "dusk" && name !== "mesh") name = "default";
+    if (!GLASS_SCENES[name]) name = "default";
     rootEl().dataset.glassScene = name;
     persistStateSoon();
   }
@@ -863,6 +873,37 @@
     surface = surface === "opaque" ? "opaque" : "clear";
     rootEl().dataset.glassPlotSurface = surface;
     persistStateSoon();
+  }
+
+  function flattenFromQuery() {
+    try {
+      var q = new URLSearchParams((window.location && location.search) || "");
+      var v = q.get("glass_flatten");
+      return v === "1" || v === "true" || v === "on";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function setFlatten(on) {
+    rootEl().dataset.glassFlatten = on ? "true" : "false";
+  }
+
+  function setTokens(obj) {
+    if (!obj || typeof obj !== "object") return;
+    var root = rootEl();
+    Object.keys(obj).forEach(function (k) {
+      var name = k;
+      if (name.indexOf("--") !== 0) {
+        name = name.indexOf("glass-") === 0 ? "--" + name : "--glass-" + name.replace(/^glass_/, "").replace(/_/g, "-");
+      }
+      var val = obj[k];
+      if (val == null || val === "") {
+        root.style.removeProperty(name);
+      } else {
+        root.style.setProperty(name, String(val));
+      }
+    });
   }
 
   function syncAccentWells(hex) {
@@ -921,6 +962,21 @@
   };
   window.shinyglass.getPlotSurface = function () {
     return rootEl().dataset.glassPlotSurface || "clear";
+  };
+  window.shinyglass.setFlatten = function (on) {
+    setFlatten(!!on);
+  };
+  window.shinyglass.getFlatten = function () {
+    return rootEl().dataset.glassFlatten === "true";
+  };
+  window.shinyglass.enterFlatten = function () {
+    setFlatten(true);
+  };
+  window.shinyglass.exitFlatten = function () {
+    setFlatten(false);
+  };
+  window.shinyglass.setTokens = function (obj) {
+    setTokens(obj);
   };
 
   // raise native <select> above later card content
@@ -1162,6 +1218,8 @@
       if (msg.ambient_motion != null) setAmbientMotion(!!msg.ambient_motion);
       if (msg.scene != null) setScene(msg.scene);
       if (msg.plot_surface != null) setPlotSurface(msg.plot_surface);
+      if (msg.flatten != null) setFlatten(!!msg.flatten);
+      if (msg.tokens != null) setTokens(msg.tokens);
     }
   }
 
@@ -1567,6 +1625,18 @@
     }
   );
 
+  $(document).on(
+    "change.glassScene",
+    "select[data-glass-scene-input], [data-glass-scene-input] select",
+    function () {
+      var v = $(this).val();
+      if (!v || !GLASS_SCENES[v]) return;
+      if (window.shinyglass && typeof window.shinyglass.setScene === "function") {
+        window.shinyglass.setScene(v);
+      }
+    }
+  );
+
   $(document).on("shiny:connected.shinyglassResolved", function () {
     // A new connection needs the resolved value even when appearance is unchanged.
     delete rootEl().dataset.glassResolvedSent;
@@ -1748,12 +1818,16 @@
     }
     syncAccentWells(rootEl().dataset.glassPrimary);
 
-    // iOS 27 intensity (0 Ultra Clear → 1 Tinted)
+    // iOS 27 intensity (0 Ultra Clear → Tinted)
     var initI = rootEl().dataset.glassIntensity;
     if (initI != null && initI !== "") {
       setIntensity(initI, { syncInputs: true });
     } else {
       setIntensity(0.45, { syncInputs: true });
+    }
+
+    if (flattenFromQuery() || rootEl().dataset.glassFlatten === "true") {
+      setFlatten(true);
     }
 
     scheduleTintUpdate();

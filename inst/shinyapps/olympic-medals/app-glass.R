@@ -69,6 +69,11 @@ ui <- fluidPage(
         .olympics-settings-btn { width: 100% !important; }
         .olympics-wrap .Reactable { font-size: 0.82rem; }
       }
+      @media (max-width: 480px) {
+        .olympics-hero h2, .olympics-hero .h3 { font-size: 1.15rem; }
+        .olympics-filters { margin-top: 0.5rem; }
+        .olympics-wrap .card { margin-left: 0; margin-right: 0; }
+      }
     "))
   ),
   # Full width on phones; centered readable column on larger screens

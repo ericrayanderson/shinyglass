@@ -43,6 +43,35 @@ datepicker / navbar menu / notifications / accordion / tooltip / popover /
 server modal, plus intensity 0 and 1. Screenshot a pass with
 `--screenshot-dir=visual-test-output/chrome`.
 
+## Narrow viewport gate (≤480px)
+
+Treat **480px** as a release gate for core demos (especially Olympics and the
+bslib dashboard). Package CSS (`@media (max-width: 480px)` in `glass.scss`)
+stacks page controls, wraps navbar/navsets, and contains DT / reactable /
+plotly hosts.
+
+Automated: from `inst/scripts/browser`,
+
+```sh
+npx playwright test overflow.spec.js
+```
+
+covers a 480px dashboard-like `page_sidebar` and an Olympics-like hero + table
+(no page horizontal scrollbar).
+
+Manual (do this before shinyapps redeploy):
+
+1. [ ] Dashboard at 480×800: sidebar closed by default; value boxes stack;
+   histogram / scatter / iris table stay in the viewport; intensity + scene +
+   plot-surface controls are full width.
+2. [ ] Olympics at 480×800: rings + title wrap; filters stack; reactable
+   scrolls inside the card; no page-level horizontal scroll.
+3. [ ] Kitchen sink at 480×800: `page_navbar` tabs wrap; modal is full-bleed;
+   flatten buttons remain tappable.
+
+Known limits: Virtual Select and wide reactable columns still scroll *inside*
+the card; we do not collapse every multi-column demo into a single field.
+
 ## Dual-theme matrix (minimum before release)
 
 | App | light | dark | Interaction |
