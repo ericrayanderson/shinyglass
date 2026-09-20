@@ -31,9 +31,10 @@ current look.
 * visual-qa: testthat + dual-theme contrast audit + Playwright runtime
   (including 480px overflow checks)
 
-Known flake: `macos-latest` `setup-r-dependencies` can fail with pak
-`Cannot extract … unknown archive type` on a binary tarball (reproduced on
-`main` with `knitr`). The workflow retries that step once. Ubuntu, Windows,
+Known macOS CI note: R 4.6 CRAN binaries for `knitr` and `xfun` are
+zstd-compressed `.tgz` files. `pak` stable cannot extract those
+("unknown archive type"; same failure on `main`). The R-CMD-check
+workflow installs `knitr` and `xfun` from source. Ubuntu, Windows,
 and the rest of this PR's checks are green.
 
 ## R CMD check results
