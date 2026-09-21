@@ -17,5 +17,5 @@ documented in \code{\link[=glass_css_tokens]{glass_css_tokens()}}.
 }
 \examples{
 names(glass_scenes())
-glass_theme(scene = "aurora")
+glass_scenes()[["aurora"]]
 }

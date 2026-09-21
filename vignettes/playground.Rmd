@@ -20,7 +20,7 @@ full Shiny app with theme persistence, intensity, accent wells, and
 # Shinylive
 
 Paste this into the [Shinylive editor](https://shinylive.io/r/editor/) (install
-shinyglass from GitHub in the editor if the CRAN build is older than 0.3.0):
+shinyglass from GitHub in the editor if the CRAN build is older than 0.4.0):
 
 ```r
 library(shiny)
