@@ -8,7 +8,7 @@
 
 Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstudio.github.io/bslib/). Add translucent surfaces, live light/dark switching, and adjustable glass intensity to your app.
 
-[Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](NEWS.md)
+[Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="72%" alt="Glass intensity changing from clear to tinted">
