@@ -7,7 +7,8 @@ live light/dark switching, and adjustable glass intensity to your app.
 [Documentation](https://ericrayanderson.github.io/shinyglass/) ·
 [Theming
 guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
-· [Release notes](https://ericrayanderson.github.io/shinyglass/NEWS.md)
+· [Release
+notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
 ![Glass intensity changing from clear to
 tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
