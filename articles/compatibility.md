@@ -4,7 +4,7 @@ shinyglass is a **theme layer**, not a universal skin. It targets
 Bootstrap 5 / bslib surfaces first, then overlays denser dashboard
 stacks where practical.
 
-## Support matrix (as of 0.3.0.9000 / 0.4.0 prep)
+## Support matrix (as of 0.4.0)
 
 | Stack | Status | Notes |
 |----|----|----|

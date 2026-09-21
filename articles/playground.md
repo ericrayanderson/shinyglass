@@ -11,7 +11,7 @@ plots. Apps may take a moment to wake up.
 
 Paste this into the [Shinylive editor](https://shinylive.io/r/editor/)
 (install shinyglass from GitHub in the editor if the CRAN build is older
-than 0.3.0):
+than 0.4.0):
 
 ``` r
 

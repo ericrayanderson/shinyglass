@@ -1,143 +1,84 @@
 # Changelog
 
-## shinyglass 0.3.0.9000
+## shinyglass 0.4.0
 
-### Development (unreleased)
+### New features
 
-0.4.0 milestone work (issues
-[\#37](https://github.com/ericrayanderson/shinyglass/issues/37)–#44).
-Version stays **0.3.0.9000** until an explicit CRAN bump — do not treat
-this heading as a submitted 0.4.0.
-
-- **Plot / table surfaces
-  ([\#38](https://github.com/ericrayanderson/shinyglass/issues/38)):**
-  `plot_surface = "clear"|"opaque"` is the content-surface story for
-  ggplot (`theme_glass(surface=)`), plotly
-  ([`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md)),
-  gt
-  ([`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)),
-  and DT hosts (CSS + optional
-  [`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md)).
-  [`glass_plot_surface_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_surface_input.md)
-  /
-  [`observe_glass_plot_surface()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_plot_surface.md)
-  toggle live with
-  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
-  and `window.shinyglass.setPlotSurface()`. HIG: glass chrome, denser
-  panels for charts and tables. Dashboard and plotly+gt demos show both
-  modes.
-- **bslib depth
-  ([\#39](https://github.com/ericrayanderson/shinyglass/issues/39)):**
-  Stronger Liquid Glass for `page_navbar` / navsets, nested cards and
-  value boxes (glass-on-glass densify), sidebars, accordion,
-  tooltips/popovers, and modals. Focus-visible rings and overlay z-index
-  (tooltip 1090, popover 1085, menus 1080) apply to every
-  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  app.
-- **Python parity
-  ([\#40](https://github.com/ericrayanderson/shinyglass/issues/40)):**
-  Intensity, `plot_surface`, scenes, flatten, persist, and JS knobs are
-  first-class on
-  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
-  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
-  and
-  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-  ship. Shared SCSS/JS stay vendored in `python/src/shinyglass/static/`.
-- **Scenes
-  ([\#41](https://github.com/ericrayanderson/shinyglass/issues/41)):**
-  Named packs `aurora`, `harbor`, and `grove` join `tahoe` / `dusk` /
-  `mesh`.
-  [`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)
-  /
-  [`glass_scene_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scene_input.md)
-  list and switch them. User `wallpaper=` photos are blurred and washed
-  (`--glass-wallpaper-wash`) so body ink stays above the documented
-  contrast floor (4.5:1 text / 3:1 large chrome).
-- **Flatten
-  ([\#42](https://github.com/ericrayanderson/shinyglass/issues/42)):**
-  [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
-  `glass_theme(flatten=)`, `update_glass_theme(flatten=)`,
-  `window.shinyglass.setFlatten()` / `.enterFlatten()` /
-  `.exitFlatten()`, and `?glass_flatten=1` neutralize backdrop blur for
-  chromote, PDF, print, and shareable shots. `@media print` does the
-  same automatically.
-- **Public tokens
-  ([\#43](https://github.com/ericrayanderson/shinyglass/issues/43)):**
-  [`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
-  documents stable `--glass-*` variables.
-  [`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
-  /
-  [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)
-  / `glass_theme(tokens=)` / `update_glass_theme(tokens=)` override
-  packs without forking SCSS.
-- **Narrow QA
-  ([\#44](https://github.com/ericrayanderson/shinyglass/issues/44)):**
-  Package CSS for ≤480px (stacked controls, wrapping nav, full-width
-  value boxes, olympics/dashboard containment). Playwright
-  `overflow.spec.js` covers a 480px dashboard-like and olympics-like
-  layout. Manual gate: `inst/scripts/VISUAL-QA.md`.
-- **CRAN candidate prep
-  ([\#37](https://github.com/ericrayanderson/shinyglass/issues/37)):**
-  Draft `cran-comments.md`, `inst/scripts/CRAN-RELEASE.md` checklist,
-  spell/URL hygiene. **Not submitted.** Version remains 0.3.0.9000.
-
-iOS 27 Liquid Glass alignment (announced 9 Sep 2026; public release 14
-Sep 2026). Liquid Glass shipped in iOS 26; 0.3.0 already covers the
-continuous Ultra Clear to Tinted slider, diffusion blur, rim/lip,
-chromatic edges, and accessibility. This development build closes the
-remaining visual lag.
-
-- Shipping iOS 27 QA (Sep 2026): darker outer lip / side stroke and a
-  slightly stronger border (about +0.06 light, +0.08 dark), plus
-  brighter rim and specular (~15–20%, especially in dark). Fill alphas
-  and the default intensity (`0.45`) stay put so Ultra Clear → Tinted
-  still reads as a film, not a tint crank.
 - `glass_theme(plot_surface = "opaque")` densifies plot, plotly, gt, and
   DT hosts (~94% panel fill, readable ink) while chrome stays Liquid
   Glass. Default `"clear"` keeps wallpaper show-through. Toggle live
-  with `update_glass_theme(plot_surface = )` /
-  `window.shinyglass.setPlotSurface()`, or mark a single host with
-  `.glass-plot-surface-opaque`.
+  with
+  [`glass_plot_surface_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_surface_input.md),
+  `update_glass_theme(plot_surface = )`,
+  `window.shinyglass.setPlotSurface()`, or `.glass-plot-surface-opaque`.
   [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md),
   [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md),
   and
   [`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)
-  accept `surface = "opaque"` when the image itself needs a paper fill.
-  The plotly + gt demo uses the opaque panel; the dashboard exposes a
-  Plot / table surface control (default clear).
-- Darker edge ring (lip, side stroke, outer border) and brighter
-  specular / highlight tokens for depth and separation, in both CSS
-  packs and the Ultra Clear → Tinted intensity lerp. Light/dark fill
-  alphas are unchanged.
-- Stronger uniform toolbar / scroll-edge treatment when content scrolls
-  under floating nav chrome (`body.glass-scroll-edge`). This is a
-  contrast treatment, not a motion effect: it stays on while content is
-  under the bar (unlike compact-on-scroll-down), remains under
-  `prefers-reduced-motion`, and does not override
-  `prefers-reduced-transparency` (still forces Tinted).
-- Docs: the in-app intensity control mirrors iOS 27 Settings →
-  Appearance → Liquid Glass. Browsers cannot read the OS slider, so the
-  app control is the supported way to match that look.
-- Dark bslib sidebar and page-sidebar nav keep rim/lip/side-stroke edges
-  instead of dropping to a shadow-only look.
-- Layout polish for any
+  accept `surface = "opaque"`.
+  [`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md)
+  is an optional DT helper.
+- Named wallpaper scenes `aurora`, `harbor`, and `grove` join `tahoe` /
+  `dusk` / `mesh`.
+  [`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)
+  /
+  [`glass_scene_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scene_input.md)
+  list and switch them. User `wallpaper=` photos are blurred and washed
+  (`--glass-wallpaper-wash`) so body ink stays above the contrast floor
+  (4.5:1 text / 3:1 large chrome).
+- Flatten mode for print, PDF, chromote, and screenshots:
+  [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+  `glass_theme(flatten = )`,
+  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md),
+  `window.shinyglass.setFlatten()` / `.enterFlatten()` /
+  `.exitFlatten()`, and `?glass_flatten=1`. `@media print` does the same
+  automatically.
+- Public `--glass-*` tokens:
+  [`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+  [`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md),
+  [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md),
+  `glass_theme(tokens = )`, and `update_glass_theme(tokens = )` /
+  `window.shinyglass.setTokens()`.
+
+### Improvements
+
+- Closer to shipping iOS 27 Liquid Glass: darker outer lip / side stroke
+  and a slightly stronger border, brighter rim and specular, unchanged
+  fill alphas and default intensity (`0.45`). Dark bslib sidebars keep
+  rim/lip/side-stroke edges instead of a shadow-only look.
+- Stronger scroll-edge toolbar (`body.glass-scroll-edge`) when content
+  sits under floating nav. Contrast-only: stays on under
+  `prefers-reduced-motion`; `prefers-reduced-transparency` still forces
+  Tinted.
+- Deeper bslib Liquid Glass for `page_navbar` / navsets, nested cards
+  and value boxes, sidebars, accordion, tooltips/popovers, and modals.
+  Focus-visible rings and overlay stacking (tooltip 1090, popover 1085,
+  menus 1080) apply to every
   [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-  app (not demo-specific): page-level horizontal overflow is clipped so
-  wide DT / gt / plotly hosts scroll inside the card; DT tables use
-  fixed layout and wrapping headers so columns stay discoverable in a
-  `page_sidebar` split at ~1280px; theme switches hide stale ggplot ink
-  until the new image arrives and snap plotly axis text to the live
-  pack.
+  app.
+- Layout polish: page-level horizontal overflow is clipped so wide DT /
+  gt / plotly hosts scroll inside the card; DT tables use fixed layout
+  and wrapping headers at ~1280px; theme switches hide stale ggplot ink
+  and snap plotly axis text to the live pack.
 - Overlay menus escape glass containment: shinyWidgets Virtual Select
-  defaults to `dropboxWrapper = "body"`, `position = "bottom"`, and
-  `zIndex = 1080` unless the app sets those options (or
-  `keepAlwaysOpen`). The same z-index applies to portaled `.vscomp-*`,
-  `.pop-comp-wrapper`, and bootstrap-select menus so backdrop-filter /
-  overflow on cards cannot pin a dropdown over nearby chrome.
-- Example apps keep explicit layouts that read well at laptop width:
-  dashboard stacks the iris table under the plots; plotly + gt waits
-  until `xxl` for a 6/6 split and uses percent `cols_width()`; Olympics
-  Virtual Select repeats the portal args for clarity.
+  defaults to a body portal (`zIndex = 1080`) unless the app sets those
+  options.
+- Narrow (≤480px) CSS for stacked controls, wrapping nav, full-width
+  value boxes, and core demo containment.
+- In-app intensity control is documented as the web stand-in for iOS 27
+  Settings → Appearance → Liquid Glass (browsers cannot read the OS
+  slider).
+- Experimental Python package (not in the CRAN tarball) now takes
+  intensity, `plot_surface`, scenes, flatten, persist, and JS knobs on
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
+
+### Bug fixes
+
+- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+  no longer errors when `scene` is the default name vector (R 4.4+ `&&`
+  length check) or a subset of scene names.
+- User `tokens=` stay distinct from the compiled Sass pack (empty
+  overrides no longer inject `glass_bg` as a public CSS token).
 
 ## shinyglass 0.3.0
 

@@ -13,7 +13,7 @@ any other page function that accepts a bslib theme."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -189,11 +189,11 @@ updated live with <code><a href="update_glass_theme.html">update_glass_theme()</
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">theme</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dark</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"dark"</span>, primary <span class="op">=</span> <span class="st">"#BF5AF2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">auto</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, tint <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">clear</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span>material <span class="op">=</span> <span class="st">"clear"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span>plot_surface <span class="op">=</span> <span class="st">"opaque"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">remembered</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span>persist <span class="op">=</span> <span class="cn">TRUE</span>, scene <span class="op">=</span> <span class="st">"tahoe"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">opaque</span> <span class="op">&lt;-</span> <span class="fu">glass_theme</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  plot_surface <span class="op">=</span> <span class="st">"opaque"</span>,</span></span>
+<span class="r-in"><span>  scene <span class="op">=</span> <span class="st">"aurora"</span>,</span></span>
+<span class="r-in"><span>  tokens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>blur <span class="op">=</span> <span class="st">"28px"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span></span>
