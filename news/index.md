@@ -1,6 +1,10 @@
 # Changelog
 
+## shinyglass (development version)
+
 ## shinyglass 0.4.0
+
+CRAN release: 2026-09-21
 
 ### New features
 
