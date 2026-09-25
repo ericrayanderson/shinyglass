@@ -24,7 +24,9 @@ jobs:
           # R 4.6 macOS CRAN binaries for knitr/xfun are zstd .tgz; pak
           # stable cannot extract them. 4.5 still ships gzip binaries.
           - {os: macos-latest,   r: '4.5'}
-          - {os: windows-latest, r: 'release'}
+          # pak stable is not available for R 4.6 on Windows: the
+          # win.binary contrib/4.6 index cannot be opened.
+          - {os: windows-latest, r: '4.5'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
