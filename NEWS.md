@@ -1,3 +1,5 @@
+# shinyglass (development version)
+
 # shinyglass 0.4.0
 
 ## New features
