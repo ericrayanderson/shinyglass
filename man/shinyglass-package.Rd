@@ -46,10 +46,11 @@ available. Accent color, blur, saturation, corner radius, and JS behaviors
 
 For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \code{options(teal.bs_theme = glass_theme())} before calling \code{teal::init()}.
-For a shinyreact client, use \code{\link[=glass_page_react]{glass_page_react()}} (or
-\code{shinyreact::page_react(theme = glass_theme())}). Style panels with
-\code{.glass-surface} and \code{var(--glass-body-color)} so light and dark stay
-in sync. Shadow roots can call \code{window.shinyglass.adoptShadow()}.
+For a shinyreact client, use \code{\link[=glass_page_react]{glass_page_react()}}. The page loads
+\code{GlassPage}, \code{GlassSidebar}, \code{GlassSurface}, \code{GlassButton}, and
+\code{useGlassTheme()} on \code{window.shinyglass}. Those classes follow the live
+\verb{--glass-*} tokens, so the client does not hard-code colors. Shadow roots
+can call \code{window.shinyglass.adoptShadow()}.
 }
 
 \seealso{

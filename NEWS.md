@@ -1,5 +1,17 @@
 # shinyglass (development version)
 
+* First-class shinyreact components. `glass_page_react()` and
+  `glass_theme_dependencies()` attach `inst/js/shinyglass-react.js`, an
+  ES module (html dependency `shinyglass-react`) that registers
+  `useGlassTheme`, `GlassPage`, `GlassSidebar`, `GlassSurface`,
+  `GlassCard`, `GlassButton`, and the small layout helpers on
+  `window.shinyglass` and as named exports. The module uses
+  `window.shinyreact.React` (it does not ship a second React or an npm
+  package). Paint stays on the existing `--glass-*` tokens via
+  `.glass-page`, `.glass-sidebar`, `.glass-button`, and `.glass-surface`.
+  `useGlassTheme()` follows mode, resolved preset, scene, material, and
+  intensity. The example app is built from these components and has no
+  `ui.css`. See `vignette("shinyreact")`.
 * shinyreact interop. `glass_page_react()` passes `glass_theme()` as
   `theme` so Liquid Glass CSS is not stripped (an unnamed theme hits
   shinyreact's no-Bootstrap page and drops the compiled stylesheet).
