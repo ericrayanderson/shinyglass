@@ -42,6 +42,7 @@ highcharter
 htmlwidgets
 https
 intensity
+interop
 io
 iOS
 JS
@@ -73,6 +74,9 @@ PyPI
 qa
 rangeSlider
 reactable
+React
+shinyreact
+shinyreact's
 README
 remotes
 revdep
@@ -93,6 +97,7 @@ shinyWidgets
 show-through
 showModal
 specular
+stylesheet
 SweetAlert
 Tahoe
 testthat

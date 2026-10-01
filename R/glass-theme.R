@@ -3,7 +3,10 @@
 #' Create a [bslib::bs_theme()] styled with a Liquid Glass look: translucent
 #' surfaces, backdrop blur, soft depth, and system typography. Pass the result
 #' to `theme =` on `fluidPage()`, `navbarPage()`, `bslib::page_sidebar()`, or
-#' any other page function that accepts a bslib theme.
+#' any other page function that accepts a bslib theme. For a
+#' [shinyreact](https://posit-dev.github.io/shinyreact/r/) client, use
+#' [glass_page_react()] so the theme is passed as `theme` (an unnamed theme
+#' is not enough: shinyreact would suppress Bootstrap and drop this CSS).
 #'
 #' Light and dark surface tokens are compiled into dual CSS custom-property
 #' packs. Switching `preset` at runtime (via [update_glass_theme()] or

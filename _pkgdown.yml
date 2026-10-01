@@ -70,6 +70,8 @@ reference:
   - observe_glass_accent
   - glass_system_colors
   - glass_page
+  - glass_page_react
+  - glass_theme_dependencies
   - observe_glass
   - glass_scenes
   - glass_scene_input

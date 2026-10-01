@@ -979,6 +979,43 @@
     setTokens(obj);
   };
 
+  // Class rules in the document stylesheet do not cross a shadow boundary.
+  // Custom properties on :root do inherit. Opt in by passing the shadow root
+  // (open or closed — the component that created it can) so a glass surface
+  // inside can paint from the same tokens.
+  var SHADOW_SURFACE_CSS = [
+    ":host{color:var(--glass-body-color);}",
+    ".glass-surface,.card{",
+    "color:var(--glass-body-color);",
+    "background:",
+    "linear-gradient(165deg,color-mix(in srgb,var(--glass-highlight) 18%,transparent) 0%,transparent 34%),",
+    "var(--glass-bg-content,var(--glass-bg));",
+    "border:0.5px solid var(--glass-border);",
+    "border-radius:var(--glass-radius,1.5rem);",
+    "backdrop-filter:blur(calc(var(--glass-blur,36px)*0.78)) saturate(var(--glass-saturate,200%));",
+    "-webkit-backdrop-filter:blur(calc(var(--glass-blur,36px)*0.78)) saturate(var(--glass-saturate,200%));",
+    "box-shadow:0 6px 22px var(--glass-shadow);",
+    "padding:1rem 1.15rem;",
+    "box-sizing:border-box;",
+    "}"
+  ].join("");
+
+  window.shinyglass.adoptShadow = function (root) {
+    if (!root || typeof root.appendChild !== "function") return root;
+    try {
+      if (root.querySelector && root.querySelector("style[data-shinyglass-shadow]")) {
+        return root;
+      }
+    } catch (e) {
+      return root;
+    }
+    var style = document.createElement("style");
+    style.setAttribute("data-shinyglass-shadow", "");
+    style.textContent = SHADOW_SURFACE_CSS;
+    root.appendChild(style);
+    return root;
+  };
+
   // raise native <select> above later card content
   $(document).on("focus mousedown", ".card .form-select, form.well .form-select", function () {
     var container = $(this).closest(".shiny-input-container");
