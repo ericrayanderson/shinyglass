@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+}
+
+.layout {
+  box-sizing: border-box;
+  max-width: 920px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 0 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+h1,
+p,
+label,
+button,
+output {
+  color: var(--glass-body-color);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+input[type="range"] {
+  width: min(100%, 280px);
+  accent-color: var(--glass-accent, #007AFF);
+}
+
+.plot-host {
+  width: 100%;
+  height: 280px;
+}
+
+#shadow-host {
+  display: block;
+}

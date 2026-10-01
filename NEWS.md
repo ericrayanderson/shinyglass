@@ -1,5 +1,16 @@
 # shinyglass (development version)
 
+* shinyreact interop. `glass_page_react()` passes `glass_theme()` as
+  `theme` so Liquid Glass CSS is not stripped (an unnamed theme hits
+  shinyreact's no-Bootstrap page and drops the compiled stylesheet).
+  `glass_theme_dependencies()` is the same asset list for
+  `page_react_html(extra_deps = )`. Opt-in `.glass-surface` /
+  `.glass-muted` follow the live light/dark packs. Document class rules
+  do not cross a shadow root; `--glass-*` custom properties do, and
+  `window.shinyglass.adoptShadow()` injects a `.glass-surface` rule into
+  a root the client created. Example:
+  `system.file("examples/shinyreact-glass", package = "shinyglass")`.
+
 # shinyglass 0.4.0
 
 ## New features

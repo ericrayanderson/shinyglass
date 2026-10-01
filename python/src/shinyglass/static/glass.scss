@@ -607,6 +607,22 @@ form.well,
   }
 }
 
+// Opt-in panel for client-owned markup (shinyreact and other trees that do
+// not use Bootstrap `.card`). Tokens follow the live light/dark pack.
+// Margin stays 0 so the client layout controls spacing.
+.glass-surface {
+  @include glass-content-surface();
+  color: var(--glass-body-color);
+  padding: 1rem 1.15rem;
+  margin: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.glass-muted {
+  color: color-mix(in srgb, var(--glass-body-color) 68%, transparent);
+}
+
 body.bslib-page-navbar > .navbar,
 .navbar.navbar-static-top,
 .navbar.navbar-default {
@@ -2413,6 +2429,11 @@ small,
 .card .shiny-image-output,
 .bslib-card .shiny-plot-output,
 .bslib-card .shiny-image-output,
+.glass-surface .shiny-plot-output,
+.glass-surface .shiny-image-output,
+.glass-surface .plotly.html-widget,
+.glass-surface .plotly.html-widget-output,
+.glass-surface .js-plotly-plot,
 .card .dataTables_wrapper,
 .bslib-card .dataTables_wrapper,
 .card .shiny-html-output:has(.dataTables_wrapper),
@@ -3426,6 +3447,11 @@ body .Reactable {
   .card .shiny-image-output,
   .bslib-card .shiny-plot-output,
   .bslib-card .shiny-image-output,
+  .glass-surface .shiny-plot-output,
+  .glass-surface .shiny-image-output,
+  .glass-surface .js-plotly-plot,
+  .glass-surface .plotly.html-widget,
+  .glass-surface .plotly.html-widget-output,
   .card .dataTables_wrapper,
   .bslib-card .dataTables_wrapper,
   .card .shiny-html-output:has(.dataTables_wrapper),

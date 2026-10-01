@@ -39,19 +39,23 @@ or \code{preset = "auto"} to follow the OS. Switch at runtime with
 controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted, matching
 iOS 27 Settings -> Appearance -> Liquid Glass) or
 \code{glass_theme(intensity = )}. Use \code{plot_surface = "opaque"} when plots and
-tables need a denser panel. Named scenes (\code{\link[=glass_scenes]{glass_scenes()}}), flatten mode
+tables need a denser panel. Named scenes (\code{glass_scenes()}), flatten mode
 (\code{\link[=glass_flatten]{glass_flatten()}}), and public CSS tokens (\code{\link[=glass_css_tokens]{glass_css_tokens()}}) are
 available. Accent color, blur, saturation, corner radius, and JS behaviors
 (\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
 
 For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
 \code{options(teal.bs_theme = glass_theme())} before calling \code{teal::init()}.
+For a shinyreact client, use \code{\link[=glass_page_react]{glass_page_react()}} (or
+\code{shinyreact::page_react(theme = glass_theme())}). Style panels with
+\code{.glass-surface} and \code{var(--glass-body-color)} so light and dark stay
+in sync. Shadow roots can call \code{window.shinyglass.adoptShadow()}.
 }
 
 \seealso{
-\code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=theme_glass]{theme_glass()}},
-\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
-\code{\link[=glass_flatten]{glass_flatten()}}, \code{\link[=glass_css_tokens]{glass_css_tokens()}}
+\code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=theme_glass]{theme_glass()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_css_tokens]{glass_css_tokens()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
 }
 \author{
 \strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]

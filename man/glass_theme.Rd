@@ -89,7 +89,10 @@ A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object suitable for 'shiny' pa
 Create a \code{\link[bslib:bs_theme]{bslib::bs_theme()}} styled with a Liquid Glass look: translucent
 surfaces, backdrop blur, soft depth, and system typography. Pass the result
 to \verb{theme =} on \code{fluidPage()}, \code{navbarPage()}, \code{bslib::page_sidebar()}, or
-any other page function that accepts a bslib theme.
+any other page function that accepts a bslib theme. For a
+\href{https://posit-dev.github.io/shinyreact/r/}{shinyreact} client, use
+\code{\link[=glass_page_react]{glass_page_react()}} so the theme is passed as \code{theme} (an unnamed theme
+is not enough: shinyreact would suppress Bootstrap and drop this CSS).
 }
 \details{
 Light and dark surface tokens are compiled into dual CSS custom-property
