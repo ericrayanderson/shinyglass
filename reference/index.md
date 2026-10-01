@@ -57,6 +57,12 @@ Create and update a Liquid Glass theme for your Shiny app.
 - [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
   : One-call glass page
 
+- [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
+  : Liquid Glass page for a shinyreact client
+
+- [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
+  : HTML dependencies for a glass theme
+
 - [`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md)
   : Observe every built-in glass control
 

@@ -41,7 +41,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="shinyglass-development-version">shinyglass (development version)<a class="anchor" aria-label="anchor" href="#shinyglass-development-version"></a></h2>
-</div>
+<ul><li>shinyreact interop. <code><a href="../reference/glass_page_react.html">glass_page_react()</a></code> passes <code><a href="../reference/glass_theme.html">glass_theme()</a></code> as <code>theme</code> so Liquid Glass CSS is not stripped (an unnamed theme hits shinyreact’s no-Bootstrap page and drops the compiled stylesheet). <code><a href="../reference/glass_theme_dependencies.html">glass_theme_dependencies()</a></code> is the same asset list for <code>page_react_html(extra_deps = )</code>. Opt-in <code>.glass-surface</code> / <code>.glass-muted</code> follow the live light/dark packs. Document class rules do not cross a shadow root; <code>--glass-*</code> custom properties do, and <code>window.shinyglass.adoptShadow()</code> injects a <code>.glass-surface</code> rule into a root the client created. Example: <code>system.file("examples/shinyreact-glass", package = "shinyglass")</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="shinyglass-040">shinyglass 0.4.0<a class="anchor" aria-label="anchor" href="#shinyglass-040"></a></h2><p class="text-muted">CRAN release: 2026-09-21</p>
 <div class="section level3">

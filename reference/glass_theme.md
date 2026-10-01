@@ -7,7 +7,11 @@ soft depth, and system typography. Pass the result to `theme =` on
 [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html),
 [`navbarPage()`](https://rdrr.io/pkg/shiny/man/navbarPage.html),
 [`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
-or any other page function that accepts a bslib theme.
+or any other page function that accepts a bslib theme. For a
+[shinyreact](https://posit-dev.github.io/shinyreact/r/) client, use
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
+so the theme is passed as `theme` (an unnamed theme is not enough:
+shinyreact would suppress Bootstrap and drop this CSS).
 
 ## Usage
 

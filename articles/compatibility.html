@@ -185,6 +185,19 @@ AdminLTE</td>
 <td>Limited</td>
 <td>Theme is BS5 via bslib</td>
 </tr>
+<tr class="even">
+<td><strong>shinyreact</strong></td>
+<td>Supported</td>
+<td>
+<code><a href="../reference/glass_page_react.html">glass_page_react()</a></code> or
+<code>page_react(theme = glass_theme())</code>.
+<code>page_react_html()</code> takes
+<code><a href="../reference/glass_theme_dependencies.html">glass_theme_dependencies()</a></code> as <code>extra_deps</code>.
+Client CSS should use <code>.glass-surface</code> and
+<code>var(--glass-*)</code>; hard-coded panel colors do not track
+light/dark. Shadow roots need
+<code>window.shinyglass.adoptShadow()</code>.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -211,7 +224,10 @@ overlay only.</li>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"plotly-gt-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># denser AdminLTE (requires shinydashboardPlus)</span></span>
-<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"shinydashboardPlus-glass-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"shinydashboardPlus-glass-demo.R"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># React client (requires shinyreact). www/ui.js is the UI.</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/shinyreact-glass"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Dual-theme contrast audit (optional ecosystem apps skip if packages
 missing):</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>Rscript inst<span class="sc">/</span>scripts<span class="sc">/</span>audit<span class="sc">-</span>glass<span class="sc">-</span>contrast.R <span class="sc">--</span>apps<span class="ot">=</span>demo,dashboard,inputs,plotly_gt,chrome</span></code></pre></div>

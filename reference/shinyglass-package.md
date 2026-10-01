@@ -49,16 +49,23 @@ behaviors (`tint`, `specular`, `nav_morph`) are configurable.
 
 For [teal](https://insightsengineering.github.io/teal/) apps, set
 `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
+For a shinyreact client, use
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
+(or `shinyreact::page_react(theme = glass_theme())`). Style panels with
+`.glass-surface` and `var(--glass-body-color)` so light and dark stay in
+sync. Shadow roots can call `window.shinyglass.adoptShadow()`.
 
 ## See also
 
 [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
 [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md),
 [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md),
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md),
 [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
-[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
 
 ## Author
 

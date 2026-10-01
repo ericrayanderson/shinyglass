@@ -87,13 +87,17 @@ tables need a denser panel. Named scenes (<code><a href="glass_scenes.html">glas
 available. Accent color, blur, saturation, corner radius, and JS behaviors
 (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) are configurable.</p>
 <p>For <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps, set
-<code>options(teal.bs_theme = glass_theme())</code> before calling <code>teal::init()</code>.</p>
+<code>options(teal.bs_theme = glass_theme())</code> before calling <code>teal::init()</code>.
+For a shinyreact client, use <code><a href="glass_page_react.html">glass_page_react()</a></code> (or
+<code>shinyreact::page_react(theme = glass_theme())</code>). Style panels with
+<code>.glass-surface</code> and <code>var(--glass-body-color)</code> so light and dark stay
+in sync. Shadow roots can call <code>window.shinyglass.adoptShadow()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="glass_page.html">glass_page()</a></code>, <code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="theme_glass.html">theme_glass()</a></code>,
-<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code>,
-<code><a href="glass_flatten.html">glass_flatten()</a></code>, <code><a href="glass_css_tokens.html">glass_css_tokens()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="glass_page.html">glass_page()</a></code>, <code><a href="glass_page_react.html">glass_page_react()</a></code>, <code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="theme_glass.html">theme_glass()</a></code>,
+<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code>, <code><a href="glass_flatten.html">glass_flatten()</a></code>,
+<code><a href="glass_css_tokens.html">glass_css_tokens()</a></code>, <code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

@@ -25,6 +25,7 @@ stacks where practical.
 | rhandsontable | Partial | Frame + cell ink; core grid still third-party |
 | echarts4r / highcharter / apex | Partial | Host wrapper glass; chart internals set in R |
 | Bootstrap 3-only apps | Limited | Theme is BS5 via bslib |
+| **shinyreact** | Supported | [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md) or `page_react(theme = glass_theme())`. `page_react_html()` takes [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md) as `extra_deps`. Client CSS should use `.glass-surface` and `var(--glass-*)`; hard-coded panel colors do not track light/dark. Shadow roots need `window.shinyglass.adoptShadow()`. |
 
 ## Layout contract
 
@@ -46,6 +47,9 @@ shiny::runApp(system.file("examples", "plotly-gt-demo.R", package = "shinyglass"
 
 # denser AdminLTE (requires shinydashboardPlus)
 shiny::runApp(system.file("examples", "shinydashboardPlus-glass-demo.R", package = "shinyglass"))
+
+# React client (requires shinyreact). www/ui.js is the UI.
+shiny::runApp(system.file("examples/shinyreact-glass", package = "shinyglass"))
 ```
 
 Dual-theme contrast audit (optional ecosystem apps skip if packages
