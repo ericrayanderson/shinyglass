@@ -6,8 +6,9 @@ into the
 [`htmltools::htmlDependency()`](https://rstudio.github.io/htmltools/reference/htmlDependency.html)
 list that
 [`bslib::bs_theme_dependencies()`](https://rstudio.github.io/bslib/reference/bs_theme_dependencies.html)
-would attach on a Bootstrap page. Use this when the page has no `theme`
-argument, in particular
+would attach on a Bootstrap page, and appends
+[`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md).
+Use this when the page has no `theme` argument, in particular
 `shinyreact::page_react_html(extra_deps = glass_theme_dependencies(...))`.
 
 ## Usage
@@ -32,7 +33,7 @@ glass_theme_dependencies(theme = glass_theme())
 A list of
 [`htmltools::htmlDependency()`](https://rstudio.github.io/htmltools/reference/htmlDependency.html)
 objects (Bootstrap 5, the compiled glass rules, the preset head script,
-and `shiny-glass.js`).
+`shiny-glass.js`, and `shinyglass-react.js`).
 
 ## Details
 
@@ -43,7 +44,8 @@ is the easier entry for
 ## See also
 
 [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md)
 
 ## Examples
 

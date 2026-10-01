@@ -172,6 +172,9 @@ Create and update a Liquid Glass theme for your Shiny app.
 - [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
   : HTML dependencies for a glass theme
 
+- [`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md)
+  : HTML dependency for the shinyreact components
+
 - [`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md)
   : Observe every built-in glass control
 
@@ -237,5 +240,7 @@ Match ggplot2, plotly, gt, and DT to the glass light/dark pack.
   light/dark](https://ericrayanderson.github.io/shinyglass/articles/theming.md):
 - [Ecosystem
   compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.md):
+- [Using shinyglass with
+  shinyreact](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md):
 - [Try
   it](https://ericrayanderson.github.io/shinyglass/articles/playground.md):

@@ -2,6 +2,21 @@
 
 ## shinyglass (development version)
 
+- First-class shinyreact components.
+  [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
+  and
+  [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
+  attach `inst/js/shinyglass-react.js`, an ES module (html dependency
+  `shinyglass-react`) that registers `useGlassTheme`, `GlassPage`,
+  `GlassSidebar`, `GlassSurface`, `GlassCard`, `GlassButton`, and the
+  small layout helpers on `window.shinyglass` and as named exports. The
+  module uses `window.shinyreact.React` (it does not ship a second React
+  or an npm package). Paint stays on the existing `--glass-*` tokens via
+  `.glass-page`, `.glass-sidebar`, `.glass-button`, and
+  `.glass-surface`. `useGlassTheme()` follows mode, resolved preset,
+  scene, material, and intensity. The example app is built from these
+  components and has no `ui.css`. See
+  [`vignette("shinyreact")`](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md).
 - shinyreact interop.
   [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
   passes

@@ -40,12 +40,16 @@ UI suitable for `shinyApp(ui = ...)`.
 
 ## Details
 
-`glass_page_react()` is that call. The React client still owns the DOM.
-Wallpaper, type, and `--glass-*` tokens apply to the document. Bootstrap
-classes (`.card`, `.btn`, `.form-control`, `.shiny-plot-output`) and the
-opt-in `.glass-surface` panel pick up Liquid Glass. Hard-coded colors in
-the client's own CSS do not track light/dark; prefer
-`var(--glass-body-color)` and `.glass-surface`.
+`glass_page_react()` is that call, plus
+[`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md).
+The React client still owns the DOM. Build it from `GlassPage`,
+`GlassSidebar`, `GlassSurface` / `GlassCard`, and `GlassButton` on
+`window.shinyglass`. `useGlassTheme()` tracks the live mode (`light` /
+`dark` / `auto`), the resolved preset, scene, material, and intensity,
+and its setters call `window.shinyglass.setPreset()` and the other
+existing mutators. Wallpaper, type, and `--glass-*` tokens apply to the
+document. Those component classes are what pick up Liquid Glass. Do not
+set panel or text colors in the client's own CSS.
 
 Shadow roots do not see document class rules. `--glass-*` custom
 properties inherit. Call `window.shinyglass.adoptShadow(shadowRoot)`
@@ -56,12 +60,14 @@ For
 [`shinyreact::page_react_html()`](https://posit-dev.github.io/shinyreact/r/reference/page_react_html.html),
 pass
 [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
-as `extra_deps`. That helper does not need shinyreact.
+as `extra_deps`. That helper does not need shinyreact. It includes the
+React module.
 
 ## See also
 
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
-[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
+[`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md)
 
 ## Examples
 

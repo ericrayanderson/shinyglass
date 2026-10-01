@@ -25,7 +25,7 @@ stacks where practical.
 | rhandsontable | Partial | Frame + cell ink; core grid still third-party |
 | echarts4r / highcharter / apex | Partial | Host wrapper glass; chart internals set in R |
 | Bootstrap 3-only apps | Limited | Theme is BS5 via bslib |
-| **shinyreact** | Supported | [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md) or `page_react(theme = glass_theme())`. `page_react_html()` takes [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md) as `extra_deps`. Client CSS should use `.glass-surface` and `var(--glass-*)`; hard-coded panel colors do not track light/dark. Shadow roots need `window.shinyglass.adoptShadow()`. |
+| **shinyreact** | Supported | [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md) loads the React components and `useGlassTheme()` ([`vignette("shinyreact")`](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md)). `page_react(theme = glass_theme())` gets the CSS without the component module. `page_react_html()` takes [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md) as `extra_deps`. Do not hard-code panel colors. Shadow roots need `window.shinyglass.adoptShadow()`. |
 
 ## Layout contract
 

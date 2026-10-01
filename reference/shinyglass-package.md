@@ -50,10 +50,12 @@ behaviors (`tint`, `specular`, `nav_morph`) are configurable.
 For [teal](https://insightsengineering.github.io/teal/) apps, set
 `options(teal.bs_theme = glass_theme())` before calling `teal::init()`.
 For a shinyreact client, use
-[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
-(or `shinyreact::page_react(theme = glass_theme())`). Style panels with
-`.glass-surface` and `var(--glass-body-color)` so light and dark stay in
-sync. Shadow roots can call `window.shinyglass.adoptShadow()`.
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md).
+The page loads `GlassPage`, `GlassSidebar`, `GlassSurface`,
+`GlassButton`, and `useGlassTheme()` on `window.shinyglass`. Those
+classes follow the live `--glass-*` tokens, so the client does not
+hard-code colors. Shadow roots can call
+`window.shinyglass.adoptShadow()`.
 
 ## See also
 

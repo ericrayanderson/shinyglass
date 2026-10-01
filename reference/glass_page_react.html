@@ -30,6 +30,7 @@ CSS lives, and the page keeps the JS without the look."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -84,22 +85,26 @@ CSS lives, and the page keeps the JS without the look.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>glass_page_react()</code> is that call. The React client still owns the DOM.
-Wallpaper, type, and <code>--glass-*</code> tokens apply to the document. Bootstrap
-classes (<code>.card</code>, <code>.btn</code>, <code>.form-control</code>, <code>.shiny-plot-output</code>) and the
-opt-in <code>.glass-surface</code> panel pick up Liquid Glass. Hard-coded colors in
-the client's own CSS do not track light/dark; prefer
-<code>var(--glass-body-color)</code> and <code>.glass-surface</code>.</p>
+    <p><code>glass_page_react()</code> is that call, plus <code><a href="glass_react_dependency.html">glass_react_dependency()</a></code>. The
+React client still owns the DOM. Build it from <code>GlassPage</code>, <code>GlassSidebar</code>,
+<code>GlassSurface</code> / <code>GlassCard</code>, and <code>GlassButton</code> on <code>window.shinyglass</code>.
+<code>useGlassTheme()</code> tracks the live mode (<code>light</code> / <code>dark</code> / <code>auto</code>), the
+resolved preset, scene, material, and intensity, and its setters call
+<code>window.shinyglass.setPreset()</code> and the other existing mutators.
+Wallpaper, type, and <code>--glass-*</code> tokens apply to the document. Those
+component classes are what pick up Liquid Glass. Do not set panel or text
+colors in the client's own CSS.</p>
 <p>Shadow roots do not see document class rules. <code>--glass-*</code> custom properties
 inherit. Call <code>window.shinyglass.adoptShadow(shadowRoot)</code> from the
 component that created the root to inject a <code>.glass-surface</code> rule.</p>
 <p>For <code><a href="https://posit-dev.github.io/shinyreact/r/reference/page_react_html.html" class="external-link">shinyreact::page_react_html()</a></code>, pass
 <code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code> as <code>extra_deps</code>. That helper does not need
-shinyreact.</p>
+shinyreact. It includes the React module.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code>,
+<code><a href="glass_react_dependency.html">glass_react_dependency()</a></code></p></div>
     </div>
 
     <div class="section level2">

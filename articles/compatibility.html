@@ -35,6 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul>
 </li>
@@ -189,13 +190,12 @@ AdminLTE</td>
 <td><strong>shinyreact</strong></td>
 <td>Supported</td>
 <td>
-<code><a href="../reference/glass_page_react.html">glass_page_react()</a></code> or
-<code>page_react(theme = glass_theme())</code>.
-<code>page_react_html()</code> takes
-<code><a href="../reference/glass_theme_dependencies.html">glass_theme_dependencies()</a></code> as <code>extra_deps</code>.
-Client CSS should use <code>.glass-surface</code> and
-<code>var(--glass-*)</code>; hard-coded panel colors do not track
-light/dark. Shadow roots need
+<code><a href="../reference/glass_page_react.html">glass_page_react()</a></code> loads the React components and
+<code>useGlassTheme()</code> (<code><a href="../articles/shinyreact.html">vignette("shinyreact")</a></code>).
+<code>page_react(theme = glass_theme())</code> gets the CSS without the
+component module. <code>page_react_html()</code> takes
+<code><a href="../reference/glass_theme_dependencies.html">glass_theme_dependencies()</a></code> as <code>extra_deps</code>. Do
+not hard-code panel colors. Shadow roots need
 <code>window.shinyglass.adoptShadow()</code>.</td>
 </tr>
 </tbody>

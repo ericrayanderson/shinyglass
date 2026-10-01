@@ -26,6 +26,7 @@ function to get translucent surfaces, backdrop blur, and system typography."></h
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -88,10 +89,11 @@ available. Accent color, blur, saturation, corner radius, and JS behaviors
 (<code>tint</code>, <code>specular</code>, <code>nav_morph</code>) are configurable.</p>
 <p>For <a href="https://insightsengineering.github.io/teal/" class="external-link">teal</a> apps, set
 <code>options(teal.bs_theme = glass_theme())</code> before calling <code>teal::init()</code>.
-For a shinyreact client, use <code><a href="glass_page_react.html">glass_page_react()</a></code> (or
-<code>shinyreact::page_react(theme = glass_theme())</code>). Style panels with
-<code>.glass-surface</code> and <code>var(--glass-body-color)</code> so light and dark stay
-in sync. Shadow roots can call <code>window.shinyglass.adoptShadow()</code>.</p>
+For a shinyreact client, use <code><a href="glass_page_react.html">glass_page_react()</a></code>. The page loads
+<code>GlassPage</code>, <code>GlassSidebar</code>, <code>GlassSurface</code>, <code>GlassButton</code>, and
+<code>useGlassTheme()</code> on <code>window.shinyglass</code>. Those classes follow the live
+<code>--glass-*</code> tokens, so the client does not hard-code colors. Shadow roots
+can call <code>window.shinyglass.adoptShadow()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

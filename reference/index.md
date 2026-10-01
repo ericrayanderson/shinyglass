@@ -63,6 +63,9 @@ Create and update a Liquid Glass theme for your Shiny app.
 - [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
   : HTML dependencies for a glass theme
 
+- [`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md)
+  : HTML dependency for the shinyreact components
+
 - [`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md)
   : Observe every built-in glass control
 
