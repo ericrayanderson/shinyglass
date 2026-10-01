@@ -36,10 +36,32 @@ test_that("compiled CSS ships an opt-in glass surface", {
   css <- css_text(glass_theme())
   expect_match(css, "\\.glass-surface")
   expect_match(css, "\\.glass-muted")
+  expect_match(css, "\\.glass-sidebar")
+  expect_match(css, "\\.glass-button-primary")
+  expect_match(css, "\\.glass-page")
   expect_match(css, "glass-surface \\.shiny-plot-output|glass-surface.shiny-plot-output")
   js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(js, "adoptShadow")
   expect_match(js, "data-shinyglass-shadow")
+})
+
+test_that("react module is an ES module and does not bundle React", {
+  path <- system.file("js", "shinyglass-react.js", package = "shinyglass")
+  js <- paste(readLines(path, warn = FALSE), collapse = "\n")
+  expect_match(js, "export function useGlassTheme")
+  expect_match(js, "export function GlassSidebar")
+  expect_match(js, "export function GlassButton")
+  expect_match(js, "export function GlassSurface")
+  expect_match(js, "window.shinyreact")
+  expect_false(grepl("from \"react\"", js, fixed = TRUE))
+  expect_false(grepl("from 'react'", js, fixed = TRUE))
+  expect_false(grepl("#[0-9A-Fa-f]{3,8}", js))
+  dep <- glass_react_dependency()
+  expect_s3_class(dep, "html_dependency")
+  expect_identical(dep$name, "shinyglass-react")
+  expect_identical(dep$script$type, "module")
+  theme_names <- dep_names(bslib::bs_theme_dependencies(glass_theme()))
+  expect_false("shinyglass-react" %in% theme_names)
 })
 
 test_that("glass_theme_dependencies is a list of html dependencies", {
@@ -50,6 +72,7 @@ test_that("glass_theme_dependencies is a list of html dependencies", {
   expect_true("bootstrap" %in% names)
   expect_true("shinyglass" %in% names)
   expect_true("shinyglass-preset" %in% names)
+  expect_true("shinyglass-react" %in% names)
   preset <- deps[names == "shinyglass-preset"][[1]]
   expect_match(preset$head, 'var p="dark"', fixed = TRUE)
   expect_error(glass_theme_dependencies(list()), "theme")
@@ -71,6 +94,7 @@ test_that("glass_page_react keeps Bootstrap and glass CSS", {
   names <- dep_names(deps)
   expect_true("shinyglass" %in% names)
   expect_true("shinyreact" %in% names)
+  expect_true("shinyglass-react" %in% names)
   preset <- deps[names == "shinyglass-preset"][[1]]
   expect_match(preset$head, 'var p="dark"', fixed = TRUE)
   expect_match(preset$head, 'var scene="harbor"', fixed = TRUE)
@@ -117,7 +141,60 @@ test_that("page_react_html accepts glass_theme_dependencies as extra_deps", {
   names <- dep_names(deps)
   expect_true("shinyglass" %in% names)
   expect_true("bootstrap" %in% names)
+  expect_true("shinyglass-react" %in% names)
   expect_false("9999" %in% vapply(deps, function(d) d$version, ""))
+})
+
+script_src <- function(dep) {
+  sc <- dep$script
+  if (is.null(sc)) {
+    return(NA_character_)
+  }
+  if (is.list(sc) && !is.null(sc$src)) {
+    return(sc$src)
+  }
+  if (is.character(sc)) {
+    return(sc[[1]])
+  }
+  NA_character_
+}
+
+test_that("react module script is before the app module", {
+  skip_if_not_installed("shinyreact")
+  dir <- local_react_www()
+  old <- setwd(dir)
+  on.exit(setwd(old), add = TRUE)
+
+  ui <- glass_page_react(theme = glass_theme())
+  deps <- htmltools::renderTags(ui)$dependencies
+  srcs <- vapply(deps, script_src, character(1))
+  react_pos <- match("shinyglass-react.js", srcs)
+  ui_pos <- match("ui.js", srcs)
+  expect_false(is.na(react_pos))
+  expect_gt(ui_pos, react_pos)
+  react_dep <- deps[[react_pos]]
+  expect_identical(react_dep$script$type, "module")
+
+  head <- htmltools::renderDependencies(deps)
+  react_html <- regexpr("shinyglass-react\\.js", head)[[1]]
+  ui_html <- regexpr("ui\\.js", head)[[1]]
+  expect_gt(react_html, 0)
+  expect_gt(ui_html, react_html)
+  expect_match(head, "shinyglass-react.js\" type=\"module\"|type=\"module\"[^>]*shinyglass-react.js")
+})
+
+test_that("example client uses components and no hard-coded colors", {
+  ex <- system.file("examples/shinyreact-glass", package = "shinyglass")
+  expect_false(file.exists(file.path(ex, "www", "ui.css")))
+  ui <- paste(readLines(file.path(ex, "www", "ui.js"), warn = FALSE), collapse = "\n")
+  app <- paste(readLines(file.path(ex, "app.R"), warn = FALSE), collapse = "\n")
+  expect_match(ui, "useGlassTheme")
+  expect_match(ui, "GlassSidebar")
+  expect_match(ui, "GlassButton")
+  expect_match(ui, "GlassSurface")
+  expect_false(grepl("#[0-9A-Fa-f]{3,8}", ui))
+  expect_false(grepl("#[0-9A-Fa-f]{3,8}", app))
+  expect_match(app, "glass_plot_colors")
 })
 
 test_that("glass_page_react rejects a non-theme and a missing shinyreact", {

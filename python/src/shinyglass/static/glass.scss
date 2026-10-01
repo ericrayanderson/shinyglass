@@ -610,7 +610,8 @@ form.well,
 // Opt-in panel for client-owned markup (shinyreact and other trees that do
 // not use Bootstrap `.card`). Tokens follow the live light/dark pack.
 // Margin stays 0 so the client layout controls spacing.
-.glass-surface {
+.glass-surface,
+.glass-card {
   @include glass-content-surface();
   color: var(--glass-body-color);
   padding: 1rem 1.15rem;
@@ -621,6 +622,85 @@ form.well,
 
 .glass-muted {
   color: color-mix(in srgb, var(--glass-body-color) 68%, transparent);
+}
+
+// shinyreact components. Class names only: color, fill, blur, and radius
+// come from the same --glass-* tokens as the R and Python themes.
+.glass-page {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(17rem, 22rem) minmax(0, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 1.25rem auto 2.5rem;
+  padding: 0 1.25rem;
+  color: var(--glass-body-color);
+  min-width: 0;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.glass-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.glass-sidebar {
+  @include glass-content-surface();
+  color: var(--glass-body-color);
+  padding: 1.05rem 1.15rem 1.2rem;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: visible;
+  min-width: 0;
+}
+
+.glass-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.glass-title {
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
+  color: var(--glass-body-color);
+  font-weight: 700;
+}
+
+.glass-page p,
+.glass-sidebar p,
+.glass-main p {
+  margin: 0;
+}
+
+.glass-sidebar label,
+.glass-surface label,
+.glass-card label {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: inherit;
+}
+
+.glass-range {
+  width: 100%;
+  max-width: 16rem;
+  accent-color: var(--glass-accent, var(--bs-primary));
+}
+
+.glass-plot {
+  width: 100%;
+  height: 280px;
+  display: block;
 }
 
 body.bslib-page-navbar > .navbar,
@@ -981,6 +1061,59 @@ body.glass-nav-expanded {
       0 0 0 0.2rem color-mix(in srgb, var(--glass-accent, #{$primary}) 14%, transparent),
       inset 0 1px 0 var(--glass-highlight);
   }
+}
+
+.glass-button {
+  @include glass-button-type();
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border-radius: var(--glass-radius-control);
+  padding: 0.45rem 0.9rem;
+  transition:
+    background 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.42;
+    cursor: default;
+    transform: none;
+  }
+}
+
+.glass-button-secondary {
+  @include glass-button-ghost(var(--glass-body-color));
+}
+
+.glass-button-primary {
+  color: var(--glass-on-primary, #fff) !important;
+  background: #{$glass-accent} !important;
+  border: 0.5px solid #{$glass-accent} !important;
+  box-shadow:
+    0 2px 10px color-mix(in srgb, #{$glass-accent} 22%, transparent),
+    inset 0 1px 0 var(--glass-highlight);
+
+  &:hover,
+  &:focus {
+    color: var(--glass-on-primary, #fff) !important;
+    background: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+    border-color: color-mix(in srgb, #{$glass-accent} 88%, #000 12%) !important;
+  }
+}
+
+.glass-button.is-pressed,
+.glass-button[aria-pressed="true"] {
+  box-shadow:
+    0 0 0 2px var(--glass-accent, var(--bs-primary)),
+    inset 0 1px 0 var(--glass-highlight);
 }
 
 .btn,
@@ -2434,6 +2567,10 @@ small,
 .glass-surface .plotly.html-widget,
 .glass-surface .plotly.html-widget-output,
 .glass-surface .js-plotly-plot,
+.glass-card .shiny-plot-output,
+.glass-card .shiny-image-output,
+.glass-sidebar .shiny-plot-output,
+.glass-sidebar .shiny-image-output,
 .card .dataTables_wrapper,
 .bslib-card .dataTables_wrapper,
 .card .shiny-html-output:has(.dataTables_wrapper),
@@ -3452,6 +3589,10 @@ body .Reactable {
   .glass-surface .js-plotly-plot,
   .glass-surface .plotly.html-widget,
   .glass-surface .plotly.html-widget-output,
+  .glass-card .shiny-plot-output,
+  .glass-card .shiny-image-output,
+  .glass-sidebar .shiny-plot-output,
+  .glass-sidebar .shiny-image-output,
   .card .dataTables_wrapper,
   .bslib-card .dataTables_wrapper,
   .card .shiny-html-output:has(.dataTables_wrapper),

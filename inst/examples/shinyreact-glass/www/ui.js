@@ -7,19 +7,23 @@ const {
   ShinyOutput,
 } = window.shinyreact;
 
+const {
+  useGlassTheme,
+  GlassPage,
+  GlassMain,
+  GlassSidebar,
+  GlassSurface,
+  GlassStack,
+  GlassButton,
+  GlassTitle,
+  GlassMuted,
+  GlassRange,
+} = window.shinyglass;
+
 const h = React.createElement;
 
-function setPreset(mode) {
-  if (window.shinyglass && window.shinyglass.setPreset) {
-    window.shinyglass.setPreset(mode);
-  }
-}
-
-function setScene(name) {
-  if (window.shinyglass && window.shinyglass.setScene) {
-    window.shinyglass.setScene(name);
-  }
-}
+const SCENES = ["tahoe", "dusk", "mesh", "aurora", "harbor", "grove"];
+const MODES = ["light", "dark", "auto"];
 
 function ShadowNote() {
   const ref = React.useRef(null);
@@ -41,32 +45,29 @@ function ShadowNote() {
 
 function App() {
   const ready = useShinyInitialized();
+  const theme = useGlassTheme();
   const [bins, setBins] = useShinyInput("bins", 20);
   const [showExtra, setShowExtra] = useShinyInput("show_extra", false);
   const caption = useShinyOutputValue("caption", null);
   const extra = useShinyOutputValue("extra", null);
-  const [preset, setPresetState] = React.useState("auto");
 
   if (!ready) {
-    return h("p", { id: "booting" }, "Connecting…");
+    return h(GlassMuted, { id: "booting" }, "Connecting…");
   }
 
-  const scenes = ["tahoe", "dusk", "mesh", "aurora", "harbor", "grove"];
-
   return h(
-    "main",
-    { className: "layout", id: "app" },
-    h("h1", { id: "title" }, "Liquid Glass, React client"),
+    GlassPage,
+    { id: "app" },
     h(
-      "section",
-      { className: "glass-surface", id: "controls" },
+      GlassSidebar,
+      { id: "controls" },
+      h(GlassTitle, { id: "title" }, "Liquid Glass"),
       h("label", { htmlFor: "bins" }, "Number of bins"),
       h(
-        "div",
-        { className: "row" },
-        h("input", {
+        GlassStack,
+        null,
+        h(GlassRange, {
           id: "bins",
-          type: "range",
           min: 5,
           max: 40,
           value: bins,
@@ -74,68 +75,79 @@ function App() {
         }),
         h("output", { id: "bins-value", htmlFor: "bins" }, String(bins))
       ),
-      h("p", { id: "caption", className: "glass-muted" }, caption || "Waiting for the server…"),
+      h(GlassMuted, { id: "caption" }, caption || "Waiting for the server…"),
       h(
-        "div",
-        { className: "row", id: "presets" },
-        ["light", "dark", "auto"].map((mode) =>
+        GlassStack,
+        { id: "presets" },
+        MODES.map((mode) =>
           h(
-            "button",
+            GlassButton,
             {
               key: mode,
-              type: "button",
-              className: "btn btn-primary",
               id: "preset-" + mode,
-              onClick: () => {
-                setPreset(mode);
-                setPresetState(mode);
-              },
+              variant: theme.mode === mode ? "primary" : "secondary",
+              pressed: theme.mode === mode,
+              onClick: () => theme.setMode(mode),
             },
             mode
           )
         )
       ),
       h(
-        "div",
-        { className: "row", id: "scenes" },
-        scenes.map((name) =>
+        GlassStack,
+        { id: "scenes" },
+        SCENES.map((name) =>
           h(
-            "button",
+            GlassButton,
             {
               key: name,
-              type: "button",
-              className: "btn btn-secondary",
               id: "scene-" + name,
-              onClick: () => setScene(name),
+              variant: "secondary",
+              pressed: theme.scene === name,
+              onClick: () => theme.setScene(name),
             },
             name
           )
         )
       ),
       h(
-        "button",
+        GlassButton,
         {
           id: "toggle-extra",
-          type: "button",
-          className: "btn btn-secondary",
+          variant: "secondary",
           onClick: () => setShowExtra(!showExtra),
         },
         showExtra ? "Hide dynamic region" : "Show dynamic region"
       ),
-      showExtra
-        ? h("p", { id: "extra" }, extra || "Asking the server…")
-        : null,
-      h("p", { id: "preset-readout", className: "glass-muted" }, "Preset control: " + preset)
+      showExtra ? h(GlassMuted, { id: "extra" }, extra || "Asking the server…") : null,
+      h(
+        GlassMuted,
+        { id: "preset-readout" },
+        "mode " +
+          theme.mode +
+          ", resolved " +
+          theme.preset +
+          ", scene " +
+          theme.scene +
+          ", material " +
+          theme.material +
+          ", intensity " +
+          Number(theme.intensity).toFixed(2)
+      )
     ),
     h(
-      "section",
-      { className: "glass-surface", id: "plot-card" },
-      h(ShinyOutput, {
-        id: "dist",
-        className: "shiny-plot-output plot-host",
-      })
-    ),
-    h(ShadowNote)
+      GlassMain,
+      null,
+      h(
+        GlassSurface,
+        { id: "plot-card" },
+        h(ShinyOutput, {
+          id: "dist",
+          className: "shiny-plot-output glass-plot",
+        })
+      ),
+      h(ShadowNote)
+    )
   );
 }
 

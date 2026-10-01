@@ -12,12 +12,14 @@ glass_theme_dependencies(theme = glass_theme())
 }
 \value{
 A list of \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects (Bootstrap 5, the
-compiled glass rules, the preset head script, and \code{shiny-glass.js}).
+compiled glass rules, the preset head script, \code{shiny-glass.js}, and
+\code{shinyglass-react.js}).
 }
 \description{
 Turns \code{\link[=glass_theme]{glass_theme()}} into the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} list that
-\code{\link[bslib:bs_theme_dependencies]{bslib::bs_theme_dependencies()}} would attach on a Bootstrap page. Use this
-when the page has no \code{theme} argument, in particular
+\code{\link[bslib:bs_theme_dependencies]{bslib::bs_theme_dependencies()}} would attach on a Bootstrap page, and
+appends \code{\link[=glass_react_dependency]{glass_react_dependency()}}. Use this when the page has no \code{theme}
+argument, in particular
 \code{shinyreact::page_react_html(extra_deps = glass_theme_dependencies(...))}.
 }
 \details{
@@ -28,5 +30,5 @@ deps <- glass_theme_dependencies(glass_theme(preset = "dark"))
 
 }
 \seealso{
-\code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme]{glass_theme()}}
+\code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_react_dependency]{glass_react_dependency()}}
 }

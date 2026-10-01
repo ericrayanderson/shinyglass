@@ -1,9 +1,10 @@
 # Liquid Glass + shinyreact.
-# Run from this directory:
+# Run from this directory, or:
 #   shiny::runApp(system.file("examples/shinyreact-glass", package = "shinyglass"))
 #
-# The React client owns the DOM (www/ui.js). glass_page_react() attaches
-# glass_theme() as theme= so Bootstrap and the glass CSS are not suppressed.
+# www/ui.js is built from window.shinyglass components (GlassPage,
+# GlassSidebar, GlassSurface, GlassButton) and useGlassTheme(). There is
+# no www/ui.css. Colors come from --glass-* on those classes.
 
 library(shiny)
 library(shinyreact)
@@ -26,14 +27,13 @@ server <- function(input, output, session) {
   output$dist <- renderPlot({
     n <- req(input$bins)
     # Server-drawn ink cannot read CSS variables. Follow the resolved pack.
-    dark <- identical(glass_resolved_preset(input), "dark")
-    ink <- if (dark) "#f5f5f7" else "#1d1d1f"
-    op <- par(col.axis = ink, col.lab = ink, fg = ink, col.main = ink)
+    pal <- glass_plot_colors(input = input)
+    op <- par(col.axis = pal$ink, col.lab = pal$ink, fg = pal$ink, col.main = pal$ink)
     on.exit(par(op), add = TRUE)
     hist(
       faithful$waiting,
       breaks = n,
-      col = "#007AFF99",
+      col = grDevices::adjustcolor(pal$fill, alpha.f = 0.6),
       border = NA,
       main = NULL,
       xlab = "Waiting time (minutes)",

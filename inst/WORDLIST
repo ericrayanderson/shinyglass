@@ -3,6 +3,7 @@ AdminLTE
 Apple
 aurora
 Bootswatch
+bundler
 bs
 bslib
 bslib's
@@ -17,6 +18,7 @@ datepicker
 Datepicker
 densifies
 densify
+destructure
 devtools
 DOM
 dreamRs
@@ -37,8 +39,10 @@ greys
 grove
 gt
 harbor
+hardcoded
 HIG
 highcharter
+htmltools
 htmlwidgets
 https
 intensity
@@ -53,6 +57,7 @@ localStorage
 luminance
 mesh
 modebar
+mutators
 namespaced
 nav
 navbar
@@ -60,6 +65,7 @@ navbarPage
 navset
 navsets
 noUiSlider
+npm
 OS
 pagedown
 persist
@@ -77,6 +83,7 @@ reactable
 React
 shinyreact
 shinyreact's
+Shiny's
 README
 remotes
 revdep
@@ -112,6 +119,7 @@ tooltips
 UI
 UIs
 Ultra
+useGlassTheme
 unselected
 unwashed
 URI

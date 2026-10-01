@@ -25,12 +25,15 @@ suppresses the Bootstrap dependency, which is also where the compiled glass
 CSS lives, and the page keeps the JS without the look.
 }
 \details{
-\code{\link[=glass_page_react]{glass_page_react()}} is that call. The React client still owns the DOM.
-Wallpaper, type, and \verb{--glass-*} tokens apply to the document. Bootstrap
-classes (\code{.card}, \code{.btn}, \code{.form-control}, \code{.shiny-plot-output}) and the
-opt-in \code{.glass-surface} panel pick up Liquid Glass. Hard-coded colors in
-the client's own CSS do not track light/dark; prefer
-\code{var(--glass-body-color)} and \code{.glass-surface}.
+\code{\link[=glass_page_react]{glass_page_react()}} is that call, plus \code{\link[=glass_react_dependency]{glass_react_dependency()}}. The
+React client still owns the DOM. Build it from \code{GlassPage}, \code{GlassSidebar},
+\code{GlassSurface} / \code{GlassCard}, and \code{GlassButton} on \code{window.shinyglass}.
+\code{useGlassTheme()} tracks the live mode (\code{light} / \code{dark} / \code{auto}), the
+resolved preset, scene, material, and intensity, and its setters call
+\code{window.shinyglass.setPreset()} and the other existing mutators.
+Wallpaper, type, and \verb{--glass-*} tokens apply to the document. Those
+component classes are what pick up Liquid Glass. Do not set panel or text
+colors in the client's own CSS.
 
 Shadow roots do not see document class rules. \verb{--glass-*} custom properties
 inherit. Call \code{window.shinyglass.adoptShadow(shadowRoot)} from the
@@ -38,7 +41,7 @@ component that created the root to inject a \code{.glass-surface} rule.
 
 For \code{\link[shinyreact:page_react_html]{shinyreact::page_react_html()}}, pass
 \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}} as \code{extra_deps}. That helper does not need
-shinyreact.
+shinyreact. It includes the React module.
 }
 \examples{
 if (interactive() && requireNamespace("shinyreact", quietly = TRUE)) {
@@ -49,5 +52,6 @@ if (interactive() && requireNamespace("shinyreact", quietly = TRUE)) {
 
 }
 \seealso{
-\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
+\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
+\code{\link[=glass_react_dependency]{glass_react_dependency()}}
 }

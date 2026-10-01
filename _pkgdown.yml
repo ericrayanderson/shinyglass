@@ -40,6 +40,8 @@ navbar:
           href: articles/theming.html
         - text: Ecosystem compatibility
           href: articles/compatibility.html
+        - text: shinyreact
+          href: articles/shinyreact.html
         - text: Try it
           href: articles/playground.html
     reference:
@@ -72,6 +74,7 @@ reference:
   - glass_page
   - glass_page_react
   - glass_theme_dependencies
+  - glass_react_dependency
   - observe_glass
   - glass_scenes
   - glass_scene_input
@@ -96,6 +99,7 @@ articles:
   contents:
   - theming
   - compatibility
+  - shinyreact
   - playground
 
 authors:
