@@ -73,8 +73,8 @@ server <- function(input, output, session) {
 | `preset` | `"light"` / `"dark"` / `"auto"` |
 | `tint` | Content-aware ambient color from plots/images |
 | `primary` | Live accent via CSS variables (`--bs-primary`, …) |
-| `intensity` | Ultra Clear (`0`) → Tinted (`1`) |
-| `material` | `"regular"` / `"clear"` |
+| `intensity` | Ultra Clear (`0`) to Tinted (`1`). Default `0.5`. |
+| `material` | `"regular"`. `"clear"` is deprecated (maps to intensity `0.12`) |
 | `plot_surface` | `"clear"` / `"opaque"` |
 | `scene` | Named wallpaper pack (`glass_scenes()`) |
 | `flatten` | Print / capture mode (see [glass_flatten()]) |
@@ -110,17 +110,24 @@ glass_theme(
   blur = 36,
   saturation = 200,
   radius = "1.5rem",
-  material = "regular", # or "clear" over media-rich content
+  material = "regular", # "clear" is deprecated; use a low intensity
   plot_surface = "clear", # or "opaque" for dense charts/tables
-  intensity = 0.45,     # 0 Ultra Clear → 1 Tinted (iOS 27)
+  intensity = 0.5,      # 0 Ultra Clear to 1 Tinted (iOS 27 midpoint)
   tint = TRUE,      # sample plot/image colors into glass surfaces
   specular = TRUE,  # pointer specular highlight
   nav_morph = TRUE  # compact navbar while scrolling down
 )
 ```
 
-`material = "regular"` is the adaptive Tahoe-style fill (default). Use
-`"clear"` when chrome sits over rich media and labels stay bold.
+`material = "regular"` is the adaptive fill (default). `material = "clear"`
+is deprecated. Use a low `intensity` (Ultra Clear is `0`) when chrome sits
+over rich media and labels stay bold. Omitting `intensity` with
+`material = "clear"` still maps to `0.12` and warns.
+
+Reduce Transparency (the OS setting) paints opaque fills and turns backdrop
+blur off, including before JavaScript runs. Increase Contrast and forced
+colors override the inline glass variables. The in-app slider does not have
+to move for those overrides to apply.
 
 `plot_surface = "clear"` is the default: plot and table hosts stay
 translucent so the wallpaper shows through. Use `"opaque"` when dense
@@ -158,8 +165,11 @@ ui <- fluidPage(
 
 # Public CSS tokens
 
-`glass_css_tokens()` lists stable `--glass-*` variables. Override them without
-forking SCSS:
+`glass_css_tokens()` lists stable `--glass-*` variables, including the
+refraction cues `--glass-refract-a`, `--glass-refract-b`,
+`--glass-refract-brightness`, and `--glass-refract-contrast`. Those scale
+with intensity. They are color and backdrop boosts, not a lens
+displacement. Override them without forking SCSS:
 
 ```{r}
 th <- glass_theme(tokens = list(blur = "28px", radius = "1.25rem"))
@@ -177,7 +187,7 @@ that OS slider, so the in-app control is intentional — it is the supported way
 to match the system look from a Shiny app:
 
 ```{r}
-glass_intensity_slider("glass_intensity", value = 0.45)
+glass_intensity_slider("glass_intensity", value = 0.5)
 ```
 
 All three JS behaviors default to `TRUE` (same as 0.1.x). They respect

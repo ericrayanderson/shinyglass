@@ -14,8 +14,10 @@ An \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}}.
 one React on \code{window.shinyreact}. \code{\link[=glass_react_dependency]{glass_react_dependency()}} is the matching
 module, \code{inst/js/shinyglass-react.js}. It registers \code{useGlassTheme},
 \code{GlassPage}, \code{GlassMain}, \code{GlassSidebar}, \code{GlassSurface}, \code{GlassCard},
-\code{GlassStack}, \code{GlassButton}, \code{GlassTitle}, \code{GlassMuted}, and \code{GlassRange}
-on \code{window.shinyglass} and as named exports.
+\code{GlassStack}, \code{GlassButton}, \code{GlassTitle}, \code{GlassMuted}, \code{GlassRange},
+and \code{GlassIntensitySlider} on \code{window.shinyglass} and as named exports.
+\code{useGlassTheme()} also reports \code{reducedTransparency}, \code{increasedContrast},
+and \code{forcedColors}.
 }
 \details{
 The module does not import React and does not bundle a second copy.

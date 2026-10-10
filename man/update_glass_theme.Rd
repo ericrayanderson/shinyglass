@@ -31,7 +31,8 @@ the server function).}
 \item{intensity}{Optional numeric in \eqn{[0, 1]}: Ultra Clear (\code{0}) to
 Tinted (\code{1}).}
 
-\item{material}{Optional \code{"regular"} or \code{"clear"}.}
+\item{material}{Optional \code{"regular"} or \code{"clear"}. \code{"clear"} is deprecated;
+when \code{intensity} is omitted it is sent as intensity \code{0.12}.}
 
 \item{plot_surface}{Optional \code{"clear"} or \code{"opaque"}.}
 

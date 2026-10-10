@@ -29,7 +29,7 @@ ui <- page_sidebar(
   theme = glass_theme(
     preset = glass_preset,
     primary = "#007AFF",
-    intensity = 0.45,
+    intensity = 0.5,
     persist = TRUE,
     scene = "tahoe",
     plot_surface = "clear"
@@ -44,7 +44,7 @@ ui <- page_sidebar(
     glass_intensity_slider(
       "glass_intensity",
       label = "Liquid Glass",
-      value = 0.45,
+      value = 0.5,
       preview = TRUE
     ),
     glass_preset_input(

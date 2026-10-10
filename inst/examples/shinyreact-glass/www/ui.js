@@ -18,6 +18,7 @@ const {
   GlassTitle,
   GlassMuted,
   GlassRange,
+  GlassIntensitySlider,
 } = window.shinyglass;
 
 const h = React.createElement;
@@ -76,6 +77,10 @@ function App() {
         h("output", { id: "bins-value", htmlFor: "bins" }, String(bins))
       ),
       h(GlassMuted, { id: "caption" }, caption || "Waiting for the server…"),
+      h(GlassIntensitySlider, {
+        id: "glass-intensity",
+        value: theme.intensity,
+      }),
       h(
         GlassStack,
         { id: "presets" },

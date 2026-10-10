@@ -23,8 +23,9 @@
 #' @param saturation Backdrop saturation percentage.
 #' @param radius Default border radius for glass surfaces (CSS length).
 #'   Prefer larger concentric radii (default `1.5rem`).
-#' @param material `"regular"` (adaptive, most UI) or `"clear"` (more
-#'   transparent; best over media-rich content with bold labels).
+#' @param material `"regular"` (adaptive, most UI). `"clear"` is deprecated
+#'   and maps to a low `intensity` (`0.12`) when `intensity` is omitted, so
+#'   older apps stay clearer than the midpoint. Prefer `intensity`.
 #' @param plot_surface `"clear"` (default) keeps plot/table hosts translucent
 #'   so wallpaper shows through. `"opaque"` densifies `.shiny-plot-output`,
 #'   plotly, gt, and DT hosts (~94% panel fill, readable ink) while leaving
@@ -32,8 +33,9 @@
 #'   `.glass-plot-surface-opaque` on a host or ancestor.
 #' @param intensity Liquid Glass intensity from `0` (Ultra Clear) to `1`
 #'   (Tinted), matching iOS 27 Settings -> Appearance -> Liquid Glass.
-#'   Default `0.45`. The web cannot read the OS slider; use
-#'   [glass_intensity_slider()] for the in-app control.
+#'   Default `0.5` (Apple's midpoint). The web cannot read the OS slider; use
+#'   [glass_intensity_slider()] for the in-app control. Reduce Transparency
+#'   and Increase Contrast override the painted glass.
 #' @param tint Content-aware ambient tint from plots/images (JS).
 #' @param specular Pointer-driven specular highlight on glass surfaces (JS).
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
@@ -91,7 +93,7 @@ glass_theme <- function(
     radius = "1.5rem",
     material = c("regular", "clear"),
     plot_surface = c("clear", "opaque"),
-    intensity = 0.45,
+    intensity = 0.5,
     tint = TRUE,
     specular = TRUE,
     nav_morph = TRUE,
@@ -104,6 +106,12 @@ glass_theme <- function(
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
+  if (identical(material, "clear")) {
+    .glass_deprecate_material_clear()
+    if (missing(intensity)) {
+      intensity <- .glass_clear_material_intensity()
+    }
+  }
   plot_surface <- match.arg(plot_surface)
   scene <- .glass_normalize_scene(scene)
   intensity <- .glass_normalize_intensity(intensity)
@@ -253,7 +261,8 @@ glass_theme <- function(
 #' @param primary Optional accent color (hex like `"#AF52DE"` or `rgb()`).
 #' @param intensity Optional numeric in \eqn{[0, 1]}: Ultra Clear (`0`) to
 #'   Tinted (`1`).
-#' @param material Optional `"regular"` or `"clear"`.
+#' @param material Optional `"regular"` or `"clear"`. `"clear"` is deprecated;
+#'   when `intensity` is omitted it is sent as intensity `0.12`.
 #' @param plot_surface Optional `"clear"` or `"opaque"`.
 #' @param ambient_motion Optional logical.
 #' @param scene Optional scene id from [glass_scenes()].
@@ -314,6 +323,12 @@ update_glass_theme <- function(
   }
   if (!is.null(material)) {
     material <- match.arg(material, c("regular", "clear"))
+    if (identical(material, "clear")) {
+      .glass_deprecate_material_clear()
+      if (is.null(intensity)) {
+        intensity <- .glass_clear_material_intensity()
+      }
+    }
   }
   if (!is.null(plot_surface)) {
     plot_surface <- match.arg(plot_surface, c("clear", "opaque"))
@@ -595,6 +610,33 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   )
 }
 
+.glass_default_intensity <- function() {
+  0.5
+}
+
+.glass_clear_material_intensity <- function() {
+  0.12
+}
+
+.glass_deprecate_material_clear <- function() {
+  .Deprecated(
+    new = "intensity",
+    msg = paste(
+      "`material = \"clear\"` is deprecated in shinyglass 0.4.0.9001 and will be removed in a future release.",
+      "Use `intensity` from 0 (Ultra Clear) to 1 (Tinted).",
+      "When `intensity` is omitted, clear glass maps to intensity 0.12 so existing apps stay clearer than the midpoint."
+    )
+  )
+}
+
+.glass_intensity_head_js <- function() {
+  path <- system.file("js", "glass-intensity-head.js", package = "shinyglass")
+  if (!nzchar(path) || !file.exists(path)) {
+    return("")
+  }
+  paste(readLines(path, warn = FALSE), collapse = "\n")
+}
+
 .glass_normalize_intensity <- function(intensity) {
   stopifnot(is.numeric(intensity), length(intensity) == 1L, !is.na(intensity))
   if (intensity < 0 || intensity > 1) {
@@ -658,14 +700,14 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     list(
       body_bg = "#f2f2f7",
       body_color = "#1d1d1f",
-      glass_bg = "rgba(255, 255, 255, 0.22)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.36)",
-      glass_border = "rgba(255, 255, 255, 0.62)",
+      glass_bg = "rgba(255, 255, 255, 0.30)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.41)",
+      glass_border = "rgba(255, 255, 255, 0.85)",
       glass_shadow = "rgba(0, 0, 0, 0.10)",
       glass_elevated_shadow = "rgba(0, 0, 0, 0.16)",
-      glass_highlight = "rgba(255, 255, 255, 0.88)",
-      glass_specular = "rgba(255, 255, 255, 0.55)",
-      glass_menu_bg = "rgba(255, 255, 255, 0.86)",
+      glass_highlight = "rgba(255, 255, 255, 1)",
+      glass_specular = "rgba(255, 255, 255, 0.95)",
+      glass_menu_bg = "rgba(255, 255, 255, 0.84)",
       glass_menu_color = "#1d1d1f",
       page_bg = "linear-gradient(160deg, #eef1f8 0%, #f5f5f7 42%, #ebe8f4 78%, #e6eef8 100%)",
       orb_1 = "rgba(0, 122, 255, 0.18)",
@@ -676,14 +718,14 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     list(
       body_bg = "#000000",
       body_color = "#f5f5f7",
-      glass_bg = "rgba(255, 255, 255, 0.14)",
-      glass_bg_hover = "rgba(255, 255, 255, 0.22)",
-      glass_border = "rgba(255, 255, 255, 0.26)",
+      glass_bg = "rgba(255, 255, 255, 0.16)",
+      glass_bg_hover = "rgba(255, 255, 255, 0.23)",
+      glass_border = "rgba(255, 255, 255, 0.55)",
       glass_shadow = "rgba(0, 0, 0, 0.48)",
       glass_elevated_shadow = "rgba(0, 0, 0, 0.62)",
-      glass_highlight = "rgba(255, 255, 255, 0.22)",
-      glass_specular = "rgba(255, 255, 255, 0.18)",
-      glass_menu_bg = "rgba(44, 44, 46, 0.88)",
+      glass_highlight = "rgba(255, 255, 255, 0.60)",
+      glass_specular = "rgba(255, 255, 255, 0.69)",
+      glass_menu_bg = "rgba(58, 58, 60, 0.79)",
       glass_menu_color = "#f5f5f7",
       page_bg = "linear-gradient(160deg, #0a0a12 0%, #000000 45%, #100a16 80%, #060a14 100%)",
       orb_1 = "rgba(10, 132, 255, 0.28)",
@@ -701,7 +743,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     primary = "#007AFF",
     material = "regular",
     plot_surface = "clear",
-    intensity = 0.45,
+    intensity = 0.5,
     ambient_motion = TRUE,
     persist = FALSE,
     scene = "default",
@@ -789,6 +831,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "}",
       "if(wallpaper){root.dataset.glassWallpaper='true';",
       "root.style.setProperty('--glass-wallpaper','url(\"'+wallpaper+'\")');}",
+      "%s",
       "})();</script>"
     ),
     jsonlite_quote(preset),
@@ -806,7 +849,8 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
     if (isTRUE(ambient_motion)) "\"true\"" else "\"false\"",
     rgb_css,
-    jsonlite_quote(on_primary)
+    jsonlite_quote(on_primary),
+    .glass_intensity_head_js()
   )
 }
 

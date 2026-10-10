@@ -12,7 +12,7 @@ glass_theme(
   radius = "1.5rem",
   material = c("regular", "clear"),
   plot_surface = c("clear", "opaque"),
-  intensity = 0.45,
+  intensity = 0.5,
   tint = TRUE,
   specular = TRUE,
   nav_morph = TRUE,
@@ -40,8 +40,9 @@ iOS 27 diffusion-first material.}
 \item{radius}{Default border radius for glass surfaces (CSS length).
 Prefer larger concentric radii (default \verb{1.5rem}).}
 
-\item{material}{\code{"regular"} (adaptive, most UI) or \code{"clear"} (more
-transparent; best over media-rich content with bold labels).}
+\item{material}{\code{"regular"} (adaptive, most UI). \code{"clear"} is deprecated
+and maps to a low \code{intensity} (\code{0.12}) when \code{intensity} is omitted, so
+older apps stay clearer than the midpoint. Prefer \code{intensity}.}
 
 \item{plot_surface}{\code{"clear"} (default) keeps plot/table hosts translucent
 so wallpaper shows through. \code{"opaque"} densifies \code{.shiny-plot-output},
@@ -51,8 +52,9 @@ nav and controls on Liquid Glass. Also available as the CSS class
 
 \item{intensity}{Liquid Glass intensity from \code{0} (Ultra Clear) to \code{1}
 (Tinted), matching iOS 27 Settings -> Appearance -> Liquid Glass.
-Default \code{0.45}. The web cannot read the OS slider; use
-\code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for the in-app control.}
+Default \code{0.5} (Apple's midpoint). The web cannot read the OS slider; use
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for the in-app control. Reduce Transparency
+and Increase Contrast override the painted glass.}
 
 \item{tint}{Content-aware ambient tint from plots/images (JS).}
 

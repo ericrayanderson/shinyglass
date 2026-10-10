@@ -79,7 +79,7 @@ test('inserted intensity slider responds to keyboard and server updates', async 
     document.querySelector('#dynamic').innerHTML = '<div class="glass-intensity-slider"><input aria-label="Intensity" type="range" min="0" max="1" step="0.01" class="glass-intensity-range"></div>';
   });
   const slider = page.getByRole('slider', { name: 'Intensity' });
-  await expect(slider).toHaveValue('0.45');
+  await expect(slider).toHaveValue('0.5');
   await slider.focus();
   await page.keyboard.press('End');
   await expect.poll(() => page.evaluate(() => shinyglass.getIntensity())).toBe(1);
@@ -148,8 +148,8 @@ test('persist writes preset and intensity; material and scene update live', asyn
     document.documentElement.dataset.glassPersist = 'true';
     localStorage.clear();
     shinyglass.setPreset('dark');
-    shinyglass.setIntensity(0.7);
     shinyglass.setMaterial('clear');
+    shinyglass.setIntensity(0.7);
     shinyglass.setScene('dusk');
   });
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.glassMaterial)).toBe('clear');

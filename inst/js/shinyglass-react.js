@@ -43,7 +43,24 @@ const THEME_ATTRS = [
   "data-glass-scene",
   "data-glass-material",
   "data-glass-intensity",
+  "data-glass-reduced-transparency",
+  "data-glass-contrast",
+  "data-glass-forced-colors",
 ];
+
+const A11Y_QUERIES = [
+  "(prefers-reduced-transparency: reduce)",
+  "(prefers-contrast: more)",
+  "(forced-colors: active)",
+];
+
+function mediaOn(query) {
+  try {
+    return window.matchMedia(query).matches;
+  } catch (e) {
+    return false;
+  }
+}
 
 function readTheme() {
   const ds = document.documentElement.dataset;
@@ -53,7 +70,14 @@ function readTheme() {
     preset: ds.glassPreset || "light",
     scene: ds.glassScene || "default",
     material: ds.glassMaterial || "regular",
-    intensity: Number.isFinite(intensity) ? intensity : 0.45,
+    intensity: Number.isFinite(intensity) ? intensity : 0.5,
+    reducedTransparency:
+      ds.glassReducedTransparency === "reduce" ||
+      mediaOn("(prefers-reduced-transparency: reduce)"),
+    increasedContrast:
+      ds.glassContrast === "more" || mediaOn("(prefers-contrast: more)"),
+    forcedColors:
+      ds.glassForcedColors === "active" || mediaOn("(forced-colors: active)"),
   };
 }
 
@@ -71,9 +95,31 @@ export function useGlassTheme() {
       setTheme(readTheme());
     });
     obs.observe(el, { attributes: true, attributeFilter: THEME_ATTRS });
+    const medias = A11Y_QUERIES.map(function (query) {
+      let mq = null;
+      try {
+        mq = window.matchMedia(query);
+      } catch (e) {
+        return null;
+      }
+      const onChange = function () {
+        setTheme(readTheme());
+      };
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+      return { mq: mq, onChange: onChange };
+    });
     setTheme(readTheme());
     return function () {
       obs.disconnect();
+      medias.forEach(function (entry) {
+        if (!entry || !entry.mq) return;
+        if (entry.mq.removeEventListener) {
+          entry.mq.removeEventListener("change", entry.onChange);
+        } else if (entry.mq.removeListener) {
+          entry.mq.removeListener(entry.onChange);
+        }
+      });
     };
   }, []);
   return {
@@ -82,6 +128,9 @@ export function useGlassTheme() {
     scene: theme.scene,
     material: theme.material,
     intensity: theme.intensity,
+    reducedTransparency: theme.reducedTransparency,
+    increasedContrast: theme.increasedContrast,
+    forcedColors: theme.forcedColors,
     setMode: function (mode) {
       callGlass("setPreset", mode);
     },
@@ -95,6 +144,122 @@ export function useGlassTheme() {
       callGlass("setIntensity", value);
     },
   };
+}
+
+export function GlassIntensitySlider(props) {
+  const React = reactLib();
+  const theme = useGlassTheme();
+  props = props || {};
+  const min = props.min != null ? Number(props.min) : 0;
+  const max = props.max != null ? Number(props.max) : 1;
+  const step = props.step != null ? Number(props.step) : 0.01;
+  const minLabel = props.minLabel || "Ultra Clear";
+  const maxLabel = props.maxLabel || "Tinted";
+  const label = Object.prototype.hasOwnProperty.call(props, "label")
+    ? props.label
+    : "Liquid Glass";
+  const preview = props.preview !== false;
+  const id = props.id || "glass-intensity";
+  const current = props.value != null ? Number(props.value) : theme.intensity;
+  const dom = omit(props, [
+    "id",
+    "className",
+    "label",
+    "value",
+    "min",
+    "max",
+    "step",
+    "minLabel",
+    "maxLabel",
+    "preview",
+    "onChange",
+  ]);
+  dom.className = cx(
+    "form-group",
+    "shiny-input-container",
+    "glass-intensity-slider",
+    props.className
+  );
+  dom["data-glass-intensity-input"] = id;
+
+  function onInput(event) {
+    const next = Number(event.target.value);
+    theme.setIntensity(next);
+    if (typeof props.onChange === "function") props.onChange(next);
+  }
+
+  const labelId = id + "-label";
+  const rangeProps = {
+    type: "range",
+    className: "glass-intensity-range form-range",
+    id: id,
+    min: min,
+    max: max,
+    step: step,
+    value: Number.isFinite(current) ? current : 0.5,
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    onInput: onInput,
+    onChange: onInput,
+  };
+  if (label) rangeProps["aria-labelledby"] = labelId;
+  else rangeProps["aria-label"] = "Liquid Glass intensity";
+
+  const children = [];
+  if (label) {
+    children.push(
+      React.createElement(
+        "label",
+        { className: "control-label", id: labelId, htmlFor: id, key: "label" },
+        label
+      )
+    );
+  }
+  children.push(
+    React.createElement(
+      "div",
+      { className: "glass-intensity-row", key: "row" },
+      React.createElement(
+        "span",
+        { className: "glass-intensity-end glass-intensity-end--min" },
+        minLabel
+      ),
+      React.createElement(
+        "div",
+        { className: "glass-intensity-track" },
+        React.createElement("div", { className: "glass-intensity-fill" }),
+        React.createElement("div", {
+          className: "glass-intensity-thumb",
+          "aria-hidden": "true",
+        }),
+        React.createElement("input", rangeProps)
+      ),
+      React.createElement(
+        "span",
+        { className: "glass-intensity-end glass-intensity-end--max" },
+        maxLabel
+      )
+    )
+  );
+  if (preview) {
+    children.push(
+      React.createElement(
+        "div",
+        { className: "glass-intensity-preview", key: "preview" },
+        React.createElement("div", { className: "glass-intensity-chip" }, "Clear"),
+        React.createElement("div", { className: "glass-intensity-chip" }, "Default"),
+        React.createElement("div", { className: "glass-intensity-chip" }, "Tinted")
+      )
+    );
+  }
+  children.push(
+    React.createElement(
+      "span",
+      { className: "glass-intensity-hint", key: "hint" },
+      "Matches Settings -> Appearance -> Liquid Glass (Ultra Clear through Tinted)."
+    )
+  );
+  return React.createElement("div", dom, children);
 }
 
 export function GlassPage(props) {
@@ -189,3 +354,4 @@ api.GlassTitle = GlassTitle;
 api.GlassMuted = GlassMuted;
 api.GlassButton = GlassButton;
 api.GlassRange = GlassRange;
+api.GlassIntensitySlider = GlassIntensitySlider;

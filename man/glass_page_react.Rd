@@ -29,8 +29,11 @@ CSS lives, and the page keeps the JS without the look.
 React client still owns the DOM. Build it from \code{GlassPage}, \code{GlassSidebar},
 \code{GlassSurface} / \code{GlassCard}, and \code{GlassButton} on \code{window.shinyglass}.
 \code{useGlassTheme()} tracks the live mode (\code{light} / \code{dark} / \code{auto}), the
-resolved preset, scene, material, and intensity, and its setters call
-\code{window.shinyglass.setPreset()} and the other existing mutators.
+resolved preset, scene, material, and intensity, plus whether Reduce
+Transparency, Increase Contrast, or forced colors are active. Its setters
+call \code{window.shinyglass.setPreset()} and the other existing mutators.
+\code{GlassIntensitySlider} runs from Ultra Clear to Tinted and defaults to
+\code{0.5}. \code{setMaterial("clear")} is deprecated and maps to intensity \code{0.12}.
 Wallpaper, type, and \verb{--glass-*} tokens apply to the document. Those
 component classes are what pick up Liquid Glass. Do not set panel or text
 colors in the client's own CSS.

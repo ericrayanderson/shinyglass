@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from pathlib import Path
 from typing import Any, Literal, Mapping
 
@@ -11,6 +12,7 @@ from shiny.ui import Theme
 from ._assets import (
     has_vendored_static,
     js_dir,
+    package_root,
     precompiled_theme_css,
     scss_path,
 )
@@ -25,7 +27,8 @@ _DEFAULT_PRIMARY = "#007AFF"
 _DEFAULT_BLUR = 36
 _DEFAULT_SATURATION = 200
 _DEFAULT_RADIUS = "1.5rem"
-_DEFAULT_INTENSITY = 0.45
+_DEFAULT_INTENSITY = 0.5
+_CLEAR_MATERIAL_INTENSITY = 0.12
 
 GLASS_SCENES: tuple[str, ...] = (
     "default",
@@ -67,14 +70,14 @@ def _tokens(preset: Preset) -> dict[str, str]:
         return {
             "body_bg": "#f2f2f7",
             "body_color": "#1d1d1f",
-            "glass_bg": "rgba(255, 255, 255, 0.22)",
-            "glass_bg_hover": "rgba(255, 255, 255, 0.36)",
-            "glass_border": "rgba(255, 255, 255, 0.62)",
+            "glass_bg": "rgba(255, 255, 255, 0.30)",
+            "glass_bg_hover": "rgba(255, 255, 255, 0.41)",
+            "glass_border": "rgba(255, 255, 255, 0.85)",
             "glass_shadow": "rgba(0, 0, 0, 0.10)",
             "glass_elevated_shadow": "rgba(0, 0, 0, 0.16)",
-            "glass_highlight": "rgba(255, 255, 255, 0.88)",
-            "glass_specular": "rgba(255, 255, 255, 0.55)",
-            "glass_menu_bg": "rgba(255, 255, 255, 0.86)",
+            "glass_highlight": "rgba(255, 255, 255, 1)",
+            "glass_specular": "rgba(255, 255, 255, 0.95)",
+            "glass_menu_bg": "rgba(255, 255, 255, 0.84)",
             "glass_menu_color": "#1d1d1f",
             "page_bg": (
                 "linear-gradient(160deg, #eef1f8 0%, #f5f5f7 42%, "
@@ -87,14 +90,14 @@ def _tokens(preset: Preset) -> dict[str, str]:
     return {
         "body_bg": "#000000",
         "body_color": "#f5f5f7",
-        "glass_bg": "rgba(255, 255, 255, 0.14)",
-        "glass_bg_hover": "rgba(255, 255, 255, 0.22)",
-        "glass_border": "rgba(255, 255, 255, 0.26)",
+        "glass_bg": "rgba(255, 255, 255, 0.16)",
+        "glass_bg_hover": "rgba(255, 255, 255, 0.23)",
+        "glass_border": "rgba(255, 255, 255, 0.55)",
         "glass_shadow": "rgba(0, 0, 0, 0.48)",
         "glass_elevated_shadow": "rgba(0, 0, 0, 0.62)",
-        "glass_highlight": "rgba(255, 255, 255, 0.22)",
-        "glass_specular": "rgba(255, 255, 255, 0.18)",
-        "glass_menu_bg": "rgba(44, 44, 46, 0.88)",
+        "glass_highlight": "rgba(255, 255, 255, 0.60)",
+        "glass_specular": "rgba(255, 255, 255, 0.69)",
+        "glass_menu_bg": "rgba(58, 58, 60, 0.79)",
         "glass_menu_color": "#f5f5f7",
         "page_bg": (
             "linear-gradient(160deg, #0a0a12 0%, #000000 45%, "
@@ -131,6 +134,29 @@ def _libsass_available() -> bool:
 
 def _js_bool(v: bool) -> str:
     return "true" if v else "false"
+
+
+def _intensity_head_snippet() -> str:
+    """Shared first-paint blend. Same file the R head script concatenates."""
+    candidates = [js_dir() / "glass-intensity-head.js"]
+    root = package_root()
+    if root is not None:
+        candidates.append(root / "inst" / "js" / "glass-intensity-head.js")
+    for path in candidates:
+        if path.is_file():
+            return path.read_text(encoding="utf-8")
+    return ""
+
+
+def _deprecate_clear_material() -> None:
+    warnings.warn(
+        'material="clear" is deprecated and will be removed in a future release. '
+        "Use intensity from 0 (Ultra Clear) to 1 (Tinted). "
+        "When intensity is omitted, clear glass maps to intensity "
+        f"{_CLEAR_MATERIAL_INTENSITY:.2f}.",
+        DeprecationWarning,
+        stacklevel=3,
+    )
 
 
 def _preset_head(
@@ -203,7 +229,8 @@ def _preset_head(
         "root.style.setProperty('--glass-accent',prim);}"
         "if(wallpaper){root.dataset.glassWallpaper='true';"
         "root.style.setProperty('--glass-wallpaper','url(\"'+wallpaper+'\")');}"
-        "})();</script>"
+        + _intensity_head_snippet()
+        + "})();</script>"
     )
 
 
@@ -309,7 +336,7 @@ def glass_theme(
     blur: float | int = _DEFAULT_BLUR,
     saturation: float | int = _DEFAULT_SATURATION,
     radius: str = _DEFAULT_RADIUS,
-    intensity: float = _DEFAULT_INTENSITY,
+    intensity: float | None = None,
     plot_surface: str = "clear",
     material: str = "regular",
     scene: str = "default",
@@ -348,12 +375,14 @@ def glass_theme(
     radius
         Default border radius for glass surfaces (CSS length).
     intensity
-        Ultra Clear (``0``) to Tinted (``1``). Default ``0.45``.
+        Ultra Clear (``0``) to Tinted (``1``). Default ``0.5`` (the iOS 27
+        midpoint).
     plot_surface
         ``"clear"`` (default, wallpaper show-through) or ``"opaque"``
         (denser plot / table panels).
     material
-        ``"regular"`` or ``"clear"``.
+        ``"regular"``. ``"clear"`` is deprecated and maps to intensity
+        ``0.12`` when ``intensity`` is omitted.
     scene
         Named wallpaper pack: ``default``, ``tahoe``, ``dusk``, ``mesh``,
         ``aurora``, ``harbor``, ``grove``.
@@ -375,6 +404,12 @@ def glass_theme(
         raise ValueError('plot_surface must be "clear" or "opaque"')
     if material not in ("regular", "clear"):
         raise ValueError('material must be "regular" or "clear"')
+    if material == "clear":
+        _deprecate_clear_material()
+        if intensity is None:
+            intensity = _CLEAR_MATERIAL_INTENSITY
+    if intensity is None:
+        intensity = _DEFAULT_INTENSITY
     if scene not in GLASS_SCENES:
         raise ValueError(f"scene must be one of {GLASS_SCENES}")
     if not 0.0 <= float(intensity) <= 1.0:
@@ -526,6 +561,10 @@ def update_glass_theme(
         if material not in ("regular", "clear"):
             raise ValueError('material must be "regular" or "clear"')
         payload["material"] = material
+        if material == "clear":
+            _deprecate_clear_material()
+            if intensity is None:
+                payload["intensity"] = _CLEAR_MATERIAL_INTENSITY
     if ambient_motion is not None:
         payload["ambient_motion"] = bool(ambient_motion)
     if tint is not None:

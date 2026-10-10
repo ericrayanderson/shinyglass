@@ -315,15 +315,18 @@
   }
 
 
-  // iOS 27 Liquid Glass intensity: 0 = Ultra Clear, 1 = Tinted
-  var intensityState = 0.45;
+  // iOS 27 Liquid Glass intensity: 0 = Ultra Clear, 1 = Tinted.
+  // 0.5 is Apple's midpoint. material "clear" maps to the low value.
+  var DEFAULT_INTENSITY = 0.5;
+  var CLEAR_MATERIAL_INTENSITY = 0.12;
+  var intensityState = DEFAULT_INTENSITY;
   var intensityBaseBlurPx = null;
   // Last content-aware tint sample (so intensity can re-scale fills while tint is active)
   var lastTintRgb = null;
 
   function clamp01(t) {
     t = Number(t);
-    if (!isFinite(t)) return 0.45;
+    if (!isFinite(t)) return DEFAULT_INTENSITY;
     if (t < 0) return 0;
     if (t > 1) return 1;
     return t;
@@ -338,41 +341,158 @@
   }
 
   // Endpoint packs for Ultra Clear (0) vs Tinted (1), per preset.
-  // Shipping iOS 27 QA: darker lip/edge + brighter specular; fill alphas
-  // unchanged so Ultra Clear stays readable via blur and Tinted stays a film.
+  // Midpoint (0.5) is the iOS 27 default: slightly stronger rim, lip, and
+  // edge than the previous 0.45 blend, with a narrow blur-scale range so
+  // refraction stays even from clear to tinted. Fill alphas stay a film;
+  // Reduce Transparency is the opaque path. Numbers match
+  // inst/js/glass-intensity-head.js and the SCSS midpoint packs.
   function intensityEndpoints(preset) {
     if (preset === "dark") {
       return {
         clear: {
-          bgA: 0.08, bgHoverA: 0.14, contentA: 0.07, contentHoverA: 0.12,
-          borderA: 0.36, rimA: 0.54, lipA: 0.58, highlightA: 0.44, specularA: 0.52,
-          edgeSheenA: 0.30, innerGlowA: 0.14, menuA: 0.62, blurScale: 1.16
+          bgA: 0.08, bgHoverA: 0.14, contentA: 0.08, contentHoverA: 0.12,
+          borderA: 0.42, rimA: 0.60, lipA: 0.64, highlightA: 0.48, specularA: 0.56,
+          edgeSheenA: 0.34, innerGlowA: 0.16, menuA: 0.66, blurScale: 1.08,
+          refractA: 0.08, refractB: 0.06, brightness: 1.02, contrast: 1.02
         },
         tinted: {
-          bgA: 0.26, bgHoverA: 0.34, contentA: 0.22, contentHoverA: 0.30,
-          borderA: 0.60, rimA: 0.78, lipA: 0.90, highlightA: 0.68, specularA: 0.78,
-          edgeSheenA: 0.46, innerGlowA: 0.23, menuA: 0.92, blurScale: 1.26
+          bgA: 0.24, bgHoverA: 0.32, contentA: 0.20, contentHoverA: 0.28,
+          borderA: 0.68, rimA: 0.86, lipA: 0.92, highlightA: 0.72, specularA: 0.82,
+          edgeSheenA: 0.52, innerGlowA: 0.26, menuA: 0.92, blurScale: 1.14,
+          refractA: 0.22, refractB: 0.16, brightness: 1.06, contrast: 1.06
         },
         fill: { r: 255, g: 255, b: 255 },
         menu: { r: 58, g: 58, b: 60 },
-        lip: { r: 0, g: 0, b: 0 }
+        lip: { r: 0, g: 0, b: 0 },
+        refractA: { r: 100, g: 200, b: 255 },
+        refractB: { r: 220, g: 140, b: 255 }
       };
     }
     return {
       clear: {
-        bgA: 0.10, bgHoverA: 0.18, contentA: 0.16, contentHoverA: 0.24,
-        borderA: 0.64, rimA: 0.92, lipA: 0.21, highlightA: 1.00, specularA: 0.88,
-        edgeSheenA: 0.56, innerGlowA: 0.25, menuA: 0.68, blurScale: 1.16
+        bgA: 0.12, bgHoverA: 0.20, contentA: 0.18, contentHoverA: 0.26,
+        borderA: 0.72, rimA: 0.94, lipA: 0.24, highlightA: 1.00, specularA: 0.90,
+        edgeSheenA: 0.62, innerGlowA: 0.28, menuA: 0.74, blurScale: 1.08,
+        refractA: 0.10, refractB: 0.06, brightness: 1.02, contrast: 1.02
       },
       tinted: {
-        bgA: 0.52, bgHoverA: 0.66, contentA: 0.60, contentHoverA: 0.72,
-        borderA: 0.96, rimA: 1.00, lipA: 0.36, highlightA: 1.00, specularA: 1.00,
-        edgeSheenA: 0.82, innerGlowA: 0.44, menuA: 0.95, blurScale: 1.26
+        bgA: 0.48, bgHoverA: 0.62, contentA: 0.56, contentHoverA: 0.68,
+        borderA: 0.98, rimA: 1.00, lipA: 0.42, highlightA: 1.00, specularA: 1.00,
+        edgeSheenA: 0.88, innerGlowA: 0.48, menuA: 0.94, blurScale: 1.14,
+        refractA: 0.28, refractB: 0.18, brightness: 1.06, contrast: 1.06
       },
       fill: { r: 255, g: 255, b: 255 },
       menu: { r: 255, g: 255, b: 255 },
-      lip: { r: 0, g: 0, b: 0 }
+      lip: { r: 0, g: 0, b: 0 },
+      refractA: { r: 120, g: 200, b: 255 },
+      refractB: { r: 255, g: 140, b: 200 }
     };
+  }
+
+  function readA11yMedia() {
+    var reduced = false;
+    var contrast = false;
+    var forced = false;
+    try {
+      reduced = window.matchMedia("(prefers-reduced-transparency: reduce)").matches;
+    } catch (e) { /* ignore */ }
+    try {
+      contrast = window.matchMedia("(prefers-contrast: more)").matches;
+    } catch (e2) { /* ignore */ }
+    try {
+      forced = window.matchMedia("(forced-colors: active)").matches;
+    } catch (e3) { /* ignore */ }
+    return { reduced: reduced, contrast: contrast, forced: forced };
+  }
+
+  function syncA11yDataset(state) {
+    var root = rootEl();
+    if (state.reduced) root.dataset.glassReducedTransparency = "reduce";
+    else delete root.dataset.glassReducedTransparency;
+    if (state.contrast) root.dataset.glassContrast = "more";
+    else delete root.dataset.glassContrast;
+    if (state.forced) root.dataset.glassForcedColors = "active";
+    else delete root.dataset.glassForcedColors;
+    return state;
+  }
+
+  function applyReducedTransparency(root, preset) {
+    if (preset === "dark") {
+      root.style.setProperty("--glass-bg", "#1c1c1e");
+      root.style.setProperty("--glass-bg-hover", "#2c2c2e");
+      root.style.setProperty("--glass-bg-content", "#1c1c1e");
+      root.style.setProperty("--glass-bg-content-hover", "#2c2c2e");
+      root.style.setProperty("--glass-menu-bg", "#2c2c2e");
+      root.style.setProperty("--glass-border", "rgba(245, 245, 247, 0.34)");
+      root.style.setProperty("--glass-rim", "rgba(245, 245, 247, 0.24)");
+      root.style.setProperty("--glass-lip", "rgba(0, 0, 0, 0.72)");
+    } else {
+      root.style.setProperty("--glass-bg", "#f5f5f7");
+      root.style.setProperty("--glass-bg-hover", "#ffffff");
+      root.style.setProperty("--glass-bg-content", "#f5f5f7");
+      root.style.setProperty("--glass-bg-content-hover", "#ffffff");
+      root.style.setProperty("--glass-menu-bg", "#ffffff");
+      root.style.setProperty("--glass-border", "rgba(29, 29, 31, 0.28)");
+      root.style.setProperty("--glass-rim", "rgba(29, 29, 31, 0.22)");
+      root.style.setProperty("--glass-lip", "rgba(29, 29, 31, 0.18)");
+    }
+    root.style.setProperty("--glass-blur", "0px");
+    root.style.setProperty("--glass-saturate", "100%");
+    root.style.setProperty("--glass-refract-a", "transparent");
+    root.style.setProperty("--glass-refract-b", "transparent");
+    root.style.setProperty("--glass-refract-brightness", "1");
+    root.style.setProperty("--glass-refract-contrast", "1");
+  }
+
+  function applyIncreasedContrast(root, preset) {
+    if (preset === "dark") {
+      root.style.setProperty("--glass-bg", "rgba(28, 28, 30, 0.94)");
+      root.style.setProperty("--glass-bg-hover", "rgba(44, 44, 46, 0.97)");
+      root.style.setProperty("--glass-bg-content", "rgba(28, 28, 30, 0.96)");
+      root.style.setProperty("--glass-bg-content-hover", "rgba(44, 44, 46, 0.98)");
+      root.style.setProperty("--glass-border", "rgba(245, 245, 247, 0.78)");
+      root.style.setProperty("--glass-rim", "rgba(245, 245, 247, 0.62)");
+      root.style.setProperty("--glass-lip", "rgba(0, 0, 0, 0.88)");
+    } else {
+      root.style.setProperty("--glass-bg", "rgba(255, 255, 255, 0.92)");
+      root.style.setProperty("--glass-bg-hover", "rgba(255, 255, 255, 0.97)");
+      root.style.setProperty("--glass-bg-content", "rgba(255, 255, 255, 0.94)");
+      root.style.setProperty("--glass-bg-content-hover", "#ffffff");
+      root.style.setProperty("--glass-border", "rgba(29, 29, 31, 0.72)");
+      root.style.setProperty("--glass-rim", "rgba(29, 29, 31, 0.55)");
+      root.style.setProperty("--glass-lip", "rgba(29, 29, 31, 0.48)");
+    }
+    root.style.setProperty("--glass-refract-a", "transparent");
+    root.style.setProperty("--glass-refract-b", "transparent");
+    root.style.setProperty("--glass-refract-brightness", "1");
+    root.style.setProperty("--glass-refract-contrast", "1");
+  }
+
+  function applyForcedColors(root) {
+    [
+      "--glass-bg",
+      "--glass-bg-hover",
+      "--glass-bg-content",
+      "--glass-bg-content-hover",
+      "--glass-menu-bg",
+      "--glass-page-bg",
+      "--glass-body-bg"
+    ].forEach(function (prop) {
+      root.style.setProperty(prop, "Canvas");
+    });
+    root.style.setProperty("--glass-body-color", "CanvasText");
+    root.style.setProperty("--glass-menu-color", "CanvasText");
+    root.style.setProperty("--glass-border", "ButtonBorder");
+    root.style.setProperty("--glass-rim", "ButtonBorder");
+    root.style.setProperty("--glass-lip", "ButtonBorder");
+    root.style.setProperty("--glass-shadow", "transparent");
+    root.style.setProperty("--glass-elevated-shadow", "transparent");
+    root.style.setProperty("--glass-blur", "0px");
+    root.style.setProperty("--glass-saturate", "100%");
+    root.style.setProperty("--glass-refract-a", "transparent");
+    root.style.setProperty("--glass-refract-b", "transparent");
+    root.style.setProperty("--glass-refract-brightness", "1");
+    root.style.setProperty("--glass-refract-contrast", "1");
   }
 
   function readBaseBlurPx() {
@@ -380,9 +500,9 @@
     if (intensityBaseBlurPx != null) return intensityBaseBlurPx;
     var raw = getComputedStyle(root).getPropertyValue("--glass-blur-base").trim() ||
       getComputedStyle(root).getPropertyValue("--glass-blur").trim() ||
-      "32px";
+      "36px";
     var n = parseFloat(raw);
-    if (!isFinite(n)) n = 32;
+    if (!isFinite(n)) n = 36;
     intensityBaseBlurPx = n;
     root.style.setProperty("--glass-blur-base", n + "px");
     return n;
@@ -396,47 +516,60 @@
     root.dataset.glassIntensity = String(t);
     root.style.setProperty("--glass-intensity", String(t));
 
-    // Accessibility: force fully tinted when reduced transparency is on
-    try {
-      if (window.matchMedia("(prefers-reduced-transparency: reduce)").matches) {
-        t = 1;
-      }
-    } catch (e) { /* ignore */ }
-
+    // Keep the user's intensity. Accessibility overrides the painted values.
+    var a11y = syncA11yDataset(readA11yMedia());
     var preset = root.dataset.glassPreset || "light";
-    var ep = intensityEndpoints(preset);
-    var c = ep.clear;
-    var d = ep.tinted;
-    var fill = ep.fill;
-    var menu = ep.menu;
-    var lip = ep.lip;
 
-    function A(key) {
-      return lerp(c[key], d[key], t);
+    if (a11y.forced) {
+      applyForcedColors(root);
+    } else if (a11y.reduced) {
+      applyReducedTransparency(root, preset);
+    } else {
+      var ep = intensityEndpoints(preset);
+      var c = ep.clear;
+      var d = ep.tinted;
+      var fill = ep.fill;
+      var menu = ep.menu;
+      var lip = ep.lip;
+
+      var A = function (key) {
+        return lerp(c[key], d[key], t);
+      };
+
+      // Content-aware tint owns fill RGB; re-scale its alphas with intensity.
+      // Neutral (no tint) path sets fills directly from intensity endpoints.
+      if (!opts.fromTint && root.classList.contains("glass-tint-active") && lastTintRgb) {
+        applyTintFills(lastTintRgb, t);
+      } else if (!opts.fromTint && !root.classList.contains("glass-tint-active")) {
+        root.style.setProperty("--glass-bg", rgba(fill.r, fill.g, fill.b, A("bgA")));
+        root.style.setProperty("--glass-bg-hover", rgba(fill.r, fill.g, fill.b, A("bgHoverA")));
+        root.style.setProperty("--glass-bg-content", rgba(fill.r, fill.g, fill.b, A("contentA")));
+        root.style.setProperty("--glass-bg-content-hover", rgba(fill.r, fill.g, fill.b, A("contentHoverA")));
+        root.style.setProperty("--glass-border", rgba(fill.r, fill.g, fill.b, A("borderA")));
+        root.style.setProperty("--glass-rim", rgba(fill.r, fill.g, fill.b, A("rimA")));
+        root.style.setProperty("--glass-menu-bg", rgba(menu.r, menu.g, menu.b, A("menuA")));
+      }
+
+      root.style.setProperty("--glass-lip", rgba(lip.r, lip.g, lip.b, A("lipA")));
+      root.style.setProperty("--glass-highlight", rgba(255, 255, 255, A("highlightA")));
+      root.style.setProperty("--glass-specular", rgba(255, 255, 255, A("specularA")));
+      root.style.setProperty("--glass-edge-sheen", rgba(255, 255, 255, A("edgeSheenA")));
+      root.style.setProperty("--glass-inner-glow", rgba(255, 255, 255, A("innerGlowA")));
+      root.style.setProperty("--glass-refract-a", rgba(ep.refractA.r, ep.refractA.g, ep.refractA.b, A("refractA")));
+      root.style.setProperty("--glass-refract-b", rgba(ep.refractB.r, ep.refractB.g, ep.refractB.b, A("refractB")));
+      root.style.setProperty("--glass-refract-brightness", A("brightness").toFixed(4));
+      root.style.setProperty("--glass-refract-contrast", A("contrast").toFixed(4));
+
+      // Lock the unscaled base once, then scale from it. calc() matches the
+      // head script so the blur does not jump when this file loads.
+      readBaseBlurPx();
+      root.style.setProperty(
+        "--glass-blur",
+        "calc(var(--glass-blur-base, 36px) * " + A("blurScale").toFixed(4) + ")"
+      );
+
+      if (a11y.contrast) applyIncreasedContrast(root, preset);
     }
-
-    // Content-aware tint owns fill RGB; re-scale its alphas with intensity.
-    // Neutral (no tint) path sets fills directly from intensity endpoints.
-    if (!opts.fromTint && root.classList.contains("glass-tint-active") && lastTintRgb) {
-      applyTintFills(lastTintRgb, t);
-    } else if (!opts.fromTint && !root.classList.contains("glass-tint-active")) {
-      root.style.setProperty("--glass-bg", rgba(fill.r, fill.g, fill.b, A("bgA")));
-      root.style.setProperty("--glass-bg-hover", rgba(fill.r, fill.g, fill.b, A("bgHoverA")));
-      root.style.setProperty("--glass-bg-content", rgba(fill.r, fill.g, fill.b, A("contentA")));
-      root.style.setProperty("--glass-bg-content-hover", rgba(fill.r, fill.g, fill.b, A("contentHoverA")));
-      root.style.setProperty("--glass-border", rgba(fill.r, fill.g, fill.b, A("borderA")));
-      root.style.setProperty("--glass-rim", rgba(fill.r, fill.g, fill.b, A("rimA")));
-      root.style.setProperty("--glass-menu-bg", rgba(menu.r, menu.g, menu.b, A("menuA")));
-    }
-
-    root.style.setProperty("--glass-lip", rgba(lip.r, lip.g, lip.b, A("lipA")));
-    root.style.setProperty("--glass-highlight", rgba(255, 255, 255, A("highlightA")));
-    root.style.setProperty("--glass-specular", rgba(255, 255, 255, A("specularA")));
-    root.style.setProperty("--glass-edge-sheen", rgba(255, 255, 255, A("edgeSheenA")));
-    root.style.setProperty("--glass-inner-glow", rgba(255, 255, 255, A("innerGlowA")));
-
-    var blurPx = readBaseBlurPx() * A("blurScale");
-    root.style.setProperty("--glass-blur", blurPx.toFixed(1) + "px");
 
     // Sync any intensity slider widgets
     document.querySelectorAll(".glass-intensity-slider").forEach(function (wrap) {
@@ -700,11 +833,8 @@
   function applyTintFills(rgb, t) {
     if (!rgb) return;
     t = clamp01(t != null ? t : intensityState);
-    try {
-      if (window.matchMedia("(prefers-reduced-transparency: reduce)").matches) {
-        t = 1;
-      }
-    } catch (e) { /* ignore */ }
+    var a11y = readA11yMedia();
+    if (a11y.forced || a11y.reduced || a11y.contrast) return;
 
     var root = rootEl();
     var preset = root.dataset.glassPreset || "light";
@@ -829,6 +959,8 @@
   function updateContentTint() {
     if (!tintEnabled()) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var a11y = readA11yMedia();
+    if (a11y.forced || a11y.reduced || a11y.contrast) return;
     var rgb = averageSamples(collectSamples());
     applyTint(rgb);
   }
@@ -846,6 +978,16 @@
   function setMaterial(m) {
     m = m === "clear" ? "clear" : "regular";
     rootEl().dataset.glassMaterial = m;
+    if (m === "clear") {
+      try {
+        console.warn(
+          'shinyglass: material "clear" is deprecated and will be removed in a future release. ' +
+            "Use setIntensity() from 0 (Ultra Clear) to 1 (Tinted). " +
+            "Mapping clear glass to intensity " + CLEAR_MATERIAL_INTENSITY + "."
+        );
+      } catch (e) { /* ignore */ }
+      setIntensity(CLEAR_MATERIAL_INTENSITY, { syncInputs: true });
+    }
     persistStateSoon();
   }
 
@@ -1860,7 +2002,7 @@
     if (initI != null && initI !== "") {
       setIntensity(initI, { syncInputs: true });
     } else {
-      setIntensity(0.45, { syncInputs: true });
+      setIntensity(DEFAULT_INTENSITY, { syncInputs: true });
     }
 
     if (flattenFromQuery() || rootEl().dataset.glassFlatten === "true") {
@@ -1884,7 +2026,12 @@
       }
     });
 
-    ["(prefers-reduced-motion: reduce)", "(prefers-reduced-transparency: reduce)"].forEach(function (query) {
+    [
+      "(prefers-reduced-motion: reduce)",
+      "(prefers-reduced-transparency: reduce)",
+      "(prefers-contrast: more)",
+      "(forced-colors: active)"
+    ].forEach(function (query) {
       var mql = window.matchMedia(query);
       if (mql.addEventListener) mql.addEventListener("change", syncAccessibilityPreferences);
       else if (mql.addListener) mql.addListener(syncAccessibilityPreferences);

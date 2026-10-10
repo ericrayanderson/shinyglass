@@ -16,7 +16,7 @@ theme_glass(
 \item{preset}{\code{"light"} or \code{"dark"}. When \code{NULL}, uses
 \code{\link[=glass_resolved_preset]{glass_resolved_preset()}}.}
 
-\item{base_size}{Base font size passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}}.}
+\item{base_size}{Base font size passed to \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}}.}
 
 \item{input}{Optional Shiny \code{input}.}
 
