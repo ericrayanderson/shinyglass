@@ -57,9 +57,10 @@ test('scripted reply streams thinking, a citation, and a tool card', async ({ pa
   expect(opened).not.toEqual(closed);
   await expect(thinking).toContainText('theme API');
   await expect(page.locator('#chat-drawer')).toHaveCount(0);
-  const citation = page.locator('.shiny-aside-pill').first();
+  const citation = page.locator('a.harbor-pill').first();
   await expect(citation).toBeVisible({ timeout: 20000 });
-  await expect(page.getByRole('button', { name: 'shinyglass docs' }).first()).toBeVisible();
+  await expect(page.locator('a.harbor-pill', { hasText: 'shinyglass docs' }).first()).toBeVisible();
+  await expect(citation.locator('svg')).toBeVisible();
   await expect(page.getByText('Read glass_theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.shiny-tool-card, .shiny-chat-tool-call-row, .shiny-chat-tool-group').first()).toBeVisible();
   const history = page.getByRole('region', { name: /conversation history/i });
@@ -190,14 +191,25 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   });
   const page = await context.newPage();
   await gotoChat(page);
-  const send = await page.locator('.shiny-chat-btn-send').first().boundingBox();
-  const composer = await page.locator('.shiny-chat-input .tiptap').first().boundingBox();
+  const gaps = await page.evaluate(() => {
+    const send = document.querySelector('.shiny-chat-btn-send').getBoundingClientRect();
+    const composer = document.querySelector('.shiny-chat-input .tiptap').getBoundingClientRect();
+    return {
+      send: { width: send.width, height: send.height, x: send.x, y: send.y },
+      composer: { width: composer.width, height: composer.height, x: composer.x, y: composer.y },
+      rightGap: (composer.x + composer.width) - (send.x + send.width),
+      bottomGap: (composer.y + composer.height) - (send.y + send.height),
+      topGap: send.y - composer.y
+    };
+  });
+  const send = gaps.send;
+  const composer = gaps.composer;
   expect(send.width).toBeGreaterThanOrEqual(44);
   expect(send.height).toBeGreaterThanOrEqual(44);
   expect(composer.height).toBeGreaterThanOrEqual(44);
-  const rightGap = (composer.x + composer.width) - (send.x + send.width);
-  const bottomGap = (composer.y + composer.height) - (send.y + send.height);
-  const topGap = send.y - composer.y;
+  const rightGap = gaps.rightGap;
+  const bottomGap = gaps.bottomGap;
+  const topGap = gaps.topGap;
   expect(send.x).toBeGreaterThanOrEqual(composer.x + 2);
   expect(rightGap).toBeGreaterThanOrEqual(2);
   expect(topGap).toBeGreaterThanOrEqual(2);
@@ -250,6 +262,25 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   const jumpBox = await jump.boundingBox();
   expect(jumpBox.width).toBeGreaterThanOrEqual(44);
   expect(jumpBox.height).toBeGreaterThanOrEqual(44);
+  const theme = await page.locator('bslib-input-dark-mode').evaluate((el) => {
+    const btn = el.shadowRoot && el.shadowRoot.querySelector('button');
+    const rect = (btn || el).getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  });
+  expect(theme.width).toBeGreaterThanOrEqual(44);
+  expect(theme.height).toBeGreaterThanOrEqual(44);
+  const sources = await page.locator('#open_sources').boundingBox();
+  expect(sources.width).toBeGreaterThanOrEqual(44);
+  expect(sources.height).toBeGreaterThanOrEqual(44);
+  const toggle = await page.locator('.shiny-chat-page-sidebar-toggle').boundingBox();
+  expect(toggle.width).toBeGreaterThanOrEqual(44);
+  expect(toggle.height).toBeGreaterThanOrEqual(44);
+  const menu = await page.locator('.shiny-chat-history-itemmenu > button').first().evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  });
+  expect(menu.width).toBeGreaterThanOrEqual(44);
+  expect(menu.height).toBeGreaterThanOrEqual(44);
   await context.close();
 });
 
@@ -266,10 +297,22 @@ test('theme and the conversation stay after reload', async ({ page }) => {
   await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.shiny-chat-thinking').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
+  await expect(page.locator('a.harbor-pill').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('a.harbor-pill svg').first()).toBeVisible();
+  const restoredText = await page.locator('.shiny-chat-message .shiny-chat-message-content').first().innerText();
+  expect(restoredText).not.toMatch(/\+\d+/);
   await expect(page.locator('.harbor-status')).toBeVisible();
 });
 
 test('staged favicon is inline and the files answer 200', async ({ page, request }) => {
+  const missing = [];
+  page.on('response', (res) => {
+    const url = res.url();
+    if (/favicon\.(svg|ico)(?:$|\?)/i.test(url) && res.status() >= 400) missing.push(`${res.status()} ${url}`);
+  });
+  page.on('request', (req) => {
+    if (/duckduckgo|gstatic\.com\/favicon|faviconkit|google\.com\/s2\/favicons/i.test(req.url())) missing.push(req.url());
+  });
   await gotoChat(page);
   const href = await page.locator('link[rel="icon"]').first().getAttribute('href');
   expect(href.startsWith('data:image/svg+xml')).toBeTruthy();
@@ -280,6 +323,8 @@ test('staged favicon is inline and the files answer 200', async ({ page, request
     expect(res.status(), path).toBe(200);
     expect((await res.body()).length).toBeGreaterThan(32);
   }
+  await expect(page.locator('link[rel="alternate icon"]')).toHaveCount(0);
+  expect(missing).toEqual([]);
 });
 
 test('mocked live replies show thinking and topic citations', async ({ page }) => {
@@ -300,6 +345,10 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   expect(opened).not.toEqual(closed);
   await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
   await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
+  const livePill = page.locator('a.harbor-pill').first();
+  await expect(livePill).toBeVisible({ timeout: 20000 });
+  await expect(livePill.locator('svg')).toBeVisible();
+  expect(await livePill.innerText()).not.toMatch(/\+\d+/);
 
   await page.locator('#open_sources').click();
   const panel = page.locator('#sources_panel.offcanvas, .offcanvas.show').first();
@@ -307,6 +356,7 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await expect(panel.locator('a[href*="github.io/shinyglass"]')).toBeVisible();
   await expect(panel.locator('a[href*="human-interface-guidelines"]')).toBeVisible();
   await expect(panel.locator('a[href*="shiny.posit.co"]')).toBeVisible();
+  await expect(panel.locator('.harbor-source-icon svg').first()).toBeVisible();
   await page.locator('#sources_panel .btn-close').click();
 
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -316,6 +366,8 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   const liveBubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
   await expect(liveBubble).toContainText('Liquid Glass');
   await expect(liveBubble).not.toContainText('local note');
+  await expect(page.locator('a.harbor-pill').first()).toBeVisible({ timeout: 20000 });
+  expect(await liveBubble.innerText()).not.toMatch(/\+\d+/);
 
   await page.evaluate(() => localStorage.clear());
   await page.goto(live, { waitUntil: 'domcontentloaded' });
@@ -390,18 +442,14 @@ test('source pills do not request third-party favicons', async ({ page }) => {
   });
   await gotoChat(page);
   await page.getByRole('button', { name: /glass_theme work/i }).click();
-  const pill = page.locator('.shiny-aside-pill').first();
+  const pill = page.locator('a.harbor-pill').first();
   await expect(pill).toBeVisible({ timeout: 20000 });
-  const imgs = page.locator('.shiny-aside-pill img');
-  await expect(imgs.first()).toBeVisible();
+  await expect(pill.locator('svg')).toBeVisible();
+  const imgs = page.locator('img');
   const srcs = await imgs.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('src') || node.src || ''));
-  expect(srcs.length).toBeGreaterThan(0);
   for (const src of srcs) {
-    expect(src.startsWith('data:image/svg+xml'), src).toBeTruthy();
-    expect(src).not.toMatch(/duckduckgo|http:|https:/i);
+    expect(src, src).not.toMatch(/duckduckgo|gstatic\.com\/favicon/i);
   }
-  const broken = await imgs.evaluateAll((nodes) => nodes.filter((node) => node.complete && node.naturalWidth === 0).length);
-  expect(broken).toBe(0);
   expect(external).toEqual([]);
 });
 
@@ -420,6 +468,32 @@ test('fine pointers use at least 32px send and edit', async ({ page }) => {
   });
   expect(edit.width).toBeGreaterThanOrEqual(32);
   expect(edit.height).toBeGreaterThanOrEqual(32);
+  const theme = await page.locator('bslib-input-dark-mode').evaluate((el) => {
+    const btn = el.shadowRoot && el.shadowRoot.querySelector('button');
+    const rect = (btn || el).getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height,
+      speed: getComputedStyle(el).getPropertyValue('--speed-fast').trim()
+    };
+  });
+  expect(theme.width).toBeGreaterThanOrEqual(32);
+  expect(theme.height).toBeGreaterThanOrEqual(32);
+  expect(theme.speed === '0s' || theme.speed === '0').toBeTruthy();
+  const sources = await page.locator('#open_sources').boundingBox();
+  expect(sources.width).toBeGreaterThanOrEqual(32);
+  expect(sources.height).toBeGreaterThanOrEqual(32);
+  const toggle = await page.locator('.shiny-chat-page-sidebar-toggle').boundingBox();
+  expect(toggle.width).toBeGreaterThanOrEqual(32);
+  expect(toggle.height).toBeGreaterThanOrEqual(32);
+  const menu = page.locator('.shiny-chat-history-itemmenu > button').first();
+  await expect(menu).toHaveCount(1);
+  const menuBox = await menu.evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  });
+  expect(menuBox.width).toBeGreaterThanOrEqual(32);
+  expect(menuBox.height).toBeGreaterThanOrEqual(32);
 });
 
 test('ambient motion settles and reduced motion stops it', async ({ page }) => {
@@ -446,6 +520,106 @@ test('ambient motion settles and reduced motion stops it', async ({ page }) => {
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   const reduced = await page.evaluate(() => getComputedStyle(document.body, '::before').animationName);
   expect(reduced).toBe('none');
+});
+
+test('forced fallback shows the demo chip and a toast under the header', async ({ page }) => {
+  const live = process.env.CHAT_MOCK_URL || 'http://127.0.0.1:3944/';
+  const external = [];
+  page.on('request', (req) => {
+    if (/duckduckgo|gstatic\.com\/favicon|faviconkit|google\.com\/s2\/favicons/i.test(req.url())) {
+      external.push(req.url());
+    }
+  });
+  await page.goto(live, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(() => localStorage.clear());
+  await page.goto(`${live}?harbor_fallback=1`, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  const notice = page.locator('.harbor-notice-copy');
+  await expect(notice).toBeVisible({ timeout: 20000 });
+  await expect(notice).toContainText('free-tier');
+  await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'demo');
+  const bubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
+  await expect(bubble).toContainText('glass_theme()');
+  await expect(bubble).not.toContainText('free-tier');
+  await expect(bubble).not.toContainText('local note');
+  await expect(page.locator('a.harbor-pill svg').first()).toBeVisible();
+  const header = await page.locator('.shiny-chat-page-header').boundingBox();
+  const toast = await page.locator('.harbor-notice').boundingBox();
+  expect(toast.y).toBeGreaterThan(header.y + header.height - 4);
+  expect(external).toEqual([]);
+});
+
+test('legacy transcripts split the notice and restore source pills', async ({ page }) => {
+  const external = [];
+  const missing = [];
+  page.on('request', (req) => {
+    if (/duckduckgo|gstatic\.com\/favicon|faviconkit|google\.com\/s2\/favicons/i.test(req.url())) {
+      external.push(req.url());
+    }
+  });
+  page.on('response', (res) => {
+    if (/favicon\.(svg|ico)(?:$|\?)/i.test(res.url()) && res.status() >= 400) missing.push(res.url());
+  });
+  await gotoChat(page);
+  await page.evaluate(() => {
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/';
+    localStorage.setItem('harbor-notes:' + path, JSON.stringify({
+      v: 1,
+      messages: [
+        { role: 'user', text: 'How does glass_theme work?' },
+        {
+          role: 'assistant',
+          text: 'The live model could not answer just now. Here is the local note instead.glass_theme() builds a Liquid Glass bslib theme. shinyglass docs +5 <img src="https://icons.duckduckgo.com/ip3/ericrayanderson.github.io.ico">',
+          thinking: 'Looking through the theme API.'
+        }
+      ],
+      citations: [{
+        title: 'shinyglass docs',
+        url: 'https://ericrayanderson.github.io/shinyglass/',
+        note: 'Theme'
+      }],
+      notice: ''
+    }));
+  });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('.harbor-notice-copy')).toContainText('local note', { timeout: 20000 });
+  const bubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
+  await expect(bubble).toContainText('glass_theme()');
+  await expect(bubble).not.toContainText('local note');
+  await expect(bubble).not.toContainText('+5');
+  await expect(page.locator('a.harbor-pill svg').first()).toBeVisible();
+  const joined = await bubble.evaluate((el) => (el.innerText || '').replace(/\s+/g, ' '));
+  expect(joined.includes('instead.glass_theme')).toBeFalsy();
+  expect(external).toEqual([]);
+  expect(missing).toEqual([]);
+});
+
+test('mobile header controls respond without a transition delay', async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 852 },
+    isMobile: true,
+    hasTouch: true
+  });
+  const page = await context.newPage();
+  await gotoChat(page);
+  const toggle = page.locator('.shiny-chat-page-sidebar-toggle');
+  const toggleStarted = Date.now();
+  await toggle.click({ timeout: 2000 });
+  expect(Date.now() - toggleStarted).toBeLessThan(1500);
+  const theme = page.locator('bslib-input-dark-mode');
+  await expect(theme).toBeVisible();
+  const themeStarted = Date.now();
+  await theme.click({ timeout: 2000 });
+  expect(Date.now() - themeStarted).toBeLessThan(1500);
+  await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
+  const close = page.locator('.shiny-chat-page-sidebar-close');
+  await expect(close).toBeVisible();
+  const closeStarted = Date.now();
+  await close.click({ timeout: 2000 });
+  expect(Date.now() - closeStarted).toBeLessThan(1500);
+  await context.close();
 });
 
 test('phone width keeps the composer on screen', async ({ page }) => {

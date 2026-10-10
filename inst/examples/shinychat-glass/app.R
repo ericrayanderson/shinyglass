@@ -111,12 +111,80 @@ docs_citations <- function() {
   )
 }
 
-aside_html <- function(item) {
+# Our own pill. shinychat turns <shiny-aside> into an image whose src is
+# icons.duckduckgo.com, and a stored copy of that markup keeps requesting it.
+source_host <- function(url) {
+  host <- tolower(trimws(url %||% ""))
+  host <- sub("^https?://", "", host)
+  host <- sub("/.*$", "", host)
+  host <- sub(":.*$", "", host)
+  sub("^www\\.", "", host)
+}
+
+source_kind <- function(url) {
+  host <- source_host(url)
+  if (grepl("apple.com", host, fixed = TRUE)) return("apple")
+  if (grepl("posit", host, fixed = TRUE)) return("posit")
+  if (identical(host, "github.com") || endsWith(host, ".github.com")) return("github")
+  if (grepl("github.io", host, fixed = TRUE) || grepl("docs", host, fixed = TRUE) || grepl("tidyverse.org", host, fixed = TRUE)) {
+    return("docs")
+  }
+  "mark"
+}
+
+source_icon_svg <- function(url, title = "") {
+  kind <- source_kind(url)
+  inner <- switch(
+    kind,
+    apple = "<path fill='#fff' d='M8.1 2.8c.2 1 .9 1.6 1.8 1.7C9.7 5.8 8.8 6.8 8.1 6.8S6.5 5.8 6.3 4.5c.8-.1 1.6-.8 1.8-1.7z'/><path fill='#fff' d='M8 6.5c1.7 0 2.7 1.1 2.7 2.7 0 1.9-1.2 3.8-2.7 3.8S5.3 11.1 5.3 9.2C5.3 7.6 6.3 6.5 8 6.5z'/>",
+    github = "<circle cx='5' cy='4.8' r='1.25' fill='#fff'/><circle cx='11' cy='4.8' r='1.25' fill='#fff'/><circle cx='8' cy='11.2' r='1.25' fill='#fff'/><path d='M5 6.1v2.1c0 1 .9 1.6 3 1.6h3V6.1' fill='none' stroke='#fff' stroke-width='1.15'/>",
+    posit = "<circle cx='8' cy='8' r='3.15' fill='none' stroke='#fff' stroke-width='1.45'/><circle cx='8' cy='8' r='1.15' fill='#fff'/>",
+    docs = "<path fill='#fff' d='M3.2 3.1h4.3c.9 0 1.6.7 1.6 1.6v7.5H5.1c-1.1 0-1.9.8-1.9 1.9V3.1z'/><path fill='#dbe4ff' d='M8.3 3.1h4.5v8.3H8.3c-.7 0-1.3-.6-1.3-1.3V4.4c0-.7.6-1.3 1.3-1.3z'/>",
+    {
+      host <- source_host(url)
+      letter <- toupper(substr(host, 1L, 1L))
+      if (!nzchar(letter)) letter <- "?"
+      letter <- htmltools::htmlEscape(letter, attribute = TRUE)
+      sprintf(
+        "<text x='8' y='11.2' text-anchor='middle' font-family='system-ui,sans-serif' font-size='9' font-weight='700' fill='#fff'>%s</text>",
+        letter
+      )
+    }
+  )
+  bg <- switch(
+    kind,
+    apple = "#1d1d1f",
+    github = "#24292f",
+    posit = "#447099",
+    docs = "#3b5bdb",
+    "#5c6770"
+  )
   sprintf(
-    "<shiny-aside label=\"%s\" url=\"%s\">%s</shiny-aside>",
-    item$title,
-    item$url,
-    item$note
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' aria-hidden='true'><rect width='16' height='16' rx='4' fill='%s'/>%s</svg>",
+    bg,
+    inner
+  )
+}
+
+source_icon_span <- function(url, class = "harbor-pill-icon") {
+  tags$span(class = class, HTML(source_icon_svg(url)))
+}
+
+source_pills_html <- function(items) {
+  items <- unique_cites(items)
+  if (!length(items)) return(NULL)
+  tags$div(
+    class = "harbor-pills",
+    lapply(items, function(item) {
+      tags$a(
+        class = "harbor-pill",
+        href = item$url,
+        target = "_blank",
+        rel = "noopener noreferrer",
+        source_icon_span(item$url),
+        tags$span(class = "harbor-pill-label", item$title %||% item$url)
+      )
+    })
   )
 }
 
@@ -211,11 +279,302 @@ chunk_words <- function(body) {
 reply_pieces <- function(reply, notice = NULL) {
   pieces <- c(
     list(thinking_block(reply$thinking)),
-    chunk_words(reply$body),
-    lapply(reply$citations, aside_html)
+    chunk_words(reply$body)
   )
   if (!is.null(reply$tool)) pieces <- c(pieces, list(reply$tool))
+  pills <- source_pills_html(reply$citations)
+  if (!is.null(pills)) pieces <- c(pieces, list(pills))
   pieces
+}
+
+# v1 stored the whole bubble, so the toast was glued to the answer and the
+# collapsed pill survived as "shinyglass docs +5" or as duckduckgo markup.
+notice_catalog <- function() {
+  c(
+    "The live model is at its free-tier limit right now. Here is the local note instead.",
+    "The live model could not answer just now. Here is the local note instead.",
+    "This session has used its free messages. Here is the local note instead.",
+    "That note is a bit long for this public demo. Try a shorter question about shinyglass, Shiny, or R."
+  )
+}
+
+rx_escape <- function(text) {
+  gsub("([][{}()+*^$|\\\\.?])", "\\\\\\1", text, perl = TRUE)
+}
+
+unique_cites <- function(items) {
+  out <- list()
+  seen <- character()
+  if (is.null(items)) return(out)
+  for (item in items) {
+    if (is.null(item) || !is.list(item)) next
+    url <- item$url %||% ""
+    url <- paste(as.character(url), collapse = "")
+    if (!nzchar(url)) next
+    if (grepl("duckduckgo.com", url, fixed = TRUE)) next
+    if (url %in% seen) next
+    seen <- c(seen, url)
+    title <- item$title %||% ""
+    title <- paste(as.character(title), collapse = "")
+    note <- item$note %||% ""
+    note <- paste(as.character(note), collapse = "")
+    out[[length(out) + 1L]] <- list(
+      title = if (nzchar(title)) title else url,
+      url = url,
+      note = note
+    )
+  }
+  out
+}
+
+decode_cite_json <- function(text) {
+  text <- paste(text %||% "", collapse = "")
+  if (!nzchar(text) || identical(text, "[]")) return(list())
+  parsed <- tryCatch(
+    jsonlite::fromJSON(text, simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(parsed) || !length(parsed)) return(list())
+  if (!is.null(parsed$url) || !is.null(parsed$title)) parsed <- list(parsed)
+  lapply(parsed, function(item) {
+    if (!is.list(item)) return(NULL)
+    list(
+      title = paste(as.character(item$title %||% ""), collapse = ""),
+      url = paste(as.character(item$url %||% ""), collapse = ""),
+      note = paste(as.character(item$note %||% ""), collapse = "")
+    )
+  })
+}
+
+split_glued_notice <- function(text) {
+  text <- paste(text %||% "", collapse = "\n")
+  for (note in notice_catalog()) {
+    if (startsWith(text, note)) {
+      return(list(text = substring(text, nchar(note) + 1L), notice = note))
+    }
+  }
+  list(text = text, notice = "")
+}
+
+extract_aside_cites <- function(text) {
+  cites <- list()
+  if (!grepl("shiny-aside", text, fixed = TRUE)) {
+    return(list(text = text, citations = cites))
+  }
+  tags_found <- regmatches(
+    text,
+    gregexpr("<shiny-aside\\b[^>]*>", text, perl = TRUE, ignore.case = TRUE)
+  )[[1]]
+  for (tag in tags_found) {
+    label <- if (grepl("\\blabel\\s*=\\s*\"", tag, perl = TRUE)) {
+      sub(".*\\blabel\\s*=\\s*\"([^\"]*)\".*", "\\1", tag, perl = TRUE)
+    } else {
+      ""
+    }
+    url <- if (grepl("\\burl\\s*=\\s*\"", tag, perl = TRUE)) {
+      sub(".*\\burl\\s*=\\s*\"([^\"]*)\".*", "\\1", tag, perl = TRUE)
+    } else {
+      ""
+    }
+    if (nzchar(url)) {
+      cites[[length(cites) + 1L]] <- list(title = label, url = url, note = "")
+    }
+  }
+  text <- gsub(
+    "<shiny-aside\\b[^>]*>.*?</shiny-aside>",
+    " ",
+    text,
+    perl = TRUE,
+    ignore.case = TRUE
+  )
+  text <- gsub("<shiny-aside\\b[^>]*/?>", " ", text, perl = TRUE, ignore.case = TRUE)
+  list(text = text, citations = cites)
+}
+
+strip_duckduckgo <- function(text) {
+  text <- gsub("<img\\b[^>]*duckduckgo\\.com[^>]*>", " ", text, perl = TRUE, ignore.case = TRUE)
+  text <- gsub("https?://icons\\.duckduckgo\\.com[^[:space:]\"'<>]*", " ", text, perl = TRUE, ignore.case = TRUE)
+  text <- gsub("https?://[^[:space:]\"'<>]*gstatic\\.com/favicon[^[:space:]\"'<>]*", " ", text, perl = TRUE, ignore.case = TRUE)
+  text
+}
+
+# Only a trailing "Title +N" run is a collapsed pill. A title inside the
+# answer, with no trailing count, stays put.
+strip_trailing_source_labels <- function(text) {
+  catalog <- docs_citations()
+  titles <- vapply(catalog, function(item) item$title, character(1))
+  found <- list()
+  if (!grepl("\\+\\d+\\s*$", text, perl = TRUE)) {
+    return(list(text = text, citations = found))
+  }
+  repeat {
+    hit <- FALSE
+    for (i in seq_along(titles)) {
+      pat <- paste0("\\s+", rx_escape(titles[[i]]), "\\s+\\+\\d+\\s*$")
+      if (grepl(pat, text, perl = TRUE)) {
+        text <- sub(pat, "", text, perl = TRUE)
+        found <- c(list(catalog[[i]]), found)
+        hit <- TRUE
+        break
+      }
+    }
+    if (!hit && grepl("\\s*\\+\\d+\\s*$", text, perl = TRUE)) {
+      stripped <- sub("\\s*\\+\\d+\\s*$", "", text, perl = TRUE)
+      local <- list()
+      repeat {
+        title_hit <- FALSE
+        for (i in seq_along(titles)) {
+          pat <- paste0("\\s+", rx_escape(titles[[i]]), "\\s*$")
+          if (grepl(pat, stripped, perl = TRUE)) {
+            stripped <- sub(pat, "", stripped, perl = TRUE)
+            local <- c(list(catalog[[i]]), local)
+            title_hit <- TRUE
+            break
+          }
+        }
+        if (!title_hit) break
+      }
+      text <- stripped
+      if (length(local)) found <- c(local, found)
+      hit <- TRUE
+    }
+    if (!hit) break
+  }
+  list(text = text, citations = found)
+}
+
+cites_from_parallel <- function(titles, urls, notes) {
+  titles <- as.character(unlist(titles, use.names = FALSE))
+  urls <- as.character(unlist(urls, use.names = FALSE))
+  notes <- as.character(unlist(notes, use.names = FALSE))
+  n <- max(length(titles), length(urls), length(notes))
+  if (!n) return(list())
+  lapply(seq_len(n), function(i) {
+    list(
+      title = if (i <= length(titles)) titles[[i]] else "",
+      url = if (i <= length(urls)) urls[[i]] else "",
+      note = if (i <= length(notes)) notes[[i]] else ""
+    )
+  })
+}
+
+coerce_messages <- function(messages) {
+  if (is.null(messages) || !length(messages)) return(list())
+  if (is.data.frame(messages)) {
+    n <- nrow(messages)
+    if (!n) return(list())
+    return(lapply(seq_len(n), function(i) {
+      raw <- if (!is.null(messages$citations)) messages$citations[[i]] else list()
+      if (is.character(raw)) raw <- decode_cite_json(raw[[1]])
+      list(
+        role = as.character(messages$role[[i]]),
+        text = as.character(messages$text[[i]]),
+        thinking = if (!is.null(messages$thinking)) as.character(messages$thinking[[i]] %||% "") else "",
+        citations = if (is.list(raw)) raw else list()
+      )
+    }))
+  }
+  if (!is.null(messages$role) && !is.list(messages[[1L]])) {
+    raw <- messages$citations
+    if (is.character(raw)) raw <- decode_cite_json(paste(raw, collapse = ""))
+    return(list(list(
+      role = as.character(messages$role[[1]]),
+      text = as.character(messages$text[[1]] %||% ""),
+      thinking = as.character(messages$thinking[[1]] %||% ""),
+      citations = if (is.list(raw)) raw else list()
+    )))
+  }
+  lapply(messages, function(msg) {
+    if (!is.list(msg)) return(NULL)
+    raw <- msg$citations
+    if (is.character(raw)) raw <- decode_cite_json(paste(raw, collapse = ""))
+    list(
+      role = as.character(msg$role %||% ""),
+      text = paste(as.character(msg$text %||% ""), collapse = "\n"),
+      thinking = paste(as.character(msg$thinking %||% ""), collapse = "\n"),
+      citations = if (is.list(raw)) raw else list()
+    )
+  })
+}
+
+messages_from_payload <- function(data) {
+  if (!is.list(data)) return(list())
+  if (!is.null(data$messages)) return(coerce_messages(data$messages))
+  roles <- data$role
+  texts <- data$text
+  if (is.null(roles) || is.null(texts)) return(list())
+  roles <- as.character(unlist(roles, use.names = FALSE))
+  texts <- as.character(unlist(texts, use.names = FALSE))
+  n <- min(length(roles), length(texts))
+  if (!n) return(list())
+  thinkings <- data$thinking
+  if (is.null(thinkings)) thinkings <- rep("", n)
+  thinkings <- as.character(unlist(thinkings, use.names = FALSE))
+  if (length(thinkings) < n) thinkings <- c(thinkings, rep("", n - length(thinkings)))
+  raw_cites <- data$msg_citations
+  if (is.null(raw_cites)) raw_cites <- rep("", n)
+  raw_cites <- as.character(unlist(raw_cites, use.names = FALSE))
+  lapply(seq_len(n), function(i) {
+    list(
+      role = roles[[i]],
+      text = texts[[i]],
+      thinking = thinkings[[i]],
+      citations = decode_cite_json(if (i <= length(raw_cites)) raw_cites[[i]] else "")
+    )
+  })
+}
+
+# Storage v3 keeps the toast, the answer, and per-message citations apart.
+# Older transcripts are rewritten here. A message that becomes empty is dropped.
+migrate_stored_transcript <- function(data) {
+  empty <- list(v = 3L, messages = list(), citations = list(), notice = "")
+  if (!is.list(data)) return(empty)
+  messages <- messages_from_payload(data)
+  globals <- unique_cites(data$citations)
+  if (!length(globals) && !is.null(data$cite_url)) {
+    globals <- unique_cites(cites_from_parallel(data$cite_title, data$cite_url, data$cite_note))
+  }
+  notice <- data$notice %||% ""
+  if (is.list(notice)) notice <- if (length(notice)) notice[[1L]] else ""
+  notice <- paste(as.character(notice), collapse = "")
+  if (identical(notice, "NULL") || is.na(notice)) notice <- ""
+  cleaned <- list()
+  for (msg in messages) {
+    if (is.null(msg) || !msg$role %in% c("user", "assistant")) next
+    split <- split_glued_notice(msg$text)
+    if (nzchar(split$notice)) notice <- split$notice
+    text <- split$text
+    aside <- extract_aside_cites(text)
+    text <- strip_duckduckgo(aside$text)
+    tail <- strip_trailing_source_labels(text)
+    text <- trimws(gsub("[[:space:]]+", " ", tail$text))
+    cites <- unique_cites(c(msg$citations, aside$citations, tail$citations))
+    if (!nzchar(text)) next
+    cleaned[[length(cleaned) + 1L]] <- list(
+      role = msg$role,
+      text = text,
+      thinking = msg$thinking %||% "",
+      citations = cites
+    )
+  }
+  if (length(globals)) {
+    idx <- which(vapply(cleaned, function(msg) identical(msg$role, "assistant"), logical(1)))
+    if (length(idx)) {
+      last <- idx[[length(idx)]]
+      cleaned[[last]]$citations <- unique_cites(c(cleaned[[last]]$citations, globals))
+    }
+  }
+  panel <- globals
+  if (!length(panel)) {
+    for (msg in cleaned) panel <- unique_cites(c(panel, msg$citations))
+  }
+  list(v = 3L, messages = cleaned, citations = panel, notice = notice)
+}
+
+harbor_fallback_requested <- function(query = "") {
+  if (identical(Sys.getenv("SHINYGLASS_CHAT_FORCE_FALLBACK"), "1")) return(TRUE)
+  q <- paste(query %||% "", collapse = "")
+  grepl("(^|[?&])harbor_fallback=1(?:&|$)", q)
 }
 
 theme_block <- function() {
@@ -584,8 +943,8 @@ harbor_status_ui <- function(mode = c("ready", "live", "demo")) {
   }
 }
 
-# Inline droplet. A data URI still loads when the app is hosted on a
-# shinyapps.io subpath and the browser never asks the origin for /favicon.ico.
+# Inline droplet. A file href would follow shinyapps' worker <base> and 404
+# (_w_<token>/favicon.ico), and the origin root is not this app's www/.
 harbor_icon_src <- function() {
   paste0(
     "data:image/svg+xml;base64,",
@@ -645,7 +1004,6 @@ glass_preset <- match.arg(
 ui <- tagList(
   tags$head(
     tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
-    tags$link(rel = "alternate icon", type = "image/x-icon", href = "favicon.ico"),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
       /* In-flow toast under the chat header. It must not cover the sidebar
@@ -708,12 +1066,24 @@ ui <- tagList(
         100% { transform: translate3d(0, 0, 0) scale(1); }
       }
       html.harbor-notes .shiny-chat-page-header,
+      html.harbor-notes .shiny-chat-page-sidebar,
+      html.harbor-notes .shiny-chat-page-sidebar-scrim,
       html.harbor-notes .shiny-chat-composer,
       html.harbor-notes .shiny-chat-btn-send,
       html.harbor-notes .shiny-chat-edit-btn,
       html.harbor-notes .shiny-chat-page-sidebar-toggle,
-      html.harbor-notes .bslib-toolbar .btn {
-        animation: none;
+      html.harbor-notes .shiny-chat-page-sidebar-close,
+      html.harbor-notes bslib-input-dark-mode,
+      html.harbor-notes .bslib-toolbar .btn,
+      html.harbor-notes .shiny-chat-history-itemmenu,
+      html.harbor-notes .shiny-chat-history-itemmenu > button,
+      html.harbor-notes .shiny-chat-history-close {
+        animation: none !important;
+        transition: none !important;
+      }
+      html.harbor-notes bslib-input-dark-mode {
+        --speed-fast: 0s;
+        --speed-normal: 0s;
       }
       @media (prefers-reduced-motion: reduce) {
         html.harbor-notes body::before,
@@ -800,8 +1170,9 @@ ui <- tagList(
       }
       .harbor-source {
         display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.7rem;
         padding: 0.7rem 0.85rem;
         border-radius: 1rem;
         text-decoration: none;
@@ -811,7 +1182,48 @@ ui <- tagList(
         box-shadow: inset 0 1px 0 var(--glass-highlight);
       }
       .harbor-source:hover { color: var(--glass-body-color); }
+      .harbor-source-icon,
+      .harbor-pill-icon {
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        margin-top: 0.15rem;
+      }
+      .harbor-source-icon svg,
+      .harbor-pill-icon svg {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+      .harbor-source-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        min-width: 0;
+      }
       .harbor-source-title { font-weight: 600; }
+      .harbor-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.65rem;
+      }
+      .harbor-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        min-height: 32px;
+        padding: 0.15rem 0.7rem 0.15rem 0.35rem;
+        border-radius: 999px;
+        text-decoration: none;
+        color: var(--glass-body-color);
+        background: color-mix(in srgb, var(--glass-bg) 82%, var(--glass-body-bg));
+        border: 0.5px solid var(--glass-border);
+        box-shadow: inset 0 1px 0 var(--glass-highlight);
+      }
+      .harbor-pill:hover { color: var(--glass-body-color); }
+      .harbor-pill-icon { margin-top: 0; }
+      .harbor-pill-label { font-size: 0.82rem; font-weight: 600; }
       .harbor-source-note, .harbor-source-url {
         font-size: 0.82rem;
         opacity: 0.82;
@@ -891,6 +1303,115 @@ ui <- tagList(
             return JSON.parse(raw);
           } catch (e) { return null; }
         }
+        var NOTICES = [
+          'The live model is at its free-tier limit right now. Here is the local note instead.',
+          'The live model could not answer just now. Here is the local note instead.',
+          'This session has used its free messages. Here is the local note instead.',
+          'That note is a bit long for this public demo. Try a shorter question about shinyglass, Shiny, or R.'
+        ];
+        var SOURCE_TITLES = [
+          'shinyglass docs',
+          'shinyglass README',
+          'Apple HIG materials',
+          'Adopting Liquid Glass',
+          'Shiny docs',
+          'shinychat'
+        ];
+        function splitNotice(text) {
+          var body = String(text || '');
+          for (var i = 0; i < NOTICES.length; i++) {
+            if (body.indexOf(NOTICES[i]) === 0) {
+              return { text: body.slice(NOTICES[i].length), notice: NOTICES[i] };
+            }
+          }
+          return { text: body, notice: '' };
+        }
+        function stripLegacy(text) {
+          var body = String(text || '');
+          var cites = [];
+          body.replace(/<shiny-aside\\b[^>]*>/gi, function (tag) {
+            var url = (tag.match(/\\burl\\s*=\\s*\"([^\"]*)\"/i) || [])[1] || '';
+            var title = (tag.match(/\\blabel\\s*=\\s*\"([^\"]*)\"/i) || [])[1] || '';
+            if (url && url.indexOf('duckduckgo.com') < 0) cites.push({ title: title, url: url, note: '' });
+            return tag;
+          });
+          body = body.replace(/<shiny-aside\\b[^>]*>[\\s\\S]*?<\\/shiny-aside>/gi, ' ');
+          body = body.replace(/<img\\b[^>]*duckduckgo\\.com[^>]*>/gi, ' ');
+          body = body.replace(/https?:\\/\\/icons\\.duckduckgo\\.com[^\\s\"'<>]*/gi, ' ');
+          var guard = 0;
+          while (/\\+\\d+\\s*$/.test(body) && guard < 12) {
+            guard += 1;
+            var ate = false;
+            for (var t = 0; t < SOURCE_TITLES.length; t++) {
+              var title = SOURCE_TITLES[t];
+              var tail = new RegExp('\\\\s+' + title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '\\\\s+\\\\+\\\\d+\\\\s*$');
+              if (tail.test(body)) {
+                body = body.replace(tail, '');
+                cites.push({ title: title, url: '', note: '' });
+                ate = true;
+                break;
+              }
+            }
+            if (!ate) {
+              body = body.replace(/\\s*\\+\\d+\\s*$/, '');
+              var again = true;
+              while (again) {
+                again = false;
+                for (var u = 0; u < SOURCE_TITLES.length; u++) {
+                  var name = SOURCE_TITLES[u];
+                  var end = new RegExp('\\\\s+' + name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '\\\\s*$');
+                  if (end.test(body)) {
+                    body = body.replace(end, '');
+                    cites.push({ title: name, url: '', note: '' });
+                    again = true;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          return { text: body.replace(/\\s+/g, ' ').trim(), citations: cites };
+        }
+        function migrateStored(data) {
+          data = data || {};
+          var messages = asList(data.messages);
+          var notice = data.notice || '';
+          var globals = asList(data.citations).filter(function (item) {
+            return item && item.url && String(item.url).indexOf('duckduckgo.com') < 0;
+          });
+          var cleaned = [];
+          messages.forEach(function (msg) {
+            if (!msg) return;
+            var split = splitNotice(msg.text || '');
+            if (split.notice) notice = split.notice;
+            var legacy = stripLegacy(split.text);
+            var text = legacy.text;
+            if (!text) return;
+            var cites = asList(msg.citations).concat(legacy.citations).filter(function (item) {
+              return item && item.url && String(item.url).indexOf('duckduckgo.com') < 0;
+            });
+            cleaned.push({
+              role: msg.role,
+              text: text,
+              thinking: msg.thinking || '',
+              citations: cites
+            });
+          });
+          for (var i = cleaned.length - 1; i >= 0; i--) {
+            if (cleaned[i].role === 'assistant') {
+              var seen = {};
+              var merged = [];
+              cleaned[i].citations.concat(globals).forEach(function (item) {
+                if (!item || !item.url || seen[item.url]) return;
+                seen[item.url] = true;
+                merged.push({ title: item.title || item.url, url: item.url, note: item.note || '' });
+              });
+              cleaned[i].citations = merged;
+              break;
+            }
+          }
+          return { v: 3, messages: cleaned, citations: globals, notice: notice || '' };
+        }
         function writeNotes(messages, citations, notice) {
           var prev = readRaw();
           var cites = citations;
@@ -899,7 +1420,7 @@ ui <- tagList(
           if (note == null) note = (prev && prev.notice) || '';
           try {
             localStorage.setItem(storageKey(), JSON.stringify({
-              v: 2,
+              v: 3,
               messages: messages || [],
               citations: cites || [],
               notice: note || ''
@@ -909,10 +1430,23 @@ ui <- tagList(
         function plainText(node) {
           if (!node) return '';
           var clone = node.cloneNode(true);
-          clone.querySelectorAll('.shiny-chat-thinking, .shiny-tool-card, .shiny-chat-tool-call-row, .shiny-chat-tool-group, shiny-aside, .shiny-aside-pill').forEach(function (el) {
+          clone.querySelectorAll('.shiny-chat-thinking, .shiny-tool-card, .shiny-chat-tool-call-row, .shiny-chat-tool-group, shiny-aside, .shiny-aside-pill, .harbor-pills, .harbor-pill').forEach(function (el) {
             el.remove();
           });
           return (clone.innerText || '').replace(/\\s+/g, ' ').trim();
+        }
+        function pillCites(node) {
+          var out = [];
+          if (!node) return out;
+          node.querySelectorAll('a.harbor-pill').forEach(function (a) {
+            var label = a.querySelector('.harbor-pill-label');
+            out.push({
+              title: ((label && label.textContent) || '').replace(/\\s+/g, ' ').trim(),
+              url: a.getAttribute('href') || '',
+              note: ''
+            });
+          });
+          return out;
         }
         function thoughtText(node) {
           var thought = node.querySelector('.shiny-chat-thinking');
@@ -933,24 +1467,37 @@ ui <- tagList(
             var text = plainText(body);
             if (!text) return;
             var item = { role: role, text: text.slice(0, 4000) };
-            if (role === 'assistant') item.thinking = thoughtText(body).slice(0, 2000);
+            if (role === 'assistant') {
+              item.thinking = thoughtText(body).slice(0, 2000);
+              item.citations = pillCites(body);
+            }
             out.push(item);
           });
           return out;
         }
         function sendRestore() {
-          var data = readRaw();
-          var messages = asList(data && data.messages);
-          var citations = asList(data && data.citations);
+          var migrated = migrateStored(readRaw() || {});
+          var messages = asList(migrated.messages);
+          var citations = asList(migrated.citations);
+          if (messages.length || citations.length || migrated.notice) writeNotes(messages, citations, migrated.notice);
           Shiny.setInputValue('harbor_notes_restore', {
             role: messages.map(function (m) { return m.role; }),
             text: messages.map(function (m) { return m.text; }),
             thinking: messages.map(function (m) { return m.thinking || ''; }),
-            notice: (data && data.notice) || '',
+            msg_citations: messages.map(function (m) { return JSON.stringify(m.citations || []); }),
+            notice: migrated.notice || '',
             cite_title: citations.map(function (c) { return c.title || ''; }),
             cite_url: citations.map(function (c) { return c.url || ''; }),
             cite_note: citations.map(function (c) { return c.note || ''; })
           }, { priority: 'event' });
+        }
+        function paintPills(html) {
+          var nodes = document.querySelectorAll('.shiny-chat-message .shiny-chat-message-content');
+          var last = nodes[nodes.length - 1];
+          if (!last) return false;
+          if (last.querySelector('.harbor-pills')) return true;
+          last.insertAdjacentHTML('beforeend', html);
+          return true;
         }
         function placeNotice() {
           var host = document.getElementById('harbor_notice_host');
@@ -991,6 +1538,17 @@ ui <- tagList(
           });
           Shiny.addCustomMessageHandler('harbor-notes-request', function (msg) {
             sendRestore();
+          });
+          Shiny.addCustomMessageHandler('harbor-notes-pills', function (msg) {
+            var html = msg && msg.html;
+            if (!html) return;
+            var tries = 0;
+            var tick = function () {
+              if (paintPills(html) || tries > 20) return;
+              tries += 1;
+              window.setTimeout(tick, 50);
+            };
+            tick();
           });
           placeNotice();
           armNotice();
@@ -1164,7 +1722,7 @@ server <- function(input, output, session) {
     invisible(NULL)
   }
 
-  remember <- function(role, text, thinking = NULL) {
+  remember <- function(role, text, thinking = NULL, citations = NULL) {
     text <- trimws(paste(text %||% "", collapse = "\n"))
     if (!nzchar(text)) return(invisible(NULL))
     thinking <- trimws(paste(thinking %||% "", collapse = "\n"))
@@ -1172,7 +1730,8 @@ server <- function(input, output, session) {
     note_log[[length(note_log) + 1L]] <<- list(
       role = role,
       text = text,
-      thinking = thinking
+      thinking = thinking,
+      citations = unique_cites(citations)
     )
     if (length(note_log) > 40L) {
       note_log <<- note_log[(length(note_log) - 39L):length(note_log)]
@@ -1257,22 +1816,23 @@ server <- function(input, output, session) {
     ""
   }
 
-  remember_parts <- function(parts) {
-    text <- paste(vapply(parts, part_text, character(1)), collapse = "")
-    thinking <- trimws(paste(vapply(parts, part_thinking, character(1)), collapse = "\n"))
-    if (!nzchar(thinking)) thinking <- NULL
-    remember("assistant", text, thinking)
+  show_reply_pills <- function(items) {
+    pills <- source_pills_html(items)
+    if (is.null(pills)) return(invisible(NULL))
+    session$sendCustomMessage("harbor-notes-pills", list(html = as.character(pills)))
+    invisible(pills)
   }
 
   finish_live <- function(parts, text = NULL) {
     if (!is.list(parts)) parts <- list()
-    found <- c(harvest_parts(parts), harvest_turns())
+    found <- unique_cites(c(harvest_parts(parts), harvest_turns()))
+    answer <- paste(vapply(parts, part_text, character(1)), collapse = "")
+    if (!length(found)) found <- curated_citations(paste(text %||% "", answer))
     add_citations(found)
-    if (!length(found)) {
-      answer <- paste(vapply(parts, part_text, character(1)), collapse = "")
-      add_citations(curated_citations(paste(text %||% "", answer)))
-    }
-    remember_parts(parts)
+    show_reply_pills(found)
+    thinking <- trimws(paste(vapply(parts, part_thinking, character(1)), collapse = "\n"))
+    if (!nzchar(thinking)) thinking <- NULL
+    remember("assistant", answer, thinking, found)
     invisible(parts)
   }
 
@@ -1302,7 +1862,7 @@ server <- function(input, output, session) {
     }
     add_citations(reply$citations)
     stream_pieces("chat", reply_pieces(reply, NULL), session, pace)
-    remember("assistant", reply$body, reply$thinking)
+    remember("assistant", reply$body, reply$thinking, reply$citations)
   }
 
   # Recreate the Gemini client so thinking params match the model.
@@ -1336,6 +1896,12 @@ server <- function(input, output, session) {
       reply_mode("demo")
       send_mock(text, api_notice(err))
       invisible(NULL)
+    }
+
+    if (harbor_fallback_requested(session$clientData$url_search)) {
+      err <- simpleError("forced fallback")
+      class(err) <- c("httr2_http_429", "error", "condition")
+      return(fail(err))
     }
 
     succeed <- function(stream) {
@@ -1441,13 +2007,46 @@ server <- function(input, output, session) {
 
   restore_message <- function(msg) {
     thinking <- msg$thinking %||% ""
-    if (identical(msg$role, "assistant") && nzchar(thinking)) {
+    pills <- if (identical(msg$role, "assistant")) source_pills_html(msg$citations) else NULL
+    has_think <- identical(msg$role, "assistant") && nzchar(thinking)
+    if (!has_think && is.null(pills)) {
+      chat_append_message(
+        "chat",
+        list(role = msg$role, content = msg$text),
+        chunk = FALSE,
+        session = session
+      )
+      return(invisible(NULL))
+    }
+    if (has_think) {
       chat_append_message(
         "chat",
         list(role = "assistant", content = thinking_block(thinking)),
         chunk = "start",
         session = session
       )
+    } else {
+      chat_append_message(
+        "chat",
+        list(role = "assistant", content = msg$text),
+        chunk = "start",
+        session = session
+      )
+    }
+    if (has_think && !is.null(pills)) {
+      chat_append_message(
+        "chat",
+        list(role = "assistant", content = msg$text),
+        chunk = TRUE,
+        session = session
+      )
+      chat_append_message(
+        "chat",
+        list(role = "assistant", content = pills),
+        chunk = "end",
+        session = session
+      )
+    } else if (has_think) {
       chat_append_message(
         "chat",
         list(role = "assistant", content = msg$text),
@@ -1457,11 +2056,12 @@ server <- function(input, output, session) {
     } else {
       chat_append_message(
         "chat",
-        list(role = msg$role, content = msg$text),
-        chunk = FALSE,
+        list(role = "assistant", content = pills),
+        chunk = "end",
         session = session
       )
     }
+    invisible(NULL)
   }
 
   chat_enable_history(
@@ -1515,26 +2115,12 @@ server <- function(input, output, session) {
   observeEvent(input$harbor_notes_restore, {
     if (restore_started || length(note_log)) return()
     payload <- input$harbor_notes_restore
-    msgs <- normalize_restore(payload)
+    stored <- migrate_stored_transcript(payload)
     msgs <- Filter(function(msg) {
       msg$role %in% c("user", "assistant") && nzchar(msg$text)
-    }, msgs)
-    cite_titles <- as.character(unlist(payload$cite_title, use.names = FALSE))
-    cite_urls <- as.character(unlist(payload$cite_url, use.names = FALSE))
-    cite_notes <- as.character(unlist(payload$cite_note, use.names = FALSE))
-    n_cites <- max(length(cite_titles), length(cite_urls), length(cite_notes))
-    restored_cites <- if (n_cites) {
-      lapply(seq_len(n_cites), function(i) {
-        list(
-          title = if (i <= length(cite_titles)) cite_titles[[i]] else "",
-          url = if (i <= length(cite_urls)) cite_urls[[i]] else "",
-          note = if (i <= length(cite_notes)) cite_notes[[i]] else ""
-        )
-      })
-    } else {
-      list()
-    }
-    restored_note <- restore_notice(payload)
+    }, stored$messages)
+    restored_cites <- stored$citations
+    restored_note <- stored$notice %||% ""
     if (!length(msgs) && !length(restored_cites) && !nzchar(restored_note)) return()
     restore_started <<- TRUE
     if (nzchar(restored_note)) {
@@ -1544,7 +2130,10 @@ server <- function(input, output, session) {
       reply_mode("live")
     }
     if (length(restored_cites)) add_citations(restored_cites)
-    if (!length(msgs)) return()
+    if (!length(msgs)) {
+      publish_notes()
+      return()
+    }
     restoring <<- TRUE
     turns <- tryCatch(
       lapply(msgs, function(msg) ellmer::Turn(msg$role, msg$text)),
@@ -1557,7 +2146,7 @@ server <- function(input, output, session) {
       on.exit(restoring <<- FALSE, add = TRUE)
       for (msg in msgs) {
         restore_message(msg)
-        remember(msg$role, msg$text, msg$thinking)
+        remember(msg$role, msg$text, msg$thinking, msg$citations)
       }
       publish_history()
     }, once = TRUE)
@@ -1587,9 +2176,13 @@ server <- function(input, output, session) {
           href = item$url,
           target = "_blank",
           rel = "noopener noreferrer",
-          tags$span(class = "harbor-source-title", item$title),
-          if (nzchar(item$note %||% "")) tags$span(class = "harbor-source-note", item$note),
-          tags$span(class = "harbor-source-url", item$url)
+          source_icon_span(item$url, "harbor-source-icon"),
+          tags$span(
+            class = "harbor-source-body",
+            tags$span(class = "harbor-source-title", item$title),
+            if (nzchar(item$note %||% "")) tags$span(class = "harbor-source-note", item$note),
+            tags$span(class = "harbor-source-url", item$url)
+          )
         )
       })
     )

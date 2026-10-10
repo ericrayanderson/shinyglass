@@ -142,7 +142,7 @@ test_that("chat staging copies www favicons and the icon is inline", {
   app <- paste(readLines(file.path(dest, "app.R"), warn = FALSE), collapse = "\n")
   expect_match(app, "data:image/svg+xml;base64,", fixed = TRUE)
   expect_false(grepl('href = "favicon.svg"', app, fixed = TRUE))
-  expect_match(app, 'href = "favicon.ico"', fixed = TRUE)
+  expect_false(grepl('href = "favicon.ico"', app, fixed = TRUE))
 })
 
 test_that("harbor notes loads a staged Renviron without printing the key", {

@@ -883,6 +883,7 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, ".offcanvas")
   expect_match(engine, "show.bs.offcanvas")
   expect_match(engine, "shiny-chat-messages")
+  expect_match(engine, "shiny-chat-page-sidebar-toggle", fixed = TRUE)
   expect_match(engine, "glass-scroll-edge-top")
   expect_match(scss, "glass-scroll-edge-top")
   expect_match(scss, "shiny-chat-message-content")
@@ -890,6 +891,10 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, "shiny-chat-scroll-to-bottom")
   expect_match(scss, "shiny-chat-thinking-header")
   expect_match(scss, "--shiny-chat-btn-send-size: 32px", fixed = TRUE)
+  expect_match(scss, "bslib-input-dark-mode")
+  expect_match(scss, "shiny-chat-history-itemmenu")
+  expect_match(scss, "--speed-fast: 0s", fixed = TRUE)
+  expect_match(scss, "min-height: 32px", fixed = TRUE)
   expect_match(scss, "prefers-reduced-motion: reduce", fixed = TRUE)
   expect_match(scss, "body::before", fixed = TRUE)
   expect_match(scss, "safe-area-inset-bottom")
@@ -1044,9 +1049,70 @@ test_that("shinychat glass example builds an app", {
     env$scripted_reply("How does glass_theme work?"),
     "The live model could not answer just now. Here is the local note instead."
   )
-  glued_flat <- paste(vapply(glued, function(x) if (is.character(x)) x else "", character(1)), collapse = "\n")
+  glued_flat <- paste(vapply(glued, function(x) paste(as.character(x), collapse = ""), character(1)), collapse = "\n")
   expect_false(grepl("local note", glued_flat, fixed = TRUE))
   expect_match(glued_flat, "glass_theme")
+  expect_match(glued_flat, "harbor-pill", fixed = TRUE)
+  expect_match(glued_flat, "<svg", fixed = TRUE)
+  expect_false(grepl("duckduckgo", glued_flat, fixed = TRUE))
+  expect_false(grepl("shiny-aside", glued_flat, fixed = TRUE))
+
+  pill <- as.character(env$source_pills_html(env$docs_citations()[1]))
+  expect_match(pill, "harbor-pill-icon", fixed = TRUE)
+  expect_match(pill, "github.io/shinyglass", fixed = TRUE)
+
+  legacy <- env$migrate_stored_transcript(list(
+    v = 1L,
+    messages = list(list(
+      role = "assistant",
+      text = paste0(
+        "The live model could not answer just now. Here is the local note instead.",
+        "glass_theme() builds a Liquid Glass bslib theme. shinyglass docs +5"
+      ),
+      thinking = "Looking through the theme API."
+    )),
+    citations = list(list(
+      title = "shinyglass docs",
+      url = "https://ericrayanderson.github.io/shinyglass/",
+      note = "Theme"
+    )),
+    notice = ""
+  ))
+  expect_identical(legacy$v, 3L)
+  expect_match(legacy$notice, "local note", fixed = TRUE)
+  expect_false(grepl("local note", legacy$messages[[1L]]$text, fixed = TRUE))
+  expect_false(grepl("+5", legacy$messages[[1L]]$text, fixed = TRUE))
+  expect_false(grepl("duckduckgo", legacy$messages[[1L]]$text, fixed = TRUE))
+  expect_match(legacy$messages[[1L]]$text, "glass_theme")
+  expect_identical(legacy$messages[[1L]]$thinking, "Looking through the theme API.")
+  expect_true(any(vapply(
+    legacy$messages[[1L]]$citations,
+    function(item) grepl("github.io/shinyglass", item$url, fixed = TRUE),
+    logical(1)
+  )))
+
+  dirty <- env$migrate_stored_transcript(list(
+    messages = list(list(
+      role = "assistant",
+      text = paste(
+        "Answer <shiny-aside label=\"shinyglass docs\" url=\"https://ericrayanderson.github.io/shinyglass/\">docs</shiny-aside>",
+        "<img src=\"https://icons.duckduckgo.com/ip3/ericrayanderson.github.io.ico\">"
+      )
+    ))
+  ))
+  expect_false(grepl("duckduckgo", dirty$messages[[1L]]$text, fixed = TRUE))
+  expect_false(grepl("shiny-aside", dirty$messages[[1L]]$text, fixed = TRUE))
+  expect_match(dirty$messages[[1L]]$text, "Answer", fixed = TRUE)
+  expect_true(any(vapply(
+    dirty$messages[[1L]]$citations,
+    function(item) grepl("github.io/shinyglass", item$url, fixed = TRUE),
+    logical(1)
+  )))
+
+  expect_false(env$harbor_fallback_requested(""))
+  expect_true(env$harbor_fallback_requested("?harbor_fallback=1"))
+  expect_true(env$harbor_fallback_requested("?x=1&harbor_fallback=1"))
+  expect_false(env$harbor_fallback_requested("?harbor_fallback=0"))
 
   restored <- env$normalize_restore(list(
     role = c("user", "assistant"),
