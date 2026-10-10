@@ -708,6 +708,7 @@
       if (!target || !target.closest) return;
       var el = target.closest(PRESS_SELECTOR);
       if (!el) return;
+      if (target.closest(".shiny-chat-page-header, .shiny-chat-page-sidebar-toggle, .shiny-chat-page-sidebar-close, bslib-input-dark-mode, .shiny-chat-history-itemmenu, .shiny-chat-history-close")) return;
       if (el.disabled || el.getAttribute("aria-disabled") === "true" || el.classList.contains("disabled")) return;
       if (target.closest("input, textarea, select, .form-control")) return;
       var rect = el.getBoundingClientRect();

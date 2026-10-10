@@ -6157,6 +6157,32 @@ html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-tra
   background: transparent;
 }
 
+// Header and conversation controls stay at least 32px on a fine pointer.
+// The dark-mode switch sizes its shadow button from --size, and the speed
+// tokens are what animate that icon. Zeroing them keeps the hit target still.
+html[data-glass-preset] .shiny-chat-page-sidebar-toggle,
+html[data-glass-preset] .shiny-chat-page-sidebar-close,
+html[data-glass-preset] .shiny-chat-history-close,
+html[data-glass-preset] .shiny-chat-history-itemmenu > button,
+html[data-glass-preset] .bslib-toolbar .btn,
+html[data-glass-preset] bslib-input-dark-mode {
+  box-sizing: border-box;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+html[data-glass-preset] .shiny-chat-history-itemmenu > button {
+  width: 32px;
+  height: 32px;
+}
+
+html[data-glass-preset] bslib-input-dark-mode {
+  --size: 22px;
+  --size-xxs: 5px;
+  --speed-fast: 0s;
+  --speed-normal: 0s;
+}
+
 @media (pointer: coarse), (max-width: 799px) {
   html[data-glass-preset] {
     --shiny-chat-btn-send-size: 44px;
@@ -6166,10 +6192,24 @@ html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-tra
   html[data-glass-preset] .shiny-chat-btn-send,
   html[data-glass-preset] .shiny-chat-edit-btn,
   html[data-glass-preset] .shiny-chat-page-sidebar-toggle,
+  html[data-glass-preset] .shiny-chat-page-sidebar-close,
   html[data-glass-preset] .bslib-toolbar .btn,
-  html[data-glass-preset] .shiny-chat-history-new {
+  html[data-glass-preset] .shiny-chat-history-new,
+  html[data-glass-preset] .shiny-chat-history-close,
+  html[data-glass-preset] .shiny-chat-history-itemmenu > button,
+  html[data-glass-preset] bslib-input-dark-mode {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  html[data-glass-preset] .shiny-chat-history-itemmenu > button {
+    width: 44px;
+    height: 44px;
+  }
+
+  html[data-glass-preset] bslib-input-dark-mode {
+    --size: 32px;
+    --size-xxs: 6px;
   }
 
   html[data-glass-preset] .shiny-chat-edit-btn {
