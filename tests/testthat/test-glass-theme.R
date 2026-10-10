@@ -883,6 +883,11 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, ".offcanvas")
   expect_match(engine, "show.bs.offcanvas")
   expect_match(engine, "shiny-chat-messages")
+  expect_match(engine, "glass-scroll-edge-top")
+  expect_match(scss, "glass-scroll-edge-top")
+  expect_match(scss, "shiny-chat-message-content")
+  expect_match(scss, "safe-area-inset-bottom")
+  expect_match(scss, "glass-overflowing")
   expect_match(scss, "--glass-specular-top")
   expect_match(scss, "--glass-edge")
   expect_true("--glass-ior" %in% glass_css_tokens()$css_var)
@@ -909,6 +914,8 @@ test_that("shinychat glass example builds an app", {
     expect_identical(env$gemini_model(), "gemini-3.7-flash")
   }
   expect_match(env$harbor_system_prompt(), "shinyglass")
+  expect_match(env$harbor_system_prompt(), "ordinary conversation")
+  expect_false(grepl("harbor guide", env$harbor_system_prompt(), fixed = TRUE))
   expect_lt(nchar(env$harbor_system_prompt()), 280)
 
   mock <- env$gate_turn("tide", 0L, FALSE)

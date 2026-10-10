@@ -104,9 +104,18 @@
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact
-  previews, toolbars, and the slash-command menu. Refraction, morph,
-  press, and the scroll edge stay on. Example:
-  `inst/examples/shinychat-glass` (local echo, no API key).
+  previews, toolbars, and the slash-command menu. Assistant replies
+  use a neutral glass bubble, including while the reply is streaming.
+  User bubbles stay the tinted pill. A scrolled transcript fades under
+  the header and the composer instead of clipping on the bar. On a
+  coarse pointer the send button, edit button, and composer are at
+  least 44px, and the footer keeps the bottom safe-area inset. The
+  typed "/" in the composer stays visible when the slash menu opens.
+  Refraction, morph, press, and the scroll edge stay on. Example:
+  `inst/examples/shinychat-glass` (local echo, no API key). Harbor
+  notes shows a Live (Gemini) or Demo replies chip, lists citations
+  from the scripted reply (and from Gemini when grounding is present),
+  and keeps the theme and the conversation in the browser.
 * bslib 0.12 `offcanvas()` panels use the glass material, scale in from
   the trigger, and show a scroll edge on the header. Bootstrap still
   owns the slide.

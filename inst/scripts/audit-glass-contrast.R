@@ -487,8 +487,12 @@ catalog <- list(
       ".suggestion",
       ".offcanvas.show",
       ".offcanvas-header",
-      ".offcanvas-title"
+      ".offcanvas-title",
+      ".shiny-chat-message-content",
+      ".harbor-status",
+      ".harbor-source"
     ),
+    extra_viewports = list(list(width = 393L, height = 852L)),
     interactions = list(
       list(
         name = "scripted-reply",
@@ -849,6 +853,17 @@ run_case <- function(app_key, preset, port) {
   }
 
   findings <- c(findings, collect_sample("final", keep_all = TRUE))
+
+  extra_vps <- spec$extra_viewports
+  if (is.null(extra_vps)) extra_vps <- list()
+  for (vp in extra_vps) {
+    b$set_viewport_size(width = as.integer(vp$width), height = as.integer(vp$height))
+    Sys.sleep(0.4)
+    findings <- c(findings, collect_sample(
+      sprintf("viewport-%s", vp$width),
+      keep_all = TRUE
+    ))
+  }
 
   list(meta = meta, findings = findings, glass_preset = last_preset)
 }
