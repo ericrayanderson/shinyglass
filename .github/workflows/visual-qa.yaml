@@ -111,6 +111,7 @@ jobs:
         working-directory: inst/scripts/browser
         env:
           RUN_CHAT_TESTS: '1'
+          SHINYGLASS_CHAT_PACE: '0'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

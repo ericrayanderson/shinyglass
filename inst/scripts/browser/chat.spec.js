@@ -143,10 +143,14 @@ test('a long transcript fades under the header and the composer', async ({ page 
     }, i);
     await page.waitForTimeout(350);
   }
-  await page.locator('.shiny-chat-messages').evaluate((el) => {
+  // Wait until the extra notes are tall enough to scroll, then move the
+  // transcript. A still-streaming reply stays one short row.
+  await expect.poll(async () => page.locator('.shiny-chat-messages').evaluate((el) => {
+    if (el.scrollHeight <= el.clientHeight + 40) return 0;
     el.scrollTop = 160;
     el.dispatchEvent(new Event('scroll', { bubbles: true }));
-  });
+    return el.scrollTop;
+  }), { timeout: 20000 }).toBeGreaterThan(8);
   await expect(page.locator('.shiny-chat-page-header')).toHaveClass(/glass-scroll-edge/);
   await expect(page.locator('.shiny-chat-composer')).toHaveClass(/glass-scroll-edge/);
   await expect(page.locator('.shiny-chat-messages')).toHaveClass(/glass-scroll-edge-top/);
