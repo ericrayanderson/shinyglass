@@ -486,7 +486,7 @@ catalog <- list(
       ".shiny-chat-input",
       ".shiny-chat-user-message",
       ".shiny-chat-thinking",
-      ".shiny-aside-pill",
+      ".harbor-pill",
       ".shiny-tool-card",
       ".suggestion",
       ".offcanvas.show",

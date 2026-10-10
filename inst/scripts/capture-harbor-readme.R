@@ -127,7 +127,7 @@ capture_harbor <- function(preset, filename, port) {
         const deadline = Date.now() + 20000;
         const check = () => {
           const tool = document.querySelector('.shiny-tool-card, .shiny-chat-tool-group');
-          const cite = document.querySelector('.shiny-aside-pill');
+          const cite = document.querySelector('.harbor-pill');
           const text = document.body.innerText || '';
           if (tool && cite && /Read glass_theme/.test(text) && /Liquid Glass/.test(text)) {
             resolve(true);

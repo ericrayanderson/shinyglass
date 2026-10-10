@@ -799,8 +799,8 @@
       var el = target.closest(PRESS_SELECTOR);
       if (!el) return;
       // Press scale on a popover or drop-menu trigger swallows the second tap
-      // on touch, so the menu stays open.
-      if (target.closest(".drop-menu-input, [data-bs-toggle='popover']")) return;
+      // on touch, so the menu stays open. Chat header controls skip it too.
+      if (target.closest(".drop-menu-input, [data-bs-toggle='popover'], .shiny-chat-page-header, .shiny-chat-page-sidebar-toggle, .shiny-chat-page-sidebar-close, bslib-input-dark-mode, .shiny-chat-history-itemmenu, .shiny-chat-history-close")) return;
       if (el.disabled || el.getAttribute("aria-disabled") === "true" || el.classList.contains("disabled")) return;
       if (target.closest("input, textarea, select, .form-control")) return;
       var rect = el.getBoundingClientRect();
