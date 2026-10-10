@@ -30,3 +30,22 @@ plotly_glass(
 ## Value
 
 `p` with layout applied, or a list of layout arguments.
+
+## See also
+
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+[`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)
+
+Other glass plots:
+[`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md),
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+[`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md),
+[`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)
+
+## Examples
+
+``` r
+layout <- plotly_glass(preset = "dark")
+layout$font$color
+#> [1] "#f5f5f7"
+```

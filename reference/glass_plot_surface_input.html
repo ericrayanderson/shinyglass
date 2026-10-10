@@ -28,6 +28,7 @@ observe_glass_plot_surface() so the server stays in sync."></head><body>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyglass.html">Using shinyglass</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -89,9 +90,37 @@ observe_glass_plot_surface() so the server stays in sync."></head><body>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="observe_glass_plot_surface.html">observe_glass_plot_surface()</a></code>, <code><a href="glass_theme.html">glass_theme()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="observe_glass_plot_surface.html">observe_glass_plot_surface()</a></code>, <code><a href="glass_theme.html">glass_theme()</a></code></p>
+<p>Other glass controls:
+<code><a href="glass_accent_input.html">glass_accent_input()</a></code>,
+<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>,
+<code><a href="glass_preset_input.html">glass_preset_input()</a></code>,
+<code><a href="glass_resolved_preset.html">glass_resolved_preset()</a></code>,
+<code><a href="glass_scene_input.html">glass_scene_input()</a></code>,
+<code><a href="glass_system_colors.html">glass_system_colors()</a></code>,
+<code><a href="glass_theme_toggle.html">glass_theme_toggle()</a></code>,
+<code><a href="observe_glass.html">observe_glass()</a></code>,
+<code><a href="observe_glass_accent.html">observe_glass_accent()</a></code>,
+<code><a href="observe_glass_intensity.html">observe_glass_intensity()</a></code>,
+<code><a href="observe_glass_plot_surface.html">observe_glass_plot_surface()</a></code>,
+<code><a href="observe_glass_preset_input.html">observe_glass_preset_input()</a></code>,
+<code><a href="observe_glass_scene.html">observe_glass_scene()</a></code>,
+<code><a href="observe_glass_theme_toggle.html">observe_glass_theme_toggle()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">glass_plot_surface_input</span><span class="op">(</span>selected <span class="op">=</span> <span class="st">"opaque"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div class="form-group shiny-input-container"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;label class="control-label" id="plot_surface-label" for="plot_surface"&gt;Plot / table surface&lt;/label&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;div&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;select id="plot_surface" class="shiny-input-select glass-plot-surface-input" data-glass-plot-surface-input="plot_surface"&gt;&lt;option value="clear"&gt;Clear (show wallpaper)&lt;/option&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;option value="opaque" selected&gt;Opaque (readable)&lt;/option&gt;&lt;/select&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;script type="application/json" data-for="plot_surface" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/div&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/div&gt;</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

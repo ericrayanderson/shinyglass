@@ -107,6 +107,19 @@ reload. `intensity` updates fill/blur along the Ultra Clear to Tinted
 spectrum (see
 [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)).
 
+## See also
+
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md)
+
+Other glass themes:
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
+
 ## Examples
 
 ``` r

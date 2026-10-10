@@ -34,6 +34,7 @@ CSS lives, and the page keeps the JS without the look."></head><body>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyglass.html">Using shinyglass</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -93,10 +94,9 @@ React client still owns the DOM. Build it from <code>GlassPage</code>, <code>Gla
 <code>useGlassTheme()</code> tracks the live mode (<code>light</code> / <code>dark</code> / <code>auto</code>), the
 resolved preset, scene, material, and intensity, plus refraction, morph,
 press, scroll edge, tab minimize, icon style, and floating sidebar, and
-whether Reduce Transparency, Increase Contrast, forced colors, or reduced
-motion are active. Its setters call <code>window.shinyglass.setPreset()</code> and
+whether Reduce Transparency, Increase Contrast, reduced motion, or forced
+colors are active. Its setters call <code>window.shinyglass.setPreset()</code> and
 the other mutators, including <code>setRefraction()</code> and <code>setIconStyle()</code>.
-<code>GlassSidebar</code> floats when <code>floating</code> is set or the theme opts in.
 <code>GlassIntensitySlider</code> runs from Ultra Clear to Tinted and defaults to
 <code>0.5</code>. <code>setMaterial("clear")</code> is deprecated and maps to intensity <code>0.12</code>.
 Wallpaper, type, and <code>--glass-*</code> tokens apply to the document. Those
@@ -112,7 +112,16 @@ shinyreact. It includes the React module.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code>,
-<code><a href="glass_react_dependency.html">glass_react_dependency()</a></code></p></div>
+<code><a href="glass_react_dependency.html">glass_react_dependency()</a></code></p>
+<p>Other glass themes:
+<code><a href="glass_flatten.html">glass_flatten()</a></code>,
+<code><a href="glass_page.html">glass_page()</a></code>,
+<code><a href="glass_theme.html">glass_theme()</a></code>,
+<code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code>,
+<code><a href="update_glass_theme.html">update_glass_theme()</a></code></p>
+<p>Other shinyreact glass:
+<code><a href="glass_react_dependency.html">glass_react_dependency()</a></code>,
+<code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code></p></div>
     </div>
 
     <div class="section level2">

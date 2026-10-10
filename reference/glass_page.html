@@ -28,6 +28,7 @@ observe_glass() in the server function."></head><body>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyglass.html">Using shinyglass</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -90,8 +91,10 @@ Dark / Auto toggle, intensity slider, and accent wells. Pair with
 
 
 <dt id="arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten-refraction-morph-press-scroll-edge-minimize-tabs-icon-style-floating-sidebar">preset, intensity, persist, scene, wallpaper, plot_surface, flatten, refraction, morph, press, scroll_edge, minimize_tabs, icon_style, floating_sidebar<a class="anchor" aria-label="anchor" href="#arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten-refraction-morph-press-scroll-edge-minimize-tabs-icon-style-floating-sidebar"></a></dt>
-<dd><p>Forwarded to <code><a href="glass_theme.html">glass_theme()</a></code>. Persistence defaults to <code>TRUE</code> here.
-<code>floating_sidebar</code> stays off unless you opt in.</p></dd>
+<dd><p>Forwarded to <code><a href="glass_theme.html">glass_theme()</a></code>. <code>preset</code> is <code>"light"</code>, <code>"dark"</code>, or
+<code>"auto"</code> (default <code>"auto"</code>). <code>intensity</code> is numeric from <code>0</code> (Ultra
+Clear) to <code>1</code> (Tinted), default <code>0.5</code>. Persistence defaults to <code>TRUE</code>
+here. <code>floating_sidebar</code> stays off unless you opt in.</p></dd>
 
 
 <dt id="arg-controls">controls<a class="anchor" aria-label="anchor" href="#arg-controls"></a></dt>
@@ -108,6 +111,17 @@ created from the arguments above.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A Shiny UI tag list suitable as <code>shinyApp(ui = ...)</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><a href="shinyglass-package.html">shinyglass</a>, <code><a href="glass_theme.html">glass_theme()</a></code>, <code><a href="observe_glass.html">observe_glass()</a></code>,
+<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code></p>
+<p>Other glass themes:
+<code><a href="glass_flatten.html">glass_flatten()</a></code>,
+<code><a href="glass_page_react.html">glass_page_react()</a></code>,
+<code><a href="glass_theme.html">glass_theme()</a></code>,
+<code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code>,
+<code><a href="update_glass_theme.html">update_glass_theme()</a></code></p></div>
     </div>
 
     <div class="section level2">

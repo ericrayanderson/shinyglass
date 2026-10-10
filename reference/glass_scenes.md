@@ -17,6 +17,16 @@ glass_scenes()
 
 A named character vector: names are scene ids, values are labels.
 
+## See also
+
+[`glass_scene_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scene_input.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+
+Other glass tokens:
+[`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md),
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
+
 ## Examples
 
 ``` r

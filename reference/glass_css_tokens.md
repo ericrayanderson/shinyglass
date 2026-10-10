@@ -26,6 +26,17 @@ Contrast floor (wallpaper / scenes): body ink is `#1d1d1f` (light) or
 raw imagery. Overlay menus use `--glass-menu-bg` (~86% light / ~88%
 dark). Target 4.5:1 for body text and 3:1 for large UI chrome.
 
+## See also
+
+[`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md),
+[`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+
+Other glass tokens:
+[`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md),
+[`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md),
+[`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
+
 ## Examples
 
 ``` r

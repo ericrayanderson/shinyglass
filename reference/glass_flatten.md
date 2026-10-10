@@ -47,6 +47,13 @@ Ways to enter flatten:
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md),
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
 
+Other glass themes:
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+
 ## Examples
 
 ``` r

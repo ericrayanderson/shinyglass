@@ -64,7 +64,7 @@ glass_theme(
 
 - saturation:
 
-  Backdrop saturation percentage.
+  Backdrop saturation percentage. Default `200`.
 
 - radius:
 
@@ -96,7 +96,8 @@ glass_theme(
 
 - tint:
 
-  Content-aware ambient tint from plots/images (JS).
+  Logical. Content-aware ambient tint from plots and images. Default
+  `TRUE`.
 
 - specular:
 
@@ -105,12 +106,14 @@ glass_theme(
 
 - nav_morph:
 
-  Compact navbar on scroll down; expand on scroll up (JS).
+  Logical. Compact navbar on scroll down; expand on scroll up. Default
+  `TRUE`.
 
 - ambient_motion:
 
-  Animate the decorative ambient sheen. Set `FALSE` to keep static glass
-  surfaces. OS reduced-motion settings take priority.
+  Logical. Animate the decorative ambient sheen. Default `TRUE`. Set
+  `FALSE` to keep static glass surfaces. OS reduced-motion settings take
+  priority.
 
 - persist:
 
@@ -211,6 +214,21 @@ or `preset = "auto"`) updates
 or reloading the page. Accent color can also be updated live with
 [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 `primary=` (CSS variables).
+
+## See also
+
+[shinyglass](https://ericrayanderson.github.io/shinyglass/reference/shinyglass-package.md),
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md),
+[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md),
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md)
+
+Other glass themes:
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 
 ## Examples
 

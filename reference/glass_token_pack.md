@@ -22,6 +22,16 @@ glass_token_pack(preset = c("light", "dark"))
 
 A named list of CSS custom properties (names include `--`).
 
+## See also
+
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)
+
+Other glass tokens:
+[`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md),
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md)
+
 ## Examples
 
 ``` r

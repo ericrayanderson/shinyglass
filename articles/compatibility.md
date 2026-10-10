@@ -27,13 +27,15 @@ stacks where practical.
 | Bootstrap 3-only apps | Limited | Theme is BS5 via bslib |
 | **shinyreact** | Supported | [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md) loads the React components and `useGlassTheme()` ([`vignette("shinyreact")`](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md)). `page_react(theme = glass_theme())` gets the CSS without the component module. `page_react_html()` takes [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md) as `extra_deps`. Do not hard-code panel colors. Shadow roots need `window.shinyglass.adoptShadow()`. |
 | **shinychat** | Supported | `page_chat(theme = glass_theme())` and embedded `chat_ui()`. See [`vignette("shinychat")`](https://ericrayanderson.github.io/shinyglass/articles/shinychat.md) and [`vignette("migrating")`](https://ericrayanderson.github.io/shinyglass/articles/migrating.md). |
-| bslib `offcanvas()` | Supported | Glass material, scale from the trigger, scroll edge on the header. Bootstrap still owns the slide. |
+| bslib [`offcanvas()`](https://rstudio.github.io/bslib/reference/offcanvas.html) | Supported | Glass material, scale from the trigger, scroll edge on the header. Bootstrap still owns the slide. |
 
 ## Layout contract
 
 - Open bslib sidebars **reserve** space in main so content is not buried
   under the floating chrome.
-- Nested `layout_sidebar()` does **not** double-float.
+- Nested
+  [`layout_sidebar()`](https://rstudio.github.io/bslib/reference/sidebar.html)
+  does **not** double-float.
 - AdminLTE left sidebars keep fixed AdminLTE geometry; glass is visual
   overlay only.
 

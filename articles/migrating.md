@@ -34,9 +34,11 @@ shinychat
 [`page_chat()`](https://posit-dev.github.io/shinychat/r/reference/page_chat.html)
 /
 [`chat_ui()`](https://posit-dev.github.io/shinychat/r/reference/chat_ui.html)
-and bslib `offcanvas()` use the same material: glass header and history,
-tinted user bubbles, a floating composer, and an offcanvas panel that
-scales in from its trigger. Bootstrap still owns the offcanvas slide.
+and bslib
+[`offcanvas()`](https://rstudio.github.io/bslib/reference/offcanvas.html)
+use the same material: glass header and history, tinted user bubbles, a
+floating composer, and an offcanvas panel that scales in from its
+trigger. Bootstrap still owns the offcanvas slide.
 
 ## What changed in the API
 

@@ -48,6 +48,18 @@ theme_glass(
 
 A ggplot2 theme object.
 
+## See also
+
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+[`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md),
+[`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md)
+
+Other glass plots:
+[`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md),
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+[`gt_theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/gt_theme_glass.md),
+[`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md)
+
 ## Examples
 
 ``` r

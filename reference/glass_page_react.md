@@ -48,10 +48,9 @@ The React client still owns the DOM. Build it from `GlassPage`,
 `dark` / `auto`), the resolved preset, scene, material, and intensity,
 plus refraction, morph, press, scroll edge, tab minimize, icon style,
 and floating sidebar, and whether Reduce Transparency, Increase
-Contrast, forced colors, or reduced motion are active. Its setters call
+Contrast, reduced motion, or forced colors are active. Its setters call
 `window.shinyglass.setPreset()` and the other mutators, including
-`setRefraction()` and `setIconStyle()`. `GlassSidebar` floats when
-`floating` is set or the theme opts in. `GlassIntensitySlider` runs from
+`setRefraction()` and `setIconStyle()`. `GlassIntensitySlider` runs from
 Ultra Clear to Tinted and defaults to `0.5`. `setMaterial("clear")` is
 deprecated and maps to intensity `0.12`. Wallpaper, type, and
 `--glass-*` tokens apply to the document. Those component classes are
@@ -75,6 +74,17 @@ React module.
 [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
 [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
 [`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md)
+
+Other glass themes:
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+
+Other shinyreact glass:
+[`glass_react_dependency()`](https://ericrayanderson.github.io/shinyglass/reference/glass_react_dependency.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
 
 ## Examples
 

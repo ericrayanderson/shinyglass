@@ -49,6 +49,16 @@
 
 ### New features
 
+- The installed help page `shinyglass` (also `shinyglass-package`) is
+  the usage guide: a minimal app, how to add glass to an existing bslib
+  or [`fluidPage()`](https://rdrr.io/pkg/shiny/man/fluidPage.html) app,
+  key options, the 0.5.0 migration, and common pitfalls with their
+  fixes.
+  [`vignette("shinyglass")`](https://ericrayanderson.github.io/shinyglass/articles/shinyglass.md)
+  is that same guide and is what `browseVignettes("shinyglass")` lists.
+  Help pages state types, defaults, and minimal examples, and they
+  cross-link by topic. Argument errors name the argument and the value
+  to pass.
 - [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
   [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
   and

@@ -35,6 +35,17 @@ glass_add_tokens(theme, tokens = list(), ...)
 
 The theme, with an extra HTML dependency.
 
+## See also
+
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+
+Other glass tokens:
+[`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md),
+[`glass_scenes()`](https://ericrayanderson.github.io/shinyglass/reference/glass_scenes.md),
+[`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
+
 ## Examples
 
 ``` r

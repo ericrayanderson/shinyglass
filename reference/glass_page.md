@@ -52,8 +52,10 @@ glass_page(
 
   Forwarded to
   [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
-  Persistence defaults to `TRUE` here. `floating_sidebar` stays off
-  unless you opt in.
+  `preset` is `"light"`, `"dark"`, or `"auto"` (default `"auto"`).
+  `intensity` is numeric from `0` (Ultra Clear) to `1` (Tinted), default
+  `0.5`. Persistence defaults to `TRUE` here. `floating_sidebar` stays
+  off unless you opt in.
 
 - controls:
 
@@ -70,6 +72,20 @@ glass_page(
 ## Value
 
 A Shiny UI tag list suitable as `shinyApp(ui = ...)`.
+
+## See also
+
+[shinyglass](https://ericrayanderson.github.io/shinyglass/reference/shinyglass-package.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md),
+[`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+
+Other glass themes:
+[`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md),
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md),
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
 
 ## Examples
 

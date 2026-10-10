@@ -28,3 +28,27 @@ gt_theme_glass(
 ## Value
 
 A gt table.
+
+## See also
+
+[`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md),
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md)
+
+Other glass plots:
+[`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md),
+[`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+[`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md),
+[`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)
+
+## Examples
+
+``` r
+if (requireNamespace("gt", quietly = TRUE)) {
+  gt_theme_glass(head(mtcars), preset = "light")
+}
+
+
+  
+
+mpg
+```

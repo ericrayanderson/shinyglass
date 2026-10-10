@@ -8,9 +8,9 @@ serves `www/ui.js` as an ES module and exposes one React on
 `GlassStack`, `GlassButton`, `GlassTitle`, `GlassMuted`, `GlassRange`,
 and `GlassIntensitySlider` on `window.shinyglass` and as named exports.
 `useGlassTheme()` also reports `reducedTransparency`,
-`increasedContrast`, `forcedColors`, and `reducedMotion`, plus
-`refraction`, `morph`, `press`, `scrollEdge`, `minimizeTabs`,
-`iconStyle`, and `floatingSidebar`.
+`increasedContrast`, `forcedColors`, `reducedMotion`, `refraction`,
+`morph`, `press`, `scrollEdge`, `minimizeTabs`, `iconStyle`, and
+`floatingSidebar`.
 
 ## Usage
 
@@ -53,6 +53,10 @@ consumed.
 
 ## See also
 
+[`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
+[`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
+
+Other shinyreact glass:
 [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md),
 [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md)
 

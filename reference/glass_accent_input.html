@@ -30,6 +30,7 @@ you also want update_glass_theme() to echo the change."></head><body>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyglass.html">Using shinyglass</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -91,7 +92,43 @@ you also want <code><a href="update_glass_theme.html">update_glass_theme()</a></
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A Shiny UI tag hierarchy.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="observe_glass_accent.html">observe_glass_accent()</a></code>, <code><a href="glass_system_colors.html">glass_system_colors()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code></p>
+<p>Other glass controls:
+<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>,
+<code><a href="glass_plot_surface_input.html">glass_plot_surface_input()</a></code>,
+<code><a href="glass_preset_input.html">glass_preset_input()</a></code>,
+<code><a href="glass_resolved_preset.html">glass_resolved_preset()</a></code>,
+<code><a href="glass_scene_input.html">glass_scene_input()</a></code>,
+<code><a href="glass_system_colors.html">glass_system_colors()</a></code>,
+<code><a href="glass_theme_toggle.html">glass_theme_toggle()</a></code>,
+<code><a href="observe_glass.html">observe_glass()</a></code>,
+<code><a href="observe_glass_accent.html">observe_glass_accent()</a></code>,
+<code><a href="observe_glass_intensity.html">observe_glass_intensity()</a></code>,
+<code><a href="observe_glass_plot_surface.html">observe_glass_plot_surface()</a></code>,
+<code><a href="observe_glass_preset_input.html">observe_glass_preset_input()</a></code>,
+<code><a href="observe_glass_scene.html">observe_glass_scene()</a></code>,
+<code><a href="observe_glass_theme_toggle.html">observe_glass_theme_toggle()</a></code></p></div>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wells</span> <span class="op">&lt;-</span> <span class="fu">glass_accent_input</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">wells</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div class="form-group shiny-input-container glass-accent-input" id="glass_accent" data-glass-accent-input="glass_accent" role="radiogroup"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;label class="control-label" id="glass_accent-label"&gt;Accent&lt;/label&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;div class="glass-accent-wells"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well is-selected" style="--glass-well-color:#007AFF;background:#007AFF;" data-glass-primary="#007AFF" data-glass-accent-input="glass_accent" aria-label="blue" aria-checked="true" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well " style="--glass-well-color:#AF52DE;background:#AF52DE;" data-glass-primary="#AF52DE" data-glass-accent-input="glass_accent" aria-label="purple" aria-checked="false" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well " style="--glass-well-color:#FF2D55;background:#FF2D55;" data-glass-primary="#FF2D55" data-glass-accent-input="glass_accent" aria-label="pink" aria-checked="false" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well " style="--glass-well-color:#FF9500;background:#FF9500;" data-glass-primary="#FF9500" data-glass-accent-input="glass_accent" aria-label="orange" aria-checked="false" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well " style="--glass-well-color:#34C759;background:#34C759;" data-glass-primary="#34C759" data-glass-accent-input="glass_accent" aria-label="green" aria-checked="false" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;button type="button" class="glass-accent-well " style="--glass-well-color:#64D2FF;background:#64D2FF;" data-glass-primary="#64D2FF" data-glass-accent-input="glass_accent" aria-label="teal" aria-checked="false" role="radio"&gt;&lt;/button&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/div&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/div&gt;</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

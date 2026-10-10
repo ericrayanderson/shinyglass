@@ -13,3 +13,5 @@
 - [shinychat](https://ericrayanderson.github.io/shinyglass/articles/shinychat.md):
 - [Try
   it](https://ericrayanderson.github.io/shinyglass/articles/playground.md):
+- [Using
+  shinyglass](https://ericrayanderson.github.io/shinyglass/articles/shinyglass.md):

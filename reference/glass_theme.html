@@ -36,6 +36,7 @@ is not enough: shinyreact would suppress Bootstrap and drop this CSS)."></head><
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyglass.html">Using shinyglass</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -116,7 +117,7 @@ iOS 27 diffusion-first material.</p></dd>
 
 
 <dt id="arg-saturation">saturation<a class="anchor" aria-label="anchor" href="#arg-saturation"></a></dt>
-<dd><p>Backdrop saturation percentage.</p></dd>
+<dd><p>Backdrop saturation percentage. Default <code>200</code>.</p></dd>
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>
@@ -147,7 +148,8 @@ and Increase Contrast override the painted glass.</p></dd>
 
 
 <dt id="arg-tint">tint<a class="anchor" aria-label="anchor" href="#arg-tint"></a></dt>
-<dd><p>Content-aware ambient tint from plots/images (JS).</p></dd>
+<dd><p>Logical. Content-aware ambient tint from plots and images.
+Default <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-specular">specular<a class="anchor" aria-label="anchor" href="#arg-specular"></a></dt>
@@ -156,12 +158,14 @@ follow the pointer or device tilt. <code>FALSE</code> hides the highlights.</p><
 
 
 <dt id="arg-nav-morph">nav_morph<a class="anchor" aria-label="anchor" href="#arg-nav-morph"></a></dt>
-<dd><p>Compact navbar on scroll down; expand on scroll up (JS).</p></dd>
+<dd><p>Logical. Compact navbar on scroll down; expand on scroll
+up. Default <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-ambient-motion">ambient_motion<a class="anchor" aria-label="anchor" href="#arg-ambient-motion"></a></dt>
-<dd><p>Animate the decorative ambient sheen. Set <code>FALSE</code>
-to keep static glass surfaces. OS reduced-motion settings take priority.</p></dd>
+<dd><p>Logical. Animate the decorative ambient sheen.
+Default <code>TRUE</code>. Set <code>FALSE</code> to keep static glass surfaces. OS
+reduced-motion settings take priority.</p></dd>
 
 
 <dt id="arg-persist">persist<a class="anchor" aria-label="anchor" href="#arg-persist"></a></dt>
@@ -251,6 +255,17 @@ packs. Switching <code>preset</code> at runtime (via <code><a href="update_glass
 <code>preset = "auto"</code>) updates <code>document.documentElement.dataset.glassPreset</code>
 without recompiling Sass or reloading the page. Accent color can also be
 updated live with <code><a href="update_glass_theme.html">update_glass_theme()</a></code> <code>primary=</code> (CSS variables).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><a href="shinyglass-package.html">shinyglass</a>, <code><a href="glass_page.html">glass_page()</a></code>, <code><a href="update_glass_theme.html">update_glass_theme()</a></code>,
+<code><a href="glass_intensity_slider.html">glass_intensity_slider()</a></code>, <code><a href="glass_flatten.html">glass_flatten()</a></code></p>
+<p>Other glass themes:
+<code><a href="glass_flatten.html">glass_flatten()</a></code>,
+<code><a href="glass_page.html">glass_page()</a></code>,
+<code><a href="glass_page_react.html">glass_page_react()</a></code>,
+<code><a href="glass_theme_dependencies.html">glass_theme_dependencies()</a></code>,
+<code><a href="update_glass_theme.html">update_glass_theme()</a></code></p></div>
     </div>
 
     <div class="section level2">
