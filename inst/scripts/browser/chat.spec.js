@@ -597,15 +597,17 @@ test('mobile header controls respond without a transition delay', async ({ brows
   const toggleStarted = Date.now();
   await toggle.click({ timeout: 2000 });
   expect(Date.now() - toggleStarted).toBeLessThan(1500);
+  const theme = page.locator('bslib-input-dark-mode');
+  await expect(theme).toBeVisible();
+  const themeStarted = Date.now();
+  await theme.click({ timeout: 2000 });
+  expect(Date.now() - themeStarted).toBeLessThan(1500);
+  await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
   const close = page.locator('.shiny-chat-page-sidebar-close');
   await expect(close).toBeVisible();
   const closeStarted = Date.now();
   await close.click({ timeout: 2000 });
   expect(Date.now() - closeStarted).toBeLessThan(1500);
-  const themeStarted = Date.now();
-  await page.locator('bslib-input-dark-mode').click({ timeout: 2000 });
-  expect(Date.now() - themeStarted).toBeLessThan(1500);
-  await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
   await context.close();
 });
 
