@@ -17,7 +17,8 @@ module, \code{inst/js/shinyglass-react.js}. It registers \code{useGlassTheme},
 \code{GlassStack}, \code{GlassButton}, \code{GlassTitle}, \code{GlassMuted}, \code{GlassRange},
 and \code{GlassIntensitySlider} on \code{window.shinyglass} and as named exports.
 \code{useGlassTheme()} also reports \code{reducedTransparency}, \code{increasedContrast},
-and \code{forcedColors}.
+\code{forcedColors}, and \code{reducedMotion}, plus \code{refraction}, \code{morph}, \code{press},
+\code{scrollEdge}, \code{minimizeTabs}, \code{iconStyle}, and \code{floatingSidebar}.
 }
 \details{
 The module does not import React and does not bundle a second copy.

@@ -59,6 +59,13 @@ app = App(app_ui, None)
 | `scene` | `"default"` | `tahoe` / `dusk` / `mesh` / `aurora` / `harbor` / `grove` |
 | `flatten` | `False` | Print / screenshot mode (or `?glass_flatten=1`) |
 | `persist` | `False` | Remember preset, intensity, scene, plot surface |
+| `refraction` | `True` | Chromium squircle lens. Safari/Firefox keep blur and tint |
+| `morph` | `True` | Spring the active pill. Menus scale out of the trigger |
+| `press` | `True` | Springy press on buttons and nav links |
+| `scroll_edge` | `True` | Toolbar backing while content scrolls underneath |
+| `minimize_tabs` | `True` | Shrink tab bars on scroll down |
+| `icon_style` | `"clear"` | Monochrome bar icons. `"color"` keeps author colors |
+| `floating_sidebar` | `False` | Opt-in detached sidebar |
 
 ## Demo
 

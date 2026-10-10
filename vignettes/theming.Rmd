@@ -114,8 +114,15 @@ glass_theme(
   plot_surface = "clear", # or "opaque" for dense charts/tables
   intensity = 0.5,      # 0 Ultra Clear to 1 Tinted (iOS 27 midpoint)
   tint = TRUE,      # sample plot/image colors into glass surfaces
-  specular = TRUE,  # pointer specular highlight
-  nav_morph = TRUE  # compact navbar while scrolling down
+  specular = TRUE,  # static top and bottom highlights (no pointer tilt)
+  nav_morph = TRUE, # compact navbar while scrolling down
+  refraction = TRUE,
+  morph = TRUE,
+  press = TRUE,
+  scroll_edge = TRUE,
+  minimize_tabs = TRUE,
+  icon_style = "clear", # or "color" / "all"
+  floating_sidebar = FALSE
 )
 ```
 
@@ -127,7 +134,16 @@ over rich media and labels stay bold. Omitting `intensity` with
 Reduce Transparency (the OS setting) paints opaque fills and turns backdrop
 blur off, including before JavaScript runs. Increase Contrast and forced
 colors override the inline glass variables. The in-app slider does not have
-to move for those overrides to apply.
+to move for those overrides to apply. Reduce Transparency, Increase
+Contrast, and forced colors turn refraction off. Reduced motion turns
+press springs and tab shrinking off. `morph` still shows the active pill,
+without the spring, when motion is reduced.
+
+`refraction = TRUE` is the Chromium squircle lens (index of refraction about
+1.5). Safari and Firefox ignore the displacement map and keep blur plus tint.
+`icon_style = "clear"` is the default for bar and button icons. Light mode
+uses near-black ink, not pure white, so the glyph stays above the contrast
+floor. `floating_sidebar = TRUE` is the opt-in iPadOS 26 detached sidebar.
 
 `plot_surface = "clear"` is the default: plot and table hosts stay
 translucent so the wallpaper shows through. Use `"opaque"` when dense

@@ -7,7 +7,8 @@
 #' `GlassStack`, `GlassButton`, `GlassTitle`, `GlassMuted`, `GlassRange`,
 #' and `GlassIntensitySlider` on `window.shinyglass` and as named exports.
 #' `useGlassTheme()` also reports `reducedTransparency`, `increasedContrast`,
-#' and `forcedColors`.
+#' `forcedColors`, `reducedMotion`, `refraction`, `morph`, `press`,
+#' `scrollEdge`, `minimizeTabs`, `iconStyle`, and `floatingSidebar`.
 #'
 #' The module does not import React and does not bundle a second copy.
 #' Components call `window.shinyreact.React` when they render. Styling is
@@ -65,9 +66,11 @@ glass_react_dependency <- function() {
 #' React client still owns the DOM. Build it from `GlassPage`, `GlassSidebar`,
 #' `GlassSurface` / `GlassCard`, and `GlassButton` on `window.shinyglass`.
 #' `useGlassTheme()` tracks the live mode (`light` / `dark` / `auto`), the
-#' resolved preset, scene, material, and intensity, plus whether Reduce
-#' Transparency, Increase Contrast, or forced colors are active. Its setters
-#' call `window.shinyglass.setPreset()` and the other existing mutators.
+#' resolved preset, scene, material, and intensity, plus refraction, morph,
+#' press, scroll edge, tab minimize, icon style, and floating sidebar, and
+#' whether Reduce Transparency, Increase Contrast, reduced motion, or forced
+#' colors are active. Its setters call `window.shinyglass.setPreset()` and
+#' the other mutators, including `setRefraction()` and `setIconStyle()`.
 #' `GlassIntensitySlider` runs from Ultra Clear to Tinted and defaults to
 #' `0.5`. `setMaterial("clear")` is deprecated and maps to intensity `0.12`.
 #' Wallpaper, type, and `--glass-*` tokens apply to the document. Those

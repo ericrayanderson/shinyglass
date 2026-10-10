@@ -59,7 +59,11 @@ test('ambient motion opt-out and OS preferences update live', async ({ page }) =
   expect(await page.locator('.card').first().evaluate(el => getComputedStyle(el).animationName)).toBe('none');
   await ready(page, 'glass');
   await page.mouse.move(0, 0);
-  expect(await page.locator('.card').first().evaluate(el => getComputedStyle(el).animationName)).toBe('glass-ambient-specular');
+  // iOS 27 specular is static. Drift runs only with data-glass-specular-drift.
+  expect(await page.locator('.card').first().evaluate(el => getComputedStyle(el).animationName)).toBe('none');
+  expect(await page.locator('.card').first().evaluate(el => getComputedStyle(el, '::before').backgroundImage)).toContain('linear-gradient');
+  await expect(page.locator('html')).toHaveAttribute('data-glass-refraction', 'true');
+  await expect(page.locator('html')).toHaveAttribute('data-glass-floating-sidebar', 'false');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   expect(await page.locator('.card').first().evaluate(el => getComputedStyle(el).animationName)).toBe('none');
   const cdp = await page.context().newCDPSession(page);

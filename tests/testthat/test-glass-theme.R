@@ -809,3 +809,78 @@ test_that("accessibility CSS beats inline glass variables", {
   expect_match(js, "applyForcedColors")
   expect_match(js, "applyIncreasedContrast")
 })
+
+test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, 'glassRefraction="true"', fixed = TRUE)
+  expect_match(head, 'glassMorph="true"', fixed = TRUE)
+  expect_match(head, 'glassPress="true"', fixed = TRUE)
+  expect_match(head, 'glassScrollEdge="true"', fixed = TRUE)
+  expect_match(head, 'glassMinimizeTabs="true"', fixed = TRUE)
+  expect_match(head, 'glassIconStyle="clear"', fixed = TRUE)
+  expect_match(head, 'glassFloatingSidebar="false"', fixed = TRUE)
+  expect_match(head, "--glass-ior")
+  js_dep <- deps[[which(vapply(deps, function(d) d$name == "shinyglass", logical(1)))]]
+  expect_true(all(c("shiny-glass.js", "glass-ios27.js") %in% unlist(js_dep$script)))
+
+  off <- glass_theme(
+    refraction = FALSE,
+    morph = FALSE,
+    press = FALSE,
+    scroll_edge = FALSE,
+    minimize_tabs = FALSE,
+    icon_style = "color",
+    floating_sidebar = TRUE
+  )
+  off_deps <- bslib::bs_theme_dependencies(off)
+  off_head <- off_deps[[which(vapply(off_deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(off_head, 'glassRefraction="false"', fixed = TRUE)
+  expect_match(off_head, 'glassIconStyle="color"', fixed = TRUE)
+  expect_match(off_head, 'glassFloatingSidebar="true"', fixed = TRUE)
+  expect_error(glass_theme(icon_style = "neon"), "arg|icon")
+
+  msgs <- list()
+  session <- list(sendCustomMessage = function(type, message) {
+    msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+  })
+  update_glass_theme(
+    session,
+    refraction = FALSE,
+    morph = FALSE,
+    press = FALSE,
+    scroll_edge = FALSE,
+    minimize_tabs = FALSE,
+    icon_style = "all",
+    floating_sidebar = TRUE
+  )
+  payload <- msgs[[1]]$message
+  expect_false(payload$refraction)
+  expect_false(payload$morph)
+  expect_false(payload$press)
+  expect_false(payload$scroll_edge)
+  expect_false(payload$minimize_tabs)
+  expect_identical(payload$icon_style, "all")
+  expect_true(payload$floating_sidebar)
+
+  engine <- paste(readLines(system.file("js", "glass-ios27.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(engine, "feDisplacementMap")
+  expect_match(engine, "REFRACT_CAP = 8")
+  expect_match(engine, "prefers-reduced-motion")
+  expect_match(engine, "prefers-reduced-transparency")
+  expect_match(engine, "buildDisplacementMap")
+  expect_match(engine, "isLowTierDevice")
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, "glass-morph-indicator")
+  expect_match(scss, "glass-tabs-min")
+  expect_match(scss, "data-glass-icon-style")
+  expect_match(scss, "data-glass-floating-sidebar")
+  expect_match(scss, "glass-refract")
+  expect_match(scss, "--glass-specular-top")
+  expect_match(scss, "--glass-edge")
+  expect_true("--glass-ior" %in% glass_css_tokens()$css_var)
+  expect_equal(glass_token_pack("light")[["--glass-ior"]], "1.5")
+  expect_equal(glass_token_pack("light")[["--glass-icon-clear"]], "#1d1d1f")
+})

@@ -1,5 +1,53 @@
 # shinyglass (development version)
 
+## Breaking changes
+
+* Specular highlights are static top and bottom bands. Pointer tracking and
+  the ambient specular drift are gone. `specular = TRUE` still paints the
+  highlights. `specular = FALSE` hides them. iOS 27 does not tilt glass.
+* Glass edges are darker, and diffusion is more even across chrome and
+  content. Fill alphas and the default intensity (`0.5`) are unchanged.
+* Chromium bends the backdrop through a convex squircle lens (index of
+  refraction about 1.5, flat interior, bend concentrated at the rim, subtle
+  chromatic dispersion). Safari and Firefox keep blur and tint.
+  `refraction = FALSE` turns the lens off. Reduced transparency, increased
+  contrast, forced colors, and flatten mode do the same.
+* Nav pills, tabs, button groups, and the theme toggle get a non-interactive
+  indicator that springs between the active item. Menus and popovers scale
+  out of their trigger. `morph = FALSE` disables that. Click targets stay on
+  the original controls.
+* Buttons and nav links scale and rotate slightly while pressed, then spring
+  back (`press = TRUE`). Reduced motion skips the spring.
+* Tab bars and nav pills shrink while scrolling down and expand on scroll up
+  or interaction (`minimize_tabs = TRUE`). Reduced motion keeps them full
+  size. Navbar compact-on-scroll is still `nav_morph`.
+* Icons in nav bars, tab bars, and non-primary buttons use monochrome
+  clear-glass ink (`icon_style = "clear"`). Light mode uses `#1d1d1f` so the
+  glyph stays above the contrast floor. Dark mode uses near-white. Primary
+  buttons keep their own ink. `"color"` leaves author colors. `"all"` also
+  restyles icons inside cards.
+* These defaults load in existing apps. Layout, inputs, and click targets
+  keep working. The iPadOS 26 detached sidebar is opt-in
+  (`floating_sidebar = TRUE`) and off by default.
+
+## New features
+
+* `glass_theme()`, `glass_page()`, and `update_glass_theme()` take
+  `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`,
+  `icon_style`, and `floating_sidebar`. Tokens include `--glass-ior`,
+  `--glass-refraction-scale`, `--glass-dispersion`, `--glass-diffusion`,
+  `--glass-specular-top`, `--glass-specular-bottom`, `--glass-edge`,
+  `--glass-press-scale`, `--glass-scroll-edge-fade`, `--glass-minimize-scale`,
+  and `--glass-icon-clear`.
+* Scroll edge fades a uniform toolbar backing when content sits under
+  floating bars (`scroll_edge = TRUE`).
+* shinyreact `useGlassTheme()` reports the same knobs and can set them.
+  `GlassSidebar` floats when `floating` is set or the theme opts in.
+* Displacement maps are generated in `inst/js/glass-ios27.js` (not copied
+  from the reference projects). The approach follows public
+  `backdrop-filter: url()` lens work: Surdeddd/liquidglassjs,
+  nikdelvin/liquid-glass, and archisvaze/liquid-glass.
+
 * iOS 27 Liquid Glass alignment. The default intensity is now `0.5`,
   Apple's midpoint between Ultra Clear and Tinted (previously `0.45`).
   Apps that do not set `intensity` look slightly more tinted, with a

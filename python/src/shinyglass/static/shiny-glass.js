@@ -72,6 +72,14 @@
     return flagEnabled("glassNavMorph", true);
   }
 
+  function scrollEdgeEnabled() {
+    return flagEnabled("glassScrollEdge", true);
+  }
+
+  function minimizeTabsEnabled() {
+    return flagEnabled("glassMinimizeTabs", true);
+  }
+
   function resolvePreset(mode) {
     mode = mode || rootEl().dataset.glassMode || "light";
     if (mode === "auto") {
@@ -613,14 +621,17 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       if (tintTimer) { clearTimeout(tintTimer); tintTimer = null; }
       rootEl().classList.remove("glass-pointer-active");
-      if (document.body) document.body.classList.remove("glass-nav-compact", "glass-nav-expanded");
-      // glass-scroll-edge is contrast, not motion — leave it for updateNavMorph.
+      if (document.body) document.body.classList.remove("glass-nav-compact", "glass-nav-expanded", "glass-tabs-min");
+      // glass-scroll-edge is contrast, not motion. Leave it for updateNavMorph.
       clearTint();
     } else {
       scheduleTintUpdate();
     }
     // Recompute effective surfaces, retaining the user's chosen intensity.
     setIntensity(intensityState, { syncInputs: true });
+    if (window.__shinyglassIos27 && typeof window.__shinyglassIos27.schedule === "function") {
+      window.__shinyglassIos27.schedule();
+    }
   }
 
   function setPrimary(color) {
@@ -1188,9 +1199,9 @@
 
       var y = Math.max(0, window.scrollY);
       // iOS 27 scroll-edge: uniform toolbar while content sits under floating
-      // chrome. Contrast-only — keep under reduced-motion and when nav_morph
+      // chrome. Contrast-only: keep under reduced-motion and when nav_morph
       // is off. Compact-on-scroll-down remains a separate motion treatment.
-      if (y > threshold) {
+      if (scrollEdgeEnabled() && y > threshold) {
         body.classList.add("glass-scroll-edge");
       } else {
         body.classList.remove("glass-scroll-edge");
@@ -1200,6 +1211,20 @@
       try {
         reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       } catch (e) { /* ignore */ }
+
+      var holdUntil = 0;
+      try {
+        if (window.shinyglass && typeof window.shinyglass._tabsHoldUntil === "function") {
+          holdUntil = window.shinyglass._tabsHoldUntil() || 0;
+        }
+      } catch (eHold) { holdUntil = 0; }
+      if (!minimizeTabsEnabled() || reducedMotion || y <= threshold || Date.now() < holdUntil) {
+        body.classList.remove("glass-tabs-min");
+      } else if (y > lastScrollY + 2) {
+        body.classList.add("glass-tabs-min");
+      } else if (y < lastScrollY - 2) {
+        body.classList.remove("glass-tabs-min");
+      }
 
       if (!navMorphEnabled() || reducedMotion) {
         body.classList.remove("glass-nav-compact", "glass-nav-expanded");
@@ -1301,47 +1326,8 @@
 
   $(document).on("shiny:connected", scheduleWidgetOverrides);
 
-  // --glass-specular-x/y from pointer
-  (function () {
-    var specularSelector =
-      ".card, form.well, .col-sm-4.well, .bslib-sidebar-layout > .sidebar, .bslib-page-sidebar > .navbar, .navbar.navbar-static-top, .navbar.navbar-default, .tabbable > .nav-tabs, .dataTables_wrapper, .stati, .box, .small-box, .info-box, .reactable, .Reactable, .value-box";
-
-    var pointerActiveTimer = null;
-    var pointerFrame = null;
-    var pointerEvent = null;
-    document.addEventListener(
-      "mousemove",
-      function (e) {
-        if (!specularEnabled()) return;
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        pointerEvent = e;
-        if (pointerFrame !== null) return;
-        pointerFrame = window.requestAnimationFrame(function () {
-          pointerFrame = null;
-          if (!specularEnabled() || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-          var e = pointerEvent;
-          var el = e.target.closest(specularSelector);
-          if (!el) {
-            rootEl().classList.remove("glass-pointer-active");
-            return;
-          }
-          var rect = el.getBoundingClientRect();
-          if (!rect.width || !rect.height) return;
-          var x = ((e.clientX - rect.left) / rect.width) * 100;
-          var y = ((e.clientY - rect.top) / rect.height) * 100;
-          // Pause ambient drift while pointer drives specular
-          rootEl().classList.add("glass-pointer-active");
-          if (pointerActiveTimer) clearTimeout(pointerActiveTimer);
-          pointerActiveTimer = setTimeout(function () {
-            rootEl().classList.remove("glass-pointer-active");
-          }, 1400);
-          el.style.setProperty("--glass-specular-x", x + "%");
-          el.style.setProperty("--glass-specular-y", y + "%");
-        });
-      },
-      { passive: true }
-    );
-  })();
+  // iOS 27 specular highlights are static top and bottom bands.
+  // Pointer and gyro shimmer are not applied.
 
   // selectize open/close class for z-index
   $(document).on("focus mousedown", ".selectize-control .selectize-input", function () {
@@ -1399,6 +1385,21 @@
       if (msg.plot_surface != null) setPlotSurface(msg.plot_surface);
       if (msg.flatten != null) setFlatten(!!msg.flatten);
       if (msg.tokens != null) setTokens(msg.tokens);
+      if (msg.refraction != null) rootEl().dataset.glassRefraction = msg.refraction ? "true" : "false";
+      if (msg.morph != null) rootEl().dataset.glassMorph = msg.morph ? "true" : "false";
+      if (msg.press != null) rootEl().dataset.glassPress = msg.press ? "true" : "false";
+      if (msg.scroll_edge != null) rootEl().dataset.glassScrollEdge = msg.scroll_edge ? "true" : "false";
+      if (msg.minimize_tabs != null) rootEl().dataset.glassMinimizeTabs = msg.minimize_tabs ? "true" : "false";
+      if (msg.floating_sidebar != null) rootEl().dataset.glassFloatingSidebar = msg.floating_sidebar ? "true" : "false";
+      if (msg.icon_style != null) {
+        var iconStyle = String(msg.icon_style);
+        if (iconStyle !== "clear" && iconStyle !== "color" && iconStyle !== "all") iconStyle = "clear";
+        rootEl().dataset.glassIconStyle = iconStyle;
+      }
+      if (window.__shinyglassIos27 && typeof window.__shinyglassIos27.schedule === "function" &&
+          (msg.refraction != null || msg.morph != null || msg.press != null || msg.flatten != null)) {
+        window.__shinyglassIos27.schedule();
+      }
     }
   }
 

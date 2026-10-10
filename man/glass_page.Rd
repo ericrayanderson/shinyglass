@@ -14,6 +14,13 @@ glass_page(
   wallpaper = NULL,
   plot_surface = "clear",
   flatten = FALSE,
+  refraction = TRUE,
+  morph = TRUE,
+  press = TRUE,
+  scroll_edge = TRUE,
+  minimize_tabs = TRUE,
+  icon_style = c("clear", "color", "all"),
+  floating_sidebar = FALSE,
   controls = TRUE,
   theme = NULL
 )
@@ -23,7 +30,8 @@ glass_page(
 
 \item{title}{Optional page title (\code{\link[shiny:titlePanel]{shiny::titlePanel()}}).}
 
-\item{preset, intensity, persist, scene, wallpaper, plot_surface, flatten}{Forwarded to \code{\link[=glass_theme]{glass_theme()}}. Persistence defaults to \code{TRUE} here.}
+\item{preset, intensity, persist, scene, wallpaper, plot_surface, flatten, refraction, morph, press, scroll_edge, minimize_tabs, icon_style, floating_sidebar}{Forwarded to \code{\link[=glass_theme]{glass_theme()}}. Persistence defaults to \code{TRUE} here.
+\code{floating_sidebar} stays off unless you opt in.}
 
 \item{controls}{\code{TRUE} for the default control row (toggle, intensity,
 accent), \code{FALSE} for none, or a character vector subset of

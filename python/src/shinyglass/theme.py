@@ -174,6 +174,13 @@ def _preset_head(
     ambient_motion: bool,
     primary: str,
     wallpaper: str | None,
+    refraction: bool = True,
+    morph: bool = True,
+    press: bool = True,
+    scroll_edge: bool = True,
+    minimize_tabs: bool = True,
+    icon_style: str = "clear",
+    floating_sidebar: bool = False,
 ) -> str:
     wall = "null" if not wallpaper else repr(wallpaper)
     scenes = ",".join(f"{s}:1" for s in GLASS_SCENES)
@@ -223,6 +230,14 @@ def _preset_head(
         f"root.dataset.glassSpecular='{_js_bool(specular)}';"
         f"root.dataset.glassNavMorph='{_js_bool(nav_morph)}';"
         f"root.dataset.glassAmbientMotion='{_js_bool(ambient_motion)}';"
+        f"root.dataset.glassRefraction='{_js_bool(refraction)}';"
+        f"root.dataset.glassMorph='{_js_bool(morph)}';"
+        f"root.dataset.glassPress='{_js_bool(press)}';"
+        f"root.dataset.glassScrollEdge='{_js_bool(scroll_edge)}';"
+        f"root.dataset.glassMinimizeTabs='{_js_bool(minimize_tabs)}';"
+        f"root.dataset.glassIconStyle={icon_style!r};"
+        f"root.dataset.glassFloatingSidebar='{_js_bool(floating_sidebar)}';"
+        "root.style.setProperty('--glass-ior','1.5');"
         "if(prim){root.dataset.glassPrimary=prim;"
         "root.style.setProperty('--bs-primary',prim);"
         "root.style.setProperty('--glass-primary',prim);"
@@ -258,6 +273,13 @@ class GlassTheme(Theme):
         ambient_motion: bool = True,
         primary: str = _DEFAULT_PRIMARY,
         wallpaper: str | None = None,
+        refraction: bool = True,
+        morph: bool = True,
+        press: bool = True,
+        scroll_edge: bool = True,
+        minimize_tabs: bool = True,
+        icon_style: str = "clear",
+        floating_sidebar: bool = False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -275,6 +297,13 @@ class GlassTheme(Theme):
         self._ambient_motion = bool(ambient_motion)
         self._primary = primary
         self._wallpaper = wallpaper
+        self._refraction = bool(refraction)
+        self._morph = bool(morph)
+        self._press = bool(press)
+        self._scroll_edge = bool(scroll_edge)
+        self._minimize_tabs = bool(minimize_tabs)
+        self._icon_style = icon_style if icon_style in ("clear", "color", "all") else "clear"
+        self._floating_sidebar = bool(floating_sidebar)
 
     def _html_dependencies(self) -> list[HTMLDependency]:
         if self._precompiled_css is not None:
@@ -310,6 +339,13 @@ class GlassTheme(Theme):
                     ambient_motion=self._ambient_motion,
                     primary=self._primary,
                     wallpaper=self._wallpaper,
+                    refraction=self._refraction,
+                    morph=self._morph,
+                    press=self._press,
+                    scroll_edge=self._scroll_edge,
+                    minimize_tabs=self._minimize_tabs,
+                    icon_style=self._icon_style,
+                    floating_sidebar=self._floating_sidebar,
                 ),
             )
         )
@@ -319,6 +355,15 @@ class GlassTheme(Theme):
                 version=__version__,
                 source={"subdir": js_src},
                 script={"src": "shiny-glass.js"},
+                all_files=False,
+            )
+        )
+        deps.append(
+            HTMLDependency(
+                name="shinyglass-ios27",
+                version=__version__,
+                source={"subdir": js_src},
+                script={"src": "glass-ios27.js"},
                 all_files=False,
             )
         )
@@ -347,6 +392,13 @@ def glass_theme(
     specular: bool = True,
     nav_morph: bool = True,
     ambient_motion: bool = True,
+    refraction: bool = True,
+    morph: bool = True,
+    press: bool = True,
+    scroll_edge: bool = True,
+    minimize_tabs: bool = True,
+    icon_style: str = "clear",
+    floating_sidebar: bool = False,
     *,
     base: str | None = None,
     _allow_compile: bool = False,
@@ -414,6 +466,8 @@ def glass_theme(
         raise ValueError(f"scene must be one of {GLASS_SCENES}")
     if not 0.0 <= float(intensity) <= 1.0:
         raise ValueError("intensity must be between 0 and 1")
+    if icon_style not in ("clear", "color", "all"):
+        raise ValueError('icon_style must be "clear", "color", or "all"')
 
     # JS-only knobs (intensity, scene, flatten, persist, plot_surface) keep
     # the precompiled CSS path — they do not need a Sass recompile.
@@ -437,6 +491,13 @@ def glass_theme(
         ambient_motion=ambient_motion,
         primary=primary,
         wallpaper=wallpaper,
+        refraction=refraction,
+        morph=morph,
+        press=press,
+        scroll_edge=scroll_edge,
+        minimize_tabs=minimize_tabs,
+        icon_style=icon_style,
+        floating_sidebar=floating_sidebar,
     )
 
     if use_precompiled:
@@ -534,6 +595,13 @@ def update_glass_theme(
     ambient_motion: bool | None = None,
     tint: bool | None = None,
     tokens: Mapping[str, str] | None = None,
+    refraction: bool | None = None,
+    morph: bool | None = None,
+    press: bool | None = None,
+    scroll_edge: bool | None = None,
+    minimize_tabs: bool | None = None,
+    icon_style: str | None = None,
+    floating_sidebar: bool | None = None,
 ) -> None:
     """Send a ``shinyglass`` custom message (same payload as R)."""
     payload: dict[str, Any] = {}
@@ -569,6 +637,22 @@ def update_glass_theme(
         payload["ambient_motion"] = bool(ambient_motion)
     if tint is not None:
         payload["tint"] = bool(tint)
+    if refraction is not None:
+        payload["refraction"] = bool(refraction)
+    if morph is not None:
+        payload["morph"] = bool(morph)
+    if press is not None:
+        payload["press"] = bool(press)
+    if scroll_edge is not None:
+        payload["scroll_edge"] = bool(scroll_edge)
+    if minimize_tabs is not None:
+        payload["minimize_tabs"] = bool(minimize_tabs)
+    if icon_style is not None:
+        if icon_style not in ("clear", "color", "all"):
+            raise ValueError('icon_style must be "clear", "color", or "all"')
+        payload["icon_style"] = icon_style
+    if floating_sidebar is not None:
+        payload["floating_sidebar"] = bool(floating_sidebar)
     if tokens:
         payload["tokens"] = dict(tokens)
     if not payload:

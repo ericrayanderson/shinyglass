@@ -165,7 +165,18 @@ glass_css_tokens <- function() {
     c("plot-panel", "--glass-plot-panel", "content", "Opaque plot/table panel fill."),
     c("primary", "--glass-primary", "accent", "Accent / brand color."),
     c("accent", "--glass-accent", "accent", "Alias of --glass-primary."),
-    c("on-primary", "--glass-on-primary", "accent", "Ink on solid accent fills.")
+    c("on-primary", "--glass-on-primary", "accent", "Ink on solid accent fills."),
+    c("ior", "--glass-ior", "material", "Index of refraction for the squircle lens. Default 1.5."),
+    c("refraction-scale", "--glass-refraction-scale", "material", "Peak backdrop displacement in CSS pixels."),
+    c("dispersion", "--glass-dispersion", "material", "Rim chromatic spread. Dropped on low-tier devices."),
+    c("diffusion", "--glass-diffusion", "material", "Extra uniform blur multiplier for busy content."),
+    c("specular-top", "--glass-specular-top", "surface", "Static top specular highlight."),
+    c("specular-bottom", "--glass-specular-bottom", "surface", "Static bottom specular highlight."),
+    c("edge", "--glass-edge", "surface", "Darkened outer edge ring."),
+    c("press-scale", "--glass-press-scale", "motion", "Pressed control scale."),
+    c("scroll-edge-fade", "--glass-scroll-edge-fade", "motion", "Toolbar edge fade length."),
+    c("minimize-scale", "--glass-minimize-scale", "motion", "Shrunk tab bar scale."),
+    c("icon-clear", "--glass-icon-clear", "ink", "Monochrome clear-glass icon ink.")
   )
   as.data.frame(
     do.call(rbind, lapply(rows, function(r) {
@@ -227,6 +238,33 @@ glass_token_pack <- function(preset = c("light", "dark")) {
     },
     `--glass-refract-brightness` = "1.04",
     `--glass-refract-contrast` = "1.04",
+    `--glass-ior` = "1.5",
+    `--glass-refraction-scale` = "42",
+    `--glass-dispersion` = "0.06",
+    `--glass-diffusion` = "1.06",
+    `--glass-specular-top` = if (identical(preset, "dark")) {
+      "rgba(255, 255, 255, 0.92)"
+    } else {
+      "rgba(255, 255, 255, 1)"
+    },
+    `--glass-specular-bottom` = if (identical(preset, "dark")) {
+      "rgba(255, 255, 255, 0.62)"
+    } else {
+      "rgba(255, 255, 255, 0.78)"
+    },
+    `--glass-edge` = if (identical(preset, "dark")) {
+      "rgba(0, 0, 0, 0.88)"
+    } else {
+      "rgba(0, 0, 0, 0.38)"
+    },
+    `--glass-press-scale` = "0.965",
+    `--glass-scroll-edge-fade` = "28px",
+    `--glass-minimize-scale` = "0.92",
+    `--glass-icon-clear` = if (identical(preset, "dark")) {
+      "rgba(255, 255, 255, 0.92)"
+    } else {
+      "#1d1d1f"
+    },
     `--glass-wallpaper-wash` = if (identical(preset, "dark")) {
       "rgba(0, 0, 0, 0.55)"
     } else {

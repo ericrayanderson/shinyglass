@@ -146,6 +146,30 @@ def test_update_glass_theme_payload():
     assert sent[0][1]["flatten"] is True
 
 
+def test_ios27_motion_defaults_and_opt_in_sidebar():
+    theme = glass_theme()
+    preset = next(d for d in theme._html_dependencies() if d.name == "shinyglass-preset")
+    markup = str(preset.head or "")
+    assert "glassRefraction='true'" in markup
+    assert "glassMorph='true'" in markup
+    assert "glassPress='true'" in markup
+    assert "glassScrollEdge='true'" in markup
+    assert "glassMinimizeTabs='true'" in markup
+    assert "glassIconStyle='clear'" in markup
+    assert "glassFloatingSidebar='false'" in markup
+    names = [d.name for d in theme._html_dependencies()]
+    assert "shinyglass-ios27" in names
+    with pytest.raises(ValueError, match="icon_style"):
+        glass_theme(icon_style="neon")
+    off = glass_theme(refraction=False, icon_style="color", floating_sidebar=True)
+    off_head = str(
+        next(d for d in off._html_dependencies() if d.name == "shinyglass-preset").head or ""
+    )
+    assert "glassRefraction='false'" in off_head
+    assert "glassIconStyle='color'" in off_head
+    assert "glassFloatingSidebar='true'" in off_head
+
+
 def test_default_intensity_is_midpoint_and_clear_material_is_deprecated():
     theme = glass_theme()
     preset = next(d for d in theme._html_dependencies() if d.name == "shinyglass-preset")

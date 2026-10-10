@@ -63,6 +63,15 @@ Browsers cannot read that OS slider, so the in-app control is the supported
 way to match the look. Reduce Transparency paints solid fills with no backdrop
 blur. Increase Contrast and forced colors override the glass variables.
 
+Defaults also follow iOS 27 as far as a browser can. Chromium refracts the
+backdrop through a squircle lens. Safari and Firefox keep blur and tint.
+Active pills and tabs spring into each other, buttons press with a short
+spring, and floating bars pick up a scroll-edge fade. Tab bars shrink while
+you scroll down. Specular highlights are static (no pointer tilt). Icons in
+bars and non-primary buttons are monochrome clear glass (`icon_style =
+"clear"`). Pass `icon_style = "color"` to keep author colors. The detached
+sidebar is opt-in: `floating_sidebar = TRUE`.
+
 Dense charts and tables can opt into a regular panel with
 `glass_theme(plot_surface = "opaque")` while nav and controls stay on glass.
 The default `"clear"` look still shows the wallpaper through plot hosts.

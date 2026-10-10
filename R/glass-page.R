@@ -6,8 +6,9 @@
 #'
 #' @param ... UI elements passed to [shiny::fluidPage()].
 #' @param title Optional page title ([shiny::titlePanel()]).
-#' @param preset,intensity,persist,scene,wallpaper,plot_surface,flatten
+#' @param preset,intensity,persist,scene,wallpaper,plot_surface,flatten,refraction,morph,press,scroll_edge,minimize_tabs,icon_style,floating_sidebar
 #'   Forwarded to [glass_theme()]. Persistence defaults to `TRUE` here.
+#'   `floating_sidebar` stays off unless you opt in.
 #' @param controls `TRUE` for the default control row (toggle, intensity,
 #'   accent), `FALSE` for none, or a character vector subset of
 #'   `"toggle"`, `"intensity"`, `"accent"`.
@@ -42,8 +43,16 @@ glass_page <- function(
     wallpaper = NULL,
     plot_surface = "clear",
     flatten = FALSE,
+    refraction = TRUE,
+    morph = TRUE,
+    press = TRUE,
+    scroll_edge = TRUE,
+    minimize_tabs = TRUE,
+    icon_style = c("clear", "color", "all"),
+    floating_sidebar = FALSE,
     controls = TRUE,
     theme = NULL) {
+  icon_style <- match.arg(icon_style)
   if (is.null(theme)) {
     theme <- glass_theme(
       preset = preset,
@@ -52,7 +61,14 @@ glass_page <- function(
       scene = scene,
       wallpaper = wallpaper,
       plot_surface = plot_surface,
-      flatten = flatten
+      flatten = flatten,
+      refraction = refraction,
+      morph = morph,
+      press = press,
+      scroll_edge = scroll_edge,
+      minimize_tabs = minimize_tabs,
+      icon_style = icon_style,
+      floating_sidebar = floating_sidebar
     )
   }
 
