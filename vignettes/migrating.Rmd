@@ -1,0 +1,164 @@
+---
+title: "Migrating to 0.5.0"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Migrating to 0.5.0}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+0.5.0 keeps the same page functions and the same click targets. The
+default paint and a few arguments changed. This note is what you will
+see, what to call, and how to sit closer to the 0.4.0 look.
+
+# What changed visually
+
+Existing apps pick up the new defaults the next time they load
+`glass_theme()` or `glass_page()`. You do not need a new page function.
+
+| Piece | 0.5.0 default |
+|-------|----------------|
+| Intensity | `0.5` (was `0.45`). Slightly more tint, a stronger rim, and a narrower blur range. |
+| Edges | Darker outer edge, more even diffusion. Fill alphas are the same. |
+| Specular | Static top and bottom bands. The highlight does not follow the pointer, and the ambient drift is gone. |
+| Lens | Chromium refracts the backdrop through a convex squircle (index about 1.5). Safari and Firefox keep blur and tint. |
+| Selection | Nav pills, tabs, button groups, and the theme toggle spring an indicator between the active item. Menus and popovers scale out of their trigger. |
+| Press | Buttons and nav links scale and rotate slightly while pressed, then spring back. |
+| Tab bars | Shrink while scrolling down, expand on scroll up or interaction. |
+| Icons | Nav bars, tab bars, and non-primary buttons use monochrome clear-glass ink. Light mode is `#1d1d1f`. Dark mode is near-white. |
+| Sidebar | Still docked. The detached iPadOS 26 card is opt-in. |
+
+Reduced motion skips the press spring and the tab shrink. Reduced
+transparency, increased contrast, forced colors, and flatten mode turn
+the lens off. Those OS settings now override the inline `--glass-*`
+values the intensity script writes, including before the page finishes
+booting.
+
+shinychat `page_chat()` / `chat_ui()` and bslib `offcanvas()` use the
+same material: glass header and history, tinted user bubbles, a floating
+composer, and an offcanvas panel that scales in from its trigger.
+Bootstrap still owns the offcanvas slide.
+
+# What changed in the API
+
+`glass_theme()`, `glass_page()`, and `update_glass_theme()` take these
+arguments. Defaults match the table above.
+
+| Argument | Default | Turn it down |
+|----------|---------|----------------|
+| `intensity` | `0.5` | Any value from `0` (Ultra Clear) to `1` (Tinted) |
+| `refraction` | `TRUE` | `FALSE` removes the Chromium lens |
+| `morph` | `TRUE` | `FALSE` removes the springing indicator and menu scale |
+| `press` | `TRUE` | `FALSE` removes the press spring |
+| `minimize_tabs` | `TRUE` | `FALSE` keeps tab bars full size |
+| `icon_style` | `"clear"` | `"color"` leaves author icon colors. `"all"` also restyles icons inside cards |
+| `scroll_edge` | `TRUE` | `FALSE` removes the toolbar fade. 0.4.0 already painted this edge; the argument is new |
+| `floating_sidebar` | `FALSE` | `TRUE` detaches the sidebar into a rounded card |
+
+`nav_morph` is unchanged: the navbar still compacts on scroll down.
+
+New public tokens (see [glass_css_tokens()]): `--glass-ior`,
+`--glass-refraction-scale`, `--glass-dispersion`, `--glass-diffusion`,
+`--glass-specular-top`, `--glass-specular-bottom`, `--glass-edge`,
+`--glass-press-scale`, `--glass-scroll-edge-fade`,
+`--glass-minimize-scale`, `--glass-icon-clear`.
+
+shinyreact `useGlassTheme()` reports the same knobs, plus
+`reducedTransparency`, `increasedContrast`, and `forcedColors`.
+`GlassIntensitySlider` defaults to `0.5`. `GlassSidebar` floats when
+`floating` is set or the theme opts in. `glass_page_react()` still
+passes the theme as `theme` so the compiled CSS is not dropped.
+
+# Approximating the 0.4.0 look
+
+This turns off the motion and the lens, restores the old intensity
+midpoint, and leaves icon colors alone. Static specular bands stay.
+Pointer tracking does not come back. The darker edge is part of the
+0.5.0 material; soften it with `tokens` if the rim is too strong.
+
+```{r}
+library(shinyglass)
+
+legacy <- glass_theme(
+  intensity = 0.45,
+  refraction = FALSE,
+  morph = FALSE,
+  press = FALSE,
+  minimize_tabs = FALSE,
+  icon_style = "color",
+  tokens = list(
+    diffusion = "1",
+    edge = "rgba(0, 0, 0, 0.22)"
+  )
+)
+```
+
+`scroll_edge` stays at its default (`TRUE`) because 0.4.0 already drew
+that toolbar. Pass `scroll_edge = FALSE` only when you want the fade
+gone. `floating_sidebar` stays `FALSE`.
+
+The `edge` value above is an example override, not a pixel copy of
+0.4.0. `glass_css_tokens()` lists the names `tokens` accepts.
+
+`update_glass_theme()` takes the same switches after the app is open:
+
+```{r, eval = FALSE}
+update_glass_theme(
+  session,
+  intensity = 0.45,
+  refraction = FALSE,
+  morph = FALSE,
+  press = FALSE,
+  minimize_tabs = FALSE,
+  icon_style = "color"
+)
+```
+
+# `material = "clear"`
+
+`material = "clear"` is deprecated and will leave in a later release.
+When you omit `intensity`, that call still maps to `0.12` and warns, so
+older apps stay clearer than the midpoint. Prefer `intensity`:
+
+```{r, eval = FALSE}
+# 0.4.0
+glass_theme(material = "clear")
+
+# 0.5.0, same paint, no warning
+glass_theme(intensity = 0.12)
+```
+
+`update_glass_theme(material = "clear")` and shinyreact
+`setMaterial("clear")` use the same mapping and the same warning. If
+you also pass `intensity`, that value wins and the warning still fires.
+
+# Chat and offcanvas
+
+No extra theme object is required. Pass the glass theme through as
+before:
+
+```{r, eval = FALSE}
+library(shinychat)
+
+page_chat(
+  "Notes",
+  id = "chat",
+  theme = glass_theme(scene = "dusk"),
+  placeholder = "Message"
+)
+```
+
+Harbor notes (`inst/examples/shinychat-glass`) is the flagship demo.
+It is not on shinyapps.io yet. Run it locally:
+
+```{r, eval = FALSE}
+shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
+```
+
+With no API key the reply is a local script. `GEMINI_API_KEY` or
+`GOOGLE_API_KEY` uses Gemini Flash for that session, with a short
+fallback to the script if the API errors.

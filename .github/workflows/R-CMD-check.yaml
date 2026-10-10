@@ -19,13 +19,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          # Feasible win-builder / rhub stand-in. Do not submit this
+          # branch to win-builder or rhub. Ubuntu covers release, devel,
+          # and oldrel. Windows and macOS stay on R 4.5: pak cannot
+          # install R 4.6 dependencies there (zstd macOS binaries for
+          # knitr/xfun, and no Windows pak binary index for 4.6).
           - {os: ubuntu-latest,  r: 'devel'}
           - {os: ubuntu-latest,  r: 'release'}
-          # R 4.6 macOS CRAN binaries for knitr/xfun are zstd .tgz; pak
-          # stable cannot extract them. 4.5 still ships gzip binaries.
+          - {os: ubuntu-latest,  r: 'oldrel-1'}
           - {os: macos-latest,   r: '4.5'}
-          # pak stable is not available for R 4.6 on Windows: the
-          # win.binary contrib/4.6 index cannot be opened.
           - {os: windows-latest, r: '4.5'}
 
     env:
@@ -66,4 +68,4 @@ jobs:
             }
             if (inherits(last, "error")) stop(last)
           '
-          Rscript -e "spelling::spell_check_package()"
+          Rscript -e 'sp <- spelling::spell_check_package(); print(sp); if (nrow(sp)) stop(nrow(sp), " spelling issue(s)", call. = FALSE)'

@@ -8,7 +8,7 @@ node and glass styles only hit a wrapper (or dark-mode packs miss a surface).
 From the package root:
 
 ```r
-# full matrix (demo + dashboard + inputs + plotly_gt × light + dark)
+# full matrix (demo + dashboard + inputs + plotly_gt + chrome + chat × light + dark)
 Rscript inst/scripts/audit-glass-contrast.R
 
 # dark-only dashboard (fast DT pagination check)
@@ -38,10 +38,11 @@ What it checks:
 
 Optional app: `--apps=...,shinywidgets` if `shinyWidgets` is installed.
 
-Default matrix now includes `chrome` (`chrome-kitchen-sink.R`) and opens
-datepicker / navbar menu / notifications / accordion / tooltip / popover /
-server modal, plus intensity 0 and 1. Screenshot a pass with
-`--screenshot-dir=visual-test-output/chrome`.
+Default matrix includes `chrome` (`chrome-kitchen-sink.R`) and `chat`
+(Harbor notes). Chrome opens the datepicker, navbar menu, notifications,
+accordion, tooltip, popover, server modal, and intensity 0 and 1. Chat
+sends the scripted dawn reply and opens the sources offcanvas. Screenshot
+a pass with `--screenshot-dir=visual-test-output/chrome`.
 
 ## Narrow viewport gate (≤480px)
 
@@ -81,6 +82,7 @@ the card; we do not collapse every multi-column demo into a single field.
 | `bslib-dashboard` | ✓ | ✓ | DT page **2**; confirm page **1** active chip |
 | `plotly-gt-demo` | ✓ | ✓ | Modebar icons readable; gt header/rows (if plotly+gt installed) |
 | `chrome-kitchen-sink` | ✓ | ✓ | Datepicker, all 4 notification types, `showModal()`, navbar menu, accordion, tooltip/popover |
+| Harbor notes (`shinychat-glass`) | ✓ | ✓ | Scripted reply (thinking, citation, tool card) and sources offcanvas |
 | `shinywidgets-gallery-glass` | ✓ | ✓ | Flip a switch / open a picker (if installed) |
 | `shinydashboardPlus-glass-demo` | ✓ | ✓ | Controlbar + notification dropdown (if Plus installed) |
 

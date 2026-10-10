@@ -22,11 +22,11 @@ home:
         text: |
           [Source code](https://github.com/ericrayanderson/shinyglass)
           [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
+          [Harbor notes](articles/shinychat.html) ·
           [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) ·
           [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) ·
           [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) ·
-          [Olympics](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) ·
-          [Harbor notes](articles/shinychat.html)
+          [Olympics](https://ericrayanderson.shinyapps.io/shinyglass-olympics/)
 
 navbar:
   structure:
@@ -41,6 +41,8 @@ navbar:
       menu:
         - text: Theming and light/dark
           href: articles/theming.html
+        - text: Migrating to 0.5.0
+          href: articles/migrating.html
         - text: Ecosystem compatibility
           href: articles/compatibility.html
         - text: shinyreact
@@ -103,6 +105,7 @@ articles:
 - title: Guides
   contents:
   - theming
+  - migrating
   - compatibility
   - shinyreact
   - shinychat
@@ -112,6 +115,6 @@ authors:
   Eric Anderson:
     href: https://github.com/ericrayanderson
 
-# Publish at the package root (not /dev/). 0.4.0 is a CRAN release version.
+# Publish at the package root (not /dev/). 0.5.0 is a CRAN release version.
 development:
   mode: release
