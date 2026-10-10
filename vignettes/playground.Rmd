@@ -13,8 +13,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 
 # Live demo
 
-The [basics demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/) is a
-full Shiny app with theme persistence, intensity, accent wells, and
+[Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) is the
+flagship chat. The [basics demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
+is a full Shiny app with theme persistence, intensity, accent wells, and
 `theme_glass()` plots. Apps may take a moment to wake up.
 
 # Shinylive

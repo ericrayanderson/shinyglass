@@ -18,8 +18,8 @@ Do not file a submission from a development (`.9000`) tree.
       checks this when `_pkgdown.yml` is present).
 - [x] Python `pyproject.toml` / `_version.py` track 0.5.0 (not in tarball).
 - [x] README install instructions mention CRAN 0.5.0; GitHub is secondary.
-      Harbor notes is the flagship. Its hosted URL stays out of checked
-      links until the app is deployed.
+      Harbor notes is the flagship and links to the hosted app. The
+      archived plotly-gt URL is not linked.
 - [x] DESCRIPTION Title / Description CRAN-clean (quoted software names).
 - [x] Examples are cheap or `interactive()`-guarded.
 - [x] Confirm Python / `inst/scripts` / large README figures stay in `.Rbuildignore`.
@@ -53,7 +53,7 @@ Do not file a submission from a development (`.9000`) tree.
 ## After accept
 
 - [ ] GitHub release + pkgdown.
-- [ ] Redeploy shinyapps demos if CSS/JS changed, including Harbor notes
-      (`shinyglass-chat`). Add the hosted URL to the README only after
-      that deploy succeeds.
+- [ ] Redeploy shinyapps demos if CSS/JS changed. Harbor notes is
+      already at `shinyglass-chat`. Leave the archived plotly-gt app
+      offline.
 - [ ] Record the upload in `CRAN-SUBMISSION` (devtools writes this).

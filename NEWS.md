@@ -99,7 +99,8 @@
   back to the local script. Deploy key `chat` (`shinyglass-chat`). When
   `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
   gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
-  `envVars`. The value is not logged. The app is not on shinyapps.io yet.
+  `envVars`. The value is not logged. Hosted app:
+  [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact
@@ -338,8 +339,8 @@
   **shinydashboardPlus** controlbar/dropdowns/user menu, light
   **rhandsontable** / echarts/highcharter hosts. Examples:
   `plotly-gt-demo.R`, `shinydashboardPlus-glass-demo.R`.
-* Live demo [shinyglass-plotly-gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/);
-  README light/dark screenshots for plotly+gt.
+* plotly + gt stays a local example (`plotly-gt-demo.R`). README
+  light/dark screenshots for plotly+gt. The hosted copy is archived.
 * CI workflow `visual-qa` (testthat + dual-theme contrast audit) and committed
   `inst/scripts/audit-baseline.json`.
 * Navbar brand / page title ink uses `--glass-body-color` (no more white brand

@@ -152,13 +152,13 @@ page_chat(
 )
 ```
 
-Harbor notes (`inst/examples/shinychat-glass`) is the flagship demo.
-It is not on shinyapps.io yet. Run it locally:
+Harbor notes is the flagship demo:
+[https://ericrayanderson.shinyapps.io/shinyglass-chat/](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
+The source is `inst/examples/shinychat-glass`.
 
 ```{r, eval = FALSE}
 shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 ```
 
-With no API key the reply is a local script. `GEMINI_API_KEY` or
-`GOOGLE_API_KEY` uses Gemini Flash for that session, with a short
-fallback to the script if the API errors.
+With no API key the local app uses a script. The hosted app answers
+with Gemini Flash and falls back to that script if the API errors.

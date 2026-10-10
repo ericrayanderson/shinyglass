@@ -24,9 +24,10 @@ DESCRIPTION; README URIs that pointed at `.Rbuildignore`'d `python/` and
   `useGlassTheme()`, `GlassIntensitySlider`) and a compatibility
   fixture for common widgets.
 * Harbor notes, a shinychat demo, joins the five-app set with basics,
-  dashboard, inputs, and Olympics. It is not on shinyapps.io yet, so
-  the README and pkgdown link the source and the article, not a hosted
-  URL. plotly + gt stays a local example.
+  dashboard, inputs, and Olympics. The hosted app is
+  https://ericrayanderson.shinyapps.io/shinyglass-chat/ . plotly + gt
+  stays a local example. Its hosted copy is archived, and that URL is
+  not linked.
 * shinychat `page_chat()` / `chat_ui()` and bslib `offcanvas()` use the
   glass material.
 
@@ -96,9 +97,8 @@ appear on CRAN before upload.
 
 * Large README marketing assets stay on GitHub via `.Rbuildignore`,
   including the Harbor notes screenshots and the intensity GIF.
-* Live demos: shinyglass-demo, -dashboard, -inputs, -olympics.
-  shinyglass-chat is the Harbor notes app name and is not deployed yet.
-  plotly-gt remains a local example.
+* Live demos: shinyglass-chat, -demo, -dashboard, -inputs, -olympics.
+  plotly-gt remains a local example. Its hosted copy is archived.
 * Experimental Python package is not in the CRAN tarball (version
   tracks 0.5.0; not a PyPI release).
 * Release checklist: `inst/scripts/CRAN-RELEASE.md` (devtools-only; not
