@@ -1,6 +1,15 @@
 name: Deploy shinyapps.io demos
 
 on:
+  push:
+    branches: [main]
+    # Docs-only and test-only merges do not publish. A change under R/ or
+    # inst/, or to DESCRIPTION or this workflow, does.
+    paths:
+      - "R/**"
+      - "inst/**"
+      - "DESCRIPTION"
+      - ".github/workflows/deploy-shinyapps.yaml"
   workflow_dispatch:
     inputs:
       apps:
@@ -17,8 +26,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: shinyapps-production
-  cancel-in-progress: false
+  group: shinyapps-production-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -119,9 +128,17 @@ jobs:
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DEPLOY_APPS: ${{ inputs.apps }}
-          DEPLOY_DRY_RUN: ${{ inputs.dry_run }}
+          # A push publishes core5 for real. workflow_dispatch keeps its inputs,
+          # including dry_run and the single-app choices.
+          DEPLOY_APPS: ${{ github.event_name == 'push' && 'core5' || inputs.apps }}
+          DEPLOY_DRY_RUN: ${{ github.event_name == 'push' && 'false' || inputs.dry_run }}
         run: |
+          # Push always publishes the five free-tier apps. intensity and
+          # plotly_gt stay on workflow_dispatch so the account is not asked
+          # to host a sixth app.
+          if (identical(Sys.getenv("GITHUB_EVENT_NAME"), "push")) {
+            Sys.setenv(DEPLOY_APPS = "core5", DEPLOY_DRY_RUN = "false")
+          }
           dry_run <- identical(Sys.getenv("DEPLOY_DRY_RUN"), "true")
           if (!dry_run) {
             if (!nzchar(Sys.getenv("SHINYAPPS_TOKEN")) ||
