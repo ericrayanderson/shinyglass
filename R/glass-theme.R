@@ -20,7 +20,7 @@
 #'   Defaults to system blue (`#007AFF`).
 #' @param blur Backdrop blur radius in pixels. Default `36` matches the
 #'   iOS 27 diffusion-first material.
-#' @param saturation Backdrop saturation percentage.
+#' @param saturation Backdrop saturation percentage. Default `200`.
 #' @param radius Default border radius for glass surfaces (CSS length).
 #'   Prefer larger concentric radii (default `1.5rem`).
 #' @param material `"regular"` (adaptive, most UI). `"clear"` is deprecated
@@ -36,12 +36,15 @@
 #'   Default `0.5` (Apple's midpoint). The web cannot read the OS slider; use
 #'   [glass_intensity_slider()] for the in-app control. Reduce Transparency
 #'   and Increase Contrast override the painted glass.
-#' @param tint Content-aware ambient tint from plots/images (JS).
+#' @param tint Logical. Content-aware ambient tint from plots and images.
+#'   Default `TRUE`.
 #' @param specular Static top and bottom specular highlights. iOS 27 does not
 #'   follow the pointer or device tilt. `FALSE` hides the highlights.
-#' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
-#' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
-#'   to keep static glass surfaces. OS reduced-motion settings take priority.
+#' @param nav_morph Logical. Compact navbar on scroll down; expand on scroll
+#'   up. Default `TRUE`.
+#' @param ambient_motion Logical. Animate the decorative ambient sheen.
+#'   Default `TRUE`. Set `FALSE` to keep static glass surfaces. OS
+#'   reduced-motion settings take priority.
 #' @param persist Remember preset, intensity, accent, material, plot surface,
 #'   and scene in `localStorage` for this app path. Default `FALSE` (opt in).
 #'   [glass_page()] turns this on.
@@ -109,6 +112,9 @@
 #'   shinyApp(ui, server)
 #' }
 #'
+#' @seealso [glass_page()], [update_glass_theme()], [glass_intensity_slider()],
+#'   [glass_flatten()]
+#' @family glass themes
 #' @export
 glass_theme <- function(
     preset = c("light", "dark", "auto"),
@@ -342,6 +348,8 @@ glass_theme <- function(
 #'   shinyApp(ui, server)
 #' }
 #'
+#' @seealso [glass_theme()], [glass_flatten()], [observe_glass()]
+#' @family glass themes
 #' @export
 update_glass_theme <- function(
     session,
@@ -477,8 +485,11 @@ update_glass_theme <- function(
 #'
 #' @return An [htmltools::tag()] button group.
 #'
-#' @seealso [observe_glass_theme_toggle()], [update_glass_theme()]
-#'
+#' @seealso [observe_glass_theme_toggle()], [update_glass_theme()],
+#'   [glass_preset_input()]
+#' @family glass controls
+#' @examples
+#' glass_theme_toggle(selected = "dark")
 #' @export
 glass_theme_toggle <- function(
     inputId = "glass_toggle",
@@ -524,7 +535,20 @@ glass_theme_toggle <- function(
 #' @param inputId Same base id passed to [glass_theme_toggle()].
 #'
 #' @return `NULL`, invisibly. Called for side effects (registers observers).
-#'
+#' @seealso [glass_theme_toggle()], [update_glass_theme()], [observe_glass()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     glass_theme_toggle()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_theme_toggle(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle") {
   if (missing(input) || missing(session)) {
@@ -569,7 +593,9 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
 #'
 #' @seealso [observe_glass_preset_input()], [glass_theme_toggle()],
 #'   [update_glass_theme()]
-#'
+#' @family glass controls
+#' @examples
+#' glass_preset_input(selected = "light")
 #' @export
 glass_preset_input <- function(
     inputId = "glass_preset",
@@ -629,7 +655,20 @@ glass_preset_input <- function(
 #' @param inputId Same id passed to [glass_preset_input()].
 #'
 #' @return An [shiny::observeEvent()] observer (invisibly).
-#'
+#' @seealso [glass_preset_input()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     glass_preset_input()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_preset_input(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_preset_input <- function(input, session, inputId = "glass_preset") {
   if (missing(input) || missing(session)) {
@@ -662,7 +701,10 @@ observe_glass_preset_input <- function(input, session, inputId = "glass_preset")
 #'   `"dark"`).
 #'
 #' @return `"light"` or `"dark"`.
-#'
+#' @seealso [glass_plot_colors()], [glass_theme()]
+#' @family glass controls
+#' @examples
+#' glass_resolved_preset(default = "dark")
 #' @export
 glass_resolved_preset <- function(input, default = c("light", "dark")) {
   default <- match.arg(default)

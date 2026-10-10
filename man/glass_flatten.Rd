@@ -48,4 +48,12 @@ if (interactive()) {
 }
 \seealso{
 \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=glass_theme]{glass_theme()}}
+
+Other glass themes:
+\code{\link[=glass_page]{glass_page()}},
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme]{glass_theme()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
+\code{\link[=update_glass_theme]{update_glass_theme()}}
 }
+\concept{glass themes}

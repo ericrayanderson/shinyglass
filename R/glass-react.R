@@ -37,6 +37,7 @@
 #' dep <- glass_react_dependency()
 #' dep$name
 #'
+#' @family shinyreact glass
 #' @export
 glass_react_dependency <- function() {
   src <- system.file("js", package = "shinyglass")
@@ -102,6 +103,8 @@ glass_react_dependency <- function() {
 #'   ui <- glass_page_react(theme = glass_theme(preset = "auto", scene = "tahoe"))
 #' }
 #'
+#' @family glass themes
+#' @family shinyreact glass
 #' @export
 glass_page_react <- function(..., theme = NULL) {
   if (!requireNamespace("shinyreact", quietly = TRUE)) {
@@ -147,6 +150,8 @@ glass_page_react <- function(..., theme = NULL) {
 #' @examples
 #' deps <- glass_theme_dependencies(glass_theme(preset = "dark"))
 #'
+#' @family glass themes
+#' @family shinyreact glass
 #' @export
 glass_theme_dependencies <- function(theme = glass_theme()) {
   if (!inherits(theme, "bs_theme")) {

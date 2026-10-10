@@ -26,3 +26,13 @@ dashboard demo.
 dt_options_glass(page_length = 8)
 dt_options_glass(searching = FALSE, scroll_x = TRUE)
 }
+\seealso{
+\code{\link[=gt_theme_glass]{gt_theme_glass()}}, \code{\link[=glass_theme]{glass_theme()}}
+
+Other glass plots:
+\code{\link[=glass_plot_colors]{glass_plot_colors()}},
+\code{\link[=gt_theme_glass]{gt_theme_glass()}},
+\code{\link[=plotly_glass]{plotly_glass()}},
+\code{\link[=theme_glass]{theme_glass()}}
+}
+\concept{glass plots}

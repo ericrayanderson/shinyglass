@@ -26,3 +26,12 @@ with \verb{--} are passed through; others must be in the catalog.
 th <- glass_theme()
 th <- glass_add_tokens(th, list(blur = "28px", radius = "1.25rem"))
 }
+\seealso{
+\code{\link[=glass_css_tokens]{glass_css_tokens()}}, \code{\link[=glass_token_pack]{glass_token_pack()}}, \code{\link[=glass_theme]{glass_theme()}}
+
+Other glass tokens:
+\code{\link[=glass_css_tokens]{glass_css_tokens()}},
+\code{\link[=glass_scenes]{glass_scenes()}},
+\code{\link[=glass_token_pack]{glass_token_pack()}}
+}
+\concept{glass tokens}

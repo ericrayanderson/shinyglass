@@ -42,7 +42,7 @@ Defaults to system blue (\verb{#007AFF}).}
 \item{blur}{Backdrop blur radius in pixels. Default \code{36} matches the
 iOS 27 diffusion-first material.}
 
-\item{saturation}{Backdrop saturation percentage.}
+\item{saturation}{Backdrop saturation percentage. Default \code{200}.}
 
 \item{radius}{Default border radius for glass surfaces (CSS length).
 Prefer larger concentric radii (default \verb{1.5rem}).}
@@ -63,15 +63,18 @@ Default \code{0.5} (Apple's midpoint). The web cannot read the OS slider; use
 \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} for the in-app control. Reduce Transparency
 and Increase Contrast override the painted glass.}
 
-\item{tint}{Content-aware ambient tint from plots/images (JS).}
+\item{tint}{Logical. Content-aware ambient tint from plots and images.
+Default \code{TRUE}.}
 
 \item{specular}{Static top and bottom specular highlights. iOS 27 does not
 follow the pointer or device tilt. \code{FALSE} hides the highlights.}
 
-\item{nav_morph}{Compact navbar on scroll down; expand on scroll up (JS).}
+\item{nav_morph}{Logical. Compact navbar on scroll down; expand on scroll
+up. Default \code{TRUE}.}
 
-\item{ambient_motion}{Animate the decorative ambient sheen. Set \code{FALSE}
-to keep static glass surfaces. OS reduced-motion settings take priority.}
+\item{ambient_motion}{Logical. Animate the decorative ambient sheen.
+Default \code{TRUE}. Set \code{FALSE} to keep static glass surfaces. OS
+reduced-motion settings take priority.}
 
 \item{persist}{Remember preset, intensity, accent, material, plot surface,
 and scene in \code{localStorage} for this app path. Default \code{FALSE} (opt in).
@@ -91,7 +94,7 @@ blur). See \code{\link[=glass_flatten]{glass_flatten()}}.}
 \code{\link[=glass_css_tokens]{glass_css_tokens()}} / \code{\link[=glass_add_tokens]{glass_add_tokens()}}).}
 
 \item{refraction}{\code{TRUE} (default) bends the backdrop through a convex
-squircle lens in Chromium (\verb{backdrop-filter: url()} plus an SVG
+squircle lens in Chromium (\code{backdrop-filter: url()} plus an SVG
 displacement map, index of refraction about 1.5). Safari and Firefox
 keep the blur and tint. Reduced transparency, increased contrast,
 forced colors, and flatten mode turn the lens off.}
@@ -170,3 +173,15 @@ if (interactive()) {
 }
 
 }
+\seealso{
+\code{\link[=glass_page]{glass_page()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
+\code{\link[=glass_flatten]{glass_flatten()}}
+
+Other glass themes:
+\code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_page]{glass_page()}},
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
+\code{\link[=update_glass_theme]{update_glass_theme()}}
+}
+\concept{glass themes}

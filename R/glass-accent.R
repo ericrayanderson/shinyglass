@@ -4,6 +4,11 @@
 #' green, and teal.
 #'
 #' @return A named character vector of `#RRGGBB` colors.
+#' @seealso [glass_accent_input()]
+#' @family glass controls
+#' @examples
+#' glass_system_colors()
+#' glass_system_colors()[["blue"]]
 #' @export
 glass_system_colors <- function() {
   c(
@@ -30,6 +35,11 @@ glass_system_colors <- function() {
 #'   [glass_system_colors()].
 #'
 #' @return A Shiny UI tag hierarchy.
+#' @seealso [observe_glass_accent()], [glass_system_colors()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' wells <- glass_accent_input()
+#' wells
 #' @export
 glass_accent_input <- function(
     inputId = "glass_accent",
@@ -92,6 +102,17 @@ glass_accent_input <- function(
 #' @param inputId Input id of the accent wells.
 #'
 #' @return An [shiny::observeEvent()] observer (invisibly).
+#' @seealso [glass_accent_input()], [update_glass_theme()], [observe_glass()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- glass_page(title = "Accent")
+#'   server <- function(input, output, session) {
+#'     observe_glass_accent(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_accent <- function(input, session, inputId = "glass_accent") {
   if (missing(input) || missing(session)) {

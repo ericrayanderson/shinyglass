@@ -17,7 +17,7 @@ module, \code{inst/js/shinyglass-react.js}. It registers \code{useGlassTheme},
 \code{GlassStack}, \code{GlassButton}, \code{GlassTitle}, \code{GlassMuted}, \code{GlassRange},
 and \code{GlassIntensitySlider} on \code{window.shinyglass} and as named exports.
 \code{useGlassTheme()} also reports \code{reducedTransparency}, \code{increasedContrast},
-\code{forcedColors}, and \code{reducedMotion}, plus \code{refraction}, \code{morph}, \code{press},
+\code{forcedColors}, \code{reducedMotion}, \code{refraction}, \code{morph}, \code{press},
 \code{scrollEdge}, \code{minimizeTabs}, \code{iconStyle}, and \code{floatingSidebar}.
 }
 \details{
@@ -47,4 +47,9 @@ dep$name
 }
 \seealso{
 \code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
+
+Other shinyreact glass:
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
 }
+\concept{shinyreact glass}

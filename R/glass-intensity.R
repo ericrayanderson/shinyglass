@@ -51,6 +51,8 @@
 #'   shinyApp(ui, server)
 #' }
 #'
+#' @seealso [observe_glass_intensity()], [glass_theme()], [update_glass_theme()]
+#' @family glass controls
 #' @export
 glass_intensity_slider <- function(
     inputId = "glass_intensity",
@@ -158,7 +160,20 @@ glass_intensity_slider <- function(
 #' @param inputId Input id of the intensity slider.
 #'
 #' @return An [shiny::observeEvent()] observer (invisibly).
-#'
+#' @seealso [glass_intensity_slider()], [update_glass_theme()], [observe_glass()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(intensity = 0.5),
+#'     glass_intensity_slider()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_intensity(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_intensity <- function(input, session, inputId = "glass_intensity") {
   stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))

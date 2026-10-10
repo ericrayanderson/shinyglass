@@ -22,3 +22,18 @@ A gt table.
 \description{
 Transparent table chrome so glass cards show through. Requires gt.
 }
+\examples{
+if (requireNamespace("gt", quietly = TRUE)) {
+  gt_theme_glass(head(mtcars), preset = "light")
+}
+}
+\seealso{
+\code{\link[=dt_options_glass]{dt_options_glass()}}, \code{\link[=glass_plot_colors]{glass_plot_colors()}}
+
+Other glass plots:
+\code{\link[=dt_options_glass]{dt_options_glass()}},
+\code{\link[=glass_plot_colors]{glass_plot_colors()}},
+\code{\link[=plotly_glass]{plotly_glass()}},
+\code{\link[=theme_glass]{theme_glass()}}
+}
+\concept{glass plots}

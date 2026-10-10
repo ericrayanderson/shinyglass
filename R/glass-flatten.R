@@ -16,6 +16,7 @@
 #'
 #' @return `session`, invisibly.
 #' @seealso [update_glass_theme()], [glass_theme()]
+#' @family glass themes
 #' @export
 #' @examples
 #' if (interactive()) {

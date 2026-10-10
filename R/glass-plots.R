@@ -1,5 +1,8 @@
 #' Ink and grid colors for the current glass appearance
 #'
+#' Returns the ink, grid, fill, and paper colors for a light or dark glass
+#' page. Pass `surface = "opaque"` when a chart must sit on a near-solid panel.
+#'
 #' @param preset `"light"` or `"dark"`. When `NULL`, uses
 #'   [glass_resolved_preset()] on `input`.
 #' @param input Optional Shiny `input` (used when `preset` is `NULL`).
@@ -9,6 +12,11 @@
 #'   exported ggplot images).
 #'
 #' @return A list with `preset`, `ink`, `grid`, `fill`, `paper`, and `surface`.
+#' @seealso [theme_glass()], [plotly_glass()], [glass_resolved_preset()]
+#' @family glass plots
+#' @examples
+#' glass_plot_colors("light")
+#' glass_plot_colors("dark", surface = "opaque")$paper
 #' @export
 glass_plot_colors <- function(preset = NULL, input = NULL,
                              surface = c("clear", "opaque")) {
@@ -61,6 +69,8 @@ glass_plot_colors <- function(preset = NULL, input = NULL,
 #' @param ... Additional [ggplot2::theme()] arguments.
 #'
 #' @return A ggplot2 theme object.
+#' @seealso [glass_plot_colors()], [plotly_glass()], [gt_theme_glass()]
+#' @family glass plots
 #' @export
 #'
 #' @examples
@@ -115,6 +125,11 @@ theme_glass <- function(preset = NULL, base_size = 13, input = NULL,
 #' @param preset,input,surface See [glass_plot_colors()].
 #'
 #' @return `p` with layout applied, or a list of layout arguments.
+#' @seealso [glass_plot_colors()], [theme_glass()]
+#' @family glass plots
+#' @examples
+#' layout <- plotly_glass(preset = "dark")
+#' layout$font$color
 #' @export
 plotly_glass <- function(p = NULL, preset = NULL, input = NULL,
                          surface = c("clear", "opaque")) {
@@ -163,6 +178,9 @@ plotly_glass <- function(p = NULL, preset = NULL, input = NULL,
 #'
 #' @return A [shiny::selectInput()] tag marked for client bindings.
 #' @seealso [observe_glass_plot_surface()], [glass_theme()]
+#' @family glass controls
+#' @examples
+#' glass_plot_surface_input(selected = "opaque")
 #' @export
 glass_plot_surface_input <- function(
     inputId = "plot_surface",
@@ -188,9 +206,28 @@ glass_plot_surface_input <- function(
 
 #' Observe [glass_plot_surface_input()] on the server
 #'
-#' @param input,session Shiny `input` and `session` objects.
-#' @param inputId Same id passed to [glass_plot_surface_input()].
+#' Echoes `"clear"` or `"opaque"` through [update_glass_theme()] after the
+#' client has already applied the surface.
+#'
+#' @param input,session Shiny server `input` and `session` objects.
+#' @param inputId Character. Same id passed to [glass_plot_surface_input()].
+#'   Default `"plot_surface"`.
 #' @return An [shiny::observeEvent()] observer (invisibly).
+#' @seealso [glass_plot_surface_input()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- glass_page(
+#'     title = "Surface",
+#'     controls = "toggle",
+#'     glass_plot_surface_input()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_plot_surface(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_plot_surface <- function(input, session, inputId = "plot_surface") {
   if (missing(input) || missing(session)) {
@@ -223,6 +260,8 @@ observe_glass_plot_surface <- function(input, session, inputId = "plot_surface")
 #' @param scroll_x Enable DataTables `scrollX` (useful on narrow viewports).
 #'
 #' @return A named list for `DT::datatable(options = )`.
+#' @seealso [gt_theme_glass()], [glass_theme()]
+#' @family glass plots
 #' @export
 #' @examples
 #' dt_options_glass(page_length = 8)
@@ -249,6 +288,12 @@ dt_options_glass <- function(..., page_length = 8, scroll_x = FALSE) {
 #' @param preset,input,surface See [glass_plot_colors()].
 #'
 #' @return A gt table.
+#' @seealso [dt_options_glass()], [glass_plot_colors()]
+#' @family glass plots
+#' @examples
+#' if (requireNamespace("gt", quietly = TRUE)) {
+#'   gt_theme_glass(head(mtcars), preset = "light")
+#' }
 #' @export
 gt_theme_glass <- function(data, preset = NULL, input = NULL,
                            surface = c("clear", "opaque")) {

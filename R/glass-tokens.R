@@ -6,6 +6,8 @@
 #' documented in [glass_css_tokens()].
 #'
 #' @return A named character vector: names are scene ids, values are labels.
+#' @seealso [glass_scene_input()], [glass_theme()]
+#' @family glass tokens
 #' @export
 #' @examples
 #' names(glass_scenes())
@@ -53,6 +55,9 @@ glass_scenes <- function() {
 #'
 #' @return A [shiny::selectInput()] tag marked for client bindings.
 #' @seealso [glass_scenes()], [observe_glass_scene()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' glass_scene_input(selected = "harbor")
 #' @export
 glass_scene_input <- function(
     inputId = "glass_scene",
@@ -89,9 +94,27 @@ glass_scene_input <- function(
 
 #' Observe [glass_scene_input()] on the server
 #'
-#' @param input,session Shiny `input` and `session` objects.
-#' @param inputId Same id passed to [glass_scene_input()].
+#' Echoes a scene id from [glass_scenes()] through [update_glass_theme()]
+#' after the client has already painted it.
+#'
+#' @param input,session Shiny server `input` and `session` objects.
+#' @param inputId Character. Same id passed to [glass_scene_input()].
+#'   Default `"glass_scene"`.
 #' @return An [shiny::observeEvent()] observer (invisibly).
+#' @seealso [glass_scene_input()], [glass_scenes()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     glass_scene_input()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_scene(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_scene <- function(input, session, inputId = "glass_scene") {
   if (missing(input) || missing(session)) {
@@ -131,6 +154,8 @@ observe_glass_scene <- function(input, session, inputId = "glass_scene") {
 #' @examples
 #' head(glass_css_tokens())
 #' glass_css_tokens()$css_var
+#' @seealso [glass_add_tokens()], [glass_token_pack()], [glass_theme()]
+#' @family glass tokens
 glass_css_tokens <- function() {
   rows <- list(
     c("blur", "--glass-blur", "material", "Backdrop blur radius (CSS length)."),
@@ -203,6 +228,8 @@ glass_css_tokens <- function() {
 #' @examples
 #' names(glass_token_pack("light"))
 #' glass_token_pack("dark")[["--glass-body-color"]]
+#' @seealso [glass_css_tokens()], [glass_add_tokens()]
+#' @family glass tokens
 glass_token_pack <- function(preset = c("light", "dark")) {
   preset <- match.arg(preset)
   tok <- .glass_tokens(preset, blur = 36, saturation = 200, radius = "1.5rem")
@@ -294,6 +321,8 @@ glass_token_pack <- function(preset = c("light", "dark")) {
 #' @examples
 #' th <- glass_theme()
 #' th <- glass_add_tokens(th, list(blur = "28px", radius = "1.25rem"))
+#' @seealso [glass_css_tokens()], [glass_token_pack()], [glass_theme()]
+#' @family glass tokens
 glass_add_tokens <- function(theme, tokens = list(), ...) {
   extra <- list(...)
   if (length(extra)) {

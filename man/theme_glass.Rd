@@ -39,3 +39,13 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
     theme_glass("light")
 }
 }
+\seealso{
+\code{\link[=glass_plot_colors]{glass_plot_colors()}}, \code{\link[=plotly_glass]{plotly_glass()}}, \code{\link[=gt_theme_glass]{gt_theme_glass()}}
+
+Other glass plots:
+\code{\link[=dt_options_glass]{dt_options_glass()}},
+\code{\link[=glass_plot_colors]{glass_plot_colors()}},
+\code{\link[=gt_theme_glass]{gt_theme_glass()}},
+\code{\link[=plotly_glass]{plotly_glass()}}
+}
+\concept{glass plots}

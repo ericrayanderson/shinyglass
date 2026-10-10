@@ -21,3 +21,36 @@ The slider already updates glass live on the client. This observer optionally
 echoes the value through \code{\link[=update_glass_theme]{update_glass_theme()}} so other clients / server
 state stay aligned.
 }
+\examples{
+if (interactive()) {
+  library(shiny)
+  ui <- fluidPage(
+    theme = glass_theme(intensity = 0.5),
+    glass_intensity_slider()
+  )
+  server <- function(input, output, session) {
+    observe_glass_intensity(input, session)
+  }
+  shinyApp(ui, server)
+}
+}
+\seealso{
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=observe_glass]{observe_glass()}}
+
+Other glass controls:
+\code{\link[=glass_accent_input]{glass_accent_input()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
+\code{\link[=glass_plot_surface_input]{glass_plot_surface_input()}},
+\code{\link[=glass_preset_input]{glass_preset_input()}},
+\code{\link[=glass_resolved_preset]{glass_resolved_preset()}},
+\code{\link[=glass_scene_input]{glass_scene_input()}},
+\code{\link[=glass_system_colors]{glass_system_colors()}},
+\code{\link[=glass_theme_toggle]{glass_theme_toggle()}},
+\code{\link[=observe_glass]{observe_glass()}},
+\code{\link[=observe_glass_accent]{observe_glass_accent()}},
+\code{\link[=observe_glass_plot_surface]{observe_glass_plot_surface()}},
+\code{\link[=observe_glass_preset_input]{observe_glass_preset_input()}},
+\code{\link[=observe_glass_scene]{observe_glass_scene()}},
+\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}
+}
+\concept{glass controls}

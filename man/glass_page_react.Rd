@@ -31,10 +31,9 @@ React client still owns the DOM. Build it from \code{GlassPage}, \code{GlassSide
 \code{useGlassTheme()} tracks the live mode (\code{light} / \code{dark} / \code{auto}), the
 resolved preset, scene, material, and intensity, plus refraction, morph,
 press, scroll edge, tab minimize, icon style, and floating sidebar, and
-whether Reduce Transparency, Increase Contrast, forced colors, or reduced
-motion are active. Its setters call \code{window.shinyglass.setPreset()} and
+whether Reduce Transparency, Increase Contrast, reduced motion, or forced
+colors are active. Its setters call \code{window.shinyglass.setPreset()} and
 the other mutators, including \code{setRefraction()} and \code{setIconStyle()}.
-\code{GlassSidebar} floats when \code{floating} is set or the theme opts in.
 \code{GlassIntensitySlider} runs from Ultra Clear to Tinted and defaults to
 \code{0.5}. \code{setMaterial("clear")} is deprecated and maps to intensity \code{0.12}.
 Wallpaper, type, and \verb{--glass-*} tokens apply to the document. Those
@@ -60,4 +59,17 @@ if (interactive() && requireNamespace("shinyreact", quietly = TRUE)) {
 \seealso{
 \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
 \code{\link[=glass_react_dependency]{glass_react_dependency()}}
+
+Other glass themes:
+\code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_page]{glass_page()}},
+\code{\link[=glass_theme]{glass_theme()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
+\code{\link[=update_glass_theme]{update_glass_theme()}}
+
+Other shinyreact glass:
+\code{\link[=glass_react_dependency]{glass_react_dependency()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
 }
+\concept{glass themes}
+\concept{shinyreact glass}

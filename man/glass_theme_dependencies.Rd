@@ -31,4 +31,17 @@ deps <- glass_theme_dependencies(glass_theme(preset = "dark"))
 }
 \seealso{
 \code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_react_dependency]{glass_react_dependency()}}
+
+Other glass themes:
+\code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_page]{glass_page()}},
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme]{glass_theme()}},
+\code{\link[=update_glass_theme]{update_glass_theme()}}
+
+Other shinyreact glass:
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_react_dependency]{glass_react_dependency()}}
 }
+\concept{glass themes}
+\concept{shinyreact glass}

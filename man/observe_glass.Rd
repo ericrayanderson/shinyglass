@@ -13,9 +13,10 @@ observe_glass(
 )
 }
 \arguments{
-\item{input, session}{Shiny \code{input} and \code{session} objects.}
+\item{input, session}{Shiny server \code{input} and \code{session} objects.}
 
-\item{toggle_id, intensity_id, accent_id}{Input ids matching the UI controls.}
+\item{toggle_id, intensity_id, accent_id}{Character input ids matching the UI
+controls. Defaults \code{"glass_toggle"}, \code{"glass_intensity"}, \code{"glass_accent"}.}
 }
 \value{
 \code{NULL}, invisibly.
@@ -24,3 +25,35 @@ observe_glass(
 Registers \code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}, \code{\link[=observe_glass_intensity]{observe_glass_intensity()}}, and
 \code{\link[=observe_glass_accent]{observe_glass_accent()}} with the default input ids used by \code{\link[=glass_page]{glass_page()}}.
 }
+\examples{
+if (interactive()) {
+  library(shiny)
+  ui <- glass_page(title = "Hello, glass", plotOutput("plot"))
+  server <- function(input, output, session) {
+    observe_glass(input, session)
+    output$plot <- renderPlot(plot(1:10), bg = "transparent")
+  }
+  shinyApp(ui, server)
+}
+}
+\seealso{
+\code{\link[=glass_page]{glass_page()}}, \code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}},
+\code{\link[=observe_glass_intensity]{observe_glass_intensity()}}, \code{\link[=observe_glass_accent]{observe_glass_accent()}}
+
+Other glass controls:
+\code{\link[=glass_accent_input]{glass_accent_input()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
+\code{\link[=glass_plot_surface_input]{glass_plot_surface_input()}},
+\code{\link[=glass_preset_input]{glass_preset_input()}},
+\code{\link[=glass_resolved_preset]{glass_resolved_preset()}},
+\code{\link[=glass_scene_input]{glass_scene_input()}},
+\code{\link[=glass_system_colors]{glass_system_colors()}},
+\code{\link[=glass_theme_toggle]{glass_theme_toggle()}},
+\code{\link[=observe_glass_accent]{observe_glass_accent()}},
+\code{\link[=observe_glass_intensity]{observe_glass_intensity()}},
+\code{\link[=observe_glass_plot_surface]{observe_glass_plot_surface()}},
+\code{\link[=observe_glass_preset_input]{observe_glass_preset_input()}},
+\code{\link[=observe_glass_scene]{observe_glass_scene()}},
+\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}
+}
+\concept{glass controls}

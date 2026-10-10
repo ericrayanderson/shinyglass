@@ -44,6 +44,10 @@
 
 ## New features
 
+* Help pages now state types, defaults, and minimal examples, and they
+  cross-link by topic. `vignette("ai-assistants")` is a short note for
+  coding assistants, with a canonical app and copy-paste prompts. The
+  pkgdown site publishes `llms.txt` and `llms-full.txt`.
 * `glass_theme()`, `glass_page()`, and `update_glass_theme()` take
   `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`,
   `icon_style`, and `floating_sidebar`. Tokens include `--glass-ior`,
