@@ -25,3 +25,17 @@ Transparent paper/plot backgrounds and ink that follows the resolved
 preset. Requires plotly. Call as \code{plotly_glass(p)} or
 \code{do.call(plotly::layout, c(list(p), plotly_glass()))}.
 }
+\examples{
+layout <- plotly_glass(preset = "dark")
+layout$font$color
+}
+\seealso{
+\code{\link[=glass_plot_colors]{glass_plot_colors()}}, \code{\link[=theme_glass]{theme_glass()}}
+
+Other glass plots:
+\code{\link[=dt_options_glass]{dt_options_glass()}},
+\code{\link[=glass_plot_colors]{glass_plot_colors()}},
+\code{\link[=gt_theme_glass]{gt_theme_glass()}},
+\code{\link[=theme_glass]{theme_glass()}}
+}
+\concept{glass plots}

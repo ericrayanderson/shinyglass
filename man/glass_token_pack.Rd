@@ -20,3 +20,12 @@ starting point for \code{\link[=glass_add_tokens]{glass_add_tokens()}} overrides
 names(glass_token_pack("light"))
 glass_token_pack("dark")[["--glass-body-color"]]
 }
+\seealso{
+\code{\link[=glass_css_tokens]{glass_css_tokens()}}, \code{\link[=glass_add_tokens]{glass_add_tokens()}}
+
+Other glass tokens:
+\code{\link[=glass_add_tokens]{glass_add_tokens()}},
+\code{\link[=glass_css_tokens]{glass_css_tokens()}},
+\code{\link[=glass_scenes]{glass_scenes()}}
+}
+\concept{glass tokens}

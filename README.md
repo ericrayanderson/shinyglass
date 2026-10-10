@@ -10,6 +10,54 @@ Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstu
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
+## Quick recipe
+
+On an existing bslib page, pass `glass_theme()` as `theme` and observe the controls:
+
+```r
+library(shiny)
+library(bslib)
+library(shinyglass)
+
+ui <- page_sidebar(
+  title = "Existing app",
+  theme = glass_theme(preset = "auto", intensity = 0.5),
+  sidebar = sidebar(
+    glass_theme_toggle(),
+    glass_intensity_slider()
+  ),
+  "Main column"
+)
+
+server <- function(input, output, session) {
+  observe_glass(input, session)
+}
+
+shinyApp(ui, server)
+```
+
+`glass_page()` is the same idea in one call. It includes Light / Dark / Auto, the intensity slider, and accent wells. Intensity runs from `0` (Ultra Clear) to `1` (Tinted). The default is `0.5`. Do not pass `material = "clear"`; that argument is deprecated.
+
+```r
+ui <- glass_page(
+  title = "Hello, glass",
+  sliderInput("n", "Bars", 5, 30, 15),
+  plotOutput("plot")
+)
+
+server <- function(input, output, session) {
+  observe_glass(input, session)
+  output$plot <- renderPlot({
+    pal <- glass_plot_colors(input = input)
+    barplot(seq_len(input$n), col = pal$fill, border = NA, col.axis = pal$ink)
+  }, bg = "transparent")
+}
+
+shinyApp(ui, server)
+```
+
+The installed package has the full recipe (options, the 0.5.0 migration, and pitfalls): `?shinyglass` and `vignette("shinyglass")`.
+
 <p align="center">
 <img src="man/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode">
 <img src="man/figures/harbor-notes-dark.png" width="48%" alt="Harbor notes chat on Liquid Glass, dark mode">

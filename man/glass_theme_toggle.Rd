@@ -32,6 +32,27 @@ preset on the client immediately (\code{window.shinyglass.setPreset}) and also
 has a 'shiny' input id so \code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}} can keep the server
 in sync (important on hosts that rewrite custom messages).
 }
-\seealso{
-\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}
+\examples{
+glass_theme_toggle(selected = "dark")
 }
+\seealso{
+\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
+\code{\link[=glass_preset_input]{glass_preset_input()}}
+
+Other glass controls:
+\code{\link[=glass_accent_input]{glass_accent_input()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
+\code{\link[=glass_plot_surface_input]{glass_plot_surface_input()}},
+\code{\link[=glass_preset_input]{glass_preset_input()}},
+\code{\link[=glass_resolved_preset]{glass_resolved_preset()}},
+\code{\link[=glass_scene_input]{glass_scene_input()}},
+\code{\link[=glass_system_colors]{glass_system_colors()}},
+\code{\link[=observe_glass]{observe_glass()}},
+\code{\link[=observe_glass_accent]{observe_glass_accent()}},
+\code{\link[=observe_glass_intensity]{observe_glass_intensity()}},
+\code{\link[=observe_glass_plot_surface]{observe_glass_plot_surface()}},
+\code{\link[=observe_glass_preset_input]{observe_glass_preset_input()}},
+\code{\link[=observe_glass_scene]{observe_glass_scene()}},
+\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}
+}
+\concept{glass controls}

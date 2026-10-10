@@ -30,8 +30,10 @@ glass_page(
 
 \item{title}{Optional page title (\code{\link[shiny:titlePanel]{shiny::titlePanel()}}).}
 
-\item{preset, intensity, persist, scene, wallpaper, plot_surface, flatten, refraction, morph, press, scroll_edge, minimize_tabs, icon_style, floating_sidebar}{Forwarded to \code{\link[=glass_theme]{glass_theme()}}. Persistence defaults to \code{TRUE} here.
-\code{floating_sidebar} stays off unless you opt in.}
+\item{preset, intensity, persist, scene, wallpaper, plot_surface, flatten, refraction, morph, press, scroll_edge, minimize_tabs, icon_style, floating_sidebar}{Forwarded to \code{\link[=glass_theme]{glass_theme()}}. \code{preset} is \code{"light"}, \code{"dark"}, or
+\code{"auto"} (default \code{"auto"}). \code{intensity} is numeric from \code{0} (Ultra
+Clear) to \code{1} (Tinted), default \code{0.5}. Persistence defaults to \code{TRUE}
+here. \code{floating_sidebar} stays off unless you opt in.}
 
 \item{controls}{\code{TRUE} for the default control row (toggle, intensity,
 accent), \code{FALSE} for none, or a character vector subset of
@@ -64,3 +66,15 @@ if (interactive()) {
   shinyApp(ui, server)
 }
 }
+\seealso{
+\link{shinyglass}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=observe_glass]{observe_glass()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}
+
+Other glass themes:
+\code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme]{glass_theme()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}},
+\code{\link[=update_glass_theme]{update_glass_theme()}}
+}
+\concept{glass themes}

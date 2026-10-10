@@ -93,3 +93,14 @@ if (interactive()) {
 }
 
 }
+\seealso{
+\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=glass_flatten]{glass_flatten()}}, \code{\link[=observe_glass]{observe_glass()}}
+
+Other glass themes:
+\code{\link[=glass_flatten]{glass_flatten()}},
+\code{\link[=glass_page]{glass_page()}},
+\code{\link[=glass_page_react]{glass_page_react()}},
+\code{\link[=glass_theme]{glass_theme()}},
+\code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
+}
+\concept{glass themes}

@@ -16,6 +16,7 @@
 #'
 #' @return `session`, invisibly.
 #' @seealso [update_glass_theme()], [glass_theme()]
+#' @family glass themes
 #' @export
 #' @examples
 #' if (interactive()) {
@@ -35,8 +36,13 @@
 #' }
 glass_flatten <- function(session, on = TRUE) {
   if (missing(session) || is.null(session)) {
-    stop("`session` is required.", call. = FALSE)
+    .glass_need_session("glass_flatten")
   }
-  stopifnot(is.logical(on), length(on) == 1L, !is.na(on))
+  if (!(is.logical(on) && length(on) == 1L && !is.na(on))) {
+    stop(
+      "`on` must be TRUE (no blur, for screenshots and PDF) or FALSE (live glass).",
+      call. = FALSE
+    )
+  }
   update_glass_theme(session, flatten = on)
 }

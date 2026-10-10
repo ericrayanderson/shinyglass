@@ -37,12 +37,16 @@
 #' dep <- glass_react_dependency()
 #' dep$name
 #'
+#' @family shinyreact glass
 #' @export
 glass_react_dependency <- function() {
   src <- system.file("js", package = "shinyglass")
   js <- file.path(src, "shinyglass-react.js")
   if (!nzchar(src) || !file.exists(js)) {
-    stop("shinyglass-react.js was not found in the package.", call. = FALSE)
+    stop(
+      "shinyglass-react.js was not found. Reinstall shinyglass so system.file(\"js/shinyglass-react.js\", package = \"shinyglass\") exists.",
+      call. = FALSE
+    )
   }
   htmltools::htmlDependency(
     name = "shinyglass-react",
@@ -102,6 +106,8 @@ glass_react_dependency <- function() {
 #'   ui <- glass_page_react(theme = glass_theme(preset = "auto", scene = "tahoe"))
 #' }
 #'
+#' @family glass themes
+#' @family shinyreact glass
 #' @export
 glass_page_react <- function(..., theme = NULL) {
   if (!requireNamespace("shinyreact", quietly = TRUE)) {
@@ -114,7 +120,12 @@ glass_page_react <- function(..., theme = NULL) {
   if (is.null(theme)) {
     theme <- glass_theme()
   } else if (!inherits(theme, "bs_theme")) {
-    stop("`theme` must be a glass_theme() or bslib::bs_theme() object.", call. = FALSE)
+    stop(
+      "`theme` must be a glass_theme() or bslib::bs_theme() object, passed by name. ",
+      "Example: glass_page_react(theme = glass_theme(preset = \"auto\")). ",
+      "An unnamed theme is dropped and the glass CSS does not load.",
+      call. = FALSE
+    )
   }
   # Theme dependencies render before www/ui.js. The React module has to be
   # in that list, not in `...`, or the app module runs first.
@@ -147,10 +158,17 @@ glass_page_react <- function(..., theme = NULL) {
 #' @examples
 #' deps <- glass_theme_dependencies(glass_theme(preset = "dark"))
 #'
+#' @family glass themes
+#' @family shinyreact glass
 #' @export
 glass_theme_dependencies <- function(theme = glass_theme()) {
   if (!inherits(theme, "bs_theme")) {
-    stop("`theme` must be a glass_theme() or bslib::bs_theme() object.", call. = FALSE)
+    stop(
+      "`theme` must be a glass_theme() or bslib::bs_theme() object, passed by name. ",
+      "Example: glass_page_react(theme = glass_theme(preset = \"auto\")). ",
+      "An unnamed theme is dropped and the glass CSS does not load.",
+      call. = FALSE
+    )
   }
   c(
     bslib::bs_theme_dependencies(theme),

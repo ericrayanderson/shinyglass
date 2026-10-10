@@ -13,3 +13,27 @@ A named character vector of \verb{#RRGGBB} colors.
 Named hex colors matching iOS Settings wells: blue, purple, pink, orange,
 green, and teal.
 }
+\examples{
+glass_system_colors()
+glass_system_colors()[["blue"]]
+}
+\seealso{
+\code{\link[=glass_accent_input]{glass_accent_input()}}
+
+Other glass controls:
+\code{\link[=glass_accent_input]{glass_accent_input()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
+\code{\link[=glass_plot_surface_input]{glass_plot_surface_input()}},
+\code{\link[=glass_preset_input]{glass_preset_input()}},
+\code{\link[=glass_resolved_preset]{glass_resolved_preset()}},
+\code{\link[=glass_scene_input]{glass_scene_input()}},
+\code{\link[=glass_theme_toggle]{glass_theme_toggle()}},
+\code{\link[=observe_glass]{observe_glass()}},
+\code{\link[=observe_glass_accent]{observe_glass_accent()}},
+\code{\link[=observe_glass_intensity]{observe_glass_intensity()}},
+\code{\link[=observe_glass_plot_surface]{observe_glass_plot_surface()}},
+\code{\link[=observe_glass_preset_input]{observe_glass_preset_input()}},
+\code{\link[=observe_glass_scene]{observe_glass_scene()}},
+\code{\link[=observe_glass_theme_toggle]{observe_glass_theme_toggle()}}
+}
+\concept{glass controls}

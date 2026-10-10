@@ -21,5 +21,20 @@ exported ggplot images).}
 A list with \code{preset}, \code{ink}, \code{grid}, \code{fill}, \code{paper}, and \code{surface}.
 }
 \description{
-Ink and grid colors for the current glass appearance
+Returns the ink, grid, fill, and paper colors for a light or dark glass
+page. Pass \code{surface = "opaque"} when a chart must sit on a near-solid panel.
 }
+\examples{
+glass_plot_colors("light")
+glass_plot_colors("dark", surface = "opaque")$paper
+}
+\seealso{
+\code{\link[=theme_glass]{theme_glass()}}, \code{\link[=plotly_glass]{plotly_glass()}}, \code{\link[=glass_resolved_preset]{glass_resolved_preset()}}
+
+Other glass plots:
+\code{\link[=dt_options_glass]{dt_options_glass()}},
+\code{\link[=gt_theme_glass]{gt_theme_glass()}},
+\code{\link[=plotly_glass]{plotly_glass()}},
+\code{\link[=theme_glass]{theme_glass()}}
+}
+\concept{glass plots}

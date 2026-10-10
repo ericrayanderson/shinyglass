@@ -20,7 +20,7 @@
 #'   Defaults to system blue (`#007AFF`).
 #' @param blur Backdrop blur radius in pixels. Default `36` matches the
 #'   iOS 27 diffusion-first material.
-#' @param saturation Backdrop saturation percentage.
+#' @param saturation Backdrop saturation percentage. Default `200`.
 #' @param radius Default border radius for glass surfaces (CSS length).
 #'   Prefer larger concentric radii (default `1.5rem`).
 #' @param material `"regular"` (adaptive, most UI). `"clear"` is deprecated
@@ -36,12 +36,15 @@
 #'   Default `0.5` (Apple's midpoint). The web cannot read the OS slider; use
 #'   [glass_intensity_slider()] for the in-app control. Reduce Transparency
 #'   and Increase Contrast override the painted glass.
-#' @param tint Content-aware ambient tint from plots/images (JS).
+#' @param tint Logical. Content-aware ambient tint from plots and images.
+#'   Default `TRUE`.
 #' @param specular Static top and bottom specular highlights. iOS 27 does not
 #'   follow the pointer or device tilt. `FALSE` hides the highlights.
-#' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
-#' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
-#'   to keep static glass surfaces. OS reduced-motion settings take priority.
+#' @param nav_morph Logical. Compact navbar on scroll down; expand on scroll
+#'   up. Default `TRUE`.
+#' @param ambient_motion Logical. Animate the decorative ambient sheen.
+#'   Default `TRUE`. Set `FALSE` to keep static glass surfaces. OS
+#'   reduced-motion settings take priority.
 #' @param persist Remember preset, intensity, accent, material, plot surface,
 #'   and scene in `localStorage` for this app path. Default `FALSE` (opt in).
 #'   [glass_page()] turns this on.
@@ -109,6 +112,9 @@
 #'   shinyApp(ui, server)
 #' }
 #'
+#' @seealso [shinyglass], [glass_page()], [update_glass_theme()],
+#'   [glass_intensity_slider()], [glass_flatten()]
+#' @family glass themes
 #' @export
 glass_theme <- function(
     preset = c("light", "dark", "auto"),
@@ -147,19 +153,19 @@ glass_theme <- function(
   plot_surface <- match.arg(plot_surface)
   scene <- .glass_normalize_scene(scene)
   intensity <- .glass_normalize_intensity(intensity)
-  stopifnot(
-    is.logical(tint), length(tint) == 1L, !is.na(tint),
-    is.logical(specular), length(specular) == 1L, !is.na(specular),
-    is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph),
-    is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion),
-    is.logical(persist), length(persist) == 1L, !is.na(persist),
-    is.logical(flatten), length(flatten) == 1L, !is.na(flatten),
-    is.logical(refraction), length(refraction) == 1L, !is.na(refraction),
-    is.logical(morph), length(morph) == 1L, !is.na(morph),
-    is.logical(press), length(press) == 1L, !is.na(press),
-    is.logical(scroll_edge), length(scroll_edge) == 1L, !is.na(scroll_edge),
-    is.logical(minimize_tabs), length(minimize_tabs) == 1L, !is.na(minimize_tabs),
-    is.logical(floating_sidebar), length(floating_sidebar) == 1L, !is.na(floating_sidebar)
+  .glass_assert_flags(
+    tint = tint,
+    specular = specular,
+    nav_morph = nav_morph,
+    ambient_motion = ambient_motion,
+    persist = persist,
+    flatten = flatten,
+    refraction = refraction,
+    morph = morph,
+    press = press,
+    scroll_edge = scroll_edge,
+    minimize_tabs = minimize_tabs,
+    floating_sidebar = floating_sidebar
   )
   icon_style <- match.arg(icon_style)
   primary <- .glass_normalize_color(primary)
@@ -342,6 +348,8 @@ glass_theme <- function(
 #'   shinyApp(ui, server)
 #' }
 #'
+#' @seealso [glass_theme()], [glass_flatten()], [observe_glass()]
+#' @family glass themes
 #' @export
 update_glass_theme <- function(
     session,
@@ -363,13 +371,13 @@ update_glass_theme <- function(
     icon_style = NULL,
     floating_sidebar = NULL) {
   if (missing(session) || is.null(session)) {
-    stop("`session` is required.", call. = FALSE)
+    .glass_need_session("update_glass_theme")
   }
   if (!is.null(preset)) {
     preset <- match.arg(preset, c("light", "dark", "auto"))
   }
   if (!is.null(tint)) {
-    stopifnot(is.logical(tint), length(tint) == 1L, !is.na(tint))
+    .glass_assert_flag(tint, "tint")
   }
   if (!is.null(primary)) {
     primary <- .glass_normalize_color(primary)
@@ -390,34 +398,34 @@ update_glass_theme <- function(
     plot_surface <- match.arg(plot_surface, c("clear", "opaque"))
   }
   if (!is.null(ambient_motion)) {
-    stopifnot(is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion))
+    .glass_assert_flag(ambient_motion, "ambient_motion")
   }
   if (!is.null(scene)) {
     scene <- .glass_normalize_scene(scene)
   }
   if (!is.null(flatten)) {
-    stopifnot(is.logical(flatten), length(flatten) == 1L, !is.na(flatten))
+    .glass_assert_flag(flatten, "flatten")
   }
   if (!is.null(tokens)) {
     tokens <- .glass_normalize_token_list(tokens)
   }
   if (!is.null(refraction)) {
-    stopifnot(is.logical(refraction), length(refraction) == 1L, !is.na(refraction))
+    .glass_assert_flag(refraction, "refraction")
   }
   if (!is.null(morph)) {
-    stopifnot(is.logical(morph), length(morph) == 1L, !is.na(morph))
+    .glass_assert_flag(morph, "morph")
   }
   if (!is.null(press)) {
-    stopifnot(is.logical(press), length(press) == 1L, !is.na(press))
+    .glass_assert_flag(press, "press")
   }
   if (!is.null(scroll_edge)) {
-    stopifnot(is.logical(scroll_edge), length(scroll_edge) == 1L, !is.na(scroll_edge))
+    .glass_assert_flag(scroll_edge, "scroll_edge")
   }
   if (!is.null(minimize_tabs)) {
-    stopifnot(is.logical(minimize_tabs), length(minimize_tabs) == 1L, !is.na(minimize_tabs))
+    .glass_assert_flag(minimize_tabs, "minimize_tabs")
   }
   if (!is.null(floating_sidebar)) {
-    stopifnot(is.logical(floating_sidebar), length(floating_sidebar) == 1L, !is.na(floating_sidebar))
+    .glass_assert_flag(floating_sidebar, "floating_sidebar")
   }
   if (!is.null(icon_style)) {
     icon_style <- match.arg(icon_style, c("clear", "color", "all"))
@@ -477,8 +485,11 @@ update_glass_theme <- function(
 #'
 #' @return An [htmltools::tag()] button group.
 #'
-#' @seealso [observe_glass_theme_toggle()], [update_glass_theme()]
-#'
+#' @seealso [observe_glass_theme_toggle()], [update_glass_theme()],
+#'   [glass_preset_input()]
+#' @family glass controls
+#' @examples
+#' glass_theme_toggle(selected = "dark")
 #' @export
 glass_theme_toggle <- function(
     inputId = "glass_toggle",
@@ -486,10 +497,14 @@ glass_theme_toggle <- function(
     labels = c(light = "Light", dark = "Dark", auto = "Auto (OS)"),
     class = "glass-theme-toggle") {
   selected <- match.arg(selected)
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   modes <- c("light", "dark", "auto")
   if (is.null(names(labels)) || !all(modes %in% names(labels))) {
-    stop("`labels` must be a named vector with names light, dark, auto.", call. = FALSE)
+    stop(
+      "`labels` must be a named vector with names \"light\", \"dark\", and \"auto\". ",
+      "Example: c(light = \"Light\", dark = \"Dark\", auto = \"Auto\").",
+      call. = FALSE
+    )
   }
 
   btns <- lapply(modes, function(mode) {
@@ -524,13 +539,26 @@ glass_theme_toggle <- function(
 #' @param inputId Same base id passed to [glass_theme_toggle()].
 #'
 #' @return `NULL`, invisibly. Called for side effects (registers observers).
-#'
+#' @seealso [glass_theme_toggle()], [update_glass_theme()], [observe_glass()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     glass_theme_toggle()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_theme_toggle(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle") {
   if (missing(input) || missing(session)) {
-    stop("`input` and `session` are required.", call. = FALSE)
+    .glass_need_server("observe_glass_theme_toggle")
   }
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
 
   shiny::observeEvent(
     input[[paste0(inputId, "_light")]],
@@ -569,7 +597,9 @@ observe_glass_theme_toggle <- function(input, session, inputId = "glass_toggle")
 #'
 #' @seealso [observe_glass_preset_input()], [glass_theme_toggle()],
 #'   [update_glass_theme()]
-#'
+#' @family glass controls
+#' @examples
+#' glass_preset_input(selected = "light")
 #' @export
 glass_preset_input <- function(
     inputId = "glass_preset",
@@ -578,16 +608,20 @@ glass_preset_input <- function(
     choices = c("Light" = "light", "Dark" = "dark", "Auto (OS)" = "auto"),
     width = NULL) {
   selected <- match.arg(selected)
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   vals <- unname(choices)
   if (!all(vals %in% c("light", "dark", "auto"))) {
     stop(
-      "`choices` values must be a subset of 'light', 'dark', 'auto'.",
+      "`choices` values must be \"light\", \"dark\", and/or \"auto\". ",
+      "Example: c(Light = \"light\", Dark = \"dark\", Auto = \"auto\").",
       call. = FALSE
     )
   }
   if (!selected %in% vals) {
-    stop("`selected` must be one of the `choices` values.", call. = FALSE)
+    stop(
+      "`selected` must be one of the values in `choices` (the right-hand side), such as \"auto\".",
+      call. = FALSE
+    )
   }
 
   sel <- shiny::selectInput(
@@ -629,13 +663,26 @@ glass_preset_input <- function(
 #' @param inputId Same id passed to [glass_preset_input()].
 #'
 #' @return An [shiny::observeEvent()] observer (invisibly).
-#'
+#' @seealso [glass_preset_input()], [update_glass_theme()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- fluidPage(
+#'     theme = glass_theme(),
+#'     glass_preset_input()
+#'   )
+#'   server <- function(input, output, session) {
+#'     observe_glass_preset_input(input, session)
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass_preset_input <- function(input, session, inputId = "glass_preset") {
   if (missing(input) || missing(session)) {
-    stop("`input` and `session` are required.", call. = FALSE)
+    .glass_need_server("observe_glass_preset_input")
   }
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   shiny::observeEvent(
     input[[inputId]],
     {
@@ -662,7 +709,10 @@ observe_glass_preset_input <- function(input, session, inputId = "glass_preset")
 #'   `"dark"`).
 #'
 #' @return `"light"` or `"dark"`.
-#'
+#' @seealso [glass_plot_colors()], [glass_theme()]
+#' @family glass controls
+#' @examples
+#' glass_resolved_preset(default = "dark")
 #' @export
 glass_resolved_preset <- function(input, default = c("light", "dark")) {
   default <- match.arg(default)
@@ -697,6 +747,53 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   )
 }
 
+.glass_assert_flag <- function(value, name) {
+  if (is.logical(value) && length(value) == 1L && !is.na(value)) {
+    return(invisible(value))
+  }
+  stop(
+    "`", name, "` must be a single TRUE or FALSE.",
+    call. = FALSE
+  )
+}
+
+.glass_assert_flags <- function(...) {
+  flags <- list(...)
+  for (name in names(flags)) {
+    .glass_assert_flag(flags[[name]], name)
+  }
+  invisible(NULL)
+}
+
+.glass_assert_input_id <- function(inputId) {
+  ok <- is.character(inputId) && length(inputId) == 1L &&
+    !is.na(inputId) && nzchar(inputId)
+  if (!ok) {
+    stop(
+      "`inputId` must be one non-empty string, such as \"glass_toggle\".",
+      call. = FALSE
+    )
+  }
+  invisible(inputId)
+}
+
+.glass_need_session <- function(fun) {
+  stop(
+    "Pass the Shiny `session` into ", fun, "(). ",
+    "Call it from server = function(input, output, session), not while building the UI.",
+    call. = FALSE
+  )
+}
+
+.glass_need_server <- function(fun) {
+  stop(
+    "Call ", fun, "(input, session) inside the server function. ",
+    "`input` and `session` are the arguments in server = function(input, output, session). ",
+    "Do not call it while building the UI.",
+    call. = FALSE
+  )
+}
+
 .glass_default_intensity <- function() {
   0.5
 }
@@ -710,8 +807,10 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     new = "intensity",
     msg = paste(
       "`material = \"clear\"` is deprecated in shinyglass 0.5.0 and will be removed in a future release.",
-      "Use `intensity` from 0 (Ultra Clear) to 1 (Tinted).",
-      "When `intensity` is omitted, clear glass maps to intensity 0.12 so existing apps stay clearer than the midpoint."
+      "Delete the `material` argument and pass `intensity` instead.",
+      "0 is Ultra Clear, 1 is Tinted, and the default is 0.5.",
+      "When `intensity` is omitted, clear glass maps to intensity 0.12 so existing apps stay clearer than the midpoint.",
+      "To keep that look, write intensity = 0.12."
     )
   )
 }
@@ -725,18 +824,35 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
 }
 
 .glass_normalize_intensity <- function(intensity) {
-  stopifnot(is.numeric(intensity), length(intensity) == 1L, !is.na(intensity))
+  if (!(is.numeric(intensity) && length(intensity) == 1L && !is.na(intensity))) {
+    stop(
+      "`intensity` must be one number from 0 (Ultra Clear) to 1 (Tinted). The default is 0.5.",
+      call. = FALSE
+    )
+  }
   if (intensity < 0 || intensity > 1) {
-    stop("`intensity` must be between 0 (Ultra Clear) and 1 (Tinted).", call. = FALSE)
+    stop(
+      "`intensity` must be between 0 (Ultra Clear) and 1 (Tinted). The default is 0.5. ",
+      "For the old clear look, pass intensity = 0.12 instead of material = \"clear\".",
+      call. = FALSE
+    )
   }
   as.numeric(intensity)
 }
 
 .glass_normalize_color <- function(primary) {
-  stopifnot(is.character(primary), length(primary) == 1L, !is.na(primary))
+  if (!(is.character(primary) && length(primary) == 1L && !is.na(primary))) {
+    stop(
+      "`primary` must be one color string: a hex such as \"#007AFF\", rgb() or rgba(), or a name from names(glass_system_colors()) such as \"blue\".",
+      call. = FALSE
+    )
+  }
   primary <- trimws(primary)
   if (!nzchar(primary)) {
-    stop("`primary` must be a non-empty color string.", call. = FALSE)
+    stop(
+      "`primary` is empty. Pass a hex color such as \"#007AFF\" or a name from glass_system_colors().",
+      call. = FALSE
+    )
   }
   pal <- glass_system_colors()
   hit <- pal[tolower(names(pal)) == tolower(primary)]
@@ -756,15 +872,24 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   if (is.null(wallpaper) || (is.character(wallpaper) && !nzchar(wallpaper))) {
     return(NULL)
   }
-  stopifnot(is.character(wallpaper), length(wallpaper) == 1L, !is.na(wallpaper))
+  if (!(is.character(wallpaper) && length(wallpaper) == 1L && !is.na(wallpaper))) {
+    stop(
+      "`wallpaper` must be one string: an https URL, a data:image/... URI, or a path starting with \"/\" or \"./\". Pass NULL to use the scene wallpaper.",
+      call. = FALSE
+    )
+  }
   wallpaper <- trimws(wallpaper)
   wallpaper <- sub("^url\\((['\"]?)(.*)\\1\\)$", "\\2", wallpaper)
   if (grepl("[\"'<>\\\\]", wallpaper)) {
-    stop("`wallpaper` must not contain quotes or markup.", call. = FALSE)
+    stop(
+      "`wallpaper` must not contain quotes, backslashes, or HTML. Pass the bare URL, for example \"https://example.com/photo.jpg\".",
+      call. = FALSE
+    )
   }
   if (!grepl("^(https?:|data:image/|/|\\./)", wallpaper, ignore.case = TRUE)) {
     stop(
-      "`wallpaper` must be an https URL, data URI, or site-relative path.",
+      "`wallpaper` must be an https URL, a data:image/... URI, or a path starting with \"/\" or \"./\". ",
+      "Do not pass a javascript: URL or a bare filename. Pass NULL to use the scene wallpaper.",
       call. = FALSE
     )
   }

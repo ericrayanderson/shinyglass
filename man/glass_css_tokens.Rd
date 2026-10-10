@@ -27,3 +27,12 @@ Target 4.5:1 for body text and 3:1 for large UI chrome.
 head(glass_css_tokens())
 glass_css_tokens()$css_var
 }
+\seealso{
+\code{\link[=glass_add_tokens]{glass_add_tokens()}}, \code{\link[=glass_token_pack]{glass_token_pack()}}, \code{\link[=glass_theme]{glass_theme()}}
+
+Other glass tokens:
+\code{\link[=glass_add_tokens]{glass_add_tokens()}},
+\code{\link[=glass_scenes]{glass_scenes()}},
+\code{\link[=glass_token_pack]{glass_token_pack()}}
+}
+\concept{glass tokens}

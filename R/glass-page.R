@@ -7,8 +7,10 @@
 #' @param ... UI elements passed to [shiny::fluidPage()].
 #' @param title Optional page title ([shiny::titlePanel()]).
 #' @param preset,intensity,persist,scene,wallpaper,plot_surface,flatten,refraction,morph,press,scroll_edge,minimize_tabs,icon_style,floating_sidebar
-#'   Forwarded to [glass_theme()]. Persistence defaults to `TRUE` here.
-#'   `floating_sidebar` stays off unless you opt in.
+#'   Forwarded to [glass_theme()]. `preset` is `"light"`, `"dark"`, or
+#'   `"auto"` (default `"auto"`). `intensity` is numeric from `0` (Ultra
+#'   Clear) to `1` (Tinted), default `0.5`. Persistence defaults to `TRUE`
+#'   here. `floating_sidebar` stays off unless you opt in.
 #' @param controls `TRUE` for the default control row (toggle, intensity,
 #'   accent), `FALSE` for none, or a character vector subset of
 #'   `"toggle"`, `"intensity"`, `"accent"`.
@@ -16,6 +18,9 @@
 #'   created from the arguments above.
 #'
 #' @return A Shiny UI tag list suitable as `shinyApp(ui = ...)`.
+#' @seealso [shinyglass], [glass_theme()], [observe_glass()],
+#'   [glass_intensity_slider()]
+#' @family glass themes
 #' @export
 #'
 #' @examples
@@ -108,10 +113,24 @@ glass_page <- function(
 #' Registers [observe_glass_theme_toggle()], [observe_glass_intensity()], and
 #' [observe_glass_accent()] with the default input ids used by [glass_page()].
 #'
-#' @param input,session Shiny `input` and `session` objects.
-#' @param toggle_id,intensity_id,accent_id Input ids matching the UI controls.
+#' @param input,session Shiny server `input` and `session` objects.
+#' @param toggle_id,intensity_id,accent_id Character input ids matching the UI
+#'   controls. Defaults `"glass_toggle"`, `"glass_intensity"`, `"glass_accent"`.
 #'
 #' @return `NULL`, invisibly.
+#' @seealso [glass_page()], [observe_glass_theme_toggle()],
+#'   [observe_glass_intensity()], [observe_glass_accent()]
+#' @family glass controls
+#' @examples
+#' if (interactive()) {
+#'   library(shiny)
+#'   ui <- glass_page(title = "Hello, glass", plotOutput("plot"))
+#'   server <- function(input, output, session) {
+#'     observe_glass(input, session)
+#'     output$plot <- renderPlot(plot(1:10), bg = "transparent")
+#'   }
+#'   shinyApp(ui, server)
+#' }
 #' @export
 observe_glass <- function(
     input,

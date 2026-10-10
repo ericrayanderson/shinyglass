@@ -19,3 +19,12 @@ documented in \code{\link[=glass_css_tokens]{glass_css_tokens()}}.
 names(glass_scenes())
 glass_scenes()[["aurora"]]
 }
+\seealso{
+\code{\link[=glass_scene_input]{glass_scene_input()}}, \code{\link[=glass_theme]{glass_theme()}}
+
+Other glass tokens:
+\code{\link[=glass_add_tokens]{glass_add_tokens()}},
+\code{\link[=glass_css_tokens]{glass_css_tokens()}},
+\code{\link[=glass_token_pack]{glass_token_pack()}}
+}
+\concept{glass tokens}
