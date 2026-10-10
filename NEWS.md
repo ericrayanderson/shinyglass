@@ -137,7 +137,7 @@
   have a 44px close button. The shinychat app menu closes on a tap outside
   the sidebar.
 * Coarse pointers get a 44px target on buttons, selects, nav links, the
-  card fullscreen control, and `actionLink()` / `downloadLink()`. Those
+  card full-screen control, and `actionLink()` / `downloadLink()`. Those
   links are at least 32px on a fine pointer. Nav tabs do not scale when
   pressed.
 
