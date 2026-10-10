@@ -12,7 +12,7 @@ A data frame with \code{token}, \code{css_var}, \code{category}, and
 }
 \description{
 Catalog of public \verb{--glass-*} custom properties. Override them with
-\code{\link[=glass_add_tokens]{glass_add_tokens()}} or \code{\link[=glass_theme]{glass_theme()}} \code{tokens=} without forking
+\code{\link[=glass_add_tokens]{glass_add_tokens()}} or \code{\link[=glass_theme]{glass_theme()}} \verb{tokens=} without forking
 \code{inst/scss/glass.scss}. Light/dark packs already ship as dual
 \verb{[data-glass-preset]} rules; prefer these variables over Sass \verb{$glass-*}.
 }

@@ -136,7 +136,11 @@ glass_css_tokens <- function() {
     c("blur", "--glass-blur", "material", "Backdrop blur radius (CSS length)."),
     c("saturate", "--glass-saturate", "material", "Backdrop saturation."),
     c("radius", "--glass-radius", "material", "Corner radius for glass surfaces."),
-    c("intensity", "--glass-intensity", "material", "Ultra Clear (0) to Tinted (1)."),
+    c("intensity", "--glass-intensity", "material", "Ultra Clear (0) to Tinted (1). Default 0.5."),
+    c("refract-a", "--glass-refract-a", "material", "Coloured leading-edge refraction cue. Alpha scales with intensity."),
+    c("refract-b", "--glass-refract-b", "material", "Coloured trailing-edge refraction cue. Alpha scales with intensity."),
+    c("refract-brightness", "--glass-refract-brightness", "material", "Backdrop brightness boost. Scales with intensity."),
+    c("refract-contrast", "--glass-refract-contrast", "material", "Backdrop contrast boost. Scales with intensity."),
     c("bg", "--glass-bg", "surface", "Primary glass fill."),
     c("bg-hover", "--glass-bg-hover", "surface", "Hover / active glass fill."),
     c("bg-content", "--glass-bg-content", "surface", "Content-card fill (less chrome)."),
@@ -207,10 +211,22 @@ glass_token_pack <- function(preset = c("light", "dark")) {
     `--glass-orb-3` = tok$orb_3,
     `--glass-body-bg` = tok$body_bg,
     `--glass-body-color` = tok$body_color,
-    `--glass-blur` = "36px",
+    `--glass-blur` = "calc(var(--glass-blur-base, 36px) * 1.11)",
     `--glass-saturate` = "200%",
     `--glass-radius` = "1.5rem",
-    `--glass-intensity` = "0.45",
+    `--glass-intensity` = "0.5",
+    `--glass-refract-a` = if (identical(preset, "dark")) {
+      "rgba(100, 200, 255, 0.15)"
+    } else {
+      "rgba(120, 200, 255, 0.19)"
+    },
+    `--glass-refract-b` = if (identical(preset, "dark")) {
+      "rgba(220, 140, 255, 0.11)"
+    } else {
+      "rgba(255, 140, 200, 0.12)"
+    },
+    `--glass-refract-brightness` = "1.04",
+    `--glass-refract-contrast` = "1.04",
     `--glass-wallpaper-wash` = if (identical(preset, "dark")) {
       "rgba(0, 0, 0, 0.55)"
     } else {

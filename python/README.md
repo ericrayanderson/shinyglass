@@ -54,7 +54,7 @@ app = App(app_ui, None)
 | `blur` | `36` | Backdrop blur px |
 | `saturation` | `200` | Backdrop saturate % |
 | `radius` | `"1.5rem"` | Corner radius |
-| `intensity` | `0.45` | Ultra Clear (`0`) to Tinted (`1`); mirrors iOS 27 Settings → Appearance → Liquid Glass (the web cannot read the OS slider) |
+| `intensity` | `0.5` | Ultra Clear (`0`) to Tinted (`1`); iOS 27 midpoint. The web cannot read the OS slider. |
 | `plot_surface` | `"clear"` | `"opaque"` densifies plot / table hosts (~94% panel); chrome stays glass |
 | `scene` | `"default"` | `tahoe` / `dusk` / `mesh` / `aurora` / `harbor` / `grove` |
 | `flatten` | `False` | Print / screenshot mode (or `?glass_flatten=1`) |

@@ -127,6 +127,9 @@ def vendor(*, quiet: bool = False) -> Path:
 
     shutil.copy2(scss_src, STATIC / "glass.scss")
     shutil.copy2(js_src, STATIC / "shiny-glass.js")
+    head_src = root / "inst" / "js" / "glass-intensity-head.js"
+    if head_src.is_file():
+        shutil.copy2(head_src, STATIC / "glass-intensity-head.js")
 
     scss_text = scss_src.read_text(encoding="utf-8")
 
@@ -153,7 +156,7 @@ def vendor(*, quiet: bool = False) -> Path:
             [
                 "shinyglass static assets",
                 f"source={root}",
-                "files=glass.scss,shiny-glass.js,theme-light.css,theme-dark.css,"
+                "files=glass.scss,shiny-glass.js,glass-intensity-head.js,theme-light.css,theme-dark.css,"
                 "glass-rules-light.css,glass-rules-dark.css",
             ]
         )

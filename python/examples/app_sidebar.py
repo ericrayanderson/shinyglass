@@ -15,7 +15,7 @@ from shinyglass import glass_intensity_slider, glass_theme, update_glass_theme
 
 app_ui = ui.page_sidebar(
     ui.sidebar(
-        glass_intensity_slider("glass_intensity", value=0.45),
+        glass_intensity_slider("glass_intensity", value=0.5),
         ui.h4("Filters"),
         ui.input_select(
             "species",
@@ -76,7 +76,7 @@ app_ui = ui.page_sidebar(
     fillable=True,
     theme=glass_theme(
         preset="auto",
-        intensity=0.45,
+        intensity=0.5,
         plot_surface="clear",
         scene="tahoe",
         persist=True,

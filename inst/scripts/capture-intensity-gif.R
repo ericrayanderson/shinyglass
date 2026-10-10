@@ -20,6 +20,14 @@ suppressPackageStartupMessages({
   library(gifski)
 })
 
+# CI / root containers: Chrome refuses to start without these.
+chromote::set_chrome_args(unique(c(
+  chromote::default_chrome_args(),
+  "--no-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu"
+)))
+
 `%||%` <- function(x, y) {
   if (is.null(x) || !length(x) || (is.character(x) && !nzchar(x[[1]]))) y else x
 }
@@ -86,7 +94,7 @@ STAGE_JS <- paste(
     "",
     "  window.__shinyglassGifSetIntensity = function (t) {",
     "    t = Number(t);",
-    "    if (!isFinite(t)) t = 0.45;",
+    "    if (!isFinite(t)) t = 0.5;",
     "    if (t < 0) t = 0;",
     "    if (t > 1) t = 1;",
     "    // Move the thumb first (no events — input handlers would re-apply production fills).",

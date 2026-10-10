@@ -26,7 +26,7 @@ ui <- page_fillable(
   theme = glass_theme(
     preset = glass_preset,
     primary = "#007AFF",
-    intensity = 0.45
+    intensity = 0.5
   ),
   padding = "1rem",
   gap = "0.85rem",
@@ -44,7 +44,7 @@ ui <- page_fillable(
       glass_intensity_slider(
         "glass_intensity",
         label = NULL,
-        value = 0.45,
+        value = 0.5,
         preview = TRUE
       ),
       tags$hr(),
@@ -131,7 +131,7 @@ server <- function(input, output, session) {
 
   intensity_val <- reactive({
     v <- input$glass_intensity
-    if (is.null(v) || length(v) != 1L || is.na(v)) 0.45 else as.numeric(v)
+    if (is.null(v) || length(v) != 1L || is.na(v)) 0.5 else as.numeric(v)
   })
 
   output$intensity_label <- renderText({

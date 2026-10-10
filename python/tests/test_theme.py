@@ -103,9 +103,12 @@ def test_intensity_scene_flatten_in_head():
 
 def test_vendored_scss_has_ios27_nudge_and_plot_panel():
     scss = scss_path().read_text(encoding="utf-8")
-    assert "--glass-border: rgba(255, 255, 255, 0.78)" in scss
-    assert "--glass-border: rgba(255, 255, 255, 0.44)" in scss
-    assert "--glass-specular: rgba(255, 255, 255, 0.64)" in scss
+    assert "--glass-border: rgba(255, 255, 255, 0.85)" in scss
+    assert "--glass-border: rgba(255, 255, 255, 0.55)" in scss
+    assert "--glass-specular: rgba(255, 255, 255, 0.69)" in scss
+    assert 'data-glass-reduced-transparency="reduce"' in scss
+    assert 'data-glass-contrast="more"' in scss
+    assert 'data-glass-forced-colors="active"' in scss
     assert "data-glass-plot-surface" in scss
     assert "glass-plot-surface-opaque" in scss
     assert "data-glass-scene=\"aurora\"" in scss
@@ -115,7 +118,9 @@ def test_vendored_scss_has_ios27_nudge_and_plot_panel():
     assert "setPlotSurface" in js
     assert "setFlatten" in js
     assert "setScene" in js
-    assert "borderA: 0.36" in js
+    assert "borderA: 0.42" in js
+    assert "DEFAULT_INTENSITY = 0.5" in js
+    assert "CLEAR_MATERIAL_INTENSITY = 0.12" in js
 
 
 def test_update_glass_theme_payload():
@@ -139,6 +144,28 @@ def test_update_glass_theme_payload():
     assert sent[0][1]["plot_surface"] == "opaque"
     assert sent[0][1]["scene"] == "harbor"
     assert sent[0][1]["flatten"] is True
+
+
+def test_default_intensity_is_midpoint_and_clear_material_is_deprecated():
+    theme = glass_theme()
+    preset = next(d for d in theme._html_dependencies() if d.name == "shinyglass-preset")
+    markup = str(preset.head or "")
+    assert "intensity=0.5000" in markup
+    assert "prefers-reduced-transparency" in markup
+    with pytest.warns(DeprecationWarning, match="0.12"):
+        clear = glass_theme(material="clear")
+    clear_head = str(
+        next(d for d in clear._html_dependencies() if d.name == "shinyglass-preset").head
+        or ""
+    )
+    assert "intensity=0.1200" in clear_head
+    with pytest.warns(DeprecationWarning):
+        kept = glass_theme(material="clear", intensity=0.8)
+    kept_head = str(
+        next(d for d in kept._html_dependencies() if d.name == "shinyglass-preset").head
+        or ""
+    )
+    assert "intensity=0.8000" in kept_head
 
 
 def test_auto_preset_uses_light_pack_and_marks_mode():

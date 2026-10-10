@@ -30,7 +30,7 @@ when the current theme intensity lies outside that range.}
 
 \item{min, max, step}{Range for the underlying range input. Defaults cover
 the full Ultra Clear -> Tinted spectrum. Bounds must be finite, within
-\code{[0, 1]}, and increasing; \code{step} must be finite and positive.}
+\verb{[0, 1]}, and increasing; \code{step} must be finite and positive.}
 
 \item{min_label, max_label}{End-cap captions (iOS uses "Ultra Clear" /
 "Tinted").}

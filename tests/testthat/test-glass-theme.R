@@ -75,7 +75,10 @@ test_that("glass_theme auto preset is marked in head", {
 
 test_that("glass_theme material clear is marked in head and CSS", {
   skip_if_not_installed("bslib")
-  th <- glass_theme(material = "clear")
+  expect_warning(
+    th <- glass_theme(material = "clear"),
+    "deprecated"
+  )
   deps <- bslib::bs_theme_dependencies(th)
   preset_deps <- deps[vapply(deps, function(d) d$name, character(1)) == "shinyglass-preset"]
   expect_length(preset_deps, 1)
@@ -545,9 +548,13 @@ test_that("update_glass_theme sends material and scene", {
     }
   )
   class(session) <- "ShinySession"
-  update_glass_theme(session, material = "clear", scene = "mesh", ambient_motion = FALSE)
+  expect_warning(
+    update_glass_theme(session, material = "clear", scene = "mesh", ambient_motion = FALSE),
+    "deprecated"
+  )
   sg <- msgs[[1]]$message
   expect_equal(sg$material, "clear")
+  expect_equal(sg$intensity, 0.12)
   expect_equal(sg$scene, "mesh")
   expect_equal(sg$ambient_motion, FALSE)
 })
@@ -721,10 +728,84 @@ test_that("compiled CSS and JS ship shipping-iOS-27 edge tokens", {
   js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
   scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(js, "setPlotSurface")
-  expect_match(js, "borderA: 0.36")
-  expect_match(js, "specularA: 0.52")
-  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.78\\)")
-  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.44\\)")
-  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 1\\)")
-  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.64\\)")
+  expect_match(js, "borderA: 0.42")
+  expect_match(js, "specularA: 0.56")
+  expect_match(js, "blurScale: 1.08")
+  expect_match(js, "blurScale: 1.14")
+  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.85\\)")
+  expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.55\\)")
+  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.95\\)")
+  expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.69\\)")
+  expect_match(scss, "--glass-refract-brightness")
+  expect_match(scss, "--glass-refract-contrast")
+})
+
+test_that("default intensity is the iOS 27 midpoint", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, "var intensity=0.5000")
+  expect_match(head, "prefers-reduced-transparency")
+  expect_match(head, "prefers-contrast")
+  expect_match(head, "forced-colors")
+  expect_match(head, "blurScale:1.08")
+  slider <- as.character(glass_intensity_slider())
+  expect_match(slider, 'value="0.5"', fixed = TRUE)
+  expect_equal(glass_token_pack("light")[["--glass-intensity"]], "0.5")
+  expect_equal(glass_token_pack("dark")[["--glass-intensity"]], "0.5")
+  expect_true("--glass-refract-a" %in% glass_css_tokens()$css_var)
+  expect_true("--glass-refract-b" %in% glass_css_tokens()$css_var)
+  expect_true("--glass-refract-brightness" %in% glass_css_tokens()$css_var)
+  expect_true("--glass-refract-contrast" %in% glass_css_tokens()$css_var)
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "DEFAULT_INTENSITY = 0.5")
+  react <- paste(readLines(system.file("js", "shinyglass-react.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(react, "GlassIntensitySlider")
+  expect_match(react, "reducedTransparency")
+  expect_match(react, "increasedContrast")
+  expect_match(react, "forcedColors")
+})
+
+test_that("material clear warns and maps to a low intensity", {
+  skip_if_not_installed("bslib")
+  expect_warning(
+    th <- glass_theme(material = "clear"),
+    "0.12"
+  )
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, "var intensity=0.1200")
+  expect_match(head, 'var material="clear"', fixed = TRUE)
+  expect_warning(
+    kept <- glass_theme(material = "clear", intensity = 0.8),
+    "deprecated"
+  )
+  deps_kept <- bslib::bs_theme_dependencies(kept)
+  head_kept <- deps_kept[[which(vapply(deps_kept, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head_kept, "var intensity=0.8000")
+})
+
+test_that("accessibility CSS beats inline glass variables", {
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, 'data-glass-contrast="more"')
+  expect_match(scss, 'data-glass-forced-colors="active"')
+  expect_match(scss, 'data-glass-reduced-transparency="reduce"')
+  expect_match(scss, "prefers-contrast: more")
+  expect_match(scss, "forced-colors: active")
+  expect_match(scss, "prefers-reduced-transparency: reduce")
+  expect_match(scss, "--glass-bg: #f5f5f7 !important")
+  expect_match(scss, "--glass-blur: 0px !important")
+  expect_match(scss, "--glass-border: ButtonBorder !important")
+  expect_match(scss, "backdrop-filter: none !important")
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  # dataset.glassContrast writes the data-glass-contrast attribute.
+  expect_match(js, "dataset.glassContrast")
+  expect_match(js, "dataset.glassForcedColors")
+  expect_match(js, "dataset.glassReducedTransparency")
+  expect_match(js, "prefers-contrast: more")
+  expect_match(js, "forced-colors: active")
+  expect_match(js, "applyReducedTransparency")
+  expect_match(js, "applyForcedColors")
+  expect_match(js, "applyIncreasedContrast")
 })

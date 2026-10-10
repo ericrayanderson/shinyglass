@@ -10,6 +10,14 @@ suppressPackageStartupMessages({
   library(curl)
 })
 
+# CI / root containers: Chrome refuses to start without these.
+chromote::set_chrome_args(unique(c(
+  chromote::default_chrome_args(),
+  "--no-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu"
+)))
+
 args <- commandArgs(trailingOnly = FALSE)
 file_arg <- grep("^--file=", args, value = TRUE)
 script_dir <- if (length(file_arg)) {
@@ -167,10 +175,10 @@ capture_shot <- function(preset, intensity, out_name, port) {
   if (is.null(x) || !length(x) || (is.character(x) && !nzchar(x[[1]]))) y else x
 }
 
-# Balanced default (0.45), Ultra Clear (0.10), Tinted (0.90) — match prior README set
+# Balanced default (0.5), Ultra Clear (0.10), Tinted (0.90)
 jobs <- list(
-  list(preset = "light", intensity = 0.45, file = "intensity-slider.png", port = 3860L),
-  list(preset = "dark", intensity = 0.45, file = "intensity-slider-dark.png", port = 3861L),
+  list(preset = "light", intensity = 0.5, file = "intensity-slider.png", port = 3860L),
+  list(preset = "dark", intensity = 0.5, file = "intensity-slider-dark.png", port = 3861L),
   list(preset = "light", intensity = 0.10, file = "intensity-slider-clear.png", port = 3862L),
   list(preset = "light", intensity = 0.90, file = "intensity-slider-tinted.png", port = 3863L),
   list(preset = "dark", intensity = 0.10, file = "intensity-slider-dark-clear.png", port = 3864L),

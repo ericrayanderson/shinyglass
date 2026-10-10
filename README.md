@@ -58,8 +58,10 @@ shinyApp(ui, server)
 wells. Set `persist = TRUE` (the default here) to remember those choices.
 
 The intensity slider mirrors iOS 27 **Settings → Appearance → Liquid Glass**
-(continuous Ultra Clear → Tinted). Browsers cannot read that OS slider, so the
-in-app control is the supported way to match the look.
+(continuous Ultra Clear → Tinted). The default is `0.5`, Apple's midpoint.
+Browsers cannot read that OS slider, so the in-app control is the supported
+way to match the look. Reduce Transparency paints solid fills with no backdrop
+blur. Increase Contrast and forced colors override the glass variables.
 
 Dense charts and tables can opt into a regular panel with
 `glass_theme(plot_surface = "opaque")` while nav and controls stay on glass.

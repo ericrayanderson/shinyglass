@@ -10,8 +10,8 @@ glass_scenes()
 A named character vector: names are scene ids, values are labels.
 }
 \description{
-Curated page backgrounds for \code{\link[=glass_theme]{glass_theme()}} \code{scene=}. Each name ships
-light and dark gradient/orb packs. Pair with \code{wallpaper=} for a user photo;
+Curated page backgrounds for \code{\link[=glass_theme]{glass_theme()}} \verb{scene=}. Each name ships
+light and dark gradient/orb packs. Pair with \verb{wallpaper=} for a user photo;
 the photo is blurred and washed so body ink stays above the contrast floor
 documented in \code{\link[=glass_css_tokens]{glass_css_tokens()}}.
 }

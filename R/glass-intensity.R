@@ -77,7 +77,7 @@ glass_intensity_slider <- function(
       stop("`value` must be within `min` and `max`.", call. = FALSE)
     }
   } else {
-    value <- base::min(max, base::max(min, 0.45))
+    value <- base::min(max, base::max(min, .glass_default_intensity()))
   }
 
   style <- if (!is.null(width)) {
