@@ -886,7 +886,7 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(engine, "glass-scroll-edge-top")
   expect_match(scss, "glass-scroll-edge-top")
   expect_match(scss, "shiny-chat-message-content")
-  expect_match(scss, "rgba(246, 244, 250, 0.98)")
+  expect_match(scss, "rgba(246, 244, 250, 0.98)", fixed = TRUE)
   expect_match(scss, "shiny-chat-scroll-to-bottom")
   expect_match(scss, "shiny-chat-thinking-header")
   expect_match(scss, "safe-area-inset-bottom")
@@ -991,11 +991,11 @@ test_that("shinychat glass example builds an app", {
   expect_length(env$curated_citations("What's the tide at dawn?"), 0L)
   expect_length(env$curated_citations("Hello there"), 0L)
 
-  expect_match(env$harbor_icon_src(), "^data:image/svg+xml;base64,", perl = TRUE)
-  icon_svg <- rawToChar(jsonlite::base64_dec(sub(
-    "^data:image/svg\\+xml;base64,",
-    "",
-    env$harbor_icon_src()
+  icon_prefix <- "data:image/svg+xml;base64,"
+  expect_true(startsWith(env$harbor_icon_src(), icon_prefix))
+  icon_svg <- rawToChar(jsonlite::base64_dec(substring(
+    env$harbor_icon_src(),
+    nchar(icon_prefix) + 1L
   )))
   expect_match(icon_svg, "svg", fixed = TRUE)
   expect_match(icon_svg, "#007AFF", fixed = TRUE)

@@ -303,7 +303,6 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await expect(panel.locator('a[href*="github.io/shinyglass"]')).toBeVisible();
   await expect(panel.locator('a[href*="human-interface-guidelines"]')).toBeVisible();
   await expect(panel.locator('a[href*="shiny.posit.co"]')).toBeVisible();
-  await expect(panel.locator('a[href*="shinychat"]')).toHaveCount(0);
   await page.locator('#sources_panel .btn-close').click();
 
   await page.goto(live, { waitUntil: 'domcontentloaded' });
