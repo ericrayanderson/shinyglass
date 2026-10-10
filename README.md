@@ -56,7 +56,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-Usage: `?shinyglass` and `vignette("using")`.
+The installed package has the full recipe (options, the 0.5.0 migration, and pitfalls): `?shinyglass` and `vignette("shinyglass")`.
 
 <p align="center">
 <img src="man/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode">

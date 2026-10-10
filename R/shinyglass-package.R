@@ -1,6 +1,11 @@
 #' Liquid Glass Design Themes for 'shiny' Applications
 #'
 #' Drop-in Liquid Glass themes for [shiny](https://shiny.posit.co/).
+#' This is the installed usage page. `help("shinyglass")` and
+#' `help("shinyglass-package")` open it (`?shinyglass` is the same page).
+#' `vignette("shinyglass")` is this recipe, and
+#' `browseVignettes("shinyglass")` lists that vignette.
+#'
 #' Pass [glass_theme()] to `theme` on a bslib page or `fluidPage()`, or
 #' start from [glass_page()]. Intensity runs from `0` (Ultra Clear) to `1`
 #' (Tinted). The default is `0.5`.
@@ -60,6 +65,19 @@
 #' shinyApp(ui, server)
 #' ```
 #'
+#' `fluidPage()` and `navbarPage()` take the same `theme`:
+#'
+#' ```r
+#' ui <- fluidPage(
+#'   theme = glass_theme(preset = "auto", intensity = 0.5),
+#'   glass_theme_toggle(),
+#'   glass_intensity_slider(),
+#'   plotOutput("plot")
+#' )
+#' ```
+#'
+#' The server is unchanged: `observe_glass(input, session)`.
+#'
 #' [glass_theme()] does not remember choices (`persist = FALSE`).
 #' [glass_page()] does (`persist = TRUE`).
 #'
@@ -115,8 +133,8 @@
 #'   the glass. [glass_flatten()] or `?glass_flatten=1` removes blur for
 #'   screenshots and PDF.
 #'
-#' Longer copy, including instructions you can paste into an AI coding
-#' assistant, is in `vignette("using")`.
+#' `vignette("shinyglass")` is this same recipe, installed with the
+#' package, plus instructions you can paste.
 #'
 #' @examples
 #' inherits(glass_theme(preset = "auto", intensity = 0.5), "bs_theme")

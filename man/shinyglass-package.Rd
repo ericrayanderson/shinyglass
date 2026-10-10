@@ -7,6 +7,12 @@
 \title{Liquid Glass Design Themes for 'shiny' Applications}
 \description{
 Drop-in Liquid Glass themes for \href{https://shiny.posit.co/}{shiny}.
+This is the installed usage page. \code{help("shinyglass")} and
+\code{help("shinyglass-package")} open it (\code{?shinyglass} is the same page).
+\code{vignette("shinyglass")} is this recipe, and
+\code{browseVignettes("shinyglass")} lists that vignette.
+}
+\details{
 Pass \code{\link[=glass_theme]{glass_theme()}} to \code{theme} on a bslib page or \code{fluidPage()}, or
 start from \code{\link[=glass_page]{glass_page()}}. Intensity runs from \code{0} (Ultra Clear) to \code{1}
 (Tinted). The default is \code{0.5}.
@@ -66,6 +72,18 @@ server <- function(input, output, session) \{
 
 shinyApp(ui, server)
 }\if{html}{\out{</div>}}
+
+\code{fluidPage()} and \code{navbarPage()} take the same \code{theme}:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{ui <- fluidPage(
+  theme = glass_theme(preset = "auto", intensity = 0.5),
+  glass_theme_toggle(),
+  glass_intensity_slider(),
+  plotOutput("plot")
+)
+}\if{html}{\out{</div>}}
+
+The server is unchanged: \code{observe_glass(input, session)}.
 
 \code{\link[=glass_theme]{glass_theme()}} does not remember choices (\code{persist = FALSE}).
 \code{\link[=glass_page]{glass_page()}} does (\code{persist = TRUE}).
@@ -132,8 +150,8 @@ the glass. \code{\link[=glass_flatten]{glass_flatten()}} or \code{?glass_flatten
 screenshots and PDF.
 }
 
-Longer copy, including instructions you can paste into an AI coding
-assistant, is in \code{vignette("using")}.
+\code{vignette("shinyglass")} is this same recipe, installed with the
+package, plus instructions you can paste.
 }
 
 \examples{

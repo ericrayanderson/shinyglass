@@ -57,7 +57,7 @@ navbar:
         - text: Try it
           href: articles/playground.html
         - text: Using shinyglass
-          href: articles/using.html
+          href: articles/shinyglass.html
     reference:
       text: Reference
       href: reference/index.html
@@ -118,7 +118,7 @@ articles:
   - shinyreact
   - shinychat
   - playground
-  - using
+  - shinyglass
 
 authors:
   Eric Anderson:

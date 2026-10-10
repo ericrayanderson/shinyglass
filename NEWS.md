@@ -44,10 +44,11 @@
 
 ## New features
 
-* `?shinyglass` is a short usage guide: a minimal app, how to add glass
-  to an existing bslib or `fluidPage()` app, key options, the 0.5.0
-  migration, and common pitfalls with their fixes. `vignette("using")`
-  is the same guide, plus instructions you can paste. Help pages state
+* The installed help page `shinyglass` (also `shinyglass-package`) is
+  the usage guide: a minimal app, how to add glass to an existing bslib
+  or `fluidPage()` app, key options, the 0.5.0 migration, and common
+  pitfalls with their fixes. `vignette("shinyglass")` is that same guide
+  and is what `browseVignettes("shinyglass")` lists. Help pages state
   types, defaults, and minimal examples, and they cross-link by topic.
   Argument errors name the argument and the value to pass. The pkgdown
   site publishes `llms.txt` and `llms-full.txt`.

@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-`?shinyglass` is the short version of this page. Intensity runs from `0` (Ultra Clear) to `1` (Tinted). The default is `0.5`. Do not pass `material = "clear"`; that argument is deprecated.
+This vignette is installed with the package. Open it with `vignette("shinyglass")`. `browseVignettes("shinyglass")` lists it with the other vignettes. The same recipe is `help("shinyglass")`, also available as `help("shinyglass-package")`.
+
+Intensity runs from `0` (Ultra Clear) to `1` (Tinted). The default is `0.5`. Do not pass `material = "clear"`; that argument is deprecated.
 
 ```{r}
 library(shinyglass)
@@ -79,7 +81,18 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-`fluidPage(theme = glass_theme())` is the same idea without bslib. `glass_theme()` does not persist choices unless you set `persist = TRUE`. `glass_page()` turns persistence on for you.
+The same theme works on `fluidPage()` and `navbarPage()`:
+
+```r
+ui <- fluidPage(
+  theme = glass_theme(preset = "auto", intensity = 0.5),
+  glass_theme_toggle(),
+  glass_intensity_slider(),
+  plotOutput("plot")
+)
+```
+
+`glass_theme()` does not persist choices unless you set `persist = TRUE`. `glass_page()` turns persistence on for you.
 
 # Key options
 

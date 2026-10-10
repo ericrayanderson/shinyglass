@@ -57,7 +57,7 @@ articles <- c(
   link_line("articles/shinyreact.md", "shinyreact", "Named theme, GlassPage, and useGlassTheme."),
   link_line("articles/shinychat.md", "shinychat", "page_chat() and offcanvas on glass."),
   link_line("articles/playground.md", "Try it", "A small app you can run locally."),
-  link_line("articles/using.md", "Using shinyglass", "Minimal app, existing apps, options, migration, pitfalls, and paste-ready instructions.")
+  link_line("articles/shinyglass.md", "Using shinyglass", "Installed vignette. Same recipe as ?shinyglass.")
 )
 
 missing <- character()
@@ -78,7 +78,7 @@ if (length(missing)) {
 index <- c(
   "# shinyglass",
   "",
-  "> Liquid Glass themes for Shiny, matching Apple iOS 27 as far as a browser can. glass_theme() and glass_page() add translucent surfaces, backdrop blur, light/dark/auto switching, and an intensity slider from 0 (Ultra Clear) to 1 (Tinted). The default intensity is 0.5. Accessibility settings (reduced transparency, increased contrast, forced colors, reduced motion) override the glass.",
+  "> Liquid Glass themes for Shiny. In the installed package, read help(\"shinyglass\") (same page as help(\"shinyglass-package\")) and vignette(\"shinyglass\"). Intensity is 0 (Ultra Clear) to 1 (Tinted), default 0.5. Do not pass material = \"clear\".",
   "",
   "## Install",
   "",
