@@ -85,7 +85,10 @@ ui <- function(request) {
         div(
           class = "d-flex flex-wrap gap-2 align-items-center mb-3",
           input_dark_mode(id = "color_mode", mode = if (preset == "dark") "dark" else "light"),
+          glass_theme_toggle(selected = preset),
           actionButton("ping", tagList(icon("sliders"), "Ping"), class = "btn-secondary"),
+          actionLink("compat_link", "actionLink"),
+          downloadLink("compat_dl_link", "downloadLink"),
           textOutput("ping_out", inline = TRUE),
           textOutput("mode_out", inline = TRUE)
         ),
@@ -164,6 +167,7 @@ ui <- function(request) {
             }
           ),
           card(
+            full_screen = TRUE,
             card_header("DT"),
             if (isTRUE(compat_present[["DT"]])) {
               DT::DTOutput("dt")
@@ -311,6 +315,10 @@ server <- function(input, output, session) {
   output$file_out <- renderText({
     if (is.null(input$file)) "no file" else input$file$name
   })
+  output$compat_dl_link <- downloadHandler(
+    filename = function() "note.txt",
+    content = function(file) writeLines("glass", file)
+  )
   output$side_echo <- renderText(paste("filter", input$side_q %||% ""))
   output$modal_out <- renderText(modal_val())
 

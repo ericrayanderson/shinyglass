@@ -371,3 +371,79 @@ test('many cards scroll without freezing and print drops backdrop filters', asyn
   const filter = await page.locator('.card').first().evaluate((el) => getComputedStyle(el).backdropFilter || getComputedStyle(el).webkitBackdropFilter || '');
   expect(filter === 'none' || filter === '').toBeTruthy();
 });
+
+test('coarse pointers keep glass controls at least 44px', async ({ browser }) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 393, height: 852 },
+    deviceScaleFactor: 2
+  });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  const coarse = await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches);
+  expect(coarse).toBeTruthy();
+  async function showNav(name) {
+    await page.evaluate((value) => {
+      const link = document.querySelector(`a.nav-link[data-value="${value}"]`);
+      if (link) link.click();
+    }, name);
+    await page.waitForTimeout(250);
+  }
+
+  async function atLeast(locator, min) {
+    await expect(locator).toBeVisible();
+    const b = await locator.boundingBox();
+    expect(b.width).toBeGreaterThanOrEqual(min - 0.6);
+    expect(b.height).toBeGreaterThanOrEqual(min - 0.6);
+  }
+
+  await atLeast(page.locator('.glass-theme-toggle .btn').first(), 44);
+  const sel = page.locator('.shiny-input-container:has(#sel) .selectize-input');
+  const selBox = await sel.boundingBox();
+  expect(selBox.height).toBeGreaterThanOrEqual(43.4);
+  const caret = await page.locator('.shiny-input-container:has(#sel) .selectize-input > input').boundingBox();
+  expect(caret.width).toBeGreaterThanOrEqual(selBox.width - 8);
+  expect(caret.height).toBeGreaterThanOrEqual(selBox.height - 8);
+
+  const linkHit = await page.locator('#compat_link').evaluate((el) => {
+    const text = el.getBoundingClientRect();
+    const after = getComputedStyle(el, '::after');
+    return {
+      textH: text.height,
+      hit: Math.max(parseFloat(after.width) || 0, parseFloat(after.height) || 0)
+    };
+  });
+  expect(linkHit.hit).toBeGreaterThanOrEqual(44);
+  expect(linkHit.textH).toBeLessThan(36);
+
+  await showNav('Layout');
+  await atLeast(page.locator('.bslib-sidebar-layout > .collapse-toggle').first(), 44);
+  await atLeast(page.locator('#classic_tabs .nav-link, .nav-tabs .nav-link').first(), 44);
+
+  await showNav('Data');
+  await expect(page.locator('.dataTables_paginate .page-link').first()).toBeVisible({ timeout: 20000 });
+  await atLeast(page.locator('.dataTables_paginate .page-link').first(), 44);
+  await atLeast(page.locator('.bslib-card:has(.dataTables_wrapper) .bslib-full-screen-enter').first(), 44);
+
+  await showNav('Overlays');
+  await atLeast(page.locator('#pop_btn'), 44);
+  const popBtn = page.locator('#pop_btn');
+  await popBtn.click();
+  await expect(page.locator('.popover.show')).toBeVisible();
+  const popBox = await popBtn.boundingBox();
+  await page.touchscreen.tap(popBox.x + popBox.width / 2, popBox.y + popBox.height / 2);
+  await expect(page.locator('.popover.show')).toHaveCount(0);
+  await expect(page.locator('.popover')).toHaveCount(0);
+  await popBtn.click();
+  await expect(page.locator('.popover.show')).toBeVisible();
+  await page.touchscreen.tap(12, 12);
+  await expect(page.locator('.popover.show')).toHaveCount(0);
+  await page.locator('#open_modal').scrollIntoViewIfNeeded();
+  await page.locator('#open_modal').click();
+  const modalClose = page.locator('.modal.show .btn-close, .modal.show [data-bs-dismiss="modal"], .modal.show [data-dismiss="modal"]').first();
+  await expect(modalClose).toBeVisible({ timeout: 8000 });
+  await atLeast(modalClose, 44);
+  await context.close();
+});

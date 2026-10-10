@@ -690,8 +690,14 @@ gemini_model <- function() {
 
 harbor_system_prompt <- function() {
   paste(
-    "You help with shinyglass, Shiny, and R, and with ordinary conversation.",
-    "Answer clearly in a few sentences.",
+    "You answer questions about shinyglass, Shiny, and R, and ordinary conversation.",
+    "shinyglass is Liquid Glass themes for Shiny, matching Apple iOS 27.",
+    "glass_theme() and glass_page() build the theme.",
+    "Intensity is 0 to 1, default 0.5, via glass_intensity_slider().",
+    "It has refraction, morphing, and press physics, plus fallbacks for reduced transparency, increased contrast, and forced colors.",
+    "shinychat page_chat() and bslib offcanvas() are supported, and so are the React components.",
+    "Answer in 2 to 4 short paragraphs, or one short code snippet.",
+    "Stay specific to these APIs.",
     "Name the project or the document you rely on.",
     "Decline only a clearly unrelated or abusive request, in one short sentence, without role-play."
   )
@@ -883,16 +889,18 @@ guarded_stream <- function(stream, text, on_fallback = NULL) {
   })
 }
 
-# Gemini 3 takes a thinking level. Flash-lite takes a small token budget
-# and may return no thoughts; the disclosure is omitted in that case.
-# Older Gemini models take a larger token budget. A 400 from thinking
-# retries the same model with params = NULL.
+# Gemini 3, including flash-lite, takes a thinking level. ellmer turns that
+# into thinkingConfig with includeThoughts, so a summary can show as
+# "Thought for ...". Flash-lite may still return none; that is fine.
+# Older flash-lite builds take a small token budget. Other older models
+# take a larger budget. A 400 from thinking retries the same model with
+# params = NULL.
 gemini_params <- function(model = gemini_model()) {
   model <- model %||% ""
-  if (grepl("flash-lite", model, fixed = TRUE)) {
-    ellmer::params(reasoning_tokens = 256L)
-  } else if (grepl("^gemini-3", model)) {
+  if (grepl("^gemini-3", model)) {
     ellmer::params(reasoning_effort = "low")
+  } else if (grepl("flash-lite", model, fixed = TRUE)) {
+    ellmer::params(reasoning_tokens = 256L)
   } else {
     ellmer::params(reasoning_tokens = 1024L)
   }
@@ -1006,22 +1014,22 @@ ui <- tagList(
     tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
-      /* In-flow toast under the chat header. It must not cover the sidebar
-         or the sources offcanvas, and only the toast itself takes clicks. */
+      /* Toast under the chat header, over the transcript only. It must not
+         cover the sidebar or the sources offcanvas, grow the page, or take
+         clicks outside the toast itself. */
       #harbor_notice_host {
-        position: relative;
+        position: absolute;
         z-index: 2;
+        top: 0.35rem;
+        left: 0;
+        right: 0;
         width: min(40rem, 100%);
         margin: 0 auto;
-        padding: 0;
+        padding: 0 16px;
         box-sizing: border-box;
         pointer-events: none;
         display: flex;
         justify-content: center;
-      }
-      #harbor_notice_host:has(.harbor-notice:not(.is-hidden)) {
-        margin-top: 0.35rem;
-        padding-inline: 16px;
       }
       .harbor-notice {
         pointer-events: auto;
@@ -1137,7 +1145,9 @@ ui <- tagList(
       }
       html[data-glass-preset='dark'] .harbor-status[data-mode='live'],
       html[data-glass-preset='auto'][data-bs-theme='dark'] .harbor-status[data-mode='live'] {
-        color: #b6f0c8;
+        color: #f4fff6;
+        background: #0c341f;
+        border-color: #6ee7a8;
       }
       html[data-glass-preset='dark'] .harbor-status[data-mode='demo'],
       html[data-glass-preset='auto'][data-bs-theme='dark'] .harbor-status[data-mode='demo'] {
@@ -1501,13 +1511,11 @@ ui <- tagList(
         }
         function placeNotice() {
           var host = document.getElementById('harbor_notice_host');
-          var header = document.querySelector('.shiny-chat-page-header');
-          var parent = header && header.parentElement;
-          if (!host || !parent) return;
-          if (host.previousElementSibling !== header) {
-            if (header.nextSibling) parent.insertBefore(host, header.nextSibling);
-            else parent.appendChild(host);
-          }
+          var main = document.querySelector('.shiny-chat-page-main');
+          if (!host || !main) return;
+          // The page grid is header plus one flexible row. A host between
+          // those two steals the row and pins the sidebar to the bottom.
+          if (host.parentElement !== main) main.insertBefore(host, main.firstChild);
         }
         function armNotice() {
           placeNotice();
