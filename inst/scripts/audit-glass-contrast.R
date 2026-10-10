@@ -109,6 +109,10 @@ catalog <- list(
     path = file.path(pkg_root, "inst", "examples", "bslib-dashboard.R"),
     needs = c("ggplot2", "DT"),
     wait = c("#dist_plot img", "#metric_n", ".dataTables_paginate .page-link"),
+    extra_selectors = c(
+      "table.dataTable tbody td",
+      "table.dataTable tbody tr:nth-child(even) td"
+    ),
     interactions = list(
       list(
         name = "open-dt-page-2",
