@@ -33,7 +33,12 @@
     "form.well",
     ".nav-pills",
     ".tabbable > .nav-tabs",
-    ".glass-tabbar"
+    ".glass-tabbar",
+    ".offcanvas",
+    ".shiny-chat-page-header",
+    ".shiny-chat-page-sidebar",
+    ".shiny-chat-input .tiptap",
+    ".shiny-chat-slash-palette"
   ].join(",");
 
   var MORPH_SELECTOR = [
@@ -407,10 +412,10 @@
   }
 
   function refractRank(el) {
-    if (el.matches(".navbar, .bslib-sidebar-layout > .sidebar, .glass-sidebar, .nav-pills, .glass-tabbar, .tabbable > .nav-tabs")) {
+    if (el.matches(".navbar, .bslib-sidebar-layout > .sidebar, .glass-sidebar, .nav-pills, .glass-tabbar, .tabbable > .nav-tabs, .offcanvas, .shiny-chat-page-header, .shiny-chat-page-sidebar, .shiny-chat-input .tiptap")) {
       return 3;
     }
-    if (el.matches(".modal-content, .dropdown-menu, .popover")) return 2;
+    if (el.matches(".modal-content, .dropdown-menu, .popover, .shiny-chat-slash-palette")) return 2;
     return 1;
   }
 
@@ -593,6 +598,39 @@
       if (!tip) tip = document.querySelector(".popover.show");
       morphFromTrigger(tip, e.target);
     }, true);
+    // show fires before the slide. scale is separate from Bootstrap's
+    // translate, so the panel still enters from its edge and grows from
+    // the trigger when one is known.
+    document.addEventListener("show.bs.offcanvas", function (e) {
+      var panel = e.target;
+      if (!panel || !panel.classList || !panel.classList.contains("offcanvas")) return;
+      morphFromTrigger(panel, e.relatedTarget || null);
+    }, true);
+  }
+
+  function bindScrollEdges() {
+    document.addEventListener("scroll", function (e) {
+      if (!flagEnabled("glassScrollEdge", true)) return;
+      var t = e.target;
+      if (!t || !t.classList) return;
+      if (t.classList.contains("shiny-chat-messages")) {
+        var root = t.closest ? t.closest("shiny-chat-container") : null;
+        var composer = root && root.querySelector(".shiny-chat-composer, .shiny-chat-input");
+        if (composer) {
+          var gap = t.scrollHeight - t.scrollTop - t.clientHeight;
+          composer.classList.toggle("glass-scroll-edge", gap > 24);
+        }
+      }
+      if (t.classList.contains("shiny-chat-page-main") || t.classList.contains("offcanvas-body")) {
+        var host = t.closest ? t.closest("shiny-chat-page, .offcanvas") : null;
+        var bar = host && host.querySelector(".shiny-chat-page-header, .offcanvas-header");
+        if (host && host.classList.contains("offcanvas")) {
+          host.classList.toggle("glass-scroll-edge", t.scrollTop > 8);
+        } else if (bar) {
+          bar.classList.toggle("glass-scroll-edge", t.scrollTop > 8);
+        }
+      }
+    }, true);
   }
 
   function releasePress() {
@@ -682,6 +720,7 @@
     ios27Started = true;
     bindPressPhysics();
     bindMenuMorph();
+    bindScrollEdges();
     bindTabInteraction();
     scheduleIos27Motion();
     window.addEventListener("resize", scheduleIos27Motion, { passive: true });

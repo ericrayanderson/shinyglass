@@ -879,6 +879,10 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, "data-glass-floating-sidebar")
   expect_match(scss, "glass-refract")
   expect_match(scss, "label.switch")
+  expect_match(scss, "shiny-chat-input")
+  expect_match(scss, ".offcanvas")
+  expect_match(engine, "show.bs.offcanvas")
+  expect_match(engine, "shiny-chat-messages")
   expect_match(scss, "--glass-specular-top")
   expect_match(scss, "--glass-edge")
   expect_true("--glass-ior" %in% glass_css_tokens()$css_var)
@@ -886,6 +890,16 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_equal(glass_token_pack("light")[["--glass-icon-clear"]], "#1d1d1f")
   js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(js, "bindExternalColorMode")
+})
+
+test_that("shinychat glass example builds an app", {
+  skip_if_not_installed("shinychat", "0.5.0")
+  skip_if_not_installed("ellmer", "0.5.0")
+  path <- system.file("examples/shinychat-glass", "app.R", package = "shinyglass")
+  expect_true(nzchar(path))
+  env <- new.env(parent = globalenv())
+  sys.source(path, env)
+  expect_s3_class(env$app, "shiny.appobj")
 })
 
 test_that("compatibility example builds an app", {

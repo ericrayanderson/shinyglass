@@ -5378,7 +5378,19 @@ html.glass-theme-settling {
   .glass-card,
   .glass-sidebar,
   .glass-page-controls,
-  .glass-intensity-chip {
+  .glass-intensity-chip,
+  .offcanvas,
+  .shiny-chat-page-header,
+  .shiny-chat-page-sidebar,
+  .shiny-chat-input .tiptap,
+  .shiny-chat-user-message,
+  .shiny-chat-slash-palette,
+  .shiny-tool-card,
+  .shiny-chat-tool-call-row,
+  .shiny-chat-tool-group,
+  .shiny-aside-pill,
+  .shiny-aside-popover,
+  .shiny-chat-history-drawer {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
@@ -5696,6 +5708,207 @@ html[data-glass-icon-style="all"] :is(.btn-primary, .btn-success, .btn-danger, .
     margin-right: 0.85rem !important;
     margin-left: 0.35rem !important;
   }
+}
+
+// shinychat 0.5 and bslib 0.12 offcanvas. Tokens inherit, so chat CSS
+// that reads --shiny-chat-* picks up the glass pack. The composer is a
+// floating pill (iOS 27 Messages). Offcanvas keeps Bootstrap's translate
+// and only scales in from the trigger.
+html[data-glass-preset] {
+  --shiny-chat-user-message-bg: color-mix(in srgb, var(--glass-accent) 18%, var(--glass-bg));
+  --shiny-chat-user-message-border-radius: 1.15rem 1.15rem 0.4rem 1.15rem;
+  --shiny-chat-history-bg: var(--glass-menu-bg);
+  --shiny-chat-history-border-color: var(--glass-border);
+  --shiny-chat-page-canvas-bg: transparent;
+  --shiny-chat-page-sidebar-bg: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  --shiny-chat-page-surface-bg: transparent;
+  --shiny-chat-page-border-color: var(--glass-border);
+  --shiny-chat-thinking-border-color: var(--glass-border);
+  --shiny-chat-thinking-header-color: var(--glass-body-color);
+  --shiny-chat-thinking-content-color: var(--glass-body-color);
+  --shiny-chat-footer-color: color-mix(in srgb, var(--glass-body-color) 78%, transparent);
+  --shiny-chat-greeting-color: var(--glass-body-color);
+  --shiny-chat-border: 0.5px solid var(--glass-border);
+  --shiny-chat-btn-send-bg: var(--glass-accent, #{$glass-accent});
+  --shiny-chat-btn-send-color: #fff;
+  --shiny-chat-aside-marker-bg: color-mix(in srgb, var(--glass-bg) 82%, transparent);
+  --shiny-chat-aside-marker-color: var(--glass-body-color);
+  --shiny-chat-aside-marker-hover-bg: color-mix(in srgb, var(--glass-accent) 16%, var(--glass-bg));
+  --shiny-chat-aside-marker-hover-color: var(--glass-body-color);
+  --shiny-chat-command-chip-bg: color-mix(in srgb, var(--glass-accent) 16%, var(--glass-bg));
+  --shiny-chat-command-chip-color: var(--glass-body-color);
+}
+
+html[data-glass-preset] .shiny-chat-page-header,
+html[data-glass-preset] .shiny-chat-page-sidebar,
+html[data-glass-preset] .shiny-chat-history-drawer,
+html[data-glass-preset] .shiny-chat-drawer {
+  background: color-mix(in srgb, var(--glass-bg) 86%, transparent) !important;
+  color: var(--glass-body-color);
+  border-color: var(--glass-border) !important;
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 10px 28px color-mix(in srgb, var(--glass-shadow) 55%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-page-header.glass-scroll-edge {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 var(--glass-scroll-edge-fade, 28px) 32px -18px color-mix(in srgb, var(--glass-body-bg) 72%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-page-nav-link {
+  border-radius: 999px;
+  color: inherit;
+}
+
+html[data-glass-preset] .shiny-chat-page-nav-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--glass-bg-hover) 80%, transparent);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
+
+html[data-glass-preset] .shiny-chat-user-message {
+  color: var(--glass-body-color);
+  border: 0.5px solid color-mix(in srgb, var(--glass-accent) 32%, var(--glass-border));
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-message,
+html[data-glass-preset] .shiny-chat-greeting,
+html[data-glass-preset] .shiny-chat-footer {
+  color: var(--glass-body-color);
+}
+
+html[data-glass-preset] .shiny-chat-input .tiptap {
+  background: color-mix(in srgb, var(--glass-bg) 84%, transparent) !important;
+  color: var(--glass-body-color) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  border-radius: 1.6rem !important;
+  box-shadow:
+    0 12px 32px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  margin-inline: 0.15rem;
+}
+
+html[data-glass-preset] .shiny-chat-input .tiptap.is-empty::before {
+  color: color-mix(in srgb, var(--glass-body-color) 58%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-input.glass-scroll-edge::before,
+html[data-glass-preset] .shiny-chat-composer.glass-scroll-edge::before {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  right: 0.4rem;
+  bottom: 100%;
+  height: var(--glass-scroll-edge-fade, 28px);
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--glass-bg) 78%, transparent),
+    transparent
+  );
+}
+
+html[data-glass-preset] .shiny-chat-thinking,
+html[data-glass-preset] .shiny-tool-card,
+html[data-glass-preset] .shiny-chat-tool-call-row,
+html[data-glass-preset] .shiny-chat-tool-group,
+html[data-glass-preset] .shiny-chat-text-preview,
+html[data-glass-preset] .shiny-chat-attachment-badge,
+html[data-glass-preset] .shiny-chat-input-attachment-chip,
+html[data-glass-preset] .shiny-sources-pill,
+html[data-glass-preset] .shiny-sources-popover,
+html[data-glass-preset] .shiny-aside-popover {
+  background: color-mix(in srgb, var(--glass-bg) 86%, transparent) !important;
+  color: var(--glass-body-color) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-aside-pill {
+  border: 0.5px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.35)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.35)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-slash-palette {
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem;
+  box-shadow:
+    0 16px 40px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+  z-index: 1100;
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-slash-palette-item.highlighted {
+  background: color-mix(in srgb, var(--glass-accent) 14%, transparent);
+}
+
+html[data-glass-preset] .bslib-toolbar {
+  color: inherit;
+}
+
+html[data-glass-preset] .offcanvas {
+  background: color-mix(in srgb, var(--glass-bg) 82%, transparent) !important;
+  color: var(--glass-body-color);
+  border-color: var(--glass-border) !important;
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  box-shadow:
+    0 18px 48px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+html[data-glass-preset] .offcanvas.offcanvas-start {
+  border-radius: 0 1.5rem 1.5rem 0;
+}
+
+html[data-glass-preset] .offcanvas.offcanvas-end {
+  border-radius: 1.5rem 0 0 1.5rem;
+}
+
+html[data-glass-preset] .offcanvas-header {
+  background: transparent;
+  border-bottom: 0.5px solid var(--glass-border);
+  color: inherit;
+}
+
+html[data-glass-preset] .offcanvas.glass-scroll-edge .offcanvas-header {
+  box-shadow: 0 var(--glass-scroll-edge-fade, 28px) 28px -16px color-mix(in srgb, var(--glass-body-bg) 70%, transparent);
+}
+
+html[data-glass-preset] .offcanvas-backdrop.show {
+  background-color: rgba(15, 15, 20, 0.38);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 @media (prefers-reduced-motion: reduce) {

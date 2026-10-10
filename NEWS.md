@@ -52,6 +52,15 @@
   inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
   shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
   and print under the iOS 27 defaults and with refraction fallback.
+* shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
+  full-window header and history sidebar, message bubbles, a floating
+  composer, thinking panels, tool rows, citation chips, artifact
+  previews, toolbars, and the slash-command menu. Refraction, morph,
+  press, and the scroll edge stay on. Example:
+  `inst/examples/shinychat-glass` (local echo, no API key).
+* bslib 0.12 `offcanvas()` panels use the glass material, scale in from
+  the trigger, and show a scroll edge on the header. Bootstrap still
+  owns the slide.
 
 ## Bug fixes
 
