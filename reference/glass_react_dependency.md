@@ -5,8 +5,10 @@ serves `www/ui.js` as an ES module and exposes one React on
 `window.shinyreact`. `glass_react_dependency()` is the matching module,
 `inst/js/shinyglass-react.js`. It registers `useGlassTheme`,
 `GlassPage`, `GlassMain`, `GlassSidebar`, `GlassSurface`, `GlassCard`,
-`GlassStack`, `GlassButton`, `GlassTitle`, `GlassMuted`, and
-`GlassRange` on `window.shinyglass` and as named exports.
+`GlassStack`, `GlassButton`, `GlassTitle`, `GlassMuted`, `GlassRange`,
+and `GlassIntensitySlider` on `window.shinyglass` and as named exports.
+`useGlassTheme()` also reports `reducedTransparency`,
+`increasedContrast`, and `forcedColors`.
 
 ## Usage
 

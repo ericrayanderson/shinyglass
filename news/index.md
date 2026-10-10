@@ -2,6 +2,31 @@
 
 ## shinyglass (development version)
 
+- iOS 27 Liquid Glass alignment. The default intensity is now `0.5`,
+  Apple’s midpoint between Ultra Clear and Tinted (previously `0.45`).
+  Apps that do not set `intensity` look slightly more tinted, with a
+  stronger rim, lip, and edge and a narrower, more even blur range.
+  Colored edge tokens (`--glass-refract-a`, `--glass-refract-b`) and the
+  backdrop brightness and contrast boosts scale with intensity. There is
+  no lens displacement.
+
+- `material = "clear"` is deprecated. Pass `intensity` instead. Existing
+  calls still work: when `intensity` is omitted they map to `0.12`,
+  warn, and stay clearer than the midpoint.
+  `update_glass_theme(material = "clear")` and `setMaterial("clear")` do
+  the same.
+
+- Accessibility overrides now win over the inline `--glass-*` values the
+  intensity script writes. Reduce Transparency uses opaque fills and no
+  backdrop blur (the same idea as flatten mode). Increase Contrast and
+  forced colors are watched live. The page sets `data-glass-contrast`,
+  `data-glass-forced-colors`, and `data-glass-reduced-transparency` on
+  `<html>`, and matching CSS rules use `!important`.
+
+- shinyreact: `GlassIntensitySlider` (Ultra Clear to Tinted, default
+  `0.5`). `useGlassTheme()` also reports `reducedTransparency`,
+  `increasedContrast`, and `forcedColors`.
+
 - First-class shinyreact components.
   [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
   and
@@ -17,6 +42,7 @@
   scene, material, and intensity. The example app is built from these
   components and has no `ui.css`. See
   [`vignette("shinyreact")`](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md).
+
 - shinyreact interop.
   [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md)
   passes

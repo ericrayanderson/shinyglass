@@ -46,10 +46,13 @@ The React client still owns the DOM. Build it from `GlassPage`,
 `GlassSidebar`, `GlassSurface` / `GlassCard`, and `GlassButton` on
 `window.shinyglass`. `useGlassTheme()` tracks the live mode (`light` /
 `dark` / `auto`), the resolved preset, scene, material, and intensity,
-and its setters call `window.shinyglass.setPreset()` and the other
-existing mutators. Wallpaper, type, and `--glass-*` tokens apply to the
-document. Those component classes are what pick up Liquid Glass. Do not
-set panel or text colors in the client's own CSS.
+plus whether Reduce Transparency, Increase Contrast, or forced colors
+are active. Its setters call `window.shinyglass.setPreset()` and the
+other existing mutators. `GlassIntensitySlider` runs from Ultra Clear to
+Tinted and defaults to `0.5`. `setMaterial("clear")` is deprecated and
+maps to intensity `0.12`. Wallpaper, type, and `--glass-*` tokens apply
+to the document. Those component classes are what pick up Liquid Glass.
+Do not set panel or text colors in the client's own CSS.
 
 Shadow roots do not see document class rules. `--glass-*` custom
 properties inherit. Call `window.shinyglass.adoptShadow(shadowRoot)`

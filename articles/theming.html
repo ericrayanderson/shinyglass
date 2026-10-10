@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,6 +142,10 @@ recompile and no full page reload.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code> accepts:</p>
 <table class="table">
+<colgroup>
+<col width="55%">
+<col width="44%">
+</colgroup>
 <thead><tr class="header">
 <th>Argument</th>
 <th>Effect</th>
@@ -164,13 +168,14 @@ recompile and no full page reload.</p>
 </tr>
 <tr class="even">
 <td><code>intensity</code></td>
-<td>Ultra Clear (<code>0</code>) → Tinted (<code>1</code>)</td>
+<td>Ultra Clear (<code>0</code>) to Tinted (<code>1</code>). Default
+<code>0.5</code>.</td>
 </tr>
 <tr class="odd">
 <td><code>material</code></td>
 <td>
-<code>"regular"</code> / <code>"clear"</code>
-</td>
+<code>"regular"</code>. <code>"clear"</code> is deprecated (maps to
+intensity <code>0.12</code>)</td>
 </tr>
 <tr class="even">
 <td><code>plot_surface</code></td>
@@ -224,16 +229,23 @@ server can stay in sync.</p>
 <span>  blur <span class="op">=</span> <span class="fl">36</span>,</span>
 <span>  saturation <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  radius <span class="op">=</span> <span class="st">"1.5rem"</span>,</span>
-<span>  material <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># or "clear" over media-rich content</span></span>
+<span>  material <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># "clear" is deprecated; use a low intensity</span></span>
 <span>  plot_surface <span class="op">=</span> <span class="st">"clear"</span>, <span class="co"># or "opaque" for dense charts/tables</span></span>
-<span>  intensity <span class="op">=</span> <span class="fl">0.45</span>,     <span class="co"># 0 Ultra Clear → 1 Tinted (iOS 27)</span></span>
+<span>  intensity <span class="op">=</span> <span class="fl">0.5</span>,      <span class="co"># 0 Ultra Clear to 1 Tinted (iOS 27 midpoint)</span></span>
 <span>  tint <span class="op">=</span> <span class="cn">TRUE</span>,      <span class="co"># sample plot/image colors into glass surfaces</span></span>
 <span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># pointer specular highlight</span></span>
 <span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># compact navbar while scrolling down</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><code>material = "regular"</code> is the adaptive Tahoe-style fill
-(default). Use <code>"clear"</code> when chrome sits over rich media and
-labels stay bold.</p>
+<p><code>material = "regular"</code> is the adaptive fill (default).
+<code>material = "clear"</code> is deprecated. Use a low
+<code>intensity</code> (Ultra Clear is <code>0</code>) when chrome sits
+over rich media and labels stay bold. Omitting <code>intensity</code>
+with <code>material = "clear"</code> still maps to <code>0.12</code> and
+warns.</p>
+<p>Reduce Transparency (the OS setting) paints opaque fills and turns
+backdrop blur off, including before JavaScript runs. Increase Contrast
+and forced colors override the inline glass variables. The in-app slider
+does not have to move for those overrides to apply.</p>
 <p><code>plot_surface = "clear"</code> is the default: plot and table
 hosts stay translucent so the wallpaper shows through. Use
 <code>"opaque"</code> when dense charts or tables need a regular ~94%
@@ -301,7 +313,11 @@ still package CSS, not a DT theme dialect.</p>
 <h2 id="public-css-tokens">Public CSS tokens<a class="anchor" aria-label="anchor" href="#public-css-tokens"></a>
 </h2>
 <p><code><a href="../reference/glass_css_tokens.html">glass_css_tokens()</a></code> lists stable <code>--glass-*</code>
-variables. Override them without forking SCSS:</p>
+variables, including the refraction cues <code>--glass-refract-a</code>,
+<code>--glass-refract-b</code>, <code>--glass-refract-brightness</code>,
+and <code>--glass-refract-contrast</code>. Those scale with intensity.
+They are color and backdrop boosts, not a lens displacement. Override
+them without forking SCSS:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>tokens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>blur <span class="op">=</span> <span class="st">"28px"</span>, radius <span class="op">=</span> <span class="st">"1.25rem"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># or later:</span></span>
@@ -318,7 +334,7 @@ Glass</strong>. The web cannot read that OS slider, so the in-app
 control is intentional — it is the supported way to match the system
 look from a Shiny app:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span>, value <span class="op">=</span> <span class="fl">0.45</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="st">"glass_intensity"</span>, value <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p>All three JS behaviors default to <code>TRUE</code> (same as 0.1.x).
 They respect <code>prefers-reduced-motion: reduce</code> where relevant.
 Advanced escape hatch:

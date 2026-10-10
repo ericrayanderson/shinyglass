@@ -30,27 +30,36 @@ dark). Target 4.5:1 for body text and 3:1 for large UI chrome.
 
 ``` r
 head(glass_css_tokens())
-#>       token           css_var category                        description
-#> 1      blur      --glass-blur material Backdrop blur radius (CSS length).
-#> 2  saturate  --glass-saturate material               Backdrop saturation.
-#> 3    radius    --glass-radius material  Corner radius for glass surfaces.
-#> 4 intensity --glass-intensity material     Ultra Clear (0) to Tinted (1).
-#> 5        bg        --glass-bg  surface                Primary glass fill.
-#> 6  bg-hover  --glass-bg-hover  surface         Hover / active glass fill.
+#>       token           css_var category
+#> 1      blur      --glass-blur material
+#> 2  saturate  --glass-saturate material
+#> 3    radius    --glass-radius material
+#> 4 intensity --glass-intensity material
+#> 5 refract-a --glass-refract-a material
+#> 6 refract-b --glass-refract-b material
+#>                                                           description
+#> 1                                  Backdrop blur radius (CSS length).
+#> 2                                                Backdrop saturation.
+#> 3                                   Corner radius for glass surfaces.
+#> 4                         Ultra Clear (0) to Tinted (1). Default 0.5.
+#> 5  Coloured leading-edge refraction cue. Alpha scales with intensity.
+#> 6 Coloured trailing-edge refraction cue. Alpha scales with intensity.
 glass_css_tokens()$css_var
-#>  [1] "--glass-blur"            "--glass-saturate"       
-#>  [3] "--glass-radius"          "--glass-intensity"      
-#>  [5] "--glass-bg"              "--glass-bg-hover"       
-#>  [7] "--glass-bg-content"      "--glass-border"         
-#>  [9] "--glass-border-outer"    "--glass-shadow"         
-#> [11] "--glass-elevated-shadow" "--glass-highlight"      
-#> [13] "--glass-specular"        "--glass-lip"            
-#> [15] "--glass-stroke-side"     "--glass-body-bg"        
-#> [17] "--glass-body-color"      "--glass-menu-bg"        
-#> [19] "--glass-menu-color"      "--glass-page-bg"        
-#> [21] "--glass-orb-1"           "--glass-orb-2"          
-#> [23] "--glass-orb-3"           "--glass-wallpaper"      
-#> [25] "--glass-wallpaper-wash"  "--glass-plot-panel"     
-#> [27] "--glass-primary"         "--glass-accent"         
-#> [29] "--glass-on-primary"     
+#>  [1] "--glass-blur"               "--glass-saturate"          
+#>  [3] "--glass-radius"             "--glass-intensity"         
+#>  [5] "--glass-refract-a"          "--glass-refract-b"         
+#>  [7] "--glass-refract-brightness" "--glass-refract-contrast"  
+#>  [9] "--glass-bg"                 "--glass-bg-hover"          
+#> [11] "--glass-bg-content"         "--glass-border"            
+#> [13] "--glass-border-outer"       "--glass-shadow"            
+#> [15] "--glass-elevated-shadow"    "--glass-highlight"         
+#> [17] "--glass-specular"           "--glass-lip"               
+#> [19] "--glass-stroke-side"        "--glass-body-bg"           
+#> [21] "--glass-body-color"         "--glass-menu-bg"           
+#> [23] "--glass-menu-color"         "--glass-page-bg"           
+#> [25] "--glass-orb-1"              "--glass-orb-2"             
+#> [27] "--glass-orb-3"              "--glass-wallpaper"         
+#> [29] "--glass-wallpaper-wash"     "--glass-plot-panel"        
+#> [31] "--glass-primary"            "--glass-accent"            
+#> [33] "--glass-on-primary"        
 ```

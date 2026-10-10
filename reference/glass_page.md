@@ -16,7 +16,7 @@ glass_page(
   ...,
   title = NULL,
   preset = "auto",
-  intensity = 0.45,
+  intensity = 0.5,
   persist = TRUE,
   scene = "tahoe",
   wallpaper = NULL,

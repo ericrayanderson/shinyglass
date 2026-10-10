@@ -50,7 +50,8 @@ update_glass_theme(
 
 - material:
 
-  Optional `"regular"` or `"clear"`.
+  Optional `"regular"` or `"clear"`. `"clear"` is deprecated; when
+  `intensity` is omitted it is sent as intensity `0.12`.
 
 - plot_surface:
 

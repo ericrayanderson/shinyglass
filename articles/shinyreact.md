@@ -89,6 +89,7 @@ has no `www/ui.css`.
 | `GlassTitle` | `h1` | `.glass-title` |
 | `GlassMuted` | `p` | `.glass-muted` |
 | `GlassRange` | `input` | `.glass-range` |
+| `GlassIntensitySlider` | `div` | `.glass-intensity-slider` (Ultra Clear to Tinted, default `0.5`) |
 
 `GlassButton` takes `variant` (`"primary"` or `"secondary"`) and
 `pressed`. Primary fill follows `--glass-accent` / `--glass-on-primary`.
@@ -111,17 +112,34 @@ The hook reads `document.documentElement` and subscribes with a
 `MutationObserver`, so it sees the head script, `setPreset`, and any
 other writer of the dataset.
 
-| Field       | Meaning                                   |
-|-------------|-------------------------------------------|
-| `mode`      | `"light"`, `"dark"`, or `"auto"`          |
-| `preset`    | Resolved pack, `"light"` or `"dark"`      |
-| `scene`     | Wallpaper scene                           |
-| `material`  | `"regular"` or `"clear"`                  |
-| `intensity` | Number from 0 (ultra clear) to 1 (tinted) |
+| Field | Meaning |
+|----|----|
+| `mode` | `"light"`, `"dark"`, or `"auto"` |
+| `preset` | Resolved pack, `"light"` or `"dark"` |
+| `scene` | Wallpaper scene |
+| `material` | `"regular"` or `"clear"` (`"clear"` is deprecated) |
+| `intensity` | Number from 0 (ultra clear) to 1 (tinted). Default `0.5`. |
+| `reducedTransparency` | `true` when Reduce Transparency is on |
+| `increasedContrast` | `true` when Increase Contrast is on |
+| `forcedColors` | `true` when forced colors are active |
 
 `setMode`, `setScene`, `setMaterial`, and `setIntensity` call the
 existing `window.shinyglass` mutators. `setMode("dark")` is
-`setPreset("dark")`.
+`setPreset("dark")`. `setMaterial("clear")` warns and maps to intensity
+`0.12`. A later `setIntensity()` wins. `GlassIntensitySlider` calls
+`setIntensity` and labels the ends Ultra Clear and Tinted.
+
+``` js
+const { GlassIntensitySlider, useGlassTheme } = window.shinyglass;
+
+function Controls() {
+  const theme = useGlassTheme();
+  return React.createElement(GlassIntensitySlider, {
+    id: "glass-intensity",
+    value: theme.intensity,
+  });
+}
+```
 
 ## Where the module comes from
 

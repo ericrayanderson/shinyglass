@@ -24,7 +24,7 @@ glass_theme(
   radius = "1.5rem",
   material = c("regular", "clear"),
   plot_surface = c("clear", "opaque"),
-  intensity = 0.45,
+  intensity = 0.5,
   tint = TRUE,
   specular = TRUE,
   nav_morph = TRUE,
@@ -66,8 +66,9 @@ glass_theme(
 
 - material:
 
-  `"regular"` (adaptive, most UI) or `"clear"` (more transparent; best
-  over media-rich content with bold labels).
+  `"regular"` (adaptive, most UI). `"clear"` is deprecated and maps to a
+  low `intensity` (`0.12`) when `intensity` is omitted, so older apps
+  stay clearer than the midpoint. Prefer `intensity`.
 
 - plot_surface:
 
@@ -81,9 +82,10 @@ glass_theme(
 
   Liquid Glass intensity from `0` (Ultra Clear) to `1` (Tinted),
   matching iOS 27 Settings -\> Appearance -\> Liquid Glass. Default
-  `0.45`. The web cannot read the OS slider; use
+  `0.5` (Apple's midpoint). The web cannot read the OS slider; use
   [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
-  for the in-app control.
+  for the in-app control. Reduce Transparency and Increase Contrast
+  override the painted glass.
 
 - tint:
 

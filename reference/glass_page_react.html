@@ -17,7 +17,7 @@ CSS lives, and the page keeps the JS without the look."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,8 +89,11 @@ CSS lives, and the page keeps the JS without the look.</p>
 React client still owns the DOM. Build it from <code>GlassPage</code>, <code>GlassSidebar</code>,
 <code>GlassSurface</code> / <code>GlassCard</code>, and <code>GlassButton</code> on <code>window.shinyglass</code>.
 <code>useGlassTheme()</code> tracks the live mode (<code>light</code> / <code>dark</code> / <code>auto</code>), the
-resolved preset, scene, material, and intensity, and its setters call
-<code>window.shinyglass.setPreset()</code> and the other existing mutators.
+resolved preset, scene, material, and intensity, plus whether Reduce
+Transparency, Increase Contrast, or forced colors are active. Its setters
+call <code>window.shinyglass.setPreset()</code> and the other existing mutators.
+<code>GlassIntensitySlider</code> runs from Ultra Clear to Tinted and defaults to
+<code>0.5</code>. <code>setMaterial("clear")</code> is deprecated and maps to intensity <code>0.12</code>.
 Wallpaper, type, and <code>--glass-*</code> tokens apply to the document. Those
 component classes are what pick up Liquid Glass. Do not set panel or text
 colors in the client's own CSS.</p>

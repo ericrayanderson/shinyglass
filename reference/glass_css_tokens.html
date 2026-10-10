@@ -13,7 +13,7 @@ inst/scss/glass.scss. Light/dark packs already ship as dual
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,29 +76,38 @@ Target 4.5:1 for body text and 3:1 for large UI chrome.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">glass_css_tokens</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       token           css_var category                        description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      blur      --glass-blur material Backdrop blur radius (CSS length).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  saturate  --glass-saturate material               Backdrop saturation.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    radius    --glass-radius material  Corner radius for glass surfaces.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 intensity --glass-intensity material     Ultra Clear (0) to Tinted (1).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        bg        --glass-bg  surface                Primary glass fill.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  bg-hover  --glass-bg-hover  surface         Hover / active glass fill.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       token           css_var category</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      blur      --glass-blur material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  saturate  --glass-saturate material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    radius    --glass-radius material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 intensity --glass-intensity material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 refract-a --glass-refract-a material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 refract-b --glass-refract-b material</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                  Backdrop blur radius (CSS length).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                Backdrop saturation.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                   Corner radius for glass surfaces.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                         Ultra Clear (0) to Tinted (1). Default 0.5.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Coloured leading-edge refraction cue. Alpha scales with intensity.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 Coloured trailing-edge refraction cue. Alpha scales with intensity.</span>
 <span class="r-in"><span><span class="fu">glass_css_tokens</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">css_var</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "--glass-blur"            "--glass-saturate"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "--glass-radius"          "--glass-intensity"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "--glass-bg"              "--glass-bg-hover"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "--glass-bg-content"      "--glass-border"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "--glass-border-outer"    "--glass-shadow"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "--glass-elevated-shadow" "--glass-highlight"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "--glass-specular"        "--glass-lip"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "--glass-stroke-side"     "--glass-body-bg"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "--glass-body-color"      "--glass-menu-bg"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "--glass-menu-color"      "--glass-page-bg"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "--glass-orb-1"           "--glass-orb-2"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "--glass-orb-3"           "--glass-wallpaper"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "--glass-wallpaper-wash"  "--glass-plot-panel"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "--glass-primary"         "--glass-accent"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "--glass-on-primary"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "--glass-blur"               "--glass-saturate"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "--glass-radius"             "--glass-intensity"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "--glass-refract-a"          "--glass-refract-b"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "--glass-refract-brightness" "--glass-refract-contrast"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "--glass-bg"                 "--glass-bg-hover"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "--glass-bg-content"         "--glass-border"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "--glass-border-outer"       "--glass-shadow"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "--glass-elevated-shadow"    "--glass-highlight"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "--glass-specular"           "--glass-lip"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "--glass-stroke-side"        "--glass-body-bg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "--glass-body-color"         "--glass-menu-bg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "--glass-menu-color"         "--glass-page-bg"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "--glass-orb-1"              "--glass-orb-2"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "--glass-orb-3"              "--glass-wallpaper"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "--glass-wallpaper-wash"     "--glass-plot-panel"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "--glass-primary"            "--glass-accent"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "--glass-on-primary"        </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

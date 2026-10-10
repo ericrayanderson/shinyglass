@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -202,6 +202,13 @@ It has no <code>www/ui.css</code>.</p>
 <td><code>input</code></td>
 <td><code>.glass-range</code></td>
 </tr>
+<tr class="odd">
+<td><code>GlassIntensitySlider</code></td>
+<td><code>div</code></td>
+<td>
+<code>.glass-intensity-slider</code> (Ultra Clear to Tinted, default
+<code>0.5</code>)</td>
+</tr>
 </tbody>
 </table>
 <p><code>GlassButton</code> takes <code>variant</code>
@@ -228,6 +235,10 @@ device.</p>
 with a <code>MutationObserver</code>, so it sees the head script,
 <code>setPreset</code>, and any other writer of the dataset.</p>
 <table class="table">
+<colgroup>
+<col width="43%">
+<col width="56%">
+</colgroup>
 <thead><tr class="header">
 <th>Field</th>
 <th>Meaning</th>
@@ -252,19 +263,48 @@ with a <code>MutationObserver</code>, so it sees the head script,
 <tr class="even">
 <td><code>material</code></td>
 <td>
-<code>"regular"</code> or <code>"clear"</code>
-</td>
+<code>"regular"</code> or <code>"clear"</code> (<code>"clear"</code>
+is deprecated)</td>
 </tr>
 <tr class="odd">
 <td><code>intensity</code></td>
-<td>Number from 0 (ultra clear) to 1 (tinted)</td>
+<td>Number from 0 (ultra clear) to 1 (tinted). Default
+<code>0.5</code>.</td>
+</tr>
+<tr class="even">
+<td><code>reducedTransparency</code></td>
+<td>
+<code>true</code> when Reduce Transparency is on</td>
+</tr>
+<tr class="odd">
+<td><code>increasedContrast</code></td>
+<td>
+<code>true</code> when Increase Contrast is on</td>
+</tr>
+<tr class="even">
+<td><code>forcedColors</code></td>
+<td>
+<code>true</code> when forced colors are active</td>
 </tr>
 </tbody>
 </table>
 <p><code>setMode</code>, <code>setScene</code>,
 <code>setMaterial</code>, and <code>setIntensity</code> call the
 existing <code>window.shinyglass</code> mutators.
-<code>setMode("dark")</code> is <code>setPreset("dark")</code>.</p>
+<code>setMode("dark")</code> is <code>setPreset("dark")</code>.
+<code>setMaterial("clear")</code> warns and maps to intensity
+<code>0.12</code>. A later <code>setIntensity()</code> wins.
+<code>GlassIntensitySlider</code> calls <code>setIntensity</code> and
+labels the ends Ultra Clear and Tinted.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">const</span> { GlassIntensitySlider<span class="op">,</span> useGlassTheme } <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="at">shinyglass</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Controls</span>() {</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="kw">const</span> theme <span class="op">=</span> <span class="fu">useGlassTheme</span>()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="cf">return</span> React<span class="op">.</span><span class="fu">createElement</span>(GlassIntensitySlider<span class="op">,</span> {</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="dt">id</span><span class="op">:</span> <span class="st">"glass-intensity"</span><span class="op">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="dt">value</span><span class="op">:</span> theme<span class="op">.</span><span class="at">intensity</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="where-the-module-comes-from">Where the module comes from<a class="anchor" aria-label="anchor" href="#where-the-module-comes-from"></a>
