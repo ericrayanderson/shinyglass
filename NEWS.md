@@ -52,6 +52,11 @@
   inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
   shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
   and print under the iOS 27 defaults and with refraction fallback.
+* Harbor notes (`inst/examples/shinychat-glass`) is a core demo next to
+  basics, dashboard, inputs, Olympics, and plotly + gt. It uses the dusk
+  wallpaper, streams a local script (thinking, a tool card, and a citation)
+  with no API key, and switches to `ellmer::chat_openai()` when
+  `OPENAI_API_KEY` is set. Deploy key `chat` (`shinyglass-chat`).
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact

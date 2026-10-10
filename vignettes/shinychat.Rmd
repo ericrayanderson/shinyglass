@@ -58,14 +58,16 @@ observeEvent(input$open_sources, {
 })
 ```
 
-The example replies with a local echo, so it runs without an API key:
+Harbor notes is a core demo, with the dusk wallpaper behind the glass:
 
 ```r
 shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 ```
 
-The example answers with `chat_append()`, so it never calls a model.
-`chat_server()` is the production path: pass an `ellmer::Chat` such as
-`chat_openai()` and let it stream. History in the example is
-`history_options(store = "memory", title = NULL)` so nothing is written
-to disk and no model is asked for a title.
+With no API key the reply is a local script. It streams a thinking panel,
+a short answer, a citation chip, and a tide-table tool card.
+`OPENAI_API_KEY` switches that session to `ellmer::chat_openai()`
+(`SHINYGLASS_CHAT_MODEL` picks the model, default `gpt-4o-mini`).
+History uses `history_options(store = "memory", title = NULL)`, so nothing
+is written to disk and no model is asked for a title. The sidebar starts
+open on desktop and collapses into the page menu on a phone.

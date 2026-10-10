@@ -1,4 +1,5 @@
-# Liquid Glass chat. No API key: replies are a local echo.
+# Harbor notes: the shinyglass chat demo.
+# Local script by default. Set OPENAI_API_KEY for a live ellmer client.
 #   shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 
 library(shiny)
@@ -8,23 +9,12 @@ library(shinychat)
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
-# History reads provider@name. Register once so re-sourcing the example
-# does not rebuild the class.
+# History reads provider@name. Register once so re-sourcing does not rebuild it.
 if (!methods::isClass("GlassEchoProvider")) {
   suppressWarnings(methods::setClass(
     "GlassEchoProvider",
     slots = c(name = "character", model = "character")
   ))
-}
-
-echo_piece <- function(part) {
-  if (is.character(part)) return(paste(part, collapse = " "))
-  if (inherits(part, "S7_object")) {
-    props <- tryCatch(S7::props(part), error = function(e) list())
-    if (!is.null(props$text)) return(as.character(props$text))
-  }
-  if (is.list(part) && !is.null(part$text)) return(as.character(part$text))
-  ""
 }
 
 make_echo_chat <- function() {
@@ -47,12 +37,12 @@ make_echo_chat <- function() {
       prompt <<- value %||% ""
       invisible(client)
     },
-    get_model = function() "local-echo",
+    get_model = function() "local-script",
     get_provider = function() {
       methods::new(
         "GlassEchoProvider",
-        name = "Local echo",
-        model = "local-echo"
+        name = "Local script",
+        model = "local-script"
       )
     },
     clone = function() make_echo_chat()
@@ -61,11 +51,31 @@ make_echo_chat <- function() {
   client
 }
 
-echo_reply <- function(text) {
-  paste0(
-    "<thinking>\nEchoing on this machine. No model key.\n</thinking>\n\n",
-    "Echo: ", text, " ",
-    "<shiny-aside label=\"Field log\" url=\"https://example.com\">Dawn reading.</shiny-aside>."
+# Group words so the reply types itself, without splitting the citation tag.
+harbor_pieces <- function(text) {
+  text <- gsub("[[:space:]]+", " ", trimws(text %||% ""))
+  if (!nzchar(text)) text <- "the morning harbor"
+  if (nchar(text) > 90) text <- paste0(substr(text, 1, 87), "...")
+  body <- paste0(
+    "Dawn at the harbor is quiet. You asked: ", text, ". ",
+    "High tide is 1.4 m at 06:10, and the water is already turning."
+  )
+  words <- strsplit(body, " ", fixed = TRUE)[[1]]
+  chunks <- character()
+  buf <- character()
+  for (w in words) {
+    buf <- c(buf, w)
+    if (length(buf) >= 3L) {
+      chunks <- c(chunks, paste0(paste(buf, collapse = " "), " "))
+      buf <- character()
+    }
+  }
+  if (length(buf)) chunks <- c(chunks, paste0(paste(buf, collapse = " "), " "))
+  c(
+    list("<thinking>\nChecking the harbor log for dawn.\n</thinking>\n\n"),
+    as.list(chunks),
+    list("<shiny-aside label=\"Field log\" url=\"https://example.com\">Dawn reading.</shiny-aside>"),
+    list(tide_block())
   )
 }
 
@@ -89,71 +99,115 @@ tide_block <- function() {
   )
 }
 
+stream_pieces <- function(id, pieces, session, pace) {
+  n <- length(pieces)
+  i <- 0L
+  step <- function() {
+    i <<- i + 1L
+    if (i > n) return(invisible(NULL))
+    chunk <- if (n == 1L) {
+      FALSE
+    } else if (i == 1L) {
+      "start"
+    } else if (i == n) {
+      "end"
+    } else {
+      TRUE
+    }
+    chat_append_message(
+      id,
+      list(role = "assistant", content = pieces[[i]]),
+      chunk = chunk,
+      session = session
+    )
+    if (i < n) {
+      if (pace > 0) later::later(step, pace) else step()
+    }
+    invisible(NULL)
+  }
+  step()
+}
+
+user_text <- function(value) {
+  if (is.character(value)) return(paste(value, collapse = " "))
+  if (is.list(value) && !is.null(value$text)) return(as.character(value$text))
+  paste(as.character(value), collapse = " ")
+}
+
+live_requested <- function() nzchar(Sys.getenv("OPENAI_API_KEY"))
+
+make_client <- function() {
+  if (!live_requested()) {
+    return(list(client = make_echo_chat(), live = FALSE))
+  }
+  model <- Sys.getenv("SHINYGLASS_CHAT_MODEL", "gpt-4o-mini")
+  client <- tryCatch(
+    ellmer::chat_openai(
+      system_prompt = paste(
+        "You are a calm harbor guide inside a Liquid Glass demo.",
+        "Answer in two or three short sentences."
+      ),
+      model = model
+    ),
+    error = function(e) NULL
+  )
+  if (is.null(client)) {
+    warning("OPENAI_API_KEY is set, but the live client did not start. Using the local script.", call. = FALSE)
+    return(list(client = make_echo_chat(), live = FALSE))
+  }
+  list(client = client, live = TRUE)
+}
+
+glass_preset <- match.arg(
+  Sys.getenv("SHINYGLASS_PRESET", "light"),
+  c("light", "dark", "auto")
+)
+
 ui <- page_chat(
-  "Glass notes",
+  "Harbor notes",
   id = "chat",
-  theme = glass_theme(),
+  theme = glass_theme(
+    preset = glass_preset,
+    scene = "dusk",
+    intensity = 0.38,
+    primary = "#007AFF"
+  ),
   allow_attachments = FALSE,
   placeholder = "Message",
   greeting = paste(
-    "## Glass notes",
-    "Local echo. No model key.",
-    "* <span class=\"suggestion\">Capture a harbor note</span>",
+    "## Harbor notes",
+    "Liquid Glass, on this machine.",
+    "",
+    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Dawn tide\">What's the tide at dawn?</span>",
+    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Field log\">Show the field log</span>",
     sep = "\n"
   ),
-  footer = tags$p("Echo stays on this machine."),
+  footer = tags$p("Notes stay on this machine."),
   sidebar = chat_sidebar(
-    tags$h3("Workspace", class = "h6"),
-    textInput("project", "Project", "Harbor"),
+    tags$p(class = "small text-secondary mb-2", "A harbor log on glass."),
+    textInput("project", "Project", "Harbor", width = "100%"),
     history = TRUE,
-    width = 280,
-    open = "always"
+    width = 260,
+    open = "open"
   ),
   toolbar = toolbar(
-    toolbar_input_button("show_sample", "Sample"),
     toolbar_input_button("open_sources", "Sources")
-  ),
-  pages_navbar = list(
-    chat_nav_panel(
-      "Preview",
-      tags$h2("Artifact preview"),
-      tags$div(
-        class = "shiny-chat-text-preview",
-        id = "artifact_preview",
-        tags$div(class = "shiny-chat-text-preview-name", "notes.txt"),
-        tags$div(class = "shiny-chat-text-preview-body", "Dawn reading, 1.4 m.")
-      ),
-      tags$div(
-        class = "shiny-chat-attachment-badge",
-        id = "artifact_chip",
-        "notes.txt"
-      ),
-      sidebar = FALSE
-    ),
-    chat_nav_panel(
-      "Embed",
-      chat_ui(
-        "embed",
-        height = "440px",
-        show_history = FALSE,
-        allow_attachments = FALSE,
-        greeting = "Embedded chat_ui on glass.",
-        placeholder = "Note"
-      ),
-      sidebar = FALSE
-    )
   )
 )
 
 server <- function(input, output, session) {
-  client <- make_echo_chat()
-  # chat_append keeps the demo off the network. chat_server() is the
-  # production path once you have an ellmer client with stream_async().
+  built <- make_client()
+  client <- built$client
+  live <- isTRUE(built$live)
+  pace <- suppressWarnings(as.numeric(Sys.getenv("SHINYGLASS_CHAT_PACE", "0.11")))
+  if (is.na(pace) || pace < 0) pace <- 0.11
+
   chat_enable_history(
     "chat",
     client,
     options = history_options(store = "memory", title = NULL)
   )
+
   session$onFlushed(function() {
     shinychat:::send_chat_action(
       "chat",
@@ -170,33 +224,25 @@ server <- function(input, output, session) {
   }, once = TRUE)
 
   observeEvent(input$chat_user_input, {
-    text <- input$chat_user_input
-    if (!is.character(text)) {
-      text <- paste(vapply(text, echo_piece, character(1)), collapse = " ")
+    text <- user_text(input$chat_user_input)
+    if (live) {
+      chat_append("chat", client$stream_async(text, stream = "content"))
+    } else {
+      stream_pieces("chat", harbor_pieces(text), session, pace)
     }
-    chat_append("chat", echo_reply(text))
   }, ignoreInit = TRUE)
 
   observeEvent(input$chat_slash_command, {
-    chat_append("chat", "Saved the note locally.")
-  }, ignoreInit = TRUE)
-
-  observeEvent(input$show_sample, {
-    chat_append_message(
-      "chat",
-      list(
-        role = "assistant",
-        content = list(
-          paste0(
-            "<thinking>\nChecking the harbor log.\n</thinking>\n\n",
-            "The harbor is calm ",
-            "<shiny-aside label=\"Field log\" url=\"https://example.com\">Dawn reading.</shiny-aside>."
-          ),
-          tide_block()
-        )
-      ),
-      chunk = FALSE
-    )
+    if (live) {
+      chat_append("chat", client$stream_async("Save a short harbor note.", stream = "content"))
+    } else {
+      stream_pieces(
+        "chat",
+        list("Saved the note locally. It stays on this machine."),
+        session,
+        pace
+      )
+    }
   }, ignoreInit = TRUE)
 
   observeEvent(input$open_sources, {
@@ -214,12 +260,6 @@ server <- function(input, output, session) {
       ),
       session = session
     )
-  }, ignoreInit = TRUE)
-
-  observeEvent(input$embed_user_input, {
-    text <- input$embed_user_input
-    if (is.list(text)) text <- paste(vapply(text, echo_piece, character(1)), collapse = " ")
-    chat_append("embed", paste("Embed echo:", text))
   }, ignoreInit = TRUE)
 }
 

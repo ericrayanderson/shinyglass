@@ -91,6 +91,7 @@ Apps may take a moment to wake up.
 
 | Demo | Explore |
 |------|---------|
+| [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) | Liquid Glass chat. Local script, no API key |
 | [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
 | [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
 | [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |

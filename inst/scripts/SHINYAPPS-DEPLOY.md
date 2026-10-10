@@ -3,9 +3,10 @@
 The **Deploy shinyapps.io demos** workflow is manual, main-only, and uses the
 existing deployment script. It installs the exact selected main commit from
 GitHub, so the deployed package has remote provenance rather than a local-path
-installation. The default `core5` selection deploys demo, dashboard, inputs,
-olympics, and plotly + gt within the five-app plan. The standalone intensity
-example remains available locally; `all` requires capacity for six apps.
+installation. The default `core5` selection deploys the core set: demo,
+dashboard, inputs, olympics, plotly + gt, and the harbor-notes chat. The name
+is historical. The account needs a free slot for the sixth app. The standalone
+intensity example remains available locally; `all` also includes intensity.
 Select one demo to retry a partial deployment.
 
 ## One-time private configuration

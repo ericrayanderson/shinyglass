@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Demo selection (core5 fits the five-app plan)
+        description: Demo selection (core5 is the core set, including chat)
         type: choice
         default: core5
-        options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt]
+        options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt, chat]
       dry_run:
         description: Stage and validate only; do not publish
         type: boolean
@@ -50,6 +50,8 @@ jobs:
             any::waiter
             any::cpp11
             any::ggtext
+            any::shinychat
+            any::ellmer
             local::.
       - name: Reinstall repository packages with portable metadata
         shell: Rscript {0}
@@ -133,9 +135,9 @@ jobs:
           }
           Sys.unsetenv(c("SHINYAPPS_TOKEN", "SHINYAPPS_SECRET"))
           apps <- Sys.getenv("DEPLOY_APPS")
-          allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt")
+          allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt", "chat")
           if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
-          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,plotly_gt"
+          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,plotly_gt,chat"
           stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
           args <- c("inst/scripts/deploy-shinyapps-demos.R",
                     "--account=ericrayanderson", paste0("--apps=", apps))

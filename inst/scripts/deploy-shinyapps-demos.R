@@ -33,7 +33,7 @@ has_flag <- function(flag) any(args == flag)
 
 dry_run <- has_flag("--dry-run")
 account <- get_flag("--account", NULL)
-apps_arg <- get_flag("--apps", "demo,dashboard,intensity,inputs,olympics,plotly_gt")
+apps_arg <- get_flag("--apps", "demo,dashboard,intensity,inputs,olympics,plotly_gt,chat")
 app_keys <- trimws(strsplit(apps_arg, ",", fixed = TRUE)[[1]])
 
 if (!requireNamespace("rsconnect", quietly = TRUE)) {
@@ -119,6 +119,12 @@ catalog <- list(
     source = file.path(pkg_root, "inst", "examples", "plotly-gt-demo.R"),
     kind = "single",
     imports = c("shiny", "bslib", "plotly", "gt", "waiter", "shinyglass")
+  ),
+  chat = list(
+    appName = "shinyglass-chat",
+    source = file.path(pkg_root, "inst", "examples", "shinychat-glass", "app.R"),
+    kind = "single",
+    imports = c("shiny", "bslib", "shinyglass", "shinychat", "ellmer", "later")
   )
 )
 
