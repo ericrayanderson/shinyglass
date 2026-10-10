@@ -26,7 +26,7 @@ home:
           [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) ·
           [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) ·
           [Olympics](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) ·
-          [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/)
+          [Harbor notes](articles/shinychat.html)
 
 navbar:
   structure:

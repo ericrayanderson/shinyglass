@@ -91,13 +91,13 @@ Apps may take a moment to wake up.
 
 | Demo | Explore |
 |------|---------|
-| [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) | Liquid Glass chat. Local script, or Gemini when the host has a key |
+| [Harbor notes](inst/examples/shinychat-glass/app.R) | Liquid Glass chat. Local script, or Gemini when the host has a key |
 | [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
 | [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
 | [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | A complete dashboard |
 
-These five are the hosted set. plotly + gt remains a local example in `inst/examples/plotly-gt-demo.R`.
+These five are the hosted set. Harbor notes is not on shinyapps.io yet; its app name is `shinyglass-chat`. plotly + gt remains a local example in `inst/examples/plotly-gt-demo.R`.
 
 Built for Bootstrap 5 and bslib. See [compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html) for supported widgets and older layouts.
 
