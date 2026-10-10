@@ -11,12 +11,15 @@ Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstu
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="72%" alt="Glass intensity changing from clear to tinted">
+<img src="man/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode">
+<img src="man/figures/harbor-notes-dark.png" width="48%" alt="Harbor notes chat on Liquid Glass, dark mode">
 </p>
+
+Harbor notes is the flagship demo: a shinychat window on the dusk wallpaper, with a floating composer, a scripted reply (thinking, a citation, and a tide-table tool card), and an offcanvas sources panel. [Open Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The hosted app answers with Gemini Flash and falls back to a local script if the API errors. The same app is in `inst/examples/shinychat-glass`.
 
 ## Install
 
-CRAN **0.4.0**:
+CRAN **0.5.0**:
 
 ```r
 install.packages("shinyglass")
@@ -91,13 +94,19 @@ Apps may take a moment to wake up.
 
 | Demo | Explore |
 |------|---------|
-| [Harbor notes](inst/examples/shinychat-glass/app.R) | Liquid Glass chat. Local script, or Gemini when the host has a key |
+| [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) | Flagship chat on Liquid Glass |
 | [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
 | [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
 | [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | A complete dashboard |
 
-These five are the hosted set. Harbor notes is not on shinyapps.io yet; its app name is `shinyglass-chat`. plotly + gt remains a local example in `inst/examples/plotly-gt-demo.R`.
+These five are the hosted set. plotly + gt stays a local example in `inst/examples/plotly-gt-demo.R`.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="72%" alt="Glass intensity changing from clear to tinted">
+</p>
+
+The intensity slider still runs from Ultra Clear to Tinted. The default is `0.5`.
 
 Built for Bootstrap 5 and bslib. See [compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html) for supported widgets and older layouts.
 

@@ -111,6 +111,7 @@ jobs:
         working-directory: inst/scripts/browser
         env:
           RUN_CHAT_TESTS: '1'
+          SHINYGLASS_CHAT_PACE: '0'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -185,6 +186,8 @@ jobs:
             any::plotly
             any::gt
             any::waiter
+            any::shinychat
+            any::ellmer
             local::.
           needs: check
 
@@ -194,7 +197,7 @@ jobs:
       - name: Dual-theme contrast audit
         run: |
           Rscript inst/scripts/audit-glass-contrast.R \
-            --apps=demo,dashboard,inputs,plotly_gt,chrome \
+            --apps=demo,dashboard,inputs,plotly_gt,chrome,chat \
             --presets=light,dark \
             --json=audit-ci-report.json
 

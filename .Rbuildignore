@@ -23,6 +23,7 @@
 ^man/figures/dreamrs-.*\.png$
 ^man/figures/plotly-gt.*\.png$
 ^man/figures/intensity-slider.*\.(png|gif)$
+^man/figures/harbor-notes.*\.png$
 # Examples that need vendor data/scripts or screenshot-only deps
 ^inst/examples/dreamrs-
 ^inst/examples/superzip-glass\.R$

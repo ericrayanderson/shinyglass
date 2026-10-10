@@ -1,12 +1,18 @@
-# shinyglass (development version)
+# shinyglass 0.5.0
 
 ## Breaking changes
 
+* The default intensity is `0.5`, Apple's midpoint between Ultra Clear and
+  Tinted (previously `0.45`). Apps that do not set `intensity` look slightly
+  more tinted, with a stronger rim, lip, and edge and a narrower, more even
+  blur range. Colored edge tokens (`--glass-refract-a`, `--glass-refract-b`)
+  and the backdrop brightness and contrast boosts scale with intensity.
 * Specular highlights are static top and bottom bands. Pointer tracking and
   the ambient specular drift are gone. `specular = TRUE` still paints the
   highlights. `specular = FALSE` hides them. iOS 27 does not tilt glass.
+  Pointer tracking is not available in 0.5.0.
 * Glass edges are darker, and diffusion is more even across chrome and
-  content. Fill alphas and the default intensity (`0.5`) are unchanged.
+  content. Fill alphas are unchanged.
 * Chromium bends the backdrop through a convex squircle lens (index of
   refraction about 1.5, flat interior, bend concentrated at the rim, subtle
   chromatic dispersion). Safari and Firefox keep blur and tint.
@@ -26,9 +32,15 @@
   glyph stays above the contrast floor. Dark mode uses near-white. Primary
   buttons keep their own ink. `"color"` leaves author colors. `"all"` also
   restyles icons inside cards.
+* `material = "clear"` is deprecated. Pass `intensity` instead. Existing
+  calls still work: when `intensity` is omitted they map to `0.12`, warn,
+  and stay clearer than the midpoint. `update_glass_theme(material =
+  "clear")` and `setMaterial("clear")` do the same.
 * These defaults load in existing apps. Layout, inputs, and click targets
   keep working. The iPadOS 26 detached sidebar is opt-in
   (`floating_sidebar = TRUE`) and off by default.
+* `vignette("migrating")` lists the visual and API changes and shows how
+  to approximate the 0.4.0 look.
 
 ## New features
 
@@ -40,72 +52,8 @@
   `--glass-press-scale`, `--glass-scroll-edge-fade`, `--glass-minimize-scale`,
   and `--glass-icon-clear`.
 * Scroll edge fades a uniform toolbar backing when content sits under
-  floating bars (`scroll_edge = TRUE`).
-* shinyreact `useGlassTheme()` reports the same knobs and can set them.
-  `GlassSidebar` floats when `floating` is set or the theme opts in.
-* Displacement maps are generated in `inst/js/glass-ios27.js` (not copied
-  from the reference projects). The approach follows public
-  `backdrop-filter: url()` lens work: Surdeddd/liquidglassjs,
-  nikdelvin/liquid-glass, and archisvaze/liquid-glass.
-* Compatibility fixture `inst/examples/compat-glass.R` with Playwright
-  coverage in `inst/scripts/browser/compat.spec.js`. It checks common
-  inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
-  shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
-  and print under the iOS 27 defaults and with refraction fallback.
-* Harbor notes (`inst/examples/shinychat-glass`) is one of the five hosted
-  demos, with basics, dashboard, inputs, and Olympics. plotly + gt stays a
-  local example (`inst/examples/plotly-gt-demo.R`) and stays in the deploy
-  catalog, outside that five-app set. Harbor notes uses the dusk wallpaper,
-  streams a local script (thinking, a tool card, and a citation) with no API
-  key, and uses `ellmer::chat_google_gemini()` (Gemini Flash) when
-  `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each session allows 8
-  messages of at most 400 characters. Quota and other API errors fall
-  back to the local script. Deploy key `chat` (`shinyglass-chat`). When
-  `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
-  gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
-  `envVars`. The value is not logged.
-* shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
-  full-window header and history sidebar, message bubbles, a floating
-  composer, thinking panels, tool rows, citation chips, artifact
-  previews, toolbars, and the slash-command menu. Refraction, morph,
-  press, and the scroll edge stay on. Example:
-  `inst/examples/shinychat-glass` (local echo, no API key).
-* bslib 0.12 `offcanvas()` panels use the glass material, scale in from
-  the trigger, and show a scroll edge on the header. Bootstrap still
-  owns the slide.
-
-## Bug fixes
-
-* `bslib::input_dark_mode()` switches the glass pack when it writes
-  `data-bs-theme`.
-* Leaflet popups are not clipped by the map frame, and plotly hover stays
-  above the card sheen.
-* shinyWidgets `materialSwitch()` gets a 24px hit target so the knob stays
-  inside glass cards and accepts clicks.
-* Tooltips do not capture pointer events, so a hint over the next control
-  does not block the click.
-
-* iOS 27 Liquid Glass alignment. The default intensity is now `0.5`,
-  Apple's midpoint between Ultra Clear and Tinted (previously `0.45`).
-  Apps that do not set `intensity` look slightly more tinted, with a
-  stronger rim, lip, and edge and a narrower, more even blur range.
-  Colored edge tokens (`--glass-refract-a`, `--glass-refract-b`) and
-  the backdrop brightness and contrast boosts scale with intensity.
-  There is no lens displacement.
-* `material = "clear"` is deprecated. Pass `intensity` instead. Existing
-  calls still work: when `intensity` is omitted they map to `0.12`, warn,
-  and stay clearer than the midpoint. `update_glass_theme(material =
-  "clear")` and `setMaterial("clear")` do the same.
-* Accessibility overrides now win over the inline `--glass-*` values the
-  intensity script writes. Reduce Transparency uses opaque fills and no
-  backdrop blur (the same idea as flatten mode). Increase Contrast and
-  forced colors are watched live. The page sets `data-glass-contrast`,
-  `data-glass-forced-colors`, and `data-glass-reduced-transparency` on
-  `<html>`, and matching CSS rules use `!important`.
-* shinyreact: `GlassIntensitySlider` (Ultra Clear to Tinted, default
-  `0.5`). `useGlassTheme()` also reports `reducedTransparency`,
-  `increasedContrast`, and `forcedColors`.
-
+  floating bars (`scroll_edge = TRUE`). This is the 0.4.0 scroll-edge
+  toolbar, now a theme argument.
 * First-class shinyreact components. `glass_page_react()` and
   `glass_theme_dependencies()` attach `inst/js/shinyglass-react.js`, an
   ES module (html dependency `shinyglass-react`) that registers
@@ -116,8 +64,11 @@
   package). Paint stays on the existing `--glass-*` tokens via
   `.glass-page`, `.glass-sidebar`, `.glass-button`, and `.glass-surface`.
   `useGlassTheme()` follows mode, resolved preset, scene, material, and
-  intensity. The example app is built from these components and has no
-  `ui.css`. See `vignette("shinyreact")`.
+  intensity, and reports `reducedTransparency`, `increasedContrast`, and
+  `forcedColors`, plus refraction, morph, press, scroll edge, tab
+  minimize, icon style, and floating sidebar. `GlassIntensitySlider` runs
+  from Ultra Clear to Tinted (default `0.5`). `GlassSidebar` floats when
+  `floating` is set or the theme opts in. See `vignette("shinyreact")`.
 * shinyreact interop. `glass_page_react()` passes `glass_theme()` as
   `theme` so Liquid Glass CSS is not stripped (an unnamed theme hits
   shinyreact's no-Bootstrap page and drops the compiled stylesheet).
@@ -128,6 +79,64 @@
   `window.shinyglass.adoptShadow()` injects a `.glass-surface` rule into
   a root the client created. Example:
   `system.file("examples/shinyreact-glass", package = "shinyglass")`.
+* Displacement maps are generated in `inst/js/glass-ios27.js` (not copied
+  from the reference projects). The approach follows public
+  `backdrop-filter: url()` lens work: Surdeddd/liquidglassjs,
+  nikdelvin/liquid-glass, and archisvaze/liquid-glass.
+* Compatibility fixture `inst/examples/compat-glass.R` with Playwright
+  coverage in `inst/scripts/browser/compat.spec.js`. It checks common
+  inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
+  shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
+  and print under the iOS 27 defaults and with refraction fallback.
+* Harbor notes (`inst/examples/shinychat-glass`) joins the five-app demo
+  set with basics, dashboard, inputs, and Olympics. plotly + gt stays a
+  local example (`inst/examples/plotly-gt-demo.R`) and stays in the deploy
+  catalog, outside that five-app set. Harbor notes uses the dusk wallpaper,
+  streams a local script (thinking, a tool card, and a citation) with no API
+  key, and uses `ellmer::chat_google_gemini()` (Gemini Flash) when
+  `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each session allows 8
+  messages of at most 400 characters. Quota and other API errors fall
+  back to the local script. Deploy key `chat` (`shinyglass-chat`). When
+  `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
+  gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
+  `envVars`. The value is not logged. Hosted app:
+  [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
+* shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
+  full-window header and history sidebar, message bubbles, a floating
+  composer, thinking panels, tool rows, citation chips, artifact
+  previews, toolbars, and the slash-command menu. Assistant replies
+  use a neutral glass bubble, including while the reply is streaming.
+  User bubbles stay the tinted pill. A scrolled transcript fades under
+  the header and the composer instead of clipping on the bar. On a
+  coarse pointer the send button, edit button, and composer are at
+  least 44px, and the footer keeps the bottom safe-area inset. The
+  typed "/" in the composer stays visible when the slash menu opens.
+  Refraction, morph, press, and the scroll edge stay on. Example:
+  `inst/examples/shinychat-glass` (local echo, no API key). Harbor
+  notes shows a Live (Gemini) or Demo replies chip, lists citations
+  from the scripted reply (and from Gemini when grounding is present),
+  and keeps the theme and the conversation in the browser.
+* bslib 0.12 `offcanvas()` panels use the glass material, scale in from
+  the trigger, and show a scroll edge on the header. Bootstrap still
+  owns the slide.
+
+## Bug fixes
+
+* Accessibility overrides now win over the inline `--glass-*` values the
+  intensity script writes. Reduce Transparency uses opaque fills and no
+  backdrop blur (the same idea as flatten mode). Increase Contrast and
+  forced colors are watched live. The page sets `data-glass-contrast`,
+  `data-glass-forced-colors`, and `data-glass-reduced-transparency` on
+  `<html>`, and matching CSS rules use `!important`.
+* `bslib::input_dark_mode()` switches the glass pack when it writes
+  `data-bs-theme`.
+* Leaflet popups are not clipped by the map frame, and plotly hover stays
+  above the card sheen.
+* shinyWidgets `materialSwitch()` gets a 24px hit target so the knob stays
+  inside glass cards and accepts clicks.
+* Tooltips do not capture pointer events, so a hint over the next control
+  does not block the click.
+
 
 # shinyglass 0.4.0
 
@@ -339,8 +348,8 @@
   **shinydashboardPlus** controlbar/dropdowns/user menu, light
   **rhandsontable** / echarts/highcharter hosts. Examples:
   `plotly-gt-demo.R`, `shinydashboardPlus-glass-demo.R`.
-* Live demo [shinyglass-plotly-gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/);
-  README light/dark screenshots for plotly+gt.
+* plotly + gt stays a local example (`plotly-gt-demo.R`). README
+  light/dark screenshots for plotly+gt. The hosted copy is archived.
 * CI workflow `visual-qa` (testthat + dual-theme contrast audit) and committed
   `inst/scripts/audit-baseline.json`.
 * Navbar brand / page title ink uses `--glass-body-color` (no more white brand

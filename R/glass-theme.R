@@ -709,7 +709,7 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
   .Deprecated(
     new = "intensity",
     msg = paste(
-      "`material = \"clear\"` is deprecated in shinyglass 0.4.0.9001 and will be removed in a future release.",
+      "`material = \"clear\"` is deprecated in shinyglass 0.5.0 and will be removed in a future release.",
       "Use `intensity` from 0 (Ultra Clear) to 1 (Tinted).",
       "When `intensity` is omitted, clear glass maps to intensity 0.12 so existing apps stay clearer than the midpoint."
     )

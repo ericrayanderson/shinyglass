@@ -7,7 +7,7 @@
 #
 # Usage (from package root):
 #   Rscript inst/scripts/audit-glass-contrast.R
-#   Rscript inst/scripts/audit-glass-contrast.R --apps=dashboard,inputs,chrome --presets=dark
+#   Rscript inst/scripts/audit-glass-contrast.R --apps=dashboard,inputs,chrome,chat --presets=dark
 #   Rscript inst/scripts/audit-glass-contrast.R --min-contrast=3 --json=audit.json
 #   Rscript inst/scripts/audit-glass-contrast.R --apps=chrome --screenshot-dir=visual-test-output/chrome
 #
@@ -29,7 +29,7 @@ has_flag <- function(flag) any(args == flag)
 min_contrast <- as.numeric(get_flag("--min-contrast", "3"))
 text_aa <- has_flag("--text-aa")
 if (is.na(min_contrast) || min_contrast <= 0) min_contrast <- 3
-apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt,chrome")
+apps_arg <- get_flag("--apps", "demo,dashboard,inputs,plotly_gt,chrome,chat")
 presets_arg <- get_flag("--presets", "light,dark")
 json_out <- get_flag("--json", NULL)
 screenshot_dir <- get_flag("--screenshot-dir", NULL)
@@ -469,6 +469,61 @@ catalog <- list(
         wait_ms = 300
       )
     )
+  ),
+  chat = list(
+    label = "harbor-notes",
+    path = file.path(pkg_root, "inst", "examples", "shinychat-glass", "app.R"),
+    needs = c("shinychat"),
+    env = c(SHINYGLASS_CHAT_PACE = "0"),
+    wait = c(".shiny-chat-page-header", ".shiny-chat-input .tiptap", ".suggestion"),
+    extra_selectors = c(
+      ".shiny-chat-page-header",
+      ".shiny-chat-page-sidebar",
+      ".shiny-chat-input",
+      ".shiny-chat-user-message",
+      ".shiny-chat-thinking",
+      ".shiny-aside-pill",
+      ".shiny-tool-card",
+      ".suggestion",
+      ".offcanvas.show",
+      ".offcanvas-header",
+      ".offcanvas-title",
+      ".shiny-chat-message-content",
+      ".harbor-status",
+      ".harbor-source"
+    ),
+    extra_viewports = list(list(width = 393L, height = 852L)),
+    interactions = list(
+      list(
+        name = "scripted-reply",
+        js = "
+          (function() {
+            const el = Array.from(document.querySelectorAll('.suggestion, button, [data-suggestion-submit]'))
+              .find((node) => /glass_theme work/i.test(node.textContent || ''));
+            if (!el) return false;
+            el.click();
+            return true;
+          })();
+        ",
+        wait_ms = 1500,
+        sample = TRUE,
+        expect = ".shiny-chat-thinking, .shiny-tool-card"
+      ),
+      list(
+        name = "open-sources",
+        js = "
+          (function() {
+            const btn = document.getElementById('open_sources');
+            if (!btn) return false;
+            btn.click();
+            return true;
+          })();
+        ",
+        wait_ms = 700,
+        sample = TRUE,
+        expect = ".offcanvas.show"
+      )
+    )
   )
 )
 
@@ -556,7 +611,7 @@ wait_ready <- function(session, selectors, timeout = 45) {
   isTRUE(out$result$value)
 }
 
-launch_app <- function(app_path, port, preset) {
+launch_app <- function(app_path, port, preset, extra_env = NULL) {
   url <- sprintf("http://127.0.0.1:%d", port)
   launch <- sprintf(
     paste(
@@ -574,6 +629,12 @@ launch_app <- function(app_path, port, preset) {
   )
   env <- Sys.getenv()
   env[["SHINYGLASS_PRESET"]] <- preset
+  if (length(extra_env)) {
+    extra_env <- as.list(extra_env)
+    for (nm in names(extra_env)) {
+      env[[nm]] <- as.character(extra_env[[nm]])
+    }
+  }
   proc <- processx::process$new(
     command = normalizePath(Sys.which("Rscript")),
     args = c("-e", launch),
@@ -708,7 +769,7 @@ run_case <- function(app_key, preset, port) {
     ))
   }
 
-  launched <- launch_app(spec$path, port, preset)
+  launched <- launch_app(spec$path, port, preset, spec$env)
   proc <- launched$proc
   on.exit({
     if (proc$is_alive()) try(proc$kill(tree = TRUE), silent = TRUE)
@@ -792,6 +853,17 @@ run_case <- function(app_key, preset, port) {
   }
 
   findings <- c(findings, collect_sample("final", keep_all = TRUE))
+
+  extra_vps <- spec$extra_viewports
+  if (is.null(extra_vps)) extra_vps <- list()
+  for (vp in extra_vps) {
+    b$set_viewport_size(width = as.integer(vp$width), height = as.integer(vp$height))
+    Sys.sleep(0.4)
+    findings <- c(findings, collect_sample(
+      sprintf("viewport-%s", vp$width),
+      keep_all = TRUE
+    ))
+  }
 
   list(meta = meta, findings = findings, glass_preset = last_preset)
 }

@@ -608,29 +608,76 @@
     }, true);
   }
 
+  function syncChatMessages(scroller) {
+    var top = scroller.scrollTop > 8;
+    var gap = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+    var bottom = gap > 24;
+    var page = scroller.closest ? scroller.closest("shiny-chat-page") : null;
+    var root = scroller.closest ? scroller.closest("shiny-chat-container") : null;
+    var header = page && page.querySelector(".shiny-chat-page-header");
+    var composer = root && root.querySelector(".shiny-chat-composer, .shiny-chat-input");
+    if (header) header.classList.toggle("glass-scroll-edge", top);
+    if (composer) composer.classList.toggle("glass-scroll-edge", bottom);
+    scroller.classList.toggle("glass-scroll-edge-top", top);
+    scroller.classList.toggle("glass-scroll-edge-bottom", bottom);
+  }
+
+  function syncOffcanvasBody(body) {
+    var overflowing = body.scrollHeight > body.clientHeight + 2;
+    body.classList.toggle("glass-overflowing", overflowing);
+    var host = body.closest ? body.closest(".offcanvas") : null;
+    if (host) host.classList.toggle("glass-scroll-edge", body.scrollTop > 8);
+  }
+
+  function syncOpenScrollers() {
+    if (!flagEnabled("glassScrollEdge", true)) return;
+    var nodes = document.querySelectorAll(".shiny-chat-messages, .offcanvas-body");
+    var i;
+    for (i = 0; i < nodes.length; i++) {
+      var t = nodes[i];
+      if (t.classList.contains("shiny-chat-messages")) syncChatMessages(t);
+      if (t.classList.contains("offcanvas-body")) syncOffcanvasBody(t);
+    }
+  }
+
   function bindScrollEdges() {
+    var queued = false;
+    function kick() {
+      if (queued) return;
+      queued = true;
+      var raf = window.requestAnimationFrame || function (fn) { return window.setTimeout(fn, 16); };
+      raf(function () {
+        queued = false;
+        syncOpenScrollers();
+      });
+    }
     document.addEventListener("scroll", function (e) {
       if (!flagEnabled("glassScrollEdge", true)) return;
       var t = e.target;
       if (!t || !t.classList) return;
       if (t.classList.contains("shiny-chat-messages")) {
-        var root = t.closest ? t.closest("shiny-chat-container") : null;
-        var composer = root && root.querySelector(".shiny-chat-composer, .shiny-chat-input");
-        if (composer) {
-          var gap = t.scrollHeight - t.scrollTop - t.clientHeight;
-          composer.classList.toggle("glass-scroll-edge", gap > 24);
-        }
+        syncChatMessages(t);
+        return;
       }
-      if (t.classList.contains("shiny-chat-page-main") || t.classList.contains("offcanvas-body")) {
-        var host = t.closest ? t.closest("shiny-chat-page, .offcanvas") : null;
-        var bar = host && host.querySelector(".shiny-chat-page-header, .offcanvas-header");
-        if (host && host.classList.contains("offcanvas")) {
-          host.classList.toggle("glass-scroll-edge", t.scrollTop > 8);
-        } else if (bar) {
-          bar.classList.toggle("glass-scroll-edge", t.scrollTop > 8);
-        }
+      if (t.classList.contains("offcanvas-body")) {
+        syncOffcanvasBody(t);
+        return;
+      }
+      // Page-level scroll (not the chat transcript, which lives on
+      // .shiny-chat-messages) still fades a header that sits over it.
+      if (t.classList.contains("shiny-chat-page-main") && t.scrollHeight > t.clientHeight + 2) {
+        var host = t.closest ? t.closest("shiny-chat-page") : null;
+        var bar = host && host.querySelector(".shiny-chat-page-header");
+        if (bar) bar.classList.toggle("glass-scroll-edge", t.scrollTop > 8);
       }
     }, true);
+    if (window.MutationObserver && document.documentElement) {
+      var obs = new MutationObserver(kick);
+      obs.observe(document.documentElement, { childList: true, subtree: true });
+    }
+    window.addEventListener("resize", kick);
+    document.addEventListener("shown.bs.offcanvas", kick, true);
+    kick();
   }
 
   function releasePress() {
