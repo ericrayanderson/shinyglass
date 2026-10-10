@@ -518,17 +518,6 @@ catalog <- list(
         wait_ms = 700,
         sample = TRUE,
         expect = ".offcanvas.show"
-      ),
-      list(
-        name = "close-sources",
-        js = "
-          (function() {
-            const btn = document.querySelector('#sources_panel .btn-close, .offcanvas.show .btn-close');
-            if (btn) { btn.click(); return true; }
-            return false;
-          })();
-        ",
-        wait_ms = 400
       )
     )
   )

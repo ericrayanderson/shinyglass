@@ -63,8 +63,29 @@ Known CI notes (not package defects):
 
 ## R CMD check results
 
-Local results are filled in after `R CMD check --as-cran` on this
-candidate. GitHub Actions runs on the pull request.
+Local (Ubuntu 24.04, R 4.6.1, `R CMD check --as-cran`):
+**0 errors | 0 warnings | 1 NOTE**
+
+The NOTE is CRAN incoming feasibility. GitHub returned 503 for the
+README link to `inst/scripts/VISUAL-QA.md`. That file is on `main`.
+`urlchecker::url_check()` reported every URL correct, and a second
+fetch of the sibling deploy-doc link returned 200. The 503 is a
+transient host response, not a broken link. Examples, tests, and
+vignettes (including `migrating`) were OK. The PDF manual built.
+
+`spelling::spell_check_package()`: no spelling errors.
+
+Local contrast audit (`--apps=demo,dashboard,inputs,plotly_gt,chrome,chat`,
+light and dark): **FAIL 0 | WARN 26 | PASS 295 | SKIP 396**. Harbor
+notes passed on the header, sidebar, composer, user message, thinking
+panel, citation, tool card, and the open sources offcanvas, in both
+presets. Warnings are the known white-on-`#007AFF` band (about 4.02:1),
+which stays under the 4.5 text threshold and above the 3:1 audit floor.
+
+GitHub Actions on this pull request (ubuntu release, devel, and oldrel;
+macOS R 4.5; Windows R 4.5; visual-qa including the contrast audit and
+Harbor notes; pkgdown; Python): success on the candidate commit. A
+follow-up commit that records these notes re-runs the same workflows.
 
 ## Downstream dependencies
 
