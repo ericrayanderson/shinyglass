@@ -887,7 +887,9 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(engine, "glass-scroll-edge-top")
   expect_match(scss, "glass-scroll-edge-top")
   expect_match(scss, "shiny-chat-message-content")
-  expect_match(scss, "rgba(246, 244, 250, 0.98)", fixed = TRUE)
+  expect_match(scss, "rgba(255, 255, 255, 0.92)", fixed = TRUE)
+  expect_match(scss, "--shiny-chat-history-bg: transparent", fixed = TRUE)
+  expect_match(scss, "shiny-chat-history-item-select", fixed = TRUE)
   expect_match(scss, "shiny-chat-scroll-to-bottom")
   expect_match(scss, "shiny-chat-thinking-header")
   expect_match(scss, "--shiny-chat-btn-send-size: 32px", fixed = TRUE)
@@ -937,9 +939,17 @@ test_that("shinychat glass example builds an app", {
   }
   expect_match(env$harbor_system_prompt(), "shinyglass")
   expect_match(env$harbor_system_prompt(), "ordinary conversation")
+  expect_match(env$harbor_system_prompt(), "glass_theme()", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "glass_page()", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "glass_intensity_slider()", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "iOS 27", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "page_chat()", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "offcanvas()", fixed = TRUE)
+  expect_match(env$harbor_system_prompt(), "2 to 4", fixed = TRUE)
   expect_false(grepl("search the web", env$harbor_system_prompt(), fixed = TRUE))
   expect_false(grepl("harbor guide", env$harbor_system_prompt(), fixed = TRUE))
-  expect_lt(nchar(env$harbor_system_prompt()), 280)
+  expect_false(grepl("glassmorphism", env$harbor_system_prompt(), fixed = TRUE))
+  expect_lt(nchar(env$harbor_system_prompt()), 800)
   expect_false(grepl("google_tool_web_search", paste(deparse(env$make_client), collapse = "\n"), fixed = TRUE))
 
   mock <- env$gate_turn("tide", 0L, FALSE)
@@ -1120,6 +1130,18 @@ test_that("shinychat glass example builds an app", {
   expect_true(env$harbor_fallback_requested("?harbor_fallback=1"))
   expect_true(env$harbor_fallback_requested("?x=1&harbor_fallback=1"))
   expect_false(env$harbor_fallback_requested("?harbor_fallback=0"))
+  old_force <- Sys.getenv("SHINYGLASS_CHAT_FORCE_FALLBACK", unset = NA_character_)
+  on.exit({
+    if (is.na(old_force)) {
+      Sys.unsetenv("SHINYGLASS_CHAT_FORCE_FALLBACK")
+    } else {
+      Sys.setenv(SHINYGLASS_CHAT_FORCE_FALLBACK = old_force)
+    }
+  }, add = TRUE)
+  Sys.setenv(SHINYGLASS_CHAT_FORCE_FALLBACK = "1")
+  expect_true(env$harbor_fallback_requested(""))
+  Sys.unsetenv("SHINYGLASS_CHAT_FORCE_FALLBACK")
+  expect_false(env$harbor_fallback_requested(""))
 
   restored <- env$normalize_restore(list(
     role = c("user", "assistant"),
@@ -1181,7 +1203,10 @@ test_that("shinychat glass example builds an app", {
   flash <- env$gemini_params("gemini-3.7-flash")
   expect_identical(flash$reasoning_effort, "low")
   lite <- env$gemini_params("gemini-3.5-flash-lite")
-  expect_identical(lite$reasoning_tokens, 256L)
+  expect_identical(lite$reasoning_effort, "low")
+  expect_null(lite$reasoning_tokens)
+  older_lite <- env$gemini_params("gemini-2.5-flash-lite")
+  expect_identical(older_lite$reasoning_tokens, 256L)
   older <- env$gemini_params("gemini-2.5-flash")
   expect_identical(older$reasoning_tokens, 1024L)
 

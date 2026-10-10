@@ -5947,6 +5947,18 @@ html[data-glass-preset] {
   --shiny-chat-command-chip-color: var(--glass-body-color);
 }
 
+// Inline history sits on the sidebar glass. An opaque menu fill reads as
+// a white box floating in the middle of the column.
+html[data-glass-preset] .shiny-chat-page-sidebar {
+  --shiny-chat-history-bg: transparent;
+}
+
+html[data-glass-preset] .shiny-chat-page-sidebar .shiny-chat-history.shiny-chat-history-inline,
+html[data-glass-preset] .shiny-chat-page-sidebar .shiny-chat-history-section {
+  background: transparent !important;
+  box-shadow: none;
+}
+
 html[data-glass-preset] .shiny-chat-page-header,
 html[data-glass-preset] .shiny-chat-page-sidebar,
 html[data-glass-preset] .shiny-chat-history-drawer,
@@ -6019,26 +6031,38 @@ html[data-glass-preset] .shiny-chat-message .shiny-chat-message-content[data-pen
   min-height: 2.6rem;
 }
 
-// Light mode sits on a pale lavender field. A slightly cooler fill and the
-// same darkened edge used on other glass (rim, lip, side strokes) keep the
-// assistant bubble from disappearing into that gradient.
+// Light mode: a thin rim and a bright top highlight, same family as the
+// user bubble and the composer. A dark edge reads as a hard outline.
 html[data-glass-preset="light"] .shiny-chat-message .shiny-chat-message-content,
 html[data-glass-preset="auto"][data-bs-theme="light"] .shiny-chat-message .shiny-chat-message-content {
-  background-color: rgba(246, 244, 250, 0.98) !important;
-  border-color: rgba(29, 29, 31, 0.34);
+  background-color: color-mix(in srgb, var(--glass-bg) 78%, white) !important;
+  border: 0.5px solid color-mix(in srgb, var(--glass-body-color) 16%, transparent);
   box-shadow:
-    0 0 0 1px var(--glass-edge, rgba(0, 0, 0, 0.28)),
-    inset 0 1px 0 var(--glass-highlight),
-    inset 0 -1px 0 var(--glass-lip),
-    inset 1.25px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
-    inset -1.25px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
-    0 8px 22px color-mix(in srgb, var(--glass-shadow) 42%, transparent);
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -0.5px 0 color-mix(in srgb, var(--glass-body-color) 10%, transparent),
+    0 8px 22px color-mix(in srgb, var(--glass-shadow) 28%, transparent);
 }
 
 html[data-glass-preset="dark"] .shiny-chat-message .shiny-chat-message-content,
 html[data-glass-preset="auto"][data-bs-theme="dark"] .shiny-chat-message .shiny-chat-message-content {
   background-color: rgba(44, 44, 46, 0.94) !important;
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+// The row select is the title button. Fill the row so the hit area is
+// the whole conversation, not the text line.
+html[data-glass-preset] .shiny-chat-history-item {
+  align-items: stretch;
+  min-height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+html[data-glass-preset] .shiny-chat-history-item-select {
+  box-sizing: border-box;
+  align-items: center;
+  align-self: stretch;
+  min-height: 32px;
 }
 
 html[data-glass-preset] .shiny-chat-edit-btn {
@@ -6467,6 +6491,11 @@ html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
 
   html[data-glass-preset] .bslib-full-screen-enter {
     opacity: 0.85;
+  }
+
+  html[data-glass-preset] .shiny-chat-history-item,
+  html[data-glass-preset] .shiny-chat-history-item-select {
+    min-height: 44px;
   }
 
   html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {

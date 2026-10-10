@@ -281,6 +281,13 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   });
   expect(menu.width).toBeGreaterThanOrEqual(44);
   expect(menu.height).toBeGreaterThanOrEqual(44);
+  const select = await page.locator('.shiny-chat-history-item-select').first().evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    const row = el.closest('.shiny-chat-history-item').getBoundingClientRect();
+    return { height: rect.height, row: row.height };
+  });
+  expect(select.height).toBeGreaterThanOrEqual(44);
+  expect(select.height).toBeGreaterThanOrEqual(select.row - 1);
   await context.close();
 });
 
@@ -363,6 +370,27 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API', { timeout: 20000 });
   await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'live');
+  await page.locator('bslib-input-dark-mode').click();
+  await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
+  const chipContrast = await page.locator('.harbor-status').evaluate((el) => {
+    const cs = getComputedStyle(el);
+    const parse = (c) => {
+      const m = c.match(/rgba?\(([^)]+)\)/);
+      if (!m) return null;
+      return m[1].split(',').map((part) => parseFloat(part));
+    };
+    const lin = (v) => {
+      const s = v / 255;
+      return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    };
+    const L = (rgb) => 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+    const fg = parse(cs.color);
+    const bg = parse(cs.backgroundColor);
+    const l1 = L(fg);
+    const l2 = L(bg);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  });
+  expect(chipContrast).toBeGreaterThanOrEqual(4.5);
   const liveBubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
   await expect(liveBubble).toContainText('Liquid Glass');
   await expect(liveBubble).not.toContainText('local note');
@@ -494,6 +522,13 @@ test('fine pointers use at least 32px send and edit', async ({ page }) => {
   });
   expect(menuBox.width).toBeGreaterThanOrEqual(32);
   expect(menuBox.height).toBeGreaterThanOrEqual(32);
+  const select = await page.locator('.shiny-chat-history-item-select').first().evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    const row = el.closest('.shiny-chat-history-item').getBoundingClientRect();
+    return { height: rect.height, row: row.height };
+  });
+  expect(select.height).toBeGreaterThanOrEqual(32);
+  expect(select.height).toBeGreaterThanOrEqual(select.row - 1);
 });
 
 test('ambient motion settles and reduced motion stops it', async ({ page }) => {
@@ -620,6 +655,34 @@ test('mobile header controls respond without a transition delay', async ({ brows
   await close.click({ timeout: 2000 });
   expect(Date.now() - closeStarted).toBeLessThan(1500);
   await context.close();
+});
+
+test('history list sits at the top of the glass sidebar', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 835 });
+  await gotoChat(page);
+  const layout = await page.evaluate(() => {
+    const header = document.querySelector('.shiny-chat-page-header').getBoundingClientRect();
+    const sidebar = document.querySelector('.shiny-chat-page-sidebar').getBoundingClientRect();
+    const history = document.querySelector('.shiny-chat-history').getBoundingClientRect();
+    const hist = document.querySelector('.shiny-chat-history.shiny-chat-history-inline');
+    const section = document.querySelector('.shiny-chat-history-section');
+    const bg = hist ? getComputedStyle(hist).backgroundColor : '';
+    const sectionBg = section ? getComputedStyle(section).backgroundColor : bg;
+    return {
+      headerBottom: header.y + header.height,
+      sidebarY: sidebar.y,
+      sidebarBottom: sidebar.y + sidebar.height,
+      historyY: history.y,
+      bg,
+      sectionBg,
+      vh: window.innerHeight
+    };
+  });
+  expect(layout.sidebarY).toBeLessThan(layout.headerBottom + 12);
+  expect(layout.sidebarBottom).toBeGreaterThan(layout.vh - 8);
+  expect(layout.historyY).toBeLessThan(layout.sidebarY + 48);
+  expect(layout.bg === 'rgba(0, 0, 0, 0)' || layout.bg === 'transparent').toBeTruthy();
+  expect(layout.sectionBg === 'rgba(0, 0, 0, 0)' || layout.sectionBg === 'transparent').toBeTruthy();
 });
 
 test('phone width keeps the composer on screen', async ({ page }) => {

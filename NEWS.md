@@ -122,6 +122,22 @@
 
 ## Bug fixes
 
+* Harbor notes keeps the conversation list at the top of the sidebar, on
+  the glass surface, with the same padding as the rest of the column.
+* Light-mode assistant replies use a thin rim and a bright top highlight,
+  in the same family as the user bubble and the composer.
+* The live system prompt names the shinyglass APIs, so replies stay
+  specific to `glass_theme()`, `glass_page()`, the intensity slider, the
+  physics, and shinychat support.
+* Live replies request a short thinking summary, so the "Thought for ..."
+  disclosure can appear. If the model returns none, the disclosure stays
+  hidden.
+* The history row title fills the row: 32px on a fine pointer and 44px on
+  a coarse pointer.
+* The live status chip in dark mode uses lighter text on a darker green
+  so it clears the 4.5:1 contrast floor.
+* Setting `SHINYGLASS_CHAT_FORCE_FALLBACK` to `1` shows the demo chip and
+  the fallback toast. That path is for tests.
 * Coarse pointers get a 44px hit area on glass controls, and fine pointers
   stay at least 32px. That covers the Light/Dark/Auto toggle, the sidebar
   toggle, card expand, nav tabs, modal close, selects, pagination, and
