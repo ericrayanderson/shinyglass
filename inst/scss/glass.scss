@@ -1437,6 +1437,44 @@ a.shiny-download-link {
   }
 }
 
+// shinyWidgets materialSwitch paints the track and knob on a 0px-tall label
+// with negative margins. That box is not a hit target, and card overflow
+// clips the art. Size the control to the knob and keep the paint inside it.
+// The label's .bg-primary fill is cleared so the 24px box is not a solid slab.
+// Checked track and knob set their own fills, because the widget uses
+// background: inherit from that label.
+html[data-glass-preset] .material-switch > label.switch {
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+html[data-glass-preset] .material-switch > label.switch::before {
+  top: 4px;
+  left: 0;
+  margin-top: 0;
+}
+
+html[data-glass-preset] .material-switch > label.switch::after {
+  top: 0;
+  margin-top: 0;
+  background-color: #fff;
+}
+
+html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + label.switch::before {
+  background-color: var(--bs-primary, #{$glass-accent});
+  opacity: 0.5;
+}
+
+html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + label.switch::after {
+  background-color: var(--bs-primary, #{$glass-accent});
+  left: 20px;
+}
+
 // Legacy BS3 shiny markup still used in some apps
 .checkbox input[type="checkbox"],
 .radio input[type="radio"] {
@@ -2031,6 +2069,8 @@ small,
 .tooltip {
   --bs-tooltip-bg: var(--glass-menu-bg);
   --bs-tooltip-color: var(--glass-menu-color);
+  // A hint that overlaps the next control must not swallow the click.
+  pointer-events: none;
 }
 
 .popover {
@@ -3348,7 +3388,13 @@ body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.45rem;
   margin-bottom: 0.75rem;
-  overflow: hidden;
+  // Popups and controls must escape the rounded frame.
+  overflow: visible;
+}
+
+.leaflet-popup-pane,
+.leaflet-popup {
+  z-index: 1100;
 }
 
 .leaflet-container {
@@ -3440,6 +3486,8 @@ body .Reactable {
 .js-plotly-plot .hovertext,
 .js-plotly-plot .hoverlayer {
   font-family: inherit;
+  z-index: 1100;
+  pointer-events: none;
 }
 
 // Snap axis / title ink to the live pack. SVG fill does not follow

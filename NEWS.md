@@ -47,6 +47,22 @@
   from the reference projects). The approach follows public
   `backdrop-filter: url()` lens work: Surdeddd/liquidglassjs,
   nikdelvin/liquid-glass, and archisvaze/liquid-glass.
+* Compatibility fixture `inst/examples/compat-glass.R` with Playwright
+  coverage in `inst/scripts/browser/compat.spec.js`. It checks common
+  inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
+  shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
+  and print under the iOS 27 defaults and with refraction fallback.
+
+## Bug fixes
+
+* `bslib::input_dark_mode()` switches the glass pack when it writes
+  `data-bs-theme`.
+* Leaflet popups are not clipped by the map frame, and plotly hover stays
+  above the card sheen.
+* shinyWidgets `materialSwitch()` gets a 24px hit target so the knob stays
+  inside glass cards and accepts clicks.
+* Tooltips do not capture pointer events, so a hint over the next control
+  does not block the click.
 
 * iOS 27 Liquid Glass alignment. The default intensity is now `0.5`,
   Apple's midpoint between Ultra Clear and Tinted (previously `0.45`).

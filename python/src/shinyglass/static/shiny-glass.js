@@ -194,6 +194,30 @@
     }
   }
 
+  var ignoreExternalTheme = false;
+
+  function noteOwnThemeWrite() {
+    ignoreExternalTheme = true;
+    window.setTimeout(function () {
+      ignoreExternalTheme = false;
+    }, 0);
+  }
+
+  // bslib::input_dark_mode() writes data-bs-theme on <html>. Follow that
+  // so the glass pack, ink, and plots switch with the control.
+  function bindExternalColorMode() {
+    if (!window.MutationObserver) return;
+    var root = rootEl();
+    var obs = new MutationObserver(function () {
+      if (ignoreExternalTheme) return;
+      var theme = root.getAttribute("data-bs-theme");
+      if (theme !== "light" && theme !== "dark") return;
+      if (root.dataset.glassPreset === theme && root.dataset.glassMode === theme) return;
+      applyPreset(theme);
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ["data-bs-theme"] });
+  }
+
   function applyPreset(mode, opts) {
     opts = opts || {};
     var root = rootEl();
@@ -213,7 +237,10 @@
     var prev = root.dataset.glassPreset;
     root.dataset.glassMode = mode;
     root.dataset.glassPreset = resolved;
-    // Bootstrap 5 color-mode attribute (helps components that key off it)
+    // Bootstrap 5 color-mode attribute (helps components that key off it).
+    // Ignore the mutation this write causes so bslib's dark-mode toggle can
+    // still drive the glass pack when the user changes data-bs-theme.
+    noteOwnThemeWrite();
     root.setAttribute("data-bs-theme", resolved);
     if (document.body) {
       document.body.setAttribute("data-bs-theme", resolved);
@@ -1989,6 +2016,7 @@
     var mode = rootEl().dataset.glassMode || rootEl().dataset.glassPreset || "light";
     // The early head script already sets the preset; still initialize listeners.
     applyPreset(mode, { force: true });
+    bindExternalColorMode();
     bindPresetSelects(document);
     bindGlassOverlayMenus(document);
 
