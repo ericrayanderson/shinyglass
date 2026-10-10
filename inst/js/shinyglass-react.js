@@ -46,12 +46,21 @@ const THEME_ATTRS = [
   "data-glass-reduced-transparency",
   "data-glass-contrast",
   "data-glass-forced-colors",
+  "data-glass-refraction",
+  "data-glass-refraction-support",
+  "data-glass-morph",
+  "data-glass-press",
+  "data-glass-scroll-edge",
+  "data-glass-minimize-tabs",
+  "data-glass-icon-style",
+  "data-glass-floating-sidebar",
 ];
 
 const A11Y_QUERIES = [
   "(prefers-reduced-transparency: reduce)",
   "(prefers-contrast: more)",
   "(forced-colors: active)",
+  "(prefers-reduced-motion: reduce)",
 ];
 
 function mediaOn(query) {
@@ -60,6 +69,11 @@ function mediaOn(query) {
   } catch (e) {
     return false;
   }
+}
+
+function flag(value, fallback) {
+  if (value === undefined || value === "") return fallback;
+  return value === "true" || value === "1";
 }
 
 function readTheme() {
@@ -78,6 +92,15 @@ function readTheme() {
       ds.glassContrast === "more" || mediaOn("(prefers-contrast: more)"),
     forcedColors:
       ds.glassForcedColors === "active" || mediaOn("(forced-colors: active)"),
+    reducedMotion: mediaOn("(prefers-reduced-motion: reduce)"),
+    refraction: flag(ds.glassRefraction, true),
+    refractionSupport: ds.glassRefractionSupport === "true",
+    morph: flag(ds.glassMorph, true),
+    press: flag(ds.glassPress, true),
+    scrollEdge: flag(ds.glassScrollEdge, true),
+    minimizeTabs: flag(ds.glassMinimizeTabs, true),
+    iconStyle: ds.glassIconStyle || "clear",
+    floatingSidebar: flag(ds.glassFloatingSidebar, false),
   };
 }
 
@@ -131,6 +154,15 @@ export function useGlassTheme() {
     reducedTransparency: theme.reducedTransparency,
     increasedContrast: theme.increasedContrast,
     forcedColors: theme.forcedColors,
+    reducedMotion: theme.reducedMotion,
+    refraction: theme.refraction,
+    refractionSupport: theme.refractionSupport,
+    morph: theme.morph,
+    press: theme.press,
+    scrollEdge: theme.scrollEdge,
+    minimizeTabs: theme.minimizeTabs,
+    iconStyle: theme.iconStyle,
+    floatingSidebar: theme.floatingSidebar,
     setMode: function (mode) {
       callGlass("setPreset", mode);
     },
@@ -142,6 +174,27 @@ export function useGlassTheme() {
     },
     setIntensity: function (value) {
       callGlass("setIntensity", value);
+    },
+    setRefraction: function (on) {
+      callGlass("setRefraction", on);
+    },
+    setMorph: function (on) {
+      callGlass("setMorph", on);
+    },
+    setPress: function (on) {
+      callGlass("setPress", on);
+    },
+    setScrollEdge: function (on) {
+      callGlass("setScrollEdge", on);
+    },
+    setMinimizeTabs: function (on) {
+      callGlass("setMinimizeTabs", on);
+    },
+    setIconStyle: function (style) {
+      callGlass("setIconStyle", style);
+    },
+    setFloatingSidebar: function (on) {
+      callGlass("setFloatingSidebar", on);
     },
   };
 }
@@ -278,8 +331,17 @@ export function GlassMain(props) {
 
 export function GlassSidebar(props) {
   const React = reactLib();
-  const dom = omit(props, ["children", "className"]);
-  dom.className = cx("glass-sidebar", props && props.className);
+  const theme = useGlassTheme();
+  props = props || {};
+  const floating = Object.prototype.hasOwnProperty.call(props, "floating")
+    ? props.floating
+    : theme.floatingSidebar;
+  const dom = omit(props, ["children", "className", "floating"]);
+  dom.className = cx(
+    "glass-sidebar",
+    floating ? "glass-sidebar-floating" : null,
+    props.className
+  );
   return React.createElement("aside", dom, props && props.children);
 }
 

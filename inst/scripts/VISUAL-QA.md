@@ -45,8 +45,8 @@ server modal, plus intensity 0 and 1. Screenshot a pass with
 
 ## Narrow viewport gate (≤480px)
 
-Treat **480px** as a release gate for core demos (especially Olympics and the
-bslib dashboard). Package CSS (`@media (max-width: 480px)` in `glass.scss`)
+Treat **480px** as a release gate for core demos (especially Olympics, the
+bslib dashboard, and Harbor notes). Package CSS (`@media (max-width: 480px)` in `glass.scss`)
 stacks page controls, wraps navbar/navsets, and contains DT / reactable /
 plotly hosts.
 

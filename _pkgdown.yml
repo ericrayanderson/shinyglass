@@ -22,8 +22,11 @@ home:
         text: |
           [Source code](https://github.com/ericrayanderson/shinyglass)
           [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
-          [Live demos](https://ericrayanderson.shinyapps.io/shinyglass-demo/) ·
-          [plotly+gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/)
+          [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) ·
+          [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) ·
+          [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) ·
+          [Olympics](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) ·
+          [Harbor notes](articles/shinychat.html)
 
 navbar:
   structure:
@@ -42,6 +45,8 @@ navbar:
           href: articles/compatibility.html
         - text: shinyreact
           href: articles/shinyreact.html
+        - text: shinychat
+          href: articles/shinychat.html
         - text: Try it
           href: articles/playground.html
     reference:
@@ -100,6 +105,7 @@ articles:
   - theming
   - compatibility
   - shinyreact
+  - shinychat
   - playground
 
 authors:

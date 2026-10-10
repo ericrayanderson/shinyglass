@@ -145,14 +145,25 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-content: rgba(255, 255, 255, 0.37);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.47);
   --glass-border: rgba(255, 255, 255, 0.85);
-  --glass-border-outer: rgba(0, 0, 0, 0.18);
+  --glass-border-outer: rgba(0, 0, 0, 0.28);
   --glass-rim: rgba(255, 255, 255, 0.97);
-  --glass-lip: rgba(0, 0, 0, 0.33);
+  --glass-lip: rgba(0, 0, 0, 0.40);
   --glass-shadow: rgba(0, 0, 0, 0.10);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.16);
   --glass-highlight: rgba(255, 255, 255, 1);
   --glass-specular: rgba(255, 255, 255, 0.95);
+  --glass-specular-top: rgba(255, 255, 255, 1);
+  --glass-specular-bottom: rgba(255, 255, 255, 0.78);
+  --glass-edge: rgba(0, 0, 0, 0.38);
   --glass-edge-sheen: rgba(255, 255, 255, 0.75);
+  --glass-ior: 1.5;
+  --glass-refraction-scale: 42;
+  --glass-dispersion: 0.06;
+  --glass-diffusion: 1.06;
+  --glass-press-scale: 0.965;
+  --glass-scroll-edge-fade: 28px;
+  --glass-minimize-scale: 0.92;
+  --glass-icon-clear: #1d1d1f;
   // Coloured edge scales with intensity (no displacement / lens blur).
   --glass-refract-a: rgba(120, 200, 255, 0.19);
   --glass-refract-b: rgba(255, 140, 200, 0.12);
@@ -183,14 +194,25 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-bg-content: rgba(255, 255, 255, 0.14);
   --glass-bg-content-hover: rgba(255, 255, 255, 0.20);
   --glass-border: rgba(255, 255, 255, 0.55);
-  --glass-border-outer: rgba(0, 0, 0, 0.74);
+  --glass-border-outer: rgba(0, 0, 0, 0.86);
   --glass-rim: rgba(255, 255, 255, 0.73);
-  --glass-lip: rgba(0, 0, 0, 0.78);
+  --glass-lip: rgba(0, 0, 0, 0.86);
   --glass-shadow: rgba(0, 0, 0, 0.52);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.68);
   --glass-highlight: rgba(255, 255, 255, 0.60);
   --glass-specular: rgba(255, 255, 255, 0.69);
+  --glass-specular-top: rgba(255, 255, 255, 0.92);
+  --glass-specular-bottom: rgba(255, 255, 255, 0.62);
+  --glass-edge: rgba(0, 0, 0, 0.88);
   --glass-edge-sheen: rgba(255, 255, 255, 0.43);
+  --glass-ior: 1.5;
+  --glass-refraction-scale: 42;
+  --glass-dispersion: 0.06;
+  --glass-diffusion: 1.06;
+  --glass-press-scale: 0.965;
+  --glass-scroll-edge-fade: 28px;
+  --glass-minimize-scale: 0.92;
+  --glass-icon-clear: rgba(255, 255, 255, 0.92);
   --glass-refract-a: rgba(100, 200, 255, 0.15);
   --glass-refract-b: rgba(220, 140, 255, 0.11);
   --glass-menu-bg: rgba(58, 58, 60, 0.79);
@@ -284,16 +306,16 @@ body::after {
 
 // Liquid Glass material layers (Regular):
 //   1. Illumination — translucent fill + backdrop blur/saturate
-//   2. Highlight  — ambient top sheen + pointer specular (::before)
+//   2. Highlight  — static top and bottom specular (::before)
 //   3. Shadow/rim — contact shadow + dual-edge lip for glass thickness (::after)
 // Chrome (sidebars, nav, floating wells) uses this mixin.
 // Content cards use glass-content-surface to avoid glass-on-glass stacking.
-// iOS 27 Liquid Glass material (Regular):
-//   • Stronger diffusion blur so clear fills stay legible over complex content
+  // iOS 27 Liquid Glass material (Regular):
+//   • More even diffusion so busy content does not punch through
 //   • Defined borders (not shadow-only separation)
 //   • Darkened edge ring + bright rim for thickness
-//   • Chromatic micro-edge (refraction cue)
-//   • Ambient + pointer specular on ::before; thickness/rim on ::after
+//   • Chromatic micro-edge (refraction cue; Chromium also displaces the backdrop)
+//   • Static top and bottom specular on ::before (no pointer or tilt)
 // $overflow: hidden clips children to the rounded rect (correct for chrome);
 // use overflow-x: auto on surfaces that hold wide content (tables) so headers
 // are not silently clipped — see .gt_table overrides.
@@ -313,12 +335,12 @@ body::after {
       var(--glass-bg) 100%
     );
   backdrop-filter:
-    blur(var(--glass-blur))
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
     saturate(var(--glass-saturate))
     brightness(var(--glass-refract-brightness, 1.04))
     contrast(var(--glass-refract-contrast, 1.04));
   -webkit-backdrop-filter:
-    blur(var(--glass-blur))
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
     saturate(var(--glass-saturate))
     brightness(var(--glass-refract-brightness, 1.04))
     contrast(var(--glass-refract-contrast, 1.04));
@@ -328,7 +350,7 @@ body::after {
   box-shadow:
     0 1px 1px color-mix(in srgb, var(--glass-shadow) 55%, transparent),
     0 10px 28px color-mix(in srgb, var(--glass-shadow) 62%, transparent),
-    0 0 0 0.5px var(--glass-border-outer, rgba(0, 0, 0, 0.15)),
+    0 0 0 1px var(--glass-edge, var(--glass-border-outer, rgba(0, 0, 0, 0.28))),
     inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
     inset 0 -1px 0 var(--glass-lip),
     inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
@@ -350,10 +372,15 @@ body::after {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(
-        ellipse 160% 70% at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
-        var(--glass-specular) 0%,
-        transparent 50%
+      linear-gradient(
+        180deg,
+        var(--glass-specular-top, var(--glass-specular)) 0%,
+        transparent 26%
+      ),
+      linear-gradient(
+        0deg,
+        var(--glass-specular-bottom, color-mix(in srgb, var(--glass-specular) 70%, transparent)) 0%,
+        transparent 20%
       ),
       linear-gradient(
         180deg,
@@ -400,12 +427,12 @@ body::after {
     var(--glass-bg-content, var(--glass-bg));
   // Slightly less blur than chrome — content hierarchy (no glass-on-glass mud)
   backdrop-filter:
-    blur(calc(var(--glass-blur) * 0.78))
+    blur(calc(var(--glass-blur) * 0.92))
     saturate(calc(var(--glass-saturate) * 0.92))
     brightness(var(--glass-refract-brightness, 1.04))
     contrast(var(--glass-refract-contrast, 1.04));
   -webkit-backdrop-filter:
-    blur(calc(var(--glass-blur) * 0.78))
+    blur(calc(var(--glass-blur) * 0.92))
     saturate(calc(var(--glass-saturate) * 0.92))
     brightness(var(--glass-refract-brightness, 1.04))
     contrast(var(--glass-refract-contrast, 1.04));
@@ -429,11 +456,17 @@ body::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      ellipse 150% 65% at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
-      color-mix(in srgb, var(--glass-specular) 70%, transparent) 0%,
-      transparent 58%
-    );
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--glass-specular-top, var(--glass-specular)) 78%, transparent) 0%,
+        transparent 24%
+      ),
+      linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--glass-specular-bottom, var(--glass-specular)) 70%, transparent) 0%,
+        transparent 18%
+      );
     border-radius: inherit;
     pointer-events: none;
     z-index: -1;
@@ -898,7 +931,8 @@ body.glass-scroll-edge {
       inset 0 1px 0 var(--glass-stroke-tb, var(--glass-highlight)),
       inset 0 -1.5px 0 color-mix(in srgb, var(--glass-lip) 80%, transparent),
       inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
-      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22));
+      inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
+      0 var(--glass-scroll-edge-fade, 28px) 36px -16px color-mix(in srgb, var(--glass-body-bg) 78%, transparent);
   }
 
   // Sidebar sits over page orbs; densify slightly when the page has scrolled
@@ -1401,6 +1435,44 @@ a.shiny-download-link {
     // white knob — overrides BS color-contrast black fill on primary
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
   }
+}
+
+// shinyWidgets materialSwitch paints the track and knob on a 0px-tall label
+// with negative margins. That box is not a hit target, and card overflow
+// clips the art. Size the control to the knob and keep the paint inside it.
+// The label's .bg-primary fill is cleared so the 24px box is not a solid slab.
+// Checked track and knob set their own fills, because the widget uses
+// background: inherit from that label.
+html[data-glass-preset] .material-switch > label.switch {
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+html[data-glass-preset] .material-switch > label.switch::before {
+  top: 4px;
+  left: 0;
+  margin-top: 0;
+}
+
+html[data-glass-preset] .material-switch > label.switch::after {
+  top: 0;
+  margin-top: 0;
+  background-color: #fff;
+}
+
+html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + label.switch::before {
+  background-color: var(--bs-primary, #{$glass-accent});
+  opacity: 0.5;
+}
+
+html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + label.switch::after {
+  background-color: var(--bs-primary, #{$glass-accent});
+  left: 20px;
 }
 
 // Legacy BS3 shiny markup still used in some apps
@@ -1997,6 +2069,8 @@ small,
 .tooltip {
   --bs-tooltip-bg: var(--glass-menu-bg);
   --bs-tooltip-color: var(--glass-menu-color);
+  // A hint that overlaps the next control must not swallow the click.
+  pointer-events: none;
 }
 
 .popover {
@@ -3314,7 +3388,13 @@ body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.45rem;
   margin-bottom: 0.75rem;
-  overflow: hidden;
+  // Popups and controls must escape the rounded frame.
+  overflow: visible;
+}
+
+.leaflet-popup-pane,
+.leaflet-popup {
+  z-index: 1100;
 }
 
 .leaflet-container {
@@ -3406,6 +3486,8 @@ body .Reactable {
 .js-plotly-plot .hovertext,
 .js-plotly-plot .hoverlayer {
   font-family: inherit;
+  z-index: 1100;
+  pointer-events: none;
 }
 
 // Snap axis / title ink to the live pack. SVG fill does not follow
@@ -4316,7 +4398,9 @@ body .controls-pane {
 // ---------------------------------------------------------------------------
 
 
-// Ambient specular drift (iOS-like vitality without device motion APIs)
+// Kept so older tests and custom CSS can still name the keyframes.
+// iOS 27 highlights are static, so this does not run unless a page sets
+// data-glass-specular-drift="true". glass_theme() does not set that.
 @keyframes glass-ambient-specular {
   0%   { --glass-specular-x: 18%; --glass-specular-y: 0%; }
   40%  { --glass-specular-x: 78%; --glass-specular-y: 4%; }
@@ -4324,8 +4408,7 @@ body .controls-pane {
   100% { --glass-specular-x: 18%; --glass-specular-y: 0%; }
 }
 
-// Only when pointer is not over the surface — JS toggles .glass-specular-active
-:root:not(.glass-pointer-active):not([data-glass-ambient-motion="false"]) {
+:root[data-glass-specular-drift="true"]:not(.glass-pointer-active):not([data-glass-ambient-motion="false"]) {
   .card,
   form.well,
   .col-sm-4.well,
@@ -4336,6 +4419,19 @@ body .controls-pane {
   .dropdown-menu {
     animation: glass-ambient-specular 14s ease-in-out infinite;
   }
+}
+
+:root[data-glass-specular="false"] :is(
+  .card,
+  form.well,
+  .navbar,
+  .glass-surface,
+  .glass-card,
+  .modal-content,
+  .dropdown-menu,
+  .bslib-sidebar-layout > .sidebar
+)::before {
+  opacity: 0 !important;
 }
 
 // Legibility veil when content scrolls under floating sidebars/nav
@@ -5282,7 +5378,19 @@ html.glass-theme-settling {
   .glass-card,
   .glass-sidebar,
   .glass-page-controls,
-  .glass-intensity-chip {
+  .glass-intensity-chip,
+  .offcanvas,
+  .shiny-chat-page-header,
+  .shiny-chat-page-sidebar,
+  .shiny-chat-input .tiptap,
+  .shiny-chat-user-message,
+  .shiny-chat-slash-palette,
+  .shiny-tool-card,
+  .shiny-chat-tool-call-row,
+  .shiny-chat-tool-group,
+  .shiny-aside-pill,
+  .shiny-aside-popover,
+  .shiny-chat-history-drawer {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
@@ -5463,5 +5571,357 @@ html.glass-theme-settling {
   body::before,
   body::after {
     display: none !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// iOS 27 refraction, morph, press, tab minimize, clear icons, floating sidebar
+// Refraction filters are attached by glass-ios27.js only when the browser
+// supports backdrop-filter: url(). These rules must not use !important on
+// backdrop-filter, so reduced transparency / contrast / forced colors win.
+// ---------------------------------------------------------------------------
+.glass-refract {
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate))
+    brightness(var(--glass-refract-brightness, 1.04))
+    contrast(var(--glass-refract-contrast, 1.04))
+    var(--glass-refract-filter);
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate))
+    brightness(var(--glass-refract-brightness, 1.04))
+    contrast(var(--glass-refract-contrast, 1.04))
+    var(--glass-refract-filter);
+}
+
+.glass-morph-group > .nav-item,
+.glass-morph-group > .nav-link,
+.glass-morph-group > .btn,
+.glass-morph-group > li {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-morph-indicator {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, var(--glass-specular-top, rgba(255, 255, 255, 0.75)) 0%, transparent 46%),
+    color-mix(in srgb, var(--glass-bg-hover) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-lip),
+    0 0 0 0.5px var(--glass-border);
+  transition:
+    transform 0.52s cubic-bezier(0.22, 1.24, 0.3, 1),
+    width 0.52s cubic-bezier(0.22, 1.24, 0.3, 1),
+    height 0.52s cubic-bezier(0.22, 1.24, 0.3, 1);
+}
+
+.glass-morph-indicator:not([data-ready="1"]) {
+  opacity: 0;
+}
+
+.nav-pills,
+.glass-tabbar,
+nav.fixed-bottom,
+.navbar.fixed-bottom {
+  transition: transform 0.48s cubic-bezier(0.22, 1.18, 0.32, 1);
+}
+
+body.glass-tabs-min {
+  .nav-pills,
+  .glass-tabbar,
+  .tabbable > .nav-pills {
+    transform: scale(var(--glass-minimize-scale, 0.92));
+    transform-origin: center top;
+  }
+
+  nav.fixed-bottom,
+  .navbar.fixed-bottom,
+  .glass-tabbar.glass-tabbar-bottom {
+    transform: scale(var(--glass-minimize-scale, 0.92));
+    transform-origin: center bottom;
+  }
+}
+
+html[data-glass-icon-style="clear"] {
+  .navbar :is(.bi, .fa, .fas, .far, .fab, .glyphicon),
+  .nav-link :is(.bi, .fa, .fas, .far, .fab, .glyphicon),
+  .glass-tabbar :is(.bi, .fa, .fas, .far, .fab, .glyphicon),
+  .btn:not(.btn-primary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info) :is(.bi, .fa, .fas, .far, .fab, .glyphicon),
+  .glass-button:not(.glass-button-primary) :is(.bi, .fa, .fas, .far, .fab, .glyphicon) {
+    color: var(--glass-icon-clear, var(--glass-body-color));
+    filter: drop-shadow(0 0.5px 0 var(--glass-highlight));
+  }
+
+  .nav-link.active :is(.bi, .fa, .fas, .far, .fab, .glyphicon),
+  .nav-link[aria-selected="true"] :is(.bi, .fa, .fas, .far, .fab, .glyphicon) {
+    color: inherit;
+    filter: none;
+  }
+}
+
+html[data-glass-icon-style="all"] :is(.bi, .fa, .fas, .far, .fab, .glyphicon) {
+  color: var(--glass-icon-clear, var(--glass-body-color));
+  filter: drop-shadow(0 0.5px 0 var(--glass-highlight));
+}
+
+html[data-glass-icon-style="all"] :is(.btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info, .bg-primary, .bg-success, .bg-danger) :is(.bi, .fa, .fas, .far, .fab, .glyphicon) {
+  color: inherit;
+  filter: none;
+}
+
+// Opt-in iPadOS 26 card. Default glass sidebars stay on the existing
+// absolute overlay. These rules come last and use !important so they beat
+// the docked-float layout above. Main keeps its reserve, so the card does
+// not cover the column.
+:root[data-glass-floating-sidebar="true"] {
+  .bslib-sidebar-layout {
+    --glass-sidebar-reserve: calc(0.85rem + var(--_sidebar-width, 250px) + 0.85rem);
+  }
+
+  .bslib-sidebar-layout > .sidebar,
+  aside.glass-sidebar.glass-sidebar-floating,
+  .glass-sidebar-floating {
+    margin: 0.85rem 0.35rem 0.85rem 0.85rem !important;
+    border-radius: 1.75rem !important;
+    top: 0.85rem !important;
+    bottom: 0.85rem !important;
+    left: 0.85rem !important;
+    height: auto !important;
+    max-height: calc(100vh - 1.7rem) !important;
+    box-shadow:
+      0 16px 44px var(--glass-elevated-shadow),
+      0 0 0 0.5px var(--glass-edge, var(--glass-border)),
+      inset 0 1px 0 var(--glass-highlight) !important;
+  }
+
+  .bslib-sidebar-layout.sidebar-right > .sidebar {
+    left: auto !important;
+    right: 0.85rem !important;
+    margin-right: 0.85rem !important;
+    margin-left: 0.35rem !important;
+  }
+}
+
+// shinychat 0.5 and bslib 0.12 offcanvas. Tokens inherit, so chat CSS
+// that reads --shiny-chat-* picks up the glass pack. The composer is a
+// floating pill (iOS 27 Messages). Offcanvas keeps Bootstrap's translate
+// and only scales in from the trigger.
+html[data-glass-preset] {
+  --shiny-chat-user-message-bg: color-mix(in srgb, var(--glass-accent) 18%, var(--glass-bg));
+  --shiny-chat-user-message-border-radius: 1.15rem 1.15rem 0.4rem 1.15rem;
+  --shiny-chat-history-bg: var(--glass-menu-bg);
+  --shiny-chat-history-border-color: var(--glass-border);
+  --shiny-chat-page-canvas-bg: transparent;
+  --shiny-chat-page-sidebar-bg: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  --shiny-chat-page-surface-bg: transparent;
+  --shiny-chat-page-border-color: var(--glass-border);
+  --shiny-chat-thinking-border-color: var(--glass-border);
+  --shiny-chat-thinking-header-color: var(--glass-body-color);
+  --shiny-chat-thinking-content-color: var(--glass-body-color);
+  --shiny-chat-footer-color: color-mix(in srgb, var(--glass-body-color) 78%, transparent);
+  --shiny-chat-greeting-color: var(--glass-body-color);
+  --shiny-chat-border: 0.5px solid var(--glass-border);
+  --shiny-chat-btn-send-bg: var(--glass-accent, #{$glass-accent});
+  --shiny-chat-btn-send-color: #fff;
+  --shiny-chat-aside-marker-bg: color-mix(in srgb, var(--glass-bg) 82%, transparent);
+  --shiny-chat-aside-marker-color: var(--glass-body-color);
+  --shiny-chat-aside-marker-hover-bg: color-mix(in srgb, var(--glass-accent) 16%, var(--glass-bg));
+  --shiny-chat-aside-marker-hover-color: var(--glass-body-color);
+  --shiny-chat-command-chip-bg: color-mix(in srgb, var(--glass-accent) 16%, var(--glass-bg));
+  --shiny-chat-command-chip-color: var(--glass-body-color);
+}
+
+html[data-glass-preset] .shiny-chat-page-header,
+html[data-glass-preset] .shiny-chat-page-sidebar,
+html[data-glass-preset] .shiny-chat-history-drawer,
+html[data-glass-preset] .shiny-chat-drawer {
+  background: color-mix(in srgb, var(--glass-bg) 86%, transparent) !important;
+  color: var(--glass-body-color);
+  border-color: var(--glass-border) !important;
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 10px 28px color-mix(in srgb, var(--glass-shadow) 55%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-page-header.glass-scroll-edge {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 var(--glass-scroll-edge-fade, 28px) 32px -18px color-mix(in srgb, var(--glass-body-bg) 72%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-page-nav-link {
+  border-radius: 999px;
+  color: inherit;
+}
+
+html[data-glass-preset] .shiny-chat-page-nav-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--glass-bg-hover) 80%, transparent);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
+
+html[data-glass-preset] .shiny-chat-user-message {
+  color: var(--glass-body-color);
+  border: 0.5px solid color-mix(in srgb, var(--glass-accent) 32%, var(--glass-border));
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.45)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-message,
+html[data-glass-preset] .shiny-chat-greeting,
+html[data-glass-preset] .shiny-chat-footer {
+  color: var(--glass-body-color);
+}
+
+html[data-glass-preset] .shiny-chat-input .tiptap {
+  background: color-mix(in srgb, var(--glass-bg) 84%, transparent) !important;
+  color: var(--glass-body-color) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  border-radius: 1.6rem !important;
+  box-shadow:
+    0 12px 32px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -0.5px 0 var(--glass-lip);
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  margin-inline: 0.15rem;
+}
+
+html[data-glass-preset] .shiny-chat-input .tiptap.is-empty::before {
+  color: color-mix(in srgb, var(--glass-body-color) 58%, transparent);
+}
+
+html[data-glass-preset] .shiny-chat-input.glass-scroll-edge::before,
+html[data-glass-preset] .shiny-chat-composer.glass-scroll-edge::before {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  right: 0.4rem;
+  bottom: 100%;
+  height: var(--glass-scroll-edge-fade, 28px);
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--glass-bg) 78%, transparent),
+    transparent
+  );
+}
+
+html[data-glass-preset] .shiny-chat-thinking,
+html[data-glass-preset] .shiny-tool-card,
+html[data-glass-preset] .shiny-chat-tool-call-row,
+html[data-glass-preset] .shiny-chat-tool-group,
+html[data-glass-preset] .shiny-chat-text-preview,
+html[data-glass-preset] .shiny-chat-attachment-badge,
+html[data-glass-preset] .shiny-chat-input-attachment-chip,
+html[data-glass-preset] .shiny-sources-pill,
+html[data-glass-preset] .shiny-sources-popover,
+html[data-glass-preset] .shiny-aside-popover {
+  background: color-mix(in srgb, var(--glass-bg) 86%, transparent) !important;
+  color: var(--glass-body-color) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-aside-pill {
+  border: 0.5px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.35)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.35)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-slash-palette {
+  background: var(--glass-menu-bg) !important;
+  color: var(--glass-menu-color, var(--glass-body-color)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem;
+  box-shadow:
+    0 16px 40px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+  z-index: 1100;
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7)) saturate(var(--glass-saturate));
+}
+
+html[data-glass-preset] .shiny-chat-slash-palette-item.highlighted {
+  background: color-mix(in srgb, var(--glass-accent) 14%, transparent);
+}
+
+html[data-glass-preset] .bslib-toolbar {
+  color: inherit;
+}
+
+html[data-glass-preset] .offcanvas {
+  background: color-mix(in srgb, var(--glass-bg) 82%, transparent) !important;
+  color: var(--glass-body-color);
+  border-color: var(--glass-border) !important;
+  backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter:
+    blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
+    saturate(var(--glass-saturate));
+  box-shadow:
+    0 18px 48px var(--glass-elevated-shadow, var(--glass-shadow)),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+html[data-glass-preset] .offcanvas.offcanvas-start {
+  border-radius: 0 1.5rem 1.5rem 0;
+}
+
+html[data-glass-preset] .offcanvas.offcanvas-end {
+  border-radius: 1.5rem 0 0 1.5rem;
+}
+
+html[data-glass-preset] .offcanvas-header {
+  background: transparent;
+  border-bottom: 0.5px solid var(--glass-border);
+  color: inherit;
+}
+
+html[data-glass-preset] .offcanvas.glass-scroll-edge .offcanvas-header {
+  box-shadow: 0 var(--glass-scroll-edge-fade, 28px) 28px -16px color-mix(in srgb, var(--glass-body-bg) 70%, transparent);
+}
+
+html[data-glass-preset] .offcanvas-backdrop.show {
+  background-color: rgba(15, 15, 20, 0.38);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-morph-indicator,
+  .nav-pills,
+  .glass-tabbar,
+  nav.fixed-bottom,
+  .navbar.fixed-bottom {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  body.glass-tabs-min :is(.nav-pills, .glass-tabbar, nav.fixed-bottom, .navbar.fixed-bottom, .tabbable > .nav-pills) {
+    transform: none !important;
   }
 }

@@ -63,6 +63,15 @@ Browsers cannot read that OS slider, so the in-app control is the supported
 way to match the look. Reduce Transparency paints solid fills with no backdrop
 blur. Increase Contrast and forced colors override the glass variables.
 
+Defaults also follow iOS 27 as far as a browser can. Chromium refracts the
+backdrop through a squircle lens. Safari and Firefox keep blur and tint.
+Active pills and tabs spring into each other, buttons press with a short
+spring, and floating bars pick up a scroll-edge fade. Tab bars shrink while
+you scroll down. Specular highlights are static (no pointer tilt). Icons in
+bars and non-primary buttons are monochrome clear glass (`icon_style =
+"clear"`). Pass `icon_style = "color"` to keep author colors. The detached
+sidebar is opt-in: `floating_sidebar = TRUE`.
+
 Dense charts and tables can opt into a regular panel with
 `glass_theme(plot_surface = "opaque")` while nav and controls stay on glass.
 The default `"clear"` look still shows the wallpaper through plot hosts.
@@ -82,11 +91,13 @@ Apps may take a moment to wake up.
 
 | Demo | Explore |
 |------|---------|
+| [Harbor notes](inst/examples/shinychat-glass/app.R) | Liquid Glass chat. Local script, or Gemini when the host has a key |
 | [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
 | [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
 | [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |
 | [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | A complete dashboard |
-| [plotly + gt](https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/) | Interactive charts and tables |
+
+These five are the hosted set. Harbor notes is not on shinyapps.io yet; its app name is `shinyglass-chat`. plotly + gt remains a local example in `inst/examples/plotly-gt-demo.R`.
 
 Built for Bootstrap 5 and bslib. See [compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html) for supported widgets and older layouts.
 

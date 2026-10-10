@@ -294,7 +294,7 @@ test('accent wells apply primary immediately', async ({ page }) => {
   await expect(page.locator('.glass-accent-well')).toHaveClass(/is-selected/);
 });
 
-test('pointer highlight layout reads are coalesced within a frame', async ({ page }) => {
+test('specular highlights stay static when the pointer moves', async ({ page }) => {
   await boot(page);
   await page.evaluate(() => {
     const card = document.createElement('div');
@@ -309,6 +309,7 @@ test('pointer highlight layout reads are coalesced within a frame', async ({ pag
       card.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: i, clientY: 20 }));
     }
   });
-  await expect.poll(() => page.evaluate(() => layoutReads)).toBe(1);
-  expect(await page.evaluate(() => document.querySelector('.card').style.getPropertyValue('--glass-specular-x'))).toBe('99%');
+  await page.waitForTimeout(50);
+  expect(await page.evaluate(() => layoutReads)).toBe(0);
+  expect(await page.evaluate(() => document.querySelector('.card').style.getPropertyValue('--glass-specular-x'))).toBe('');
 });

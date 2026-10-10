@@ -37,7 +37,8 @@
 #'   [glass_intensity_slider()] for the in-app control. Reduce Transparency
 #'   and Increase Contrast override the painted glass.
 #' @param tint Content-aware ambient tint from plots/images (JS).
-#' @param specular Pointer-driven specular highlight on glass surfaces (JS).
+#' @param specular Static top and bottom specular highlights. iOS 27 does not
+#'   follow the pointer or device tilt. `FALSE` hides the highlights.
 #' @param nav_morph Compact navbar on scroll down; expand on scroll up (JS).
 #' @param ambient_motion Animate the decorative ambient sheen. Set `FALSE`
 #'   to keep static glass surfaces. OS reduced-motion settings take priority.
@@ -53,6 +54,30 @@
 #'   blur). See [glass_flatten()].
 #' @param tokens Named list of public CSS token overrides (see
 #'   [glass_css_tokens()] / [glass_add_tokens()]).
+#' @param refraction `TRUE` (default) bends the backdrop through a convex
+#'   squircle lens in Chromium (`backdrop-filter: url()` plus an SVG
+#'   displacement map, index of refraction about 1.5). Safari and Firefox
+#'   keep the blur and tint. Reduced transparency, increased contrast,
+#'   forced colors, and flatten mode turn the lens off.
+#' @param morph `TRUE` (default) springs an active indicator between items
+#'   in the same group (nav pills, tabs, button groups, the theme toggle)
+#'   and scales menus and popovers out of their trigger. Click targets stay
+#'   on the original controls.
+#' @param press `TRUE` (default) scales and slightly rotates glass buttons
+#'   and nav links while pressed, then springs back. Reduced motion skips it.
+#' @param scroll_edge `TRUE` (default) lays a uniform toolbar backing and
+#'   edge fade over floating bars while content scrolls underneath.
+#' @param minimize_tabs `TRUE` (default) shrinks top and bottom tab bars and
+#'   nav pills while scrolling down, and expands them on scroll up or
+#'   interaction. Reduced motion keeps them full size.
+#' @param icon_style `"clear"` (default) paints icons in nav bars, tab bars,
+#'   and non-primary buttons as monochrome glass ink: `#1d1d1f` in light mode
+#'   (a white glyph would fail the contrast floor) and near-white in dark
+#'   mode. `"color"` leaves author colors. `"all"` also restyles icons
+#'   inside cards, still skipping solid accent buttons.
+#' @param floating_sidebar `FALSE` (default). `TRUE` detaches bslib and
+#'   `.glass-sidebar` panels into a rounded glass card with margin (iPadOS 26
+#'   style). Off by default so existing layouts keep their docked sidebar.
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
@@ -103,6 +128,13 @@ glass_theme <- function(
     wallpaper = NULL,
     flatten = FALSE,
     tokens = NULL,
+    refraction = TRUE,
+    morph = TRUE,
+    press = TRUE,
+    scroll_edge = TRUE,
+    minimize_tabs = TRUE,
+    icon_style = c("clear", "color", "all"),
+    floating_sidebar = FALSE,
     ...) {
   preset <- match.arg(preset)
   material <- match.arg(material)
@@ -121,8 +153,15 @@ glass_theme <- function(
     is.logical(nav_morph), length(nav_morph) == 1L, !is.na(nav_morph),
     is.logical(ambient_motion), length(ambient_motion) == 1L, !is.na(ambient_motion),
     is.logical(persist), length(persist) == 1L, !is.na(persist),
-    is.logical(flatten), length(flatten) == 1L, !is.na(flatten)
+    is.logical(flatten), length(flatten) == 1L, !is.na(flatten),
+    is.logical(refraction), length(refraction) == 1L, !is.na(refraction),
+    is.logical(morph), length(morph) == 1L, !is.na(morph),
+    is.logical(press), length(press) == 1L, !is.na(press),
+    is.logical(scroll_edge), length(scroll_edge) == 1L, !is.na(scroll_edge),
+    is.logical(minimize_tabs), length(minimize_tabs) == 1L, !is.na(minimize_tabs),
+    is.logical(floating_sidebar), length(floating_sidebar) == 1L, !is.na(floating_sidebar)
   )
+  icon_style <- match.arg(icon_style)
   primary <- .glass_normalize_color(primary)
   wallpaper <- .glass_normalize_wallpaper(wallpaper)
   user_tokens <- .glass_normalize_token_list(tokens)
@@ -211,7 +250,14 @@ glass_theme <- function(
     persist = persist,
     scene = scene,
     wallpaper = wallpaper,
-    flatten = flatten
+    flatten = flatten,
+    refraction = refraction,
+    morph = morph,
+    press = press,
+    scroll_edge = scroll_edge,
+    minimize_tabs = minimize_tabs,
+    icon_style = icon_style,
+    floating_sidebar = floating_sidebar
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -228,7 +274,7 @@ glass_theme <- function(
     name = "shinyglass",
     version = pkg_version,
     src = js_src,
-    script = "shiny-glass.js",
+    script = c("shiny-glass.js", "glass-ios27.js"),
     all_files = FALSE
   )
   theme <- bslib::bs_bundle(
@@ -269,6 +315,9 @@ glass_theme <- function(
 #' @param flatten Optional logical. See [glass_flatten()].
 #' @param tokens Optional named list of CSS token overrides (see
 #'   [glass_add_tokens()]). Applied live via CSS variables.
+#' @param refraction,morph,press,scroll_edge,minimize_tabs,floating_sidebar
+#'   Optional logicals. See [glass_theme()].
+#' @param icon_style Optional `"clear"`, `"color"`, or `"all"`.
 #'
 #' @return `session`, invisibly.
 #'
@@ -305,7 +354,14 @@ update_glass_theme <- function(
     ambient_motion = NULL,
     scene = NULL,
     flatten = NULL,
-    tokens = NULL) {
+    tokens = NULL,
+    refraction = NULL,
+    morph = NULL,
+    press = NULL,
+    scroll_edge = NULL,
+    minimize_tabs = NULL,
+    icon_style = NULL,
+    floating_sidebar = NULL) {
   if (missing(session) || is.null(session)) {
     stop("`session` is required.", call. = FALSE)
   }
@@ -345,9 +401,33 @@ update_glass_theme <- function(
   if (!is.null(tokens)) {
     tokens <- .glass_normalize_token_list(tokens)
   }
+  if (!is.null(refraction)) {
+    stopifnot(is.logical(refraction), length(refraction) == 1L, !is.na(refraction))
+  }
+  if (!is.null(morph)) {
+    stopifnot(is.logical(morph), length(morph) == 1L, !is.na(morph))
+  }
+  if (!is.null(press)) {
+    stopifnot(is.logical(press), length(press) == 1L, !is.na(press))
+  }
+  if (!is.null(scroll_edge)) {
+    stopifnot(is.logical(scroll_edge), length(scroll_edge) == 1L, !is.na(scroll_edge))
+  }
+  if (!is.null(minimize_tabs)) {
+    stopifnot(is.logical(minimize_tabs), length(minimize_tabs) == 1L, !is.na(minimize_tabs))
+  }
+  if (!is.null(floating_sidebar)) {
+    stopifnot(is.logical(floating_sidebar), length(floating_sidebar) == 1L, !is.na(floating_sidebar))
+  }
+  if (!is.null(icon_style)) {
+    icon_style <- match.arg(icon_style, c("clear", "color", "all"))
+  }
   if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
       is.null(material) && is.null(plot_surface) && is.null(ambient_motion) &&
-      is.null(scene) && is.null(flatten) && (is.null(tokens) || !length(tokens))) {
+      is.null(scene) && is.null(flatten) && (is.null(tokens) || !length(tokens)) &&
+      is.null(refraction) && is.null(morph) && is.null(press) &&
+      is.null(scroll_edge) && is.null(minimize_tabs) && is.null(icon_style) &&
+      is.null(floating_sidebar)) {
     return(invisible(session))
   }
 
@@ -362,6 +442,13 @@ update_glass_theme <- function(
   if (!is.null(scene)) payload$scene <- scene
   if (!is.null(flatten)) payload$flatten <- flatten
   if (length(tokens)) payload$tokens <- tokens
+  if (!is.null(refraction)) payload$refraction <- refraction
+  if (!is.null(morph)) payload$morph <- morph
+  if (!is.null(press)) payload$press <- press
+  if (!is.null(scroll_edge)) payload$scroll_edge <- scroll_edge
+  if (!is.null(minimize_tabs)) payload$minimize_tabs <- minimize_tabs
+  if (!is.null(icon_style)) payload$icon_style <- icon_style
+  if (!is.null(floating_sidebar)) payload$floating_sidebar <- floating_sidebar
 
   # Dual-channel delivery: structured shinyglass payload + legacy glassPreset
   # string. Some hosts rewrite or drop one channel but not both; the client
@@ -748,7 +835,14 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     persist = FALSE,
     scene = "default",
     wallpaper = NULL,
-    flatten = FALSE) {
+    flatten = FALSE,
+    refraction = TRUE,
+    morph = TRUE,
+    press = TRUE,
+    scroll_edge = TRUE,
+    minimize_tabs = TRUE,
+    icon_style = "clear",
+    floating_sidebar = FALSE) {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -820,6 +914,14 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "root.dataset.glassSpecular=%s;",
       "root.dataset.glassNavMorph=%s;",
       "root.dataset.glassAmbientMotion=%s;",
+      "root.dataset.glassRefraction=%s;",
+      "root.dataset.glassMorph=%s;",
+      "root.dataset.glassPress=%s;",
+      "root.dataset.glassScrollEdge=%s;",
+      "root.dataset.glassMinimizeTabs=%s;",
+      "root.dataset.glassIconStyle=%s;",
+      "root.dataset.glassFloatingSidebar=%s;",
+      "root.style.setProperty('--glass-ior','1.5');",
       "var rgb=%s;",
       "var onPrim=%s;",
       "if(prim){root.dataset.glassPrimary=prim;",
@@ -848,6 +950,13 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     if (isTRUE(specular)) "\"true\"" else "\"false\"",
     if (isTRUE(nav_morph)) "\"true\"" else "\"false\"",
     if (isTRUE(ambient_motion)) "\"true\"" else "\"false\"",
+    if (isTRUE(refraction)) "\"true\"" else "\"false\"",
+    if (isTRUE(morph)) "\"true\"" else "\"false\"",
+    if (isTRUE(press)) "\"true\"" else "\"false\"",
+    if (isTRUE(scroll_edge)) "\"true\"" else "\"false\"",
+    if (isTRUE(minimize_tabs)) "\"true\"" else "\"false\"",
+    jsonlite_quote(icon_style),
+    if (isTRUE(floating_sidebar)) "\"true\"" else "\"false\"",
     rgb_css,
     jsonlite_quote(on_primary),
     .glass_intensity_head_js()

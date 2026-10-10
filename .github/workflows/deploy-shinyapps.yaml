@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Demo selection (core5 fits the five-app plan)
+        description: Demo selection (core5 is demo, dashboard, inputs, olympics, chat)
         type: choice
         default: core5
-        options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt]
+        options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt, chat]
       dry_run:
         description: Stage and validate only; do not publish
         type: boolean
@@ -50,6 +50,8 @@ jobs:
             any::waiter
             any::cpp11
             any::ggtext
+            any::shinychat
+            any::ellmer
             local::.
       - name: Reinstall repository packages with portable metadata
         shell: Rscript {0}
@@ -116,6 +118,7 @@ jobs:
           R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DEPLOY_APPS: ${{ inputs.apps }}
           DEPLOY_DRY_RUN: ${{ inputs.dry_run }}
         run: |
@@ -132,10 +135,12 @@ jobs:
             )
           }
           Sys.unsetenv(c("SHINYAPPS_TOKEN", "SHINYAPPS_SECRET"))
+          # GEMINI_API_KEY stays in the environment for the chat staging
+          # step. The deploy script reads the name and does not print it.
           apps <- Sys.getenv("DEPLOY_APPS")
-          allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt")
+          allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt", "chat")
           if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
-          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,plotly_gt"
+          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,chat"
           stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
           args <- c("inst/scripts/deploy-shinyapps-demos.R",
                     "--account=ericrayanderson", paste0("--apps=", apps))

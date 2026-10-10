@@ -22,6 +22,13 @@ glass_theme(
   wallpaper = NULL,
   flatten = FALSE,
   tokens = NULL,
+  refraction = TRUE,
+  morph = TRUE,
+  press = TRUE,
+  scroll_edge = TRUE,
+  minimize_tabs = TRUE,
+  icon_style = c("clear", "color", "all"),
+  floating_sidebar = FALSE,
   ...
 )
 }
@@ -58,7 +65,8 @@ and Increase Contrast override the painted glass.}
 
 \item{tint}{Content-aware ambient tint from plots/images (JS).}
 
-\item{specular}{Pointer-driven specular highlight on glass surfaces (JS).}
+\item{specular}{Static top and bottom specular highlights. iOS 27 does not
+follow the pointer or device tilt. \code{FALSE} hides the highlights.}
 
 \item{nav_morph}{Compact navbar on scroll down; expand on scroll up (JS).}
 
@@ -81,6 +89,37 @@ blur). See \code{\link[=glass_flatten]{glass_flatten()}}.}
 
 \item{tokens}{Named list of public CSS token overrides (see
 \code{\link[=glass_css_tokens]{glass_css_tokens()}} / \code{\link[=glass_add_tokens]{glass_add_tokens()}}).}
+
+\item{refraction}{\code{TRUE} (default) bends the backdrop through a convex
+squircle lens in Chromium (\verb{backdrop-filter: url()} plus an SVG
+displacement map, index of refraction about 1.5). Safari and Firefox
+keep the blur and tint. Reduced transparency, increased contrast,
+forced colors, and flatten mode turn the lens off.}
+
+\item{morph}{\code{TRUE} (default) springs an active indicator between items
+in the same group (nav pills, tabs, button groups, the theme toggle)
+and scales menus and popovers out of their trigger. Click targets stay
+on the original controls.}
+
+\item{press}{\code{TRUE} (default) scales and slightly rotates glass buttons
+and nav links while pressed, then springs back. Reduced motion skips it.}
+
+\item{scroll_edge}{\code{TRUE} (default) lays a uniform toolbar backing and
+edge fade over floating bars while content scrolls underneath.}
+
+\item{minimize_tabs}{\code{TRUE} (default) shrinks top and bottom tab bars and
+nav pills while scrolling down, and expands them on scroll up or
+interaction. Reduced motion keeps them full size.}
+
+\item{icon_style}{\code{"clear"} (default) paints icons in nav bars, tab bars,
+and non-primary buttons as monochrome glass ink: \verb{#1d1d1f} in light mode
+(a white glyph would fail the contrast floor) and near-white in dark
+mode. \code{"color"} leaves author colors. \code{"all"} also restyles icons
+inside cards, still skipping solid accent buttons.}
+
+\item{floating_sidebar}{\code{FALSE} (default). \code{TRUE} detaches bslib and
+\code{.glass-sidebar} panels into a rounded glass card with margin (iPadOS 26
+style). Off by default so existing layouts keep their docked sidebar.}
 
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }

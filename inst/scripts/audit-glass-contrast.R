@@ -48,11 +48,16 @@ for (pkg in c("chromote", "processx", "curl", "jsonlite")) {
 
 # CI / root containers: Chrome refuses to start without these, and the first
 # session can flake with "debugging port not open after 10 seconds".
+# A private user-data-dir keeps the audit off the interactive Chrome profile,
+# which otherwise holds SingletonLock and aborts every later session.
+audit_chrome_profile <- tempfile("shinyglass-chrome-")
+dir.create(audit_chrome_profile, recursive = TRUE, showWarnings = FALSE)
 chromote::set_chrome_args(unique(c(
   chromote::default_chrome_args(),
   "--no-sandbox",
   "--disable-dev-shm-usage",
-  "--disable-gpu"
+  "--disable-gpu",
+  paste0("--user-data-dir=", audit_chrome_profile)
 )))
 
 open_chromote_session <- function(attempts = 4L) {

@@ -1,0 +1,78 @@
+---
+title: "shinychat"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{shinychat}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+shinychat 0.5 and bslib 0.12 offcanvas pick up the same iOS 27 defaults as
+the rest of a glass app: refraction, morph, press, and the scroll edge.
+Pass `theme = glass_theme()` to `page_chat()`. An embedded `chat_ui()`
+inside any glass page uses the same CSS.
+
+```r
+library(shiny)
+library(bslib)
+library(shinyglass)
+library(shinychat)
+
+ui <- page_chat(
+  "Glass notes",
+  id = "chat",
+  theme = glass_theme(),
+  placeholder = "Message",
+  sidebar = chat_sidebar(history = TRUE, open = "always"),
+  toolbar = toolbar(
+    toolbar_input_button("open_sources", "Sources")
+  )
+)
+```
+
+The header, history sidebar, and drawer are glass chrome. User bubbles are
+tinted pills. The composer is a floating pill, like the iOS 27 Messages
+bar, and grows a fade when the transcript sits underneath it. Thinking
+rows, tool cards, citation chips (`<shiny-aside>`), attachment and text
+previews, toolbars, and the slash-command menu use the menu surface so
+they stay readable on the wallpaper.
+
+`offcanvas()` panels use the same material. They still slide with
+Bootstrap's transform. A separate scale grows the panel from the trigger
+when morph is on. Scrolling the panel body fades the header. Reduced
+motion skips that scale. Reduced transparency, increased contrast, and
+forced colors turn the lens off, as they do for other chrome.
+
+```r
+observeEvent(input$open_sources, {
+  show_offcanvas(offcanvas(
+    id = "sources_panel",
+    title = "Sources",
+    placement = "end",
+    "Citations stay in this panel."
+  ))
+})
+```
+
+Harbor notes is a core demo, with the dusk wallpaper behind the glass:
+
+```r
+shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
+```
+
+With no API key the reply is a local script. It streams a thinking panel,
+a short answer, a citation chip, and a tide-table tool card.
+`GEMINI_API_KEY` (or `GOOGLE_API_KEY`) switches that session to
+`ellmer::chat_google_gemini()` with Gemini Flash (`gemini-3.7-flash`,
+or `SHINYGLASS_CHAT_MODEL`). The system prompt keeps answers short and
+on shinyglass, Shiny, and R. A public session allows 8 messages of at
+most 400 characters. If the API errors or returns a quota response
+(429), the demo shows a short notice and continues with the local script.
+The key is never written to the log or the page.
+History uses `history_options(store = "memory", title = NULL)`, so nothing
+is written to disk and no model is asked for a title. The sidebar starts
+open on desktop and collapses into the page menu on a phone.

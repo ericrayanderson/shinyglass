@@ -809,3 +809,157 @@ test_that("accessibility CSS beats inline glass variables", {
   expect_match(js, "applyForcedColors")
   expect_match(js, "applyIncreasedContrast")
 })
+
+test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
+  skip_if_not_installed("bslib")
+  th <- glass_theme()
+  deps <- bslib::bs_theme_dependencies(th)
+  head <- deps[[which(vapply(deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(head, 'glassRefraction="true"', fixed = TRUE)
+  expect_match(head, 'glassMorph="true"', fixed = TRUE)
+  expect_match(head, 'glassPress="true"', fixed = TRUE)
+  expect_match(head, 'glassScrollEdge="true"', fixed = TRUE)
+  expect_match(head, 'glassMinimizeTabs="true"', fixed = TRUE)
+  expect_match(head, 'glassIconStyle="clear"', fixed = TRUE)
+  expect_match(head, 'glassFloatingSidebar="false"', fixed = TRUE)
+  expect_match(head, "--glass-ior")
+  js_dep <- deps[[which(vapply(deps, function(d) d$name == "shinyglass", logical(1)))]]
+  expect_true(all(c("shiny-glass.js", "glass-ios27.js") %in% unlist(js_dep$script)))
+
+  off <- glass_theme(
+    refraction = FALSE,
+    morph = FALSE,
+    press = FALSE,
+    scroll_edge = FALSE,
+    minimize_tabs = FALSE,
+    icon_style = "color",
+    floating_sidebar = TRUE
+  )
+  off_deps <- bslib::bs_theme_dependencies(off)
+  off_head <- off_deps[[which(vapply(off_deps, function(d) d$name == "shinyglass-preset", logical(1)))]]$head
+  expect_match(off_head, 'glassRefraction="false"', fixed = TRUE)
+  expect_match(off_head, 'glassIconStyle="color"', fixed = TRUE)
+  expect_match(off_head, 'glassFloatingSidebar="true"', fixed = TRUE)
+  expect_error(glass_theme(icon_style = "neon"), "arg|icon")
+
+  msgs <- list()
+  session <- list(sendCustomMessage = function(type, message) {
+    msgs[[length(msgs) + 1L]] <<- list(type = type, message = message)
+  })
+  update_glass_theme(
+    session,
+    refraction = FALSE,
+    morph = FALSE,
+    press = FALSE,
+    scroll_edge = FALSE,
+    minimize_tabs = FALSE,
+    icon_style = "all",
+    floating_sidebar = TRUE
+  )
+  payload <- msgs[[1]]$message
+  expect_false(payload$refraction)
+  expect_false(payload$morph)
+  expect_false(payload$press)
+  expect_false(payload$scroll_edge)
+  expect_false(payload$minimize_tabs)
+  expect_identical(payload$icon_style, "all")
+  expect_true(payload$floating_sidebar)
+
+  engine <- paste(readLines(system.file("js", "glass-ios27.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(engine, "feDisplacementMap")
+  expect_match(engine, "REFRACT_CAP = 8")
+  expect_match(engine, "prefers-reduced-motion")
+  expect_match(engine, "prefers-reduced-transparency")
+  expect_match(engine, "buildDisplacementMap")
+  expect_match(engine, "isLowTierDevice")
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, "glass-morph-indicator")
+  expect_match(scss, "glass-tabs-min")
+  expect_match(scss, "data-glass-icon-style")
+  expect_match(scss, "data-glass-floating-sidebar")
+  expect_match(scss, "glass-refract")
+  expect_match(scss, "label.switch")
+  expect_match(scss, "shiny-chat-input")
+  expect_match(scss, ".offcanvas")
+  expect_match(engine, "show.bs.offcanvas")
+  expect_match(engine, "shiny-chat-messages")
+  expect_match(scss, "--glass-specular-top")
+  expect_match(scss, "--glass-edge")
+  expect_true("--glass-ior" %in% glass_css_tokens()$css_var)
+  expect_equal(glass_token_pack("light")[["--glass-ior"]], "1.5")
+  expect_equal(glass_token_pack("light")[["--glass-icon-clear"]], "#1d1d1f")
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "bindExternalColorMode")
+})
+
+test_that("shinychat glass example builds an app", {
+  skip_if_not_installed("shinychat", "0.5.0")
+  skip_if_not_installed("ellmer", "0.5.0")
+  skip_if_not_installed("coro")
+  path <- system.file("examples/shinychat-glass", "app.R", package = "shinyglass")
+  expect_true(nzchar(path))
+  env <- new.env(parent = globalenv())
+  sys.source(path, env)
+  expect_s3_class(env$app, "shiny.appobj")
+
+  if (!nzchar(Sys.getenv("GEMINI_API_KEY")) && !nzchar(Sys.getenv("GOOGLE_API_KEY"))) {
+    expect_null(env$gemini_key())
+  }
+  if (!nzchar(Sys.getenv("SHINYGLASS_CHAT_MODEL"))) {
+    expect_identical(env$gemini_model(), "gemini-3.7-flash")
+  }
+  expect_match(env$harbor_system_prompt(), "shinyglass")
+  expect_lt(nchar(env$harbor_system_prompt()), 280)
+
+  mock <- env$gate_turn("tide", 0L, FALSE)
+  expect_identical(mock$action, "mock")
+  expect_identical(mock$used, 0L)
+  live <- env$gate_turn("tide", 7L, TRUE)
+  expect_identical(live$action, "live")
+  expect_identical(live$used, 8L)
+  capped <- env$gate_turn("again", 8L, TRUE)
+  expect_identical(capped$action, "capped")
+  expect_identical(capped$used, 8L)
+  expect_match(capped$notice, "free messages")
+  long <- env$gate_turn(strrep("a", 401), 0L, TRUE)
+  expect_identical(long$action, "too_long")
+  expect_identical(long$used, 0L)
+  expect_false(grepl("aaa", long$notice))
+
+  secret <- "sk-TESTSECRET-do-not-leak"
+  quota <- simpleError(paste("status 429 quota key=", secret))
+  expect_true(env$is_quota_error(quota))
+  expect_false(grepl(secret, env$api_notice(quota), fixed = TRUE))
+  expect_match(env$api_notice(quota), "free-tier")
+  other <- simpleError(paste("boom key=", secret))
+  expect_false(env$is_quota_error(other))
+  expect_false(grepl(secret, env$api_notice(other), fixed = TRUE))
+
+  bad <- coro::gen({
+    yield("Hello ")
+    stop(paste("status 429 key=", secret))
+  })
+  guarded <- env$guarded_stream(bad, "tide line")
+  parts <- list()
+  repeat {
+    piece <- guarded()
+    if (coro::is_exhausted(piece)) break
+    parts[[length(parts) + 1L]] <- piece
+    if (length(parts) > 40L) break
+  }
+  flat <- paste(vapply(parts, function(x) if (is.character(x)) x else "", character(1)), collapse = "\n")
+  expect_false(grepl(secret, flat, fixed = TRUE))
+  expect_match(flat, "Hello ")
+  expect_match(flat, "free-tier limit")
+  expect_match(flat, "1.4 m")
+  expect_true(any(vapply(parts, function(x) inherits(x, "shinychat_block"), logical(1))))
+})
+
+test_that("compatibility example builds an app", {
+  skip_if_not_installed("bslib")
+  path <- system.file("examples", "compat-glass.R", package = "shinyglass")
+  expect_true(nzchar(path))
+  env <- new.env(parent = globalenv())
+  sys.source(path, env)
+  expect_s3_class(env$app, "shiny.appobj")
+})

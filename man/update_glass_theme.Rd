@@ -15,7 +15,14 @@ update_glass_theme(
   ambient_motion = NULL,
   scene = NULL,
   flatten = NULL,
-  tokens = NULL
+  tokens = NULL,
+  refraction = NULL,
+  morph = NULL,
+  press = NULL,
+  scroll_edge = NULL,
+  minimize_tabs = NULL,
+  icon_style = NULL,
+  floating_sidebar = NULL
 )
 }
 \arguments{
@@ -44,6 +51,10 @@ when \code{intensity} is omitted it is sent as intensity \code{0.12}.}
 
 \item{tokens}{Optional named list of CSS token overrides (see
 \code{\link[=glass_add_tokens]{glass_add_tokens()}}). Applied live via CSS variables.}
+
+\item{refraction, morph, press, scroll_edge, minimize_tabs, floating_sidebar}{Optional logicals. See \code{\link[=glass_theme]{glass_theme()}}.}
+
+\item{icon_style}{Optional \code{"clear"}, \code{"color"}, or \code{"all"}.}
 }
 \value{
 \code{session}, invisibly.
