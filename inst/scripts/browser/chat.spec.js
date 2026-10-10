@@ -660,6 +660,7 @@ test('mobile header controls respond without a transition delay', async ({ brows
 test('history list sits at the top of the glass sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 835 });
   await gotoChat(page);
+  await expect(page.locator('.shiny-chat-history').first()).toBeVisible();
   const layout = await page.evaluate(() => {
     const header = document.querySelector('.shiny-chat-page-header').getBoundingClientRect();
     const sidebar = document.querySelector('.shiny-chat-page-sidebar').getBoundingClientRect();

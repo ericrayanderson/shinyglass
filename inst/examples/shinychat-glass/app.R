@@ -1014,22 +1014,22 @@ ui <- tagList(
     tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
-      /* In-flow toast under the chat header. It must not cover the sidebar
-         or the sources offcanvas, and only the toast itself takes clicks. */
+      /* Toast under the chat header, over the transcript only. It must not
+         cover the sidebar or the sources offcanvas, grow the page, or take
+         clicks outside the toast itself. */
       #harbor_notice_host {
-        position: relative;
+        position: absolute;
         z-index: 2;
+        top: 0.35rem;
+        left: 0;
+        right: 0;
         width: min(40rem, 100%);
         margin: 0 auto;
-        padding: 0;
+        padding: 0 16px;
         box-sizing: border-box;
         pointer-events: none;
         display: flex;
         justify-content: center;
-      }
-      #harbor_notice_host:has(.harbor-notice:not(.is-hidden)) {
-        margin-top: 0.35rem;
-        padding-inline: 16px;
       }
       .harbor-notice {
         pointer-events: auto;
