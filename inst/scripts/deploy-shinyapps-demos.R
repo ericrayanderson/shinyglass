@@ -36,8 +36,9 @@
 # The live chain is gemini-3.5-flash-lite, then gemini-3.8-flash, then
 # gemini-3.7-flash. SHINYGLASS_CHAT_MODEL is tried first when set.
 # Web search is off. Sources are the curated pages for the topic.
-# Each session allows 8 messages of at most 400 characters. The local
-# note is used only when every model in the chain fails.
+# Each visitor gets 8 messages of at most 400 characters, shared with
+# the phone-preview iframe. The local note is used only when every
+# model in the chain fails.
 
 # Hosted set for a shinyapps.io plan with five slots. plotly_gt is absent
 # on purpose. olympics and chat stay.
@@ -147,6 +148,50 @@ demo_catalog <- function(pkg_root) {
   )
 }
 
+phone_preview_pkg_dir <- function(hint = NULL) {
+  starts <- unique(c(
+    if (!is.null(hint) && nzchar(hint)) dirname(normalizePath(hint, winslash = "/", mustWork = FALSE)),
+    normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  ))
+  for (start in starts) {
+    dir <- start
+    for (i in seq_len(10L)) {
+      candidates <- c(
+        file.path(dir, "inst", "examples", "_shared"),
+        file.path(dir, "_shared")
+      )
+      for (cand in candidates) {
+        if (file.exists(file.path(cand, "phone-preview.js"))) {
+          return(normalizePath(cand, winslash = "/"))
+        }
+      }
+      parent <- dirname(dir)
+      if (identical(parent, dir)) break
+      dir <- parent
+    }
+  }
+  installed <- system.file("examples", "_shared", package = "shinyglass")
+  if (nzchar(installed) && file.exists(file.path(installed, "phone-preview.js"))) {
+    return(normalizePath(installed, winslash = "/"))
+  }
+  ""
+}
+
+stage_phone_preview <- function(app_dir, hint = NULL) {
+  src <- phone_preview_pkg_dir(hint)
+  if (!nzchar(src)) {
+    stop("Missing phone preview assets (inst/examples/_shared).", call. = FALSE)
+  }
+  dest <- file.path(app_dir, "phone-preview")
+  dir.create(dest, recursive = TRUE, showWarnings = FALSE)
+  files <- c("phone-preview.R", "phone-preview.js", "phone-preview.css")
+  ok <- file.copy(file.path(src, files), file.path(dest, files), overwrite = TRUE)
+  if (!all(ok)) {
+    stop("Could not copy phone preview assets into ", app_dir, call. = FALSE)
+  }
+  invisible(dest)
+}
+
 write_demo_description <- function(app_dir, imports) {
   writeLines(
     c(
@@ -184,6 +229,7 @@ stage_single <- function(src_file, app_dir, imports) {
       stop("Could not stage www assets from ", www_src, call. = FALSE)
     }
   }
+  stage_phone_preview(app_dir, src_file)
   write_demo_description(app_dir, imports)
 }
 
@@ -212,6 +258,7 @@ stage_dreamrs <- function(app_src, entry, app_dir, imports) {
     stop("Missing entry ", entry, " in ", app_dir, call. = FALSE)
   }
   file.copy(entry_path, file.path(app_dir, "app.R"), overwrite = TRUE)
+  stage_phone_preview(app_dir, app_src)
   write_demo_description(app_dir, imports)
 }
 

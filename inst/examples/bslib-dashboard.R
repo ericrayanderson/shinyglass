@@ -11,6 +11,28 @@ library(shiny)
 library(bslib)
 library(shinyglass)
 
+local({
+  hits <- file.path(getwd(), "phone-preview", "phone-preview.R")
+  root <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(8L)) {
+    hits <- c(
+      hits,
+      file.path(root, "inst", "examples", "_shared", "phone-preview.R"),
+      file.path(root, "_shared", "phone-preview.R")
+    )
+    parent <- dirname(root)
+    if (identical(parent, root)) break
+    root <- parent
+  }
+  installed <- system.file("examples", "_shared", "phone-preview.R", package = "shinyglass")
+  if (nzchar(installed)) hits <- c(hits, installed)
+  hit <- hits[file.exists(hits)]
+  if (!length(hit)) stop("Missing phone preview helper.", call. = FALSE)
+  app_env <- parent.env(environment())
+  assign(".phone_preview_dir", dirname(normalizePath(hit[[1L]], winslash = "/")), envir = app_env)
+  sys.source(hit[[1L]], envir = app_env)
+})
+
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
   stop("ggplot2 is required for this demo. Install with install.packages('ggplot2').")
 }
@@ -24,7 +46,7 @@ glass_preset <- match.arg(
   c("light", "dark", "auto")
 )
 
-ui <- page_sidebar(
+dashboard_page <- page_sidebar(
   title = "Glass Dashboard",
   theme = glass_theme(
     preset = glass_preset,
@@ -179,6 +201,10 @@ server <- function(input, output, session) {
       options = dt_options_glass(page_length = 8)
     )
   })
+}
+
+ui <- function(request) {
+  phone_preview(dashboard_page, app = "dashboard", request = request)
 }
 
 shinyApp(ui, server)

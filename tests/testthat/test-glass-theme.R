@@ -966,6 +966,10 @@ test_that("shinychat glass example builds an app", {
   expect_identical(long$action, "too_long")
   expect_identical(long$used, 0L)
   expect_false(grepl("aaa", long$notice))
+  expect_identical(env$harbor_turn_budget(3L, 7L), 7L)
+  expect_identical(env$harbor_turn_budget(7L, 3L), 7L)
+  expect_identical(env$harbor_turn_budget(0L, NULL), 0L)
+  expect_identical(env$harbor_turn_budget(8L, "nope"), 8L)
 
   secret <- "sk-TESTSECRET-do-not-leak"
   quota <- simpleError(paste("status 429 quota key=", secret))
