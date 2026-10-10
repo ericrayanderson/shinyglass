@@ -6220,6 +6220,8 @@ html[data-glass-preset] bslib-input-dark-mode {
 
   html[data-glass-preset] .shiny-chat-input {
     --_input-control-inset: 4px;
+    --_input-padding-bottom: 0px;
+    padding-bottom: 0;
   }
 
   html[data-glass-preset] .shiny-chat-input .tiptap {
@@ -6231,9 +6233,12 @@ html[data-glass-preset] bslib-input-dark-mode {
     border-radius: 999px !important;
   }
 
-  html[data-glass-preset] .shiny-chat-btn-send {
+  html[data-glass-preset] .shiny-chat-input .shiny-chat-btn-send {
+    box-sizing: border-box;
     width: 44px;
     height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     right: 4px;
     bottom: 4px;
   }

@@ -191,14 +191,25 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   });
   const page = await context.newPage();
   await gotoChat(page);
-  const send = await page.locator('.shiny-chat-btn-send').first().boundingBox();
-  const composer = await page.locator('.shiny-chat-input .tiptap').first().boundingBox();
+  const gaps = await page.evaluate(() => {
+    const send = document.querySelector('.shiny-chat-btn-send').getBoundingClientRect();
+    const composer = document.querySelector('.shiny-chat-input .tiptap').getBoundingClientRect();
+    return {
+      send: { width: send.width, height: send.height, x: send.x, y: send.y },
+      composer: { width: composer.width, height: composer.height, x: composer.x, y: composer.y },
+      rightGap: (composer.x + composer.width) - (send.x + send.width),
+      bottomGap: (composer.y + composer.height) - (send.y + send.height),
+      topGap: send.y - composer.y
+    };
+  });
+  const send = gaps.send;
+  const composer = gaps.composer;
   expect(send.width).toBeGreaterThanOrEqual(44);
   expect(send.height).toBeGreaterThanOrEqual(44);
   expect(composer.height).toBeGreaterThanOrEqual(44);
-  const rightGap = (composer.x + composer.width) - (send.x + send.width);
-  const bottomGap = (composer.y + composer.height) - (send.y + send.height);
-  const topGap = send.y - composer.y;
+  const rightGap = gaps.rightGap;
+  const bottomGap = gaps.bottomGap;
+  const topGap = gaps.topGap;
   expect(send.x).toBeGreaterThanOrEqual(composer.x + 2);
   expect(rightGap).toBeGreaterThanOrEqual(2);
   expect(topGap).toBeGreaterThanOrEqual(2);
