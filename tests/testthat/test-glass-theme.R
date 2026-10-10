@@ -895,11 +895,64 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
 test_that("shinychat glass example builds an app", {
   skip_if_not_installed("shinychat", "0.5.0")
   skip_if_not_installed("ellmer", "0.5.0")
+  skip_if_not_installed("coro")
   path <- system.file("examples/shinychat-glass", "app.R", package = "shinyglass")
   expect_true(nzchar(path))
   env <- new.env(parent = globalenv())
   sys.source(path, env)
   expect_s3_class(env$app, "shiny.appobj")
+
+  if (!nzchar(Sys.getenv("GEMINI_API_KEY")) && !nzchar(Sys.getenv("GOOGLE_API_KEY"))) {
+    expect_null(env$gemini_key())
+  }
+  if (!nzchar(Sys.getenv("SHINYGLASS_CHAT_MODEL"))) {
+    expect_identical(env$gemini_model(), "gemini-3.7-flash")
+  }
+  expect_match(env$harbor_system_prompt(), "shinyglass")
+  expect_lt(nchar(env$harbor_system_prompt()), 280)
+
+  mock <- env$gate_turn("tide", 0L, FALSE)
+  expect_identical(mock$action, "mock")
+  expect_identical(mock$used, 0L)
+  live <- env$gate_turn("tide", 7L, TRUE)
+  expect_identical(live$action, "live")
+  expect_identical(live$used, 8L)
+  capped <- env$gate_turn("again", 8L, TRUE)
+  expect_identical(capped$action, "capped")
+  expect_identical(capped$used, 8L)
+  expect_match(capped$notice, "free messages")
+  long <- env$gate_turn(strrep("a", 401), 0L, TRUE)
+  expect_identical(long$action, "too_long")
+  expect_identical(long$used, 0L)
+  expect_false(grepl("aaa", long$notice))
+
+  secret <- "sk-TESTSECRET-do-not-leak"
+  quota <- simpleError(paste("status 429 quota key=", secret))
+  expect_true(env$is_quota_error(quota))
+  expect_false(grepl(secret, env$api_notice(quota), fixed = TRUE))
+  expect_match(env$api_notice(quota), "free-tier")
+  other <- simpleError(paste("boom key=", secret))
+  expect_false(env$is_quota_error(other))
+  expect_false(grepl(secret, env$api_notice(other), fixed = TRUE))
+
+  bad <- coro::gen({
+    yield("Hello ")
+    stop(paste("status 429 key=", secret))
+  })
+  guarded <- env$guarded_stream(bad, "tide line")
+  parts <- list()
+  repeat {
+    piece <- guarded()
+    if (coro::is_exhausted(piece)) break
+    parts[[length(parts) + 1L]] <- piece
+    if (length(parts) > 40L) break
+  }
+  flat <- paste(vapply(parts, function(x) if (is.character(x)) x else "", character(1)), collapse = "\n")
+  expect_false(grepl(secret, flat, fixed = TRUE))
+  expect_match(flat, "Hello ")
+  expect_match(flat, "free-tier limit")
+  expect_match(flat, "1.4 m")
+  expect_true(any(vapply(parts, function(x) inherits(x, "shinychat_block"), logical(1))))
 })
 
 test_that("compatibility example builds an app", {

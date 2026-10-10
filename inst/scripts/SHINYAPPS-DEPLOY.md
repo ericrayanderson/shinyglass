@@ -38,6 +38,14 @@ Do not queue multiple individual runs: GitHub concurrency retains only one
 pending run and replaces it when another is queued.
 Review each deployment's logs and open the printed public URL to verify it.
 
+## Harbor notes key
+
+`shinyglass-chat` uses a local script until a Gemini key is set. Add
+`GEMINI_API_KEY` (or `GOOGLE_API_KEY`) under the app's **Settings → Variables**
+on shinyapps.io. Do not commit the key or pass it on the deploy command line.
+The live model is Gemini Flash. Each session allows 8 messages of at most 400
+characters, and quota or other API errors fall back to the local script.
+
 ## Secret handling
 
 Credentials are injected only into the authentication/deployment step via the

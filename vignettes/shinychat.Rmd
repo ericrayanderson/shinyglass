@@ -66,8 +66,13 @@ shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 
 With no API key the reply is a local script. It streams a thinking panel,
 a short answer, a citation chip, and a tide-table tool card.
-`OPENAI_API_KEY` switches that session to `ellmer::chat_openai()`
-(`SHINYGLASS_CHAT_MODEL` picks the model, default `gpt-4o-mini`).
+`GEMINI_API_KEY` (or `GOOGLE_API_KEY`) switches that session to
+`ellmer::chat_google_gemini()` with Gemini Flash (`gemini-3.7-flash`,
+or `SHINYGLASS_CHAT_MODEL`). The system prompt keeps answers short and
+on shinyglass, Shiny, and R. A public session allows 8 messages of at
+most 400 characters. If the API errors or returns a quota response
+(429), the demo shows a short notice and continues with the local script.
+The key is never written to the log or the page.
 History uses `history_options(store = "memory", title = NULL)`, so nothing
 is written to disk and no model is asked for a title. The sidebar starts
 open on desktop and collapses into the page menu on a phone.

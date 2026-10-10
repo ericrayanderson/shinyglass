@@ -1,5 +1,5 @@
 # Harbor notes: the shinyglass chat demo.
-# Local script by default. Set OPENAI_API_KEY for a live ellmer client.
+# Local script by default. GEMINI_API_KEY or GOOGLE_API_KEY uses Gemini Flash.
 #   shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 
 library(shiny)
@@ -134,25 +134,144 @@ user_text <- function(value) {
   paste(as.character(value), collapse = " ")
 }
 
-live_requested <- function() nzchar(Sys.getenv("OPENAI_API_KEY"))
+# Prefer GEMINI_API_KEY. GOOGLE_API_KEY is the name ellmer also reads.
+# The value is passed straight to ellmer and is never written to the log or UI.
+gemini_key <- function() {
+  for (name in c("GEMINI_API_KEY", "GOOGLE_API_KEY")) {
+    value <- Sys.getenv(name, "")
+    if (nzchar(value)) return(value)
+  }
+  NULL
+}
+
+gemini_model <- function() {
+  model <- Sys.getenv("SHINYGLASS_CHAT_MODEL", "gemini-3.7-flash")
+  if (!nzchar(model)) "gemini-3.7-flash" else model
+}
+
+harbor_system_prompt <- function() {
+  paste(
+    "You are the shinyglass harbor guide.",
+    "Answer in two or three sentences about shinyglass, Shiny, or R.",
+    "If the question is off that topic, say so and point back to shinyglass."
+  )
+}
+
+# Public demo limits. Over-long notes and extra turns stay on the local script.
+chat_max_messages <- 8L
+chat_max_chars <- 400L
+
+gate_turn <- function(text, used, live,
+                      max_messages = chat_max_messages,
+                      max_chars = chat_max_chars) {
+  text <- trimws(text %||% "")
+  if (!nzchar(text)) {
+    return(list(action = "ignore", text = text, used = used, notice = NULL))
+  }
+  if (nchar(text) > max_chars) {
+    return(list(
+      action = "too_long",
+      text = "a shorter question",
+      used = used,
+      notice = "That note is a bit long for this public demo. Try a shorter question about shinyglass, Shiny, or R."
+    ))
+  }
+  if (!isTRUE(live)) {
+    return(list(action = "mock", text = text, used = used, notice = NULL))
+  }
+  if (used >= max_messages) {
+    return(list(
+      action = "capped",
+      text = text,
+      used = used,
+      notice = "This session has used its free messages. Here is the local note instead."
+    ))
+  }
+  list(action = "live", text = text, used = used + 1L, notice = NULL)
+}
+
+is_quota_error <- function(err) {
+  if (inherits(err, "httr2_http_429")) return(TRUE)
+  status <- NA_integer_
+  for (field in c("status_code", "status")) {
+    value <- tryCatch(err[[field]], error = function(e) NULL)
+    if (is.numeric(value) && length(value) == 1L) {
+      status <- as.integer(value)
+      break
+    }
+  }
+  if (identical(status, 429L)) return(TRUE)
+  msg <- tryCatch(conditionMessage(err), error = function(e) "")
+  grepl("429|RESOURCE_EXHAUSTED|quota|rate limit|too many requests", msg, ignore.case = TRUE)
+}
+
+api_notice <- function(err) {
+  if (is_quota_error(err)) {
+    "The live model is at its free-tier limit right now. Here is the local note instead."
+  } else {
+    "The live model could not answer just now. Here is the local note instead."
+  }
+}
+
+mock_pieces <- function(text, notice = NULL) {
+  pieces <- harbor_pieces(text)
+  if (!is.null(notice) && nzchar(notice)) pieces <- c(list(notice), pieces)
+  pieces
+}
+
+# Keep API failures inside the stream. chat_append would otherwise warn with
+# the provider message, and that message can carry the request URL.
+guarded_stream <- function(stream, text) {
+  fallback <- NULL
+  coro::gen({
+    repeat {
+      if (!is.null(fallback)) {
+        if (!length(fallback)) break
+        nxt <- fallback[[1]]
+        fallback <<- fallback[-1]
+        yield(nxt)
+        next
+      }
+      piece <- tryCatch(stream(), error = function(e) e)
+      if (coro::is_exhausted(piece)) break
+      if (inherits(piece, "error")) {
+        fallback <<- mock_pieces(text, api_notice(piece))
+        next
+      }
+      if (promises::is.promise(piece)) {
+        yield(promises::then(
+          piece,
+          onFulfilled = function(value) value,
+          onRejected = function(err) {
+            fallback <<- mock_pieces(text, NULL)
+            api_notice(err)
+          }
+        ))
+      } else {
+        yield(piece)
+      }
+    }
+  })
+}
 
 make_client <- function() {
-  if (!live_requested()) {
+  key <- gemini_key()
+  if (is.null(key)) {
     return(list(client = make_echo_chat(), live = FALSE))
   }
-  model <- Sys.getenv("SHINYGLASS_CHAT_MODEL", "gpt-4o-mini")
   client <- tryCatch(
-    ellmer::chat_openai(
-      system_prompt = paste(
-        "You are a calm harbor guide inside a Liquid Glass demo.",
-        "Answer in two or three short sentences."
-      ),
-      model = model
+    ellmer::chat_google_gemini(
+      system_prompt = harbor_system_prompt(),
+      model = gemini_model(),
+      api_key = key
     ),
     error = function(e) NULL
   )
   if (is.null(client)) {
-    warning("OPENAI_API_KEY is set, but the live client did not start. Using the local script.", call. = FALSE)
+    warning(
+      "The Gemini client did not start. Using the local script.",
+      call. = FALSE
+    )
     return(list(client = make_echo_chat(), live = FALSE))
   }
   list(client = client, live = TRUE)
@@ -196,11 +315,54 @@ ui <- page_chat(
 )
 
 server <- function(input, output, session) {
+  # Public deploy: never echo raw API errors into the chat or the log.
+  options(shiny.sanitize.errors = TRUE)
+
   built <- make_client()
   client <- built$client
   live <- isTRUE(built$live)
   pace <- suppressWarnings(as.numeric(Sys.getenv("SHINYGLASS_CHAT_PACE", "0.11")))
   if (is.na(pace) || pace < 0) pace <- 0.11
+  used <- 0L
+
+  send_mock <- function(text, notice = NULL) {
+    stream_pieces("chat", mock_pieces(text, notice), session, pace)
+  }
+
+  start_live <- function(text) {
+    started <- tryCatch(
+      client$stream_async(text, stream = "content"),
+      error = function(e) e
+    )
+    if (inherits(started, "error")) {
+      send_mock(text, api_notice(started))
+      return(invisible(NULL))
+    }
+    if (promises::is.promise(started)) {
+      promises::then(
+        started,
+        onFulfilled = function(inner) {
+          chat_append("chat", guarded_stream(inner, text))
+        },
+        onRejected = function(err) send_mock(text, api_notice(err))
+      )
+      return(invisible(NULL))
+    }
+    chat_append("chat", guarded_stream(started, text))
+    invisible(NULL)
+  }
+
+  answer <- function(text) {
+    decision <- gate_turn(user_text(text), used, live)
+    used <<- decision$used
+    if (identical(decision$action, "ignore")) return(invisible(NULL))
+    if (identical(decision$action, "live")) {
+      start_live(decision$text)
+    } else {
+      send_mock(decision$text, decision$notice)
+    }
+    invisible(NULL)
+  }
 
   chat_enable_history(
     "chat",
@@ -224,17 +386,12 @@ server <- function(input, output, session) {
   }, once = TRUE)
 
   observeEvent(input$chat_user_input, {
-    text <- user_text(input$chat_user_input)
-    if (live) {
-      chat_append("chat", client$stream_async(text, stream = "content"))
-    } else {
-      stream_pieces("chat", harbor_pieces(text), session, pace)
-    }
+    answer(input$chat_user_input)
   }, ignoreInit = TRUE)
 
   observeEvent(input$chat_slash_command, {
     if (live) {
-      chat_append("chat", client$stream_async("Save a short harbor note.", stream = "content"))
+      answer("Save a short harbor note about shinyglass.")
     } else {
       stream_pieces(
         "chat",

@@ -18,6 +18,15 @@
 #   Rscript inst/scripts/deploy-shinyapps-demos.R --account=myaccount --dry-run
 #
 # After deploy, paste the printed URLs into README.md "Live demos".
+#
+# Harbor notes (`chat`, shinyapps name shinyglass-chat) answers with a
+# local script unless a Gemini key is set on the app. In the shinyapps.io
+# dashboard, open the app, then Settings, then Variables, and add
+# GEMINI_API_KEY. GOOGLE_API_KEY is also accepted. Do not put the key in
+# this script, the repo, or the deploy logs. The live model is Gemini Flash
+# (gemini-3.7-flash, or SHINYGLASS_CHAT_MODEL). Each session allows 8
+# messages of at most 400 characters. A quota response (429) or any other
+# API error falls back to the local script and does not print the key.
 
 args <- commandArgs(trailingOnly = TRUE)
 
