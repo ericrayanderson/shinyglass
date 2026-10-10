@@ -19,6 +19,8 @@
   if (frameMeta && frameMeta.getAttribute("content") === "0") {
     root.setAttribute("data-phone-app", appId);
     root.setAttribute("data-phone-frame", "0");
+    // The iframe is a fine pointer. Coarse rules still have to match a phone.
+    root.setAttribute("data-glass-pointer", "coarse");
     return;
   }
 

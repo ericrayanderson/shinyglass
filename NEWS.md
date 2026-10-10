@@ -4,10 +4,17 @@
 
 * On a coarse pointer, the controls Playwright measures are at least 44px.
   That set is the theme toggle, the sidebar collapse toggle, nav tabs,
-  modal close, selects, DataTables pagination, popover triggers, card
-  expand, and the hit area on `actionLink()` and `downloadLink()`. Harbor
-  notes also checks the send button, edit button, composer, sidebar
-  toggle, sources button, history row, and scroll-to-bottom.
+  modal close, text inputs, selects and selectize, the file Browse button,
+  DataTables and reactable pagination, popover triggers, card expand, and
+  the hit area on `actionLink()` and `downloadLink()`. Checkbox and radio
+  rows are at least 44px tall; the marks stay about 18px. Slider thumbs
+  keep their size and use a 44px hit area. Harbor notes also checks the
+  send button, edit button, composer, sidebar toggle, sources button,
+  history row, scroll-to-bottom, the thinking disclosure, source-pill hit
+  area, and the sources close button.
+* The desktop phone frame loads with `?frame=0` and sets
+  `data-glass-pointer="coarse"` on the framed document. Those coarse sizes
+  then apply inside the preview.
 * A popover on a coarse pointer at 393x852 closes on a second tap of its
   trigger and on a tap outside. On a 390x852 touch viewport, the Harbor
   notes sidebar toggle and close button both respond. The sources

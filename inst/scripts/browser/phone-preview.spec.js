@@ -25,6 +25,8 @@ test('desktop toggle frames the app and remembers the choice', async ({ page }) 
   expect(box.width).toBeGreaterThanOrEqual(32);
 
   await expect(page.locator('#dist_plot')).toBeVisible();
+  const outerSelect = await page.locator('.selectize-control .selectize-input').first().boundingBox();
+  expect(outerSelect.height).toBeLessThan(43);
   await toggle.focus();
   await page.keyboard.press('Enter');
 
@@ -37,6 +39,13 @@ test('desktop toggle frames the app and remembers the choice', async ({ page }) 
 
   const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
   await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForFunction(() => document.documentElement.getAttribute('data-glass-pointer') === 'coarse');
+  await child.waitForSelector('.selectize-control .selectize-input', { timeout: 30000 });
+  const framedSelect = await child.locator('.selectize-control .selectize-input').first().evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    return { width: box.width, height: box.height };
+  });
+  expect(framedSelect.height).toBeGreaterThanOrEqual(43.4);
   await expect(child.locator('.phone-preview-toggle')).toHaveCount(0);
   await child.waitForSelector('text=Form Controls', { timeout: 30000 });
 
@@ -47,6 +56,33 @@ test('desktop toggle frames the app and remembers the choice', async ({ page }) 
   await expect(page.locator('#dist_plot')).toBeHidden();
   const saved = await page.evaluate(() => localStorage.getItem('shinyglass-phone-preview:demo'));
   expect(saved).toBe('phone');
+});
+
+test('the phone frame uses coarse sizes for the sidebar toggle', async ({ page }) => {
+  test.setTimeout(90000);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.addInitScript(() => localStorage.setItem('shinyglass-phone-preview:dashboard', 'full'));
+  await page.goto('http://127.0.0.1:3946/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  const outer = page.locator('.bslib-sidebar-layout > .collapse-toggle').first();
+  await expect(outer).toBeVisible();
+  const outerBox = await outer.boundingBox();
+  expect(outerBox.height).toBeLessThan(40);
+  await page.evaluate(() => localStorage.setItem('shinyglass-phone-preview:dashboard', 'phone'));
+  await page.locator('.phone-preview-toggle').click();
+  const frame = page.locator('iframe.phone-preview-frame');
+  await expect(frame).toBeVisible();
+  const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
+  await child.waitForFunction(() => document.documentElement.getAttribute('data-glass-pointer') === 'coarse');
+  await child.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  const framed = child.locator('.bslib-sidebar-layout > .collapse-toggle').first();
+  await expect(framed).toBeVisible({ timeout: 20000 });
+  const framedBox = await framed.evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    return { width: box.width, height: box.height };
+  });
+  expect(framedBox.width).toBeGreaterThanOrEqual(43.4);
+  expect(framedBox.height).toBeGreaterThanOrEqual(43.4);
 });
 
 test('reduced motion drops the switch transition', async ({ page }) => {

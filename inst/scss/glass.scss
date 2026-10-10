@@ -6553,8 +6553,8 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
   cursor: pointer;
 }
 
-@media (pointer: coarse) {
-  html[data-glass-preset] :is(
+@mixin glass-pointer-coarse($root) {
+  #{$root} :is(
     .btn,
     .glass-theme-toggle .btn,
     .glass-theme-toggle .action-button,
@@ -6573,22 +6573,22 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] :is(.btn, .nav-link, .form-select, .selectize-control .selectize-input) {
+  #{$root} :is(.btn, .nav-link, .form-select, .selectize-control .selectize-input) {
     min-height: 44px !important;
   }
 
   // Native <select> ignores min-height. Set the used height.
-  html[data-glass-preset] :is(select.form-select, select.form-control, select.shiny-input-select) {
+  #{$root} :is(select.form-select, select.form-control, select.shiny-input-select) {
     height: 44px !important;
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
-  html[data-glass-preset] body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
+  #{$root} body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
+  #{$root} body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
     transform: none !important;
   }
 
-  html[data-glass-preset] :is(
+  #{$root} :is(
     .bslib-sidebar-layout > .collapse-toggle,
     .bslib-full-screen-enter,
     .btn-close,
@@ -6599,7 +6599,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px;
   }
 
-  html[data-glass-preset] :is(
+  #{$root} :is(
     .bslib-sidebar-layout > .collapse-toggle,
     .bslib-full-screen-enter
   ) {
@@ -6610,7 +6610,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] .bslib-full-screen-enter {
+  #{$root} .bslib-full-screen-enter {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -6618,59 +6618,177 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     opacity: 0.85 !important;
   }
 
-  html[data-glass-preset] .shiny-chat-history-item,
-  html[data-glass-preset] .shiny-chat-history-item-select {
+  #{$root} .shiny-chat-history-item,
+  #{$root} .shiny-chat-history-item-select {
     min-height: 44px;
   }
 
-  html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
+  #{$root} :is(a.action-button, a.shiny-download-link)::after {
     width: 44px;
     height: 44px;
   }
+
+  // Single-line fields were 31-38px. Closed selects and selectize were 36-42px.
+  #{$root} :is(
+    input.form-control:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+    textarea.form-control
+  ) {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} :is(
+    .selectize-control.single .selectize-input,
+    select.form-select,
+    select.form-control,
+    select.shiny-input-select,
+    .bootstrap-select > .dropdown-toggle,
+    .vscomp-toggle-button
+  ) {
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} .selectize-control.multi .selectize-input {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} input[type="file"].form-control {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #{$root} :is(.btn-file, .btn-file.btn),
+  #{$root} input[type="file"].form-control::file-selector-button {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  #{$root} :is(
+    .pagination .page-link,
+    .dataTables_paginate .page-link,
+    .dataTables_paginate .paginate_button,
+    .rt-pagination .rt-page-button
+  ) {
+    box-sizing: border-box !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  #{$root} .shiny-chat-thinking-header {
+    box-sizing: border-box !important;
+    display: flex;
+    align-items: center;
+    min-height: 44px !important;
+  }
+
+  // Pills keep their visual size. The hit box grows to 44px.
+  #{$root} :is(.harbor-pill, .shiny-aside-pill) {
+    position: relative;
+  }
+
+  #{$root} :is(.harbor-pill, .shiny-aside-pill)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  #{$root} .offcanvas-header .btn-close,
+  #{$root} .offcanvas .btn-close {
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+  }
+
+  // Marks stay about 18px. The label row is the 44px target.
+  #{$root} :is(.checkbox, .radio) > label,
+  #{$root} .form-check,
+  #{$root} .form-check-label {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 44px;
+    margin-bottom: 0;
+  }
+
+  #{$root} .form-check-label {
+    flex: 1 1 auto;
+  }
+
+  // Thumb art stays small. The hit box is 44px and does not change layout.
+  #{$root} :is(.irs-handle, .noUi-handle) {
+    overflow: visible;
+  }
+
+  #{$root} :is(.irs-handle, .noUi-handle)::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
 }
 
-@media (pointer: coarse), (max-width: 799px) {
-  html[data-glass-preset] {
+@mixin glass-pointer-coarse-narrow($root) {
+  #{$root} {
     --shiny-chat-btn-send-size: 44px;
     --shiny-chat-input-icon-size: 22px;
   }
 
-  html[data-glass-preset] .shiny-chat-btn-send,
-  html[data-glass-preset] .shiny-chat-edit-btn,
-  html[data-glass-preset] .shiny-chat-page-sidebar-toggle,
-  html[data-glass-preset] .shiny-chat-page-sidebar-close,
-  html[data-glass-preset] .bslib-toolbar .btn,
-  html[data-glass-preset] .shiny-chat-history-new,
-  html[data-glass-preset] .shiny-chat-history-close,
-  html[data-glass-preset] .shiny-chat-history-itemmenu > button,
-  html[data-glass-preset] bslib-input-dark-mode {
+  #{$root} .shiny-chat-btn-send,
+  #{$root} .shiny-chat-edit-btn,
+  #{$root} .shiny-chat-page-sidebar-toggle,
+  #{$root} .shiny-chat-page-sidebar-close,
+  #{$root} .bslib-toolbar .btn,
+  #{$root} .shiny-chat-history-new,
+  #{$root} .shiny-chat-history-close,
+  #{$root} .shiny-chat-history-itemmenu > button,
+  #{$root} bslib-input-dark-mode {
     min-width: 44px;
     min-height: 44px;
   }
 
-  html[data-glass-preset] .shiny-chat-history-itemmenu > button {
+  #{$root} .shiny-chat-history-itemmenu > button {
     width: 44px;
     height: 44px;
   }
 
-  html[data-glass-preset] bslib-input-dark-mode {
+  #{$root} bslib-input-dark-mode {
     --size: 32px;
     --size-xxs: 6px;
   }
 
-  html[data-glass-preset] .shiny-chat-edit-btn {
+  #{$root} .shiny-chat-edit-btn {
     width: 44px;
     height: 44px;
     opacity: 1;
   }
 
-  html[data-glass-preset] .shiny-chat-input {
+  #{$root} .shiny-chat-input {
     --_input-control-inset: 4px;
     --_input-padding-bottom: 0px;
     padding-bottom: 0;
   }
 
-  html[data-glass-preset] .shiny-chat-input .tiptap {
+  #{$root} .shiny-chat-input .tiptap {
     min-height: 52px;
     margin-inline: 0;
     padding-top: 0.85rem !important;
@@ -6679,7 +6797,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     border-radius: 999px !important;
   }
 
-  html[data-glass-preset] .shiny-chat-input .shiny-chat-btn-send {
+  #{$root} .shiny-chat-input .shiny-chat-btn-send {
     box-sizing: border-box;
     width: 44px;
     height: 44px;
@@ -6689,7 +6807,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     bottom: 4px;
   }
 
-  html[data-glass-preset] .shiny-chat-scroll-to-bottom {
+  #{$root} .shiny-chat-scroll-to-bottom {
     box-sizing: border-box;
     width: 44px;
     height: 44px;
@@ -6697,10 +6815,23 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px;
   }
 
-  html[data-glass-preset] .shiny-chat-composer {
+  #{$root} .shiny-chat-composer {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+@media (pointer: coarse) {
+  @include glass-pointer-coarse("html[data-glass-preset]");
+}
+
+@include glass-pointer-coarse("html[data-glass-preset][data-glass-pointer='coarse']");
+
+@media (pointer: coarse), (max-width: 799px) {
+  @include glass-pointer-coarse-narrow("html[data-glass-preset]");
+}
+
+@include glass-pointer-coarse-narrow("html[data-glass-preset][data-glass-pointer='coarse']");
+
 
 html[data-glass-preset] .offcanvas-backdrop.show {
   background-color: rgba(15, 15, 20, 0.38);

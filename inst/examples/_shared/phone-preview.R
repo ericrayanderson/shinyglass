@@ -80,6 +80,7 @@ phone_preview <- function(page, app, request = NULL) {
     var appMeta = document.querySelector("meta[name=\\"shinyglass-phone-app\\"]");
     if (appMeta) root.setAttribute("data-phone-app", appMeta.getAttribute("content") || "");
     root.setAttribute("data-phone-frame", "0");
+    root.setAttribute("data-glass-pointer", "coarse");
     return;
   }
   var query = window.matchMedia(DESKTOP);

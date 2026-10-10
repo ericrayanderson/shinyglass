@@ -272,6 +272,29 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   const sources = await page.locator('#open_sources').boundingBox();
   expect(sources.width).toBeGreaterThanOrEqual(44);
   expect(sources.height).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('.shiny-chat-thinking-header').first()).toBeVisible({ timeout: 20000 });
+  const thought = await page.locator('.shiny-chat-thinking-header').first().boundingBox();
+  expect(thought.height).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('.harbor-pill').first()).toBeVisible({ timeout: 20000 });
+  const pill = await page.locator('.harbor-pill').first().evaluate((el) => {
+    const hit = getComputedStyle(el, '::before');
+    const visual = el.getBoundingClientRect();
+    return { hit: parseFloat(hit.height) || 0, visual: visual.height };
+  });
+  expect(pill.hit).toBeGreaterThanOrEqual(44);
+  expect(pill.visual).toBeLessThan(pill.hit);
+  await page.evaluate(() => {
+    const panel = document.getElementById('sources_panel');
+    const Offcanvas = window.bootstrap && window.bootstrap.Offcanvas;
+    if (Offcanvas) Offcanvas.getOrCreateInstance(panel).show();
+    else panel.classList.add('show');
+  });
+  const sourcesClose = page.locator('#sources_panel .btn-close');
+  await expect(page.locator('#sources_panel')).toHaveClass(/\bshow\b/, { timeout: 8000 });
+  await expect(sourcesClose).toBeVisible();
+  const closeBox = await sourcesClose.boundingBox();
+  expect(closeBox.width).toBeGreaterThanOrEqual(44);
+  expect(closeBox.height).toBeGreaterThanOrEqual(44);
   const toggle = await page.locator('.shiny-chat-page-sidebar-toggle').boundingBox();
   expect(toggle.width).toBeGreaterThanOrEqual(44);
   expect(toggle.height).toBeGreaterThanOrEqual(44);
