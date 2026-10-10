@@ -991,14 +991,10 @@ test_that("shinychat glass example builds an app", {
   expect_length(env$curated_citations("What's the tide at dawn?"), 0L)
   expect_length(env$curated_citations("Hello there"), 0L)
 
-  icon_prefix <- "data:image/svg+xml;base64,"
-  expect_true(startsWith(env$harbor_icon_src(), icon_prefix))
-  icon_svg <- rawToChar(jsonlite::base64_dec(substring(
-    env$harbor_icon_src(),
-    nchar(icon_prefix) + 1L
-  )))
-  expect_match(icon_svg, "svg", fixed = TRUE)
-  expect_match(icon_svg, "#007AFF", fixed = TRUE)
+  icon <- env$harbor_icon_src()
+  expect_true(startsWith(icon, "data:image/svg+xml;base64,PHN2Zy"))
+  # Base64 fragment of stop-color="#007AFF", so the check does not need jsonlite.
+  expect_true(grepl("IiMwMDdBRkY", icon, fixed = TRUE))
 
   old_mock <- Sys.getenv("SHINYGLASS_CHAT_MOCK_LIVE", unset = NA_character_)
   on.exit({
