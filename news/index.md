@@ -144,6 +144,48 @@
 
 ### Bug fixes
 
+- Harbor notes keeps the conversation list at the top of the sidebar, on
+  the glass surface, with the same padding as the rest of the column.
+- Light-mode assistant replies use a thin rim and a bright top
+  highlight, in the same family as the user bubble and the composer.
+- The live system prompt names the shinyglass APIs, so replies stay
+  specific to
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+  [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+  the intensity slider, the physics, and shinychat support.
+- Live replies request a short thinking summary, so the “Thought for …”
+  disclosure can appear. If the model returns none, the disclosure stays
+  hidden.
+- The history row title fills the row: 32px on a fine pointer and 44px
+  on a coarse pointer.
+- The live status chip in dark mode uses lighter text on a darker green
+  so it clears the 4.5:1 contrast floor.
+- Setting `SHINYGLASS_CHAT_FORCE_FALLBACK` to `1` shows the demo chip
+  and the fallback toast. That path is for tests.
+- Coarse pointers get a 44px hit area on glass controls, and fine
+  pointers stay at least 32px. That covers the Light/Dark/Auto toggle,
+  the sidebar toggle, card expand, nav tabs, modal close, selects,
+  pagination, and popover triggers.
+  [`actionLink()`](https://rdrr.io/pkg/shiny/man/actionButton.html) and
+  [`downloadLink()`](https://rdrr.io/pkg/shiny/man/downloadButton.html)
+  keep their text size and gain a larger invisible hit area.
+- Ultra Clear (intensity 0) keeps a hairline and a top specular
+  highlight, including the settings strip on
+  [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md).
+- A card opened full screen fills the overlay. Plots and tables use the
+  card, DataTables pagination sits at the bottom, and the overlay is
+  frosted glass.
+- Tables on glass keep an opaque body behind striped cells, including
+  dark mode with `plot_surface = "clear"`, so the text does not sit on
+  the wallpaper.
+- [`verbatimTextOutput()`](https://rdrr.io/pkg/shiny/man/textOutput.html)
+  inside a card uses the card surface, so a live values panel matches
+  the cards next to it.
+- shinyWidgets drop menus and bslib popovers close on a second tap and
+  when you tap outside, including on touch. The Virtual Select mobile
+  close button sits inside the dropdown.
+- A closed single selectize field uses the whole visible control as its
+  hit target.
 - Accessibility overrides now win over the inline `--glass-*` values the
   intensity script writes. Reduce Transparency uses opaque fills and no
   backdrop blur (the same idea as flatten mode). Increase Contrast and

@@ -75,7 +75,22 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
-<ul><li>Accessibility overrides now win over the inline <code>--glass-*</code> values the intensity script writes. Reduce Transparency uses opaque fills and no backdrop blur (the same idea as flatten mode). Increase Contrast and forced colors are watched live. The page sets <code>data-glass-contrast</code>, <code>data-glass-forced-colors</code>, and <code>data-glass-reduced-transparency</code> on <code>&lt;html&gt;</code>, and matching CSS rules use <code>!important</code>.</li>
+<ul><li>Harbor notes keeps the conversation list at the top of the sidebar, on the glass surface, with the same padding as the rest of the column.</li>
+<li>Light-mode assistant replies use a thin rim and a bright top highlight, in the same family as the user bubble and the composer.</li>
+<li>The live system prompt names the shinyglass APIs, so replies stay specific to <code><a href="../reference/glass_theme.html">glass_theme()</a></code>, <code><a href="../reference/glass_page.html">glass_page()</a></code>, the intensity slider, the physics, and shinychat support.</li>
+<li>Live replies request a short thinking summary, so the “Thought for …” disclosure can appear. If the model returns none, the disclosure stays hidden.</li>
+<li>The history row title fills the row: 32px on a fine pointer and 44px on a coarse pointer.</li>
+<li>The live status chip in dark mode uses lighter text on a darker green so it clears the 4.5:1 contrast floor.</li>
+<li>Setting <code>SHINYGLASS_CHAT_FORCE_FALLBACK</code> to <code>1</code> shows the demo chip and the fallback toast. That path is for tests.</li>
+<li>Coarse pointers get a 44px hit area on glass controls, and fine pointers stay at least 32px. That covers the Light/Dark/Auto toggle, the sidebar toggle, card expand, nav tabs, modal close, selects, pagination, and popover triggers. <code><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionLink()</a></code> and <code><a href="https://rdrr.io/pkg/shiny/man/downloadButton.html" class="external-link">downloadLink()</a></code> keep their text size and gain a larger invisible hit area.</li>
+<li>Ultra Clear (intensity 0) keeps a hairline and a top specular highlight, including the settings strip on <code><a href="../reference/glass_page.html">glass_page()</a></code>.</li>
+<li>A card opened full screen fills the overlay. Plots and tables use the card, DataTables pagination sits at the bottom, and the overlay is frosted glass.</li>
+<li>Tables on glass keep an opaque body behind striped cells, including dark mode with <code>plot_surface = "clear"</code>, so the text does not sit on the wallpaper.</li>
+<li>
+<code><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">verbatimTextOutput()</a></code> inside a card uses the card surface, so a live values panel matches the cards next to it.</li>
+<li>shinyWidgets drop menus and bslib popovers close on a second tap and when you tap outside, including on touch. The Virtual Select mobile close button sits inside the dropdown.</li>
+<li>A closed single selectize field uses the whole visible control as its hit target.</li>
+<li>Accessibility overrides now win over the inline <code>--glass-*</code> values the intensity script writes. Reduce Transparency uses opaque fills and no backdrop blur (the same idea as flatten mode). Increase Contrast and forced colors are watched live. The page sets <code>data-glass-contrast</code>, <code>data-glass-forced-colors</code>, and <code>data-glass-reduced-transparency</code> on <code>&lt;html&gt;</code>, and matching CSS rules use <code>!important</code>.</li>
 <li>
 <code><a href="https://rstudio.github.io/bslib/reference/input_dark_mode.html" class="external-link">bslib::input_dark_mode()</a></code> switches the glass pack when it writes <code>data-bs-theme</code>.</li>
 <li>Leaflet popups are not clipped by the map frame, and plotly hover stays above the card sheen.</li>
