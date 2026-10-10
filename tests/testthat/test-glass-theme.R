@@ -886,6 +886,9 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(engine, "glass-scroll-edge-top")
   expect_match(scss, "glass-scroll-edge-top")
   expect_match(scss, "shiny-chat-message-content")
+  expect_match(scss, "rgba(246, 244, 250, 0.98)")
+  expect_match(scss, "shiny-chat-scroll-to-bottom")
+  expect_match(scss, "shiny-chat-thinking-header")
   expect_match(scss, "safe-area-inset-bottom")
   expect_match(scss, "glass-overflowing")
   expect_match(scss, "--glass-specular-top")
@@ -915,6 +918,7 @@ test_that("shinychat glass example builds an app", {
   }
   expect_match(env$harbor_system_prompt(), "shinyglass")
   expect_match(env$harbor_system_prompt(), "ordinary conversation")
+  expect_match(env$harbor_system_prompt(), "search the web")
   expect_false(grepl("harbor guide", env$harbor_system_prompt(), fixed = TRUE))
   expect_lt(nchar(env$harbor_system_prompt()), 280)
 
@@ -970,6 +974,54 @@ test_that("shinychat glass example builds an app", {
   expect_false(grepl("?.", tide$body, fixed = TRUE))
   expect_length(tide$citations, 0L)
   expect_match(tide$body, "1.4 m")
+
+  glass_cites <- env$curated_citations("How does glass_theme work?")
+  glass_urls <- vapply(glass_cites, function(item) item$url, character(1))
+  expect_true(any(grepl("github.io/shinyglass", glass_urls, fixed = TRUE)))
+  expect_true(any(grepl("human-interface-guidelines", glass_urls, fixed = TRUE)))
+  expect_true(any(grepl("shiny.posit.co", glass_urls, fixed = TRUE)))
+  expect_false(any(grepl("shinychat", glass_urls, fixed = TRUE)))
+
+  chat_cites <- env$curated_citations("Style a Shiny chat")
+  chat_urls <- vapply(chat_cites, function(item) item$url, character(1))
+  expect_true(any(grepl("shinychat", chat_urls, fixed = TRUE)))
+  expect_true(any(grepl("shiny.posit.co", chat_urls, fixed = TRUE)))
+  expect_false(any(grepl("human-interface-guidelines", chat_urls, fixed = TRUE)))
+
+  expect_length(env$curated_citations("What's the tide at dawn?"), 0L)
+  expect_length(env$curated_citations("Hello there"), 0L)
+
+  expect_match(env$harbor_icon_src(), "^data:image/svg+xml;base64,", perl = TRUE)
+  icon_svg <- rawToChar(jsonlite::base64_dec(sub(
+    "^data:image/svg\\+xml;base64,",
+    "",
+    env$harbor_icon_src()
+  )))
+  expect_match(icon_svg, "svg", fixed = TRUE)
+  expect_match(icon_svg, "#007AFF", fixed = TRUE)
+
+  old_mock <- Sys.getenv("SHINYGLASS_CHAT_MOCK_LIVE", unset = NA_character_)
+  on.exit({
+    if (is.na(old_mock)) {
+      Sys.unsetenv("SHINYGLASS_CHAT_MOCK_LIVE")
+    } else {
+      Sys.setenv(SHINYGLASS_CHAT_MOCK_LIVE = old_mock)
+    }
+  }, add = TRUE)
+  Sys.setenv(SHINYGLASS_CHAT_MOCK_LIVE = "1")
+  built <- env$make_client()
+  expect_true(built$live)
+  gen <- built$client$stream_async("How does glass_theme work?", stream = "content")
+  first <- gen()
+  second <- gen()
+  expect_true(inherits(first, "ellmer::ContentThinking"))
+  expect_match(first@thinking, "theme API")
+  expect_true(inherits(second, "ellmer::ContentText"))
+  expect_true(coro::is_exhausted(gen()))
+  flash <- env$gemini_params("gemini-3.7-flash")
+  expect_identical(flash$reasoning_effort, "low")
+  older <- env$gemini_params("gemini-2.5-flash")
+  expect_identical(older$reasoning_tokens, 1024L)
 })
 
 test_that("compatibility example builds an app", {

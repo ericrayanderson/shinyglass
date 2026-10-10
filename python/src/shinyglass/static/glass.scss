@@ -5812,12 +5812,20 @@ html[data-glass-preset] .shiny-chat-message .shiny-chat-message-content[data-pen
   min-height: 2.6rem;
 }
 
-// The shared mix stays close to the page in light mode. A near-white fill
-// and a lifted dark fill keep the bubble readable as its own surface.
+// Light mode sits on a pale lavender field. A slightly cooler fill and the
+// same darkened edge used on other glass (rim, lip, side strokes) keep the
+// assistant bubble from disappearing into that gradient.
 html[data-glass-preset="light"] .shiny-chat-message .shiny-chat-message-content,
 html[data-glass-preset="auto"][data-bs-theme="light"] .shiny-chat-message .shiny-chat-message-content {
-  background-color: rgba(255, 255, 255, 0.94) !important;
-  border-color: rgba(29, 29, 31, 0.14);
+  background-color: rgba(246, 244, 250, 0.98) !important;
+  border-color: rgba(29, 29, 31, 0.34);
+  box-shadow:
+    0 0 0 1px var(--glass-edge, rgba(0, 0, 0, 0.28)),
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-lip),
+    inset 1.25px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
+    inset -1.25px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.18)),
+    0 8px 22px color-mix(in srgb, var(--glass-shadow) 42%, transparent);
 }
 
 html[data-glass-preset="dark"] .shiny-chat-message .shiny-chat-message-content,
@@ -5856,6 +5864,39 @@ html[data-glass-preset] shiny-chat-page .shiny-chat-layout > .shiny-chat-footer 
 html[data-glass-preset] .shiny-chat-messages-content,
 html[data-glass-preset] .shiny-chat-composer {
   padding-inline: 16px;
+}
+
+// shinychat pulls the scroller 1rem past its parent so the scrollbar can
+// sit in the gutter. On a phone that border box ends past the viewport.
+// Keep the scroller inside the layout. The 16px column padding still
+// matches the composer.
+html[data-glass-preset] .shiny-chat-messages {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0;
+  padding-right: 0;
+  overflow-x: clip;
+}
+
+html[data-glass-preset] .shiny-chat-messages-wrapper,
+html[data-glass-preset] .shiny-chat-wrapper,
+html[data-glass-preset] .shiny-chat-layout {
+  max-width: 100%;
+}
+
+// "Thought for ..." is the thinking disclosure. Keep it a real control
+// whenever thoughts exist. Do not leave a hidden drawer in its place.
+html[data-glass-preset] .shiny-chat-thinking {
+  display: block;
+}
+
+html[data-glass-preset] .shiny-chat-thinking-header {
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 html[data-glass-preset] .shiny-chat-input .tiptap.is-empty::before {
@@ -6145,6 +6186,14 @@ html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-tra
     height: 44px;
     right: 4px;
     bottom: 4px;
+  }
+
+  html[data-glass-preset] .shiny-chat-scroll-to-bottom {
+    box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
 
   html[data-glass-preset] .shiny-chat-composer {
