@@ -2,7 +2,7 @@
 
 shinyglass adds Liquid Glass themes to Shiny apps. The look matches Apple iOS 27 as far as a browser can: translucent surfaces, backdrop blur, and an intensity slider from Ultra Clear to Tinted.
 
-Read this file before editing the package. Prefer the exported functions and the vignettes over guessing CSS.
+This file is for AI coding assistants. Read it before editing the package. Prefer the exported functions and the vignettes over guessing CSS.
 
 ## Apply it to an existing app
 
@@ -136,8 +136,7 @@ RUN_CHAT_TESTS=1 npx playwright test chat.spec.js
 
 ## Repo conventions
 
-- Branch names and commit messages do not contain the word cursor.
 - Put user-visible changes in `NEWS.md` under the current version. Do not bump `Version` unless asked.
 - Commit as Eric Anderson <eric.ray.anderson@gmail.com> with `git -c user.name` and `git -c user.email`. Do not change git config.
 - Do not submit to CRAN unless asked.
-- `AGENTS.md` and `CLAUDE.md` are listed in `.Rbuildignore`. They are for the repo, not the installed package.
+- `AGENTS.md` is listed in `.Rbuildignore`. It is for the repo, not the installed package.

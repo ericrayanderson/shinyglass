@@ -12,16 +12,16 @@ if (!dir.exists(docs)) {
 }
 
 # pkgdown renders every root *.md except a short built-in deny list.
-# AGENTS.md and CLAUDE.md stay at the repo root for coding tools.
-# They are not package docs, so drop the pages pkgdown just wrote.
-agent_pages <- c("AGENTS", "CLAUDE")
+# AGENTS.md stays at the repo root for AI coding assistants.
+# It is not package docs, so drop the page pkgdown just wrote.
+agent_pages <- "AGENTS"
 unlink(file.path(docs, paste0(agent_pages, ".html")))
 unlink(file.path(docs, paste0(agent_pages, ".md")))
 
 sitemap <- file.path(docs, "sitemap.xml")
 if (file.exists(sitemap)) {
   lines <- readLines(sitemap, warn = FALSE, encoding = "UTF-8")
-  drop <- grepl("AGENTS\\.html|CLAUDE\\.html", lines, perl = TRUE)
+  drop <- grepl("AGENTS\\.html", lines, perl = TRUE)
   if (any(drop)) writeLines(lines[!drop], sitemap, useBytes = TRUE)
 }
 
@@ -71,7 +71,7 @@ if (file.exists(search)) {
     }
     objects <- c(objects, paste(chars[start:(i - 1L)], collapse = ""))
   }
-  keep <- !grepl("AGENTS\\.html|CLAUDE\\.html", objects)
+  keep <- !grepl("AGENTS\\.html", objects)
   if (any(!keep)) {
     writeLines(
       paste0("[", paste(objects[keep], collapse = ","), "]"),
@@ -193,7 +193,7 @@ writeLines(index, file.path(docs, "llms.txt"), useBytes = TRUE)
 
 md_files <- list.files(docs, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
 md_files <- md_files[!grepl("(^|/)llms(-full)?[.]txt$", md_files)]
-md_files <- md_files[!basename(md_files) %in% c("AGENTS.md", "CLAUDE.md")]
+md_files <- md_files[basename(md_files) != "AGENTS.md"]
 # Stable order: home, reference, articles, news, then the rest.
 rank <- function(path) {
   rel <- sub(paste0("^", docs, "/"), "", path)
