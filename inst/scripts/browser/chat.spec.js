@@ -109,6 +109,7 @@ test('scripted reply streams thinking, a citation, and a tool card', async ({ pa
 test('sources panel has an empty state, real citations, and a quiet scrollbar', async ({ page }) => {
   await gotoChat(page);
   await expect(page.locator('.harbor-status')).toContainText(/Live \(Gemini\)|Demo replies/);
+  await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'demo');
   await page.locator('#open_sources').click();
   const panel = page.locator('#sources_panel.offcanvas, .offcanvas.show').first();
   await expect(panel).toBeVisible();
@@ -263,6 +264,8 @@ test('theme and the conversation stay after reload', async ({ page }) => {
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
   await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('.shiny-chat-thinking').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
   await expect(page.locator('.harbor-status')).toBeVisible();
 });
 
@@ -284,6 +287,7 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await page.goto(live, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await expect(page.locator('.harbor-status')).toContainText('Live (Gemini)');
+  await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'ready');
   await expect(page.locator('#chat-drawer')).toHaveCount(0);
 
   await page.getByRole('button', { name: /glass_theme work/i }).click();
@@ -305,6 +309,15 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await expect(panel.locator('a[href*="shiny.posit.co"]')).toBeVisible();
   await page.locator('#sources_panel .btn-close').click();
 
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API', { timeout: 20000 });
+  await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'live');
+  const liveBubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
+  await expect(liveBubble).toContainText('Liquid Glass');
+  await expect(liveBubble).not.toContainText('local note');
+
+  await page.evaluate(() => localStorage.clear());
   await page.goto(live, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await page.evaluate(() => {
@@ -318,6 +331,121 @@ test('mocked live replies show thinking and topic citations', async ({ page }) =
   await page.locator('#open_sources').click();
   await expect(panel).toBeVisible();
   await expect(panel).toContainText('No sources yet');
+});
+
+test('fallback notice stays separate, thinking survives reload, and the sidebar stays clickable', async ({ page }) => {
+  await gotoChat(page);
+  await page.evaluate(() => {
+    window.Shiny.setInputValue(
+      'chat_user_input',
+      { text: 'a'.repeat(401) },
+      { priority: 'event' }
+    );
+  });
+  const notice = page.locator('.harbor-notice-copy');
+  await expect(notice).toBeVisible({ timeout: 20000 });
+  await expect(notice).toContainText('a bit long');
+  const bubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
+  await expect(bubble).toContainText('glass_theme()');
+  await expect(bubble).not.toContainText('a bit long');
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
+  await expect(page.locator('.harbor-status')).toHaveAttribute('data-mode', 'demo');
+
+  const hostPos = await page.locator('#harbor_notice_host').evaluate((el) => getComputedStyle(el).position);
+  expect(hostPos).not.toBe('fixed');
+  const hostPe = await page.locator('#harbor_notice_host').evaluate((el) => getComputedStyle(el).pointerEvents);
+  expect(hostPe).toBe('none');
+  const sidebar = page.locator('.shiny-chat-page-sidebar');
+  const side = await sidebar.boundingBox();
+  const header = await page.locator('.shiny-chat-page-header').boundingBox();
+  const toast = await page.locator('.harbor-notice').boundingBox();
+  expect(toast.y).toBeGreaterThan(header.y + header.height - 4);
+  expect(toast.x).toBeGreaterThan(side.x + side.width - 8);
+  const hitSidebar = await page.evaluate((pt) => {
+    const el = document.elementFromPoint(pt.x, pt.y);
+    return !!(el && el.closest('.shiny-chat-page-sidebar'));
+  }, { x: side.x + 24, y: side.y + Math.min(80, side.height / 2) });
+  expect(hitSidebar).toBeTruthy();
+  await page.locator('#project').fill('North dock');
+  await expect(page.locator('#project')).toHaveValue('North dock');
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('.harbor-notice-copy')).toContainText('a bit long', { timeout: 20000 });
+  const restored = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
+  await expect(restored).toContainText('glass_theme()');
+  await expect(restored).not.toContainText('a bit long');
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
+  const joined = await restored.evaluate((el) => (el.innerText || '').replace(/\s+/g, ' '));
+  expect(joined.includes('instead.glass_theme')).toBeFalsy();
+});
+
+test('source pills do not request third-party favicons', async ({ page }) => {
+  const external = [];
+  page.on('request', (req) => {
+    const url = req.url();
+    if (/duckduckgo|gstatic\.com\/favicon|faviconkit|google\.com\/s2\/favicons/i.test(url)) {
+      external.push(url);
+    }
+  });
+  await gotoChat(page);
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  const pill = page.locator('.shiny-aside-pill').first();
+  await expect(pill).toBeVisible({ timeout: 20000 });
+  const imgs = page.locator('.shiny-aside-pill img');
+  await expect(imgs.first()).toBeVisible();
+  const srcs = await imgs.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('src') || node.src || ''));
+  expect(srcs.length).toBeGreaterThan(0);
+  for (const src of srcs) {
+    expect(src.startsWith('data:image/svg+xml'), src).toBeTruthy();
+    expect(src).not.toMatch(/duckduckgo|http:|https:/i);
+  }
+  const broken = await imgs.evaluateAll((nodes) => nodes.filter((node) => node.complete && node.naturalWidth === 0).length);
+  expect(broken).toBe(0);
+  expect(external).toEqual([]);
+});
+
+test('fine pointers use at least 32px send and edit', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await gotoChat(page);
+  const send = await page.locator('.shiny-chat-btn-send').first().boundingBox();
+  expect(send.width).toBeGreaterThanOrEqual(32);
+  expect(send.height).toBeGreaterThanOrEqual(32);
+  expect(send.width).toBeLessThan(40);
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  await expect(page.locator('.shiny-chat-user-message').first()).toBeVisible({ timeout: 20000 });
+  const edit = await page.locator('.shiny-chat-edit-btn').first().evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  });
+  expect(edit.width).toBeGreaterThanOrEqual(32);
+  expect(edit.height).toBeGreaterThanOrEqual(32);
+});
+
+test('ambient motion settles and reduced motion stops it', async ({ page }) => {
+  await gotoChat(page);
+  const intro = await page.evaluate(() => {
+    const cs = getComputedStyle(document.body, '::before');
+    return { count: cs.animationIterationCount, name: cs.animationName };
+  });
+  expect(intro.name).toBe('harbor-orb-intro');
+  expect(intro.count).toBe('1');
+  await page.waitForTimeout(2800);
+  const settled = await page.evaluate(async () => {
+    const read = () => getComputedStyle(document.body, '::before').transform;
+    const first = read();
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return first === read();
+  });
+  expect(settled).toBeTruthy();
+  const sendAnim = await page.locator('.shiny-chat-btn-send').first().evaluate((el) => getComputedStyle(el).animationName);
+  expect(sendAnim === 'none' || sendAnim === '').toBeTruthy();
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  const reduced = await page.evaluate(() => getComputedStyle(document.body, '::before').animationName);
+  expect(reduced).toBe('none');
 });
 
 test('phone width keeps the composer on screen', async ({ page }) => {

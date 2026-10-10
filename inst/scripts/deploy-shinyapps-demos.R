@@ -33,9 +33,11 @@
 # staging directory and is never printed. shinyapps.io rejects the
 # Connect-only envVars argument of deployApp(). The staged file is the
 # equivalent. Do not put the key in this script or the repo.
-# The live model is Gemini Flash (gemini-3.7-flash, or SHINYGLASS_CHAT_MODEL).
-# Each session allows 8 messages of at most 400 characters. A quota
-# response (429) or any other API error falls back to the local script.
+# The live chain is gemini-3.5-flash-lite, then gemini-3.8-flash, then
+# gemini-3.7-flash. SHINYGLASS_CHAT_MODEL is tried first when set.
+# Web search is off. Sources are the curated pages for the topic.
+# Each session allows 8 messages of at most 400 characters. The local
+# note is used only when every model in the chain fails.
 
 # Hosted set for a shinyapps.io plan with five slots. plotly_gt is absent
 # on purpose. olympics and chat stay.

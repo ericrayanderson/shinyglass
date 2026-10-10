@@ -889,6 +889,9 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, "rgba(246, 244, 250, 0.98)", fixed = TRUE)
   expect_match(scss, "shiny-chat-scroll-to-bottom")
   expect_match(scss, "shiny-chat-thinking-header")
+  expect_match(scss, "--shiny-chat-btn-send-size: 32px", fixed = TRUE)
+  expect_match(scss, "prefers-reduced-motion: reduce", fixed = TRUE)
+  expect_match(scss, "body::before", fixed = TRUE)
   expect_match(scss, "safe-area-inset-bottom")
   expect_match(scss, "glass-overflowing")
   expect_match(scss, "--glass-specular-top")
@@ -914,13 +917,18 @@ test_that("shinychat glass example builds an app", {
     expect_null(env$gemini_key())
   }
   if (!nzchar(Sys.getenv("SHINYGLASS_CHAT_MODEL"))) {
-    expect_identical(env$gemini_model(), "gemini-3.7-flash")
+    expect_identical(env$gemini_model(), "gemini-3.5-flash-lite")
+    expect_identical(
+      env$gemini_model_chain(),
+      c("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.7-flash")
+    )
   }
   expect_match(env$harbor_system_prompt(), "shinyglass")
   expect_match(env$harbor_system_prompt(), "ordinary conversation")
-  expect_match(env$harbor_system_prompt(), "search the web")
+  expect_false(grepl("search the web", env$harbor_system_prompt(), fixed = TRUE))
   expect_false(grepl("harbor guide", env$harbor_system_prompt(), fixed = TRUE))
   expect_lt(nchar(env$harbor_system_prompt()), 280)
+  expect_false(grepl("google_tool_web_search", paste(deparse(env$make_client), collapse = "\n"), fixed = TRUE))
 
   mock <- env$gate_turn("tide", 0L, FALSE)
   expect_identical(mock$action, "mock")
@@ -946,11 +954,14 @@ test_that("shinychat glass example builds an app", {
   expect_false(env$is_quota_error(other))
   expect_false(grepl(secret, env$api_notice(other), fixed = TRUE))
 
+  notices <- character()
   bad <- coro::gen({
     yield("Hello ")
     stop(paste("status 429 key=", secret))
   })
-  guarded <- env$guarded_stream(bad, "tide line")
+  guarded <- env$guarded_stream(bad, "tide line", on_fallback = function(notice) {
+    notices <<- c(notices, notice)
+  })
   parts <- list()
   repeat {
     piece <- guarded()
@@ -961,9 +972,89 @@ test_that("shinychat glass example builds an app", {
   flat <- paste(vapply(parts, function(x) if (is.character(x)) x else "", character(1)), collapse = "\n")
   expect_false(grepl(secret, flat, fixed = TRUE))
   expect_match(flat, "Hello ")
-  expect_match(flat, "free-tier limit")
+  expect_false(grepl("free-tier limit", flat, fixed = TRUE))
+  expect_false(grepl("local note instead.glass_theme", flat, fixed = TRUE))
   expect_match(flat, "1.4 m")
+  expect_match(notices[[1]], "free-tier")
+  expect_false(grepl(secret, notices[[1]], fixed = TRUE))
   expect_true(any(vapply(parts, function(x) inherits(x, "shinychat_block"), logical(1))))
+
+  chain_error <- function(status, message = NULL) {
+    err <- simpleError(message %||% sprintf("HTTP %s", status))
+    class(err) <- c(sprintf("httr2_http_%s", status), "error", "condition")
+    err
+  }
+  statuses <- c(503L, 429L, 404L)
+  seen <- list()
+  step <- 0L
+  failed <- env$walk_model_chain(
+    c("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.7-flash"),
+    function(model, params) {
+      step <<- step + 1L
+      seen[[length(seen) + 1L]] <<- list(model = model, plain = is.null(params))
+      chain_error(statuses[[step]])
+    }
+  )
+  expect_false(failed$ok)
+  expect_match(failed$notice, "local note")
+  expect_false(grepl("free-tier", failed$notice, fixed = TRUE))
+  expect_identical(
+    vapply(seen, function(item) item$model, character(1)),
+    c("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.7-flash")
+  )
+
+  step <- 0L
+  recovered <- env$walk_model_chain(
+    c("gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.7-flash"),
+    function(model, params) {
+      step <<- step + 1L
+      if (step == 1L) return(chain_error(503L, "high demand"))
+      if (step == 2L) return(chain_error(429L, "quota"))
+      list(ok = TRUE)
+    }
+  )
+  expect_true(recovered$ok)
+  expect_identical(recovered$model, "gemini-3.7-flash")
+  expect_null(recovered$notice)
+
+  step <- 0L
+  thought <- env$walk_model_chain(
+    "gemini-3.5-flash-lite",
+    function(model, params) {
+      step <<- step + 1L
+      if (!is.null(params)) return(chain_error(400L, "thinking level is not supported"))
+      list(ok = TRUE)
+    }
+  )
+  expect_true(thought$ok)
+  expect_false(thought$thinking)
+  expect_identical(step, 2L)
+
+  live_html <- as.character(env$harbor_status_ui("live"))
+  demo_html <- as.character(env$harbor_status_ui("demo"))
+  ready_html <- as.character(env$harbor_status_ui("ready"))
+  expect_match(live_html, "data-mode=\"live\"", fixed = TRUE)
+  expect_match(live_html, "Live (Gemini)", fixed = TRUE)
+  expect_match(demo_html, "data-mode=\"demo\"", fixed = TRUE)
+  expect_match(demo_html, "Demo replies", fixed = TRUE)
+  expect_match(ready_html, "data-mode=\"ready\"", fixed = TRUE)
+  expect_false(grepl("Demo replies", ready_html, fixed = TRUE))
+
+  glued <- env$reply_pieces(
+    env$scripted_reply("How does glass_theme work?"),
+    "The live model could not answer just now. Here is the local note instead."
+  )
+  glued_flat <- paste(vapply(glued, function(x) if (is.character(x)) x else "", character(1)), collapse = "\n")
+  expect_false(grepl("local note", glued_flat, fixed = TRUE))
+  expect_match(glued_flat, "glass_theme")
+
+  restored <- env$normalize_restore(list(
+    role = c("user", "assistant"),
+    text = c("Hi", "glass_theme() builds a theme."),
+    thinking = c("", "Looking through the theme API.")
+  ))
+  expect_identical(restored[[2L]]$thinking, "Looking through the theme API.")
+  expect_false(grepl("Looking through", restored[[2L]]$text, fixed = TRUE))
 
   theme <- env$scripted_reply("How does glass_theme work?")
   expect_false(grepl("You asked", theme$body, fixed = TRUE))
@@ -1016,8 +1107,23 @@ test_that("shinychat glass example builds an app", {
   expect_true(coro::is_exhausted(gen()))
   flash <- env$gemini_params("gemini-3.7-flash")
   expect_identical(flash$reasoning_effort, "low")
+  lite <- env$gemini_params("gemini-3.5-flash-lite")
+  expect_identical(lite$reasoning_tokens, 256L)
   older <- env$gemini_params("gemini-2.5-flash")
   expect_identical(older$reasoning_tokens, 1024L)
+
+  old_model <- Sys.getenv("SHINYGLASS_CHAT_MODEL", unset = NA_character_)
+  on.exit({
+    if (is.na(old_model)) {
+      Sys.unsetenv("SHINYGLASS_CHAT_MODEL")
+    } else {
+      Sys.setenv(SHINYGLASS_CHAT_MODEL = old_model)
+    }
+  }, add = TRUE)
+  Sys.setenv(SHINYGLASS_CHAT_MODEL = "gemini-3.8-flash")
+  expect_identical(env$gemini_model(), "gemini-3.8-flash")
+  expect_identical(env$gemini_model_chain()[[1L]], "gemini-3.8-flash")
+  expect_true("gemini-3.5-flash-lite" %in% env$gemini_model_chain())
 })
 
 test_that("compatibility example builds an app", {
