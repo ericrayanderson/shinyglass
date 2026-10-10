@@ -122,6 +122,26 @@
 
 ## Bug fixes
 
+* Coarse pointers get a 44px hit area on glass controls, and fine pointers
+  stay at least 32px. That covers the Light/Dark/Auto toggle, the sidebar
+  toggle, card expand, nav tabs, modal close, selects, pagination, and
+  popover triggers. `actionLink()` and `downloadLink()` keep their text
+  size and gain a larger invisible hit area.
+* Ultra Clear (intensity 0) keeps a hairline and a top specular highlight,
+  including the settings strip on `glass_page()`.
+* A card opened full screen fills the overlay. Plots and tables use the
+  card, DataTables pagination sits at the bottom, and the overlay is
+  frosted glass.
+* Tables on glass keep an opaque body behind striped cells, including dark
+  mode with `plot_surface = "clear"`, so the text does not sit on the
+  wallpaper.
+* `verbatimTextOutput()` inside a card uses the card surface, so a live
+  values panel matches the cards next to it.
+* shinyWidgets drop menus and bslib popovers close on a second tap and when
+  you tap outside, including on touch. The Virtual Select mobile close
+  button sits inside the dropdown.
+* A closed single selectize field uses the whole visible control as its
+  hit target.
 * Accessibility overrides now win over the inline `--glass-*` values the
   intensity script writes. Reduce Transparency uses opaque fills and no
   backdrop blur (the same idea as flatten mode). Increase Contrast and

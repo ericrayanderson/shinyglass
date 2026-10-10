@@ -700,6 +700,96 @@
     } catch (err) { /* ignore */ }
   }
 
+  function coarsePointer() {
+    try {
+      return window.matchMedia("(pointer: coarse)").matches;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function hideTippy(inst) {
+    try {
+      if (inst && inst.state && inst.state.isShown) inst.hide();
+    } catch (e) { /* ignore */ }
+  }
+
+  function pointInRect(x, y, rect) {
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  }
+
+  // Second tap on a Settings drop menu or bslib popover closes it. A tap
+  // outside the panel closes it too. Desktop click toggle is left alone.
+  function bindOverlayDismiss() {
+    // Swallow only the click from the tap that closed the panel. A later
+    // tap (its pointerdown is newer than that pointerup) still opens it,
+    // even if the first click is delivered late.
+    var arm = null;
+    document.addEventListener("pointerdown", function (e) {
+      if (arm && e.timeStamp > arm.upTs) arm.olderThan = e.timeStamp;
+    }, true);
+    document.addEventListener("pointerup", function (e) {
+      if (!coarsePointer()) return;
+      if (e.button != null && e.button !== 0) return;
+      var target = e.target;
+      if (!target || !target.closest) return;
+      var x = e.clientX;
+      var y = e.clientY;
+      var closedOnTrigger = false;
+      var menus = document.querySelectorAll(".drop-menu-input");
+      var i;
+      for (i = 0; i < menus.length; i++) {
+        var id = menus[i].getAttribute("data-target");
+        var trigger = id && document.getElementById(id);
+        var inst = trigger && trigger._tippy;
+        if (!inst || !inst.state || !inst.state.isShown) continue;
+        var pop = inst.popper;
+        var onTrigger = trigger.contains(target) || pointInRect(x, y, trigger.getBoundingClientRect());
+        var onPop = pop && (pop === target || pop.contains(target));
+        if (onTrigger) {
+          hideTippy(inst);
+          closedOnTrigger = true;
+          continue;
+        }
+        if (!onPop) hideTippy(inst);
+      }
+      var pops = document.querySelectorAll(".popover.show");
+      var j;
+      for (j = 0; j < pops.length; j++) {
+        var popEl = pops[j];
+        if (popEl.contains(target)) continue;
+        var pid = popEl.getAttribute("id");
+        var trig = pid && document.querySelector('[aria-describedby="' + pid + '"]');
+        var onTrig = false;
+        if (trig) {
+          onTrig = trig.contains(target) || pointInRect(x, y, trig.getBoundingClientRect());
+        }
+        try {
+          var Pop = window.bootstrap && window.bootstrap.Popover;
+          var pinst = Pop && trig && Pop.getInstance(trig);
+          if (pinst) pinst.hide();
+          else popEl.classList.remove("show");
+        } catch (err) { /* ignore */ }
+        if (onTrig) closedOnTrigger = true;
+      }
+      if (closedOnTrigger) {
+        var stamp = e.timeStamp;
+        arm = { upTs: stamp, olderThan: Infinity };
+        window.setTimeout(function () {
+          if (arm && arm.upTs === stamp) arm = null;
+        }, 700);
+      }
+    }, true);
+    document.addEventListener("click", function (e) {
+      if (!arm) return;
+      // Clicks from the closing tap are older than the next pointerdown.
+      if (e.timeStamp + 1 < arm.olderThan) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+  }
+
   function bindPressPhysics() {
     document.addEventListener("pointerdown", function (e) {
       if (!pressEnabled() || reducedMotion()) return;
@@ -708,6 +798,9 @@
       if (!target || !target.closest) return;
       var el = target.closest(PRESS_SELECTOR);
       if (!el) return;
+      // Press scale on a popover or drop-menu trigger swallows the second tap
+      // on touch, so the menu stays open.
+      if (target.closest(".drop-menu-input, [data-bs-toggle='popover']")) return;
       if (el.disabled || el.getAttribute("aria-disabled") === "true" || el.classList.contains("disabled")) return;
       if (target.closest("input, textarea, select, .form-control")) return;
       var rect = el.getBoundingClientRect();
@@ -766,6 +859,7 @@
     }
     ios27Started = true;
     bindPressPhysics();
+    bindOverlayDismiss();
     bindMenuMorph();
     bindScrollEdges();
     bindTabInteraction();

@@ -138,6 +138,9 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
 :root[data-glass-preset="light"] {
   --glass-body-bg: #f2f2f7;
   --glass-body-color: #1d1d1f;
+  // Opaque enough that striped table text does not sit on the wallpaper.
+  --glass-table-scrim: rgba(242, 242, 247, 0.96);
+  --glass-table-stripe: rgba(226, 226, 232, 0.98);
   // iOS 27 midpoint (intensity 0.5): stronger rim, lip, and edge, even blur.
   // These match the JS blend so nothing shifts when shiny-glass.js loads.
   --glass-bg: rgba(255, 255, 255, 0.30);
@@ -188,6 +191,8 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
 :root[data-glass-preset="dark"] {
   --glass-body-bg: #000000;
   --glass-body-color: #f5f5f7;
+  --glass-table-scrim: rgba(22, 22, 24, 0.96);
+  --glass-table-stripe: rgba(40, 40, 44, 0.98);
   // iOS 27 midpoint (intensity 0.5), dark pack. Matches the JS blend.
   --glass-bg: rgba(255, 255, 255, 0.16);
   --glass-bg-hover: rgba(255, 255, 255, 0.23);
@@ -596,6 +601,21 @@ body > .dropdown-menu,
     inset 0 1px 0 var(--glass-highlight);
 }
 
+// Virtual Select's mobile popup parks a circular close control 48px below
+// the panel. Keep it in the dropdown chrome instead of over the page.
+.vscomp-wrapper.show-as-popup .vscomp-dropbox-close-button {
+  top: 0.45rem;
+  right: 0.45rem;
+  bottom: auto;
+  left: auto;
+  margin: 0;
+  z-index: 3;
+}
+
+.vscomp-wrapper.show-as-popup .vscomp-search-wrapper {
+  padding-right: 2.75rem;
+}
+
 .col-sm-8[role="main"],
 .col-sm-8 > .tab-content,
 .tab-content > .tab-pane.active {
@@ -634,6 +654,12 @@ form.well,
   overflow: visible; // allow select menus to layer above siblings
   color: inherit;
 
+  // Ultra Clear still reads as a pane: the fill thins out, the edge does not.
+  html[data-glass-intensity="0"] & {
+    outline: 1px solid color-mix(in srgb, var(--glass-body-color) 46%, transparent);
+    outline-offset: -1px;
+  }
+
   .card-header {
     background: transparent;
     border-bottom: 1px solid var(--glass-border);
@@ -645,6 +671,98 @@ form.well,
     background: transparent;
     border-top: 1px solid var(--glass-border);
   }
+}
+
+// Full-screen cards: the body fills the overlay and pagination sits at the
+// bottom instead of floating under a short table.
+html[data-glass-preset] #bslib-full-screen-overlay {
+  background-color: rgba(15, 15, 20, 0.42) !important;
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] {
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+  min-height: 0;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] > .card-header,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] > .card-footer {
+  flex: 0 0 auto;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] > .card-body {
+  flex: 1 1 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] :is(
+  .shiny-html-output,
+  .datatables,
+  .html-fill-container,
+  .html-fill-item,
+  .shiny-plot-output,
+  .shiny-image-output,
+  .js-plotly-plot,
+  .plotly.html-widget
+) {
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_wrapper {
+  flex: 1 1 0;
+  display: flex !important;
+  flex-direction: column;
+  min-height: 0;
+  height: 100% !important;
+  max-height: 100% !important;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_scroll,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_wrapper > table {
+  flex: 1 1 auto;
+  height: 0;
+  min-height: 0;
+  overflow: auto;
+  display: block;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_wrapper > table > thead,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_wrapper > table > tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_length,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_filter,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_info,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .dataTables_paginate {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .shiny-plot-output img,
+html[data-glass-preset] .bslib-card[data-full-screen="true"] .shiny-image-output img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
 }
 
 // Opt-in panel for client-owned markup (shinyreact and other trees that do
@@ -1550,6 +1668,8 @@ form.well,
 .selectize-control.single .selectize-input,
 .selectize-control.multi .selectize-input {
   @include glass-input();
+  position: relative;
+  cursor: pointer;
   border-radius: 0.75rem !important;
   // Selectize ships dark item ink (rgba(0,0,0,.83)); force body/glass ink.
   color: var(--glass-body-color, inherit) !important;
@@ -1598,6 +1718,20 @@ form.well,
       0 0 0 0.2rem rgba($primary, 0.12),
       inset 0 1px 0 var(--glass-highlight);
   }
+}
+
+// Closed single selectize leaves a ~4px caret input as the accessible box.
+// Stretch that input over the visible control until the menu opens.
+.selectize-control.single:not(.dropdown-active) .selectize-input > input {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  opacity: 0 !important;
+  z-index: 2;
+  cursor: pointer;
 }
 
 // Dark: more opaque field fill so light ink stays readable on glass (not
@@ -1845,6 +1979,20 @@ samp {
   padding: 0.15rem 0.4rem;
   white-space: normal;
   box-shadow: none;
+}
+
+// A verbatim block paints --glass-bg, which is thinner than the card material
+// and makes that one card look more transparent than its siblings.
+.card pre,
+.bslib-card pre,
+.card pre.shiny-text-output,
+.bslib-card pre.shiny-text-output,
+.card .shiny-text-output:not(.value-box-value),
+.bslib-card .shiny-text-output:not(.value-box-value) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 // Help / muted text must stay legible on both packs
@@ -2783,7 +2931,7 @@ small,
 
     thead th,
     thead td {
-      background: var(--glass-bg-hover);
+      background: var(--glass-table-scrim, var(--glass-bg-hover));
       border-bottom: 1px solid var(--glass-border) !important;
       color: inherit;
       font-weight: 600;
@@ -2805,10 +2953,12 @@ small,
         vertical-align: middle;
         white-space: normal;
         overflow-wrap: anywhere;
+        background-color: var(--glass-table-scrim, rgba(242, 242, 247, 0.96)) !important;
       }
 
       &:nth-child(even) > td {
-        background: color-mix(in srgb, var(--glass-bg) 70%, transparent);
+        background: var(--glass-table-stripe, rgba(226, 226, 232, 0.98)) !important;
+        background-color: var(--glass-table-stripe, rgba(226, 226, 232, 0.98)) !important;
       }
 
       &:hover > td {
@@ -2944,6 +3094,24 @@ small,
     color: inherit !important;
     opacity: 0.45;
   }
+}
+
+// Other table hosts (Bootstrap, gt, reactable) get the same body backing.
+html[data-glass-preset] :is(
+  .table > tbody > tr > td,
+  .table > tbody > tr > th,
+  .gt_table .gt_row,
+  .rt-td
+) {
+  background-color: var(--glass-table-scrim, rgba(242, 242, 247, 0.96)) !important;
+  color: var(--glass-body-color) !important;
+}
+
+html[data-glass-preset] :is(
+  .table-striped > tbody > tr:nth-of-type(even) > *,
+  .rt-tr-striped .rt-td
+) {
+  background-color: var(--glass-table-stripe, rgba(226, 226, 232, 0.98)) !important;
 }
 
 .stati {
@@ -5244,6 +5412,8 @@ html.glass-theme-settling {
 }
 
 .glass-page-controls {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem 1.25rem;
@@ -5251,15 +5421,51 @@ html.glass-theme-settling {
   margin-bottom: 1rem;
   padding: 0.85rem 1rem;
   border-radius: var(--glass-radius);
-  background: var(--glass-bg-content);
-  border: 0.5px solid var(--glass-border);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #fff 42%, transparent) 0%,
+      transparent 34%
+    ),
+    var(--glass-bg-content);
+  // Body-color hairline stays visible when intensity 0 washes --glass-border out.
+  border: 1px solid color-mix(in srgb, var(--glass-body-color) 36%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    inset 0 -1px 0 color-mix(in srgb, var(--glass-body-color) 24%, transparent),
+    0 8px 24px var(--glass-shadow);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
 
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      transparent 30%
+    );
+    z-index: 0;
+  }
+
   > * {
+    position: relative;
+    z-index: 1;
     flex: 1 1 12rem;
     margin-bottom: 0 !important;
   }
+}
+
+html[data-glass-intensity="0"] :is(
+  .glass-page-controls,
+  .bslib-sidebar-layout > .sidebar,
+  .navbar
+) {
+  outline: 1px solid color-mix(in srgb, var(--glass-body-color) 46%, transparent);
+  outline-offset: -1px;
 }
 
 // ---------------------------------------------------------------------------
@@ -6155,6 +6361,92 @@ html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-thu
 
 html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-track {
   background: transparent;
+}
+
+// Coarse pointers need a 44px hit area. Fine pointers stay at least 32px.
+// Link controls grow an invisible box so the text metrics do not change.
+html[data-glass-preset] :is(
+  .glass-theme-toggle .btn,
+  .glass-theme-toggle .action-button,
+  .nav-link,
+  .btn-close,
+  .form-select,
+  .selectize-control .selectize-input,
+  .pagination .page-link,
+  .dataTables_paginate .page-link,
+  [data-bs-toggle="popover"]
+) {
+  box-sizing: border-box;
+  min-height: 32px;
+}
+
+html[data-glass-preset] :is(
+  .bslib-sidebar-layout > .collapse-toggle,
+  .bslib-full-screen-enter,
+  .btn-close
+) {
+  box-sizing: border-box;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+html[data-glass-preset] :is(a.action-button, a.shiny-download-link) {
+  position: relative;
+}
+
+html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  transform: translate(-50%, -50%);
+}
+
+@media (pointer: coarse) {
+  html[data-glass-preset] :is(
+    .glass-theme-toggle .btn,
+    .glass-theme-toggle .action-button,
+    .nav-link,
+    .btn-close,
+    .form-select,
+    .selectize-control .selectize-input,
+    .pagination .page-link,
+    .dataTables_paginate .page-link,
+    [data-bs-toggle="popover"],
+    .modal .btn
+  ) {
+    min-height: 44px;
+  }
+
+  html[data-glass-preset] :is(
+    .bslib-sidebar-layout > .collapse-toggle,
+    .bslib-full-screen-enter,
+    .btn-close,
+    .pagination .page-link,
+    .dataTables_paginate .page-link
+  ) {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  html[data-glass-preset] :is(
+    .bslib-sidebar-layout > .collapse-toggle,
+    .bslib-full-screen-enter
+  ) {
+    width: 44px;
+    height: 44px;
+  }
+
+  html[data-glass-preset] .bslib-full-screen-enter {
+    opacity: 0.85;
+  }
+
+  html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 @media (pointer: coarse), (max-width: 799px) {
