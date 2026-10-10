@@ -1,5 +1,26 @@
 # shinyglass 0.5.0
 
+## Mobile-ready
+
+* On a coarse pointer, the controls Playwright measures are at least 44px.
+  That set is the theme toggle, the sidebar collapse toggle, nav tabs,
+  modal close, selects, DataTables pagination, popover triggers, card
+  expand, and the hit area on `actionLink()` and `downloadLink()`. Harbor
+  notes also checks the send button, edit button, composer, sidebar
+  toggle, sources button, history row, and scroll-to-bottom.
+* A popover on a coarse pointer at 393x852 closes on a second tap of its
+  trigger and on a tap outside. On a 390x852 touch viewport, the Harbor
+  notes sidebar toggle and close button both respond. The sources
+  offcanvas opens from its button and closes from its close button; on a
+  coarse pointer that button is at least 44px.
+* Phone widths do not add a horizontal page scrollbar. Harbor notes stays
+  within 2px at 390x844 and 393x852. The dashboard and Olympics fixtures
+  at 480px stay within 1px. `html` and `body` use `overflow-x: clip`.
+* Playwright runs these checks at iPhone sizes (393x852 and 390x852, with
+  touch). The five hosted demos are also opened with the iPhone 16
+  profile at 393x852. That run expects no preview toggle, no iframe, and
+  one Shiny session.
+
 ## Breaking changes
 
 * The default intensity is `0.5`, Apple's midpoint between Ultra Clear and

@@ -10,6 +10,14 @@ Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstu
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
+## Built for phones
+
+Playwright checks phone-sized viewports (393x852 and 390x852, with touch). On a coarse pointer, the controls those tests measure are at least 44px, including the sidebar toggle and popover triggers. A popover closes on a second tap and on a tap outside. The Harbor notes sidebar toggle and close button both respond. Harbor notes does not scroll sideways at 393x852 or 390x844, and neither do the 480px dashboard and Olympics fixtures. The sources offcanvas opens and closes from its own buttons.
+
+<p align="center">
+<img src="man/figures/phone-frame-demo.png" width="280" alt="Basics demo in an iPhone-sized frame">
+</p>
+
 ## Quick recipe
 
 On an existing bslib page, pass `glass_theme()` as `theme` and observe the controls:
