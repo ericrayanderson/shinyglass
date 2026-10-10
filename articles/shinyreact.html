@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul>
 </li>
@@ -211,6 +212,15 @@ It has no <code>www/ui.css</code>.</p>
 </tr>
 </tbody>
 </table>
+<p><code>useGlassTheme()</code> also reports <code>refraction</code>,
+<code>morph</code>, <code>press</code>, <code>scrollEdge</code>,
+<code>minimizeTabs</code>, <code>iconStyle</code>,
+<code>floatingSidebar</code>, and <code>reducedMotion</code>. Setters
+such as <code>theme.setRefraction(false)</code> and
+<code>theme.setIconStyle("color")</code> call the same client API as
+<code><a href="../reference/update_glass_theme.html">update_glass_theme()</a></code>. <code>GlassSidebar</code> adds
+<code>.glass-sidebar-floating</code> when <code>floating</code> is true
+or the theme turned <code>floating_sidebar</code> on.</p>
 <p><code>GlassButton</code> takes <code>variant</code>
 (<code>"primary"</code> or <code>"secondary"</code>) and
 <code>pressed</code>. Primary fill follows <code>--glass-accent</code> /

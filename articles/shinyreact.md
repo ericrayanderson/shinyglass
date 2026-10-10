@@ -91,6 +91,14 @@ has no `www/ui.css`.
 | `GlassRange` | `input` | `.glass-range` |
 | `GlassIntensitySlider` | `div` | `.glass-intensity-slider` (Ultra Clear to Tinted, default `0.5`) |
 
+`useGlassTheme()` also reports `refraction`, `morph`, `press`,
+`scrollEdge`, `minimizeTabs`, `iconStyle`, `floatingSidebar`, and
+`reducedMotion`. Setters such as `theme.setRefraction(false)` and
+`theme.setIconStyle("color")` call the same client API as
+[`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md).
+`GlassSidebar` adds `.glass-sidebar-floating` when `floating` is true or
+the theme turned `floating_sidebar` on.
+
 `GlassButton` takes `variant` (`"primary"` or `"secondary"`) and
 `pressed`. Primary fill follows `--glass-accent` / `--glass-on-primary`.
 Secondary label ink follows `--glass-body-color`. Sidebar, card, and

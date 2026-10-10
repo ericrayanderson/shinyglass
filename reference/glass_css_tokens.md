@@ -61,5 +61,10 @@ glass_css_tokens()$css_var
 #> [27] "--glass-orb-3"              "--glass-wallpaper"         
 #> [29] "--glass-wallpaper-wash"     "--glass-plot-panel"        
 #> [31] "--glass-primary"            "--glass-accent"            
-#> [33] "--glass-on-primary"        
+#> [33] "--glass-on-primary"         "--glass-ior"               
+#> [35] "--glass-refraction-scale"   "--glass-dispersion"        
+#> [37] "--glass-diffusion"          "--glass-specular-top"      
+#> [39] "--glass-specular-bottom"    "--glass-edge"              
+#> [41] "--glass-press-scale"        "--glass-scroll-edge-fade"  
+#> [43] "--glass-minimize-scale"     "--glass-icon-clear"        
 ```

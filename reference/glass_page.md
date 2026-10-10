@@ -22,6 +22,13 @@ glass_page(
   wallpaper = NULL,
   plot_surface = "clear",
   flatten = FALSE,
+  refraction = TRUE,
+  morph = TRUE,
+  press = TRUE,
+  scroll_edge = TRUE,
+  minimize_tabs = TRUE,
+  icon_style = c("clear", "color", "all"),
+  floating_sidebar = FALSE,
   controls = TRUE,
   theme = NULL
 )
@@ -39,11 +46,14 @@ glass_page(
   Optional page title
   ([`shiny::titlePanel()`](https://rdrr.io/pkg/shiny/man/titlePanel.html)).
 
-- preset, intensity, persist, scene, wallpaper, plot_surface, flatten:
+- preset, intensity, persist, scene, wallpaper, plot_surface, flatten,
+  refraction, morph, press, scroll_edge, minimize_tabs, icon_style,
+  floating_sidebar:
 
   Forwarded to
   [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
-  Persistence defaults to `TRUE` here.
+  Persistence defaults to `TRUE` here. `floating_sidebar` stays off
+  unless you opt in.
 
 - controls:
 

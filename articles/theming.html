@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul>
 </li>
@@ -233,8 +234,15 @@ server can stay in sync.</p>
 <span>  plot_surface <span class="op">=</span> <span class="st">"clear"</span>, <span class="co"># or "opaque" for dense charts/tables</span></span>
 <span>  intensity <span class="op">=</span> <span class="fl">0.5</span>,      <span class="co"># 0 Ultra Clear to 1 Tinted (iOS 27 midpoint)</span></span>
 <span>  tint <span class="op">=</span> <span class="cn">TRUE</span>,      <span class="co"># sample plot/image colors into glass surfaces</span></span>
-<span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># pointer specular highlight</span></span>
-<span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># compact navbar while scrolling down</span></span>
+<span>  specular <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># static top and bottom highlights (no pointer tilt)</span></span>
+<span>  nav_morph <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># compact navbar while scrolling down</span></span>
+<span>  refraction <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  morph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  press <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scroll_edge <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  minimize_tabs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  icon_style <span class="op">=</span> <span class="st">"clear"</span>, <span class="co"># or "color" / "all"</span></span>
+<span>  floating_sidebar <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code>material = "regular"</code> is the adaptive fill (default).
 <code>material = "clear"</code> is deprecated. Use a low
@@ -245,7 +253,17 @@ warns.</p>
 <p>Reduce Transparency (the OS setting) paints opaque fills and turns
 backdrop blur off, including before JavaScript runs. Increase Contrast
 and forced colors override the inline glass variables. The in-app slider
-does not have to move for those overrides to apply.</p>
+does not have to move for those overrides to apply. Reduce Transparency,
+Increase Contrast, and forced colors turn refraction off. Reduced motion
+turns press springs and tab shrinking off. <code>morph</code> still
+shows the active pill, without the spring, when motion is reduced.</p>
+<p><code>refraction = TRUE</code> is the Chromium squircle lens (index
+of refraction about 1.5). Safari and Firefox ignore the displacement map
+and keep blur plus tint. <code>icon_style = "clear"</code> is the
+default for bar and button icons. Light mode uses near-black ink, not
+pure white, so the glyph stays above the contrast floor.
+<code>floating_sidebar = TRUE</code> is the opt-in iPadOS 26 detached
+sidebar.</p>
 <p><code>plot_surface = "clear"</code> is the default: plot and table
 hosts stay translucent so the wallpaper shows through. Use
 <code>"opaque"</code> when dense charts or tables need a regular ~94%

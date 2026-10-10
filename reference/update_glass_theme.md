@@ -20,7 +20,14 @@ update_glass_theme(
   ambient_motion = NULL,
   scene = NULL,
   flatten = NULL,
-  tokens = NULL
+  tokens = NULL,
+  refraction = NULL,
+  morph = NULL,
+  press = NULL,
+  scroll_edge = NULL,
+  minimize_tabs = NULL,
+  icon_style = NULL,
+  floating_sidebar = NULL
 )
 ```
 
@@ -76,6 +83,16 @@ update_glass_theme(
   Optional named list of CSS token overrides (see
   [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)).
   Applied live via CSS variables.
+
+- refraction, morph, press, scroll_edge, minimize_tabs,
+  floating_sidebar:
+
+  Optional logicals. See
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
+
+- icon_style:
+
+  Optional `"clear"`, `"color"`, or `"all"`.
 
 ## Value
 

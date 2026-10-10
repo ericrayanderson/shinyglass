@@ -2,6 +2,105 @@
 
 ## shinyglass (development version)
 
+### Breaking changes
+
+- Specular highlights are static top and bottom bands. Pointer tracking
+  and the ambient specular drift are gone. `specular = TRUE` still
+  paints the highlights. `specular = FALSE` hides them. iOS 27 does not
+  tilt glass.
+- Glass edges are darker, and diffusion is more even across chrome and
+  content. Fill alphas and the default intensity (`0.5`) are unchanged.
+- Chromium bends the backdrop through a convex squircle lens (index of
+  refraction about 1.5, flat interior, bend concentrated at the rim,
+  subtle chromatic dispersion). Safari and Firefox keep blur and tint.
+  `refraction = FALSE` turns the lens off. Reduced transparency,
+  increased contrast, forced colors, and flatten mode do the same.
+- Nav pills, tabs, button groups, and the theme toggle get a
+  non-interactive indicator that springs between the active item. Menus
+  and popovers scale out of their trigger. `morph = FALSE` disables
+  that. Click targets stay on the original controls.
+- Buttons and nav links scale and rotate slightly while pressed, then
+  spring back (`press = TRUE`). Reduced motion skips the spring.
+- Tab bars and nav pills shrink while scrolling down and expand on
+  scroll up or interaction (`minimize_tabs = TRUE`). Reduced motion
+  keeps them full size. Navbar compact-on-scroll is still `nav_morph`.
+- Icons in nav bars, tab bars, and non-primary buttons use monochrome
+  clear-glass ink (`icon_style = "clear"`). Light mode uses `#1d1d1f` so
+  the glyph stays above the contrast floor. Dark mode uses near-white.
+  Primary buttons keep their own ink. `"color"` leaves author colors.
+  `"all"` also restyles icons inside cards.
+- These defaults load in existing apps. Layout, inputs, and click
+  targets keep working. The iPadOS 26 detached sidebar is opt-in
+  (`floating_sidebar = TRUE`) and off by default.
+
+### New features
+
+- [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md),
+  [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md),
+  and
+  [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+  take `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`,
+  `icon_style`, and `floating_sidebar`. Tokens include `--glass-ior`,
+  `--glass-refraction-scale`, `--glass-dispersion`, `--glass-diffusion`,
+  `--glass-specular-top`, `--glass-specular-bottom`, `--glass-edge`,
+  `--glass-press-scale`, `--glass-scroll-edge-fade`,
+  `--glass-minimize-scale`, and `--glass-icon-clear`.
+- Scroll edge fades a uniform toolbar backing when content sits under
+  floating bars (`scroll_edge = TRUE`).
+- shinyreact `useGlassTheme()` reports the same knobs and can set them.
+  `GlassSidebar` floats when `floating` is set or the theme opts in.
+- Displacement maps are generated in `inst/js/glass-ios27.js` (not
+  copied from the reference projects). The approach follows public
+  `backdrop-filter: url()` lens work: Surdeddd/liquidglassjs,
+  nikdelvin/liquid-glass, and archisvaze/liquid-glass.
+- Compatibility fixture `inst/examples/compat-glass.R` with Playwright
+  coverage in `inst/scripts/browser/compat.spec.js`. It checks common
+  inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
+  shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode,
+  scroll, and print under the iOS 27 defaults and with refraction
+  fallback.
+- Harbor notes (`inst/examples/shinychat-glass`) is one of the five
+  hosted demos, with basics, dashboard, inputs, and Olympics. plotly +
+  gt stays a local example (`inst/examples/plotly-gt-demo.R`) and stays
+  in the deploy catalog, outside that five-app set. Harbor notes uses
+  the dusk wallpaper, streams a local script (thinking, a tool card, and
+  a citation) with no API key, and uses
+  [`ellmer::chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html)
+  (Gemini Flash) when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each
+  session allows 8 messages of at most 400 characters. Quota and other
+  API errors fall back to the local script. Deploy key `chat`
+  (`shinyglass-chat`). When `GEMINI_API_KEY` is present in the deploy
+  environment, the chat bundle gets a temporary `.Renviron`.
+  shinyapps.io does not accept rsconnect `envVars`. The value is not
+  logged.
+- shinychat 0.5
+  [`page_chat()`](https://posit-dev.github.io/shinychat/r/reference/page_chat.html)
+  and
+  [`chat_ui()`](https://posit-dev.github.io/shinychat/r/reference/chat_ui.html)
+  pick up the glass pack: full-window header and history sidebar,
+  message bubbles, a floating composer, thinking panels, tool rows,
+  citation chips, artifact previews, toolbars, and the slash-command
+  menu. Refraction, morph, press, and the scroll edge stay on. Example:
+  `inst/examples/shinychat-glass` (local echo, no API key).
+- bslib 0.12
+  [`offcanvas()`](https://rstudio.github.io/bslib/reference/offcanvas.html)
+  panels use the glass material, scale in from the trigger, and show a
+  scroll edge on the header. Bootstrap still owns the slide.
+
+### Bug fixes
+
+- [`bslib::input_dark_mode()`](https://rstudio.github.io/bslib/reference/input_dark_mode.html)
+  switches the glass pack when it writes `data-bs-theme`.
+
+- Leaflet popups are not clipped by the map frame, and plotly hover
+  stays above the card sheen.
+
+- shinyWidgets `materialSwitch()` gets a 24px hit target so the knob
+  stays inside glass cards and accepts clicks.
+
+- Tooltips do not capture pointer events, so a hint over the next
+  control does not block the click.
+
 - iOS 27 Liquid Glass alignment. The default intensity is now `0.5`,
   Apple’s midpoint between Ultra Clear and Tinted (previously `0.45`).
   Apps that do not set `intensity` look slightly more tinted, with a
@@ -403,14 +502,17 @@ CRAN release: 2026-08-02
 
 - Fix:
   [`bslib::sidebar()`](https://rstudio.github.io/bslib/reference/sidebar.html)
-  / `page_sidebar()` layout no longer collapses to a full-width stack.
-  Glass floating-sidebar rules now win over bslib’s later
-  `position`/`width` cascade, and open sidebars reserve space in main so
-  value boxes and cards stay fully visible beside the chrome (not under
-  it).
-- Fix: nested `layout_sidebar()` no longer double-floats. Inner sidebars
-  keep glass styling but use bslib’s in-flow grid so content is not
-  pushed into a large empty gutter beside a second absolute panel.
+  /
+  [`page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html)
+  layout no longer collapses to a full-width stack. Glass
+  floating-sidebar rules now win over bslib’s later `position`/`width`
+  cascade, and open sidebars reserve space in main so value boxes and
+  cards stay fully visible beside the chrome (not under it).
+- Fix: nested
+  [`layout_sidebar()`](https://rstudio.github.io/bslib/reference/sidebar.html)
+  no longer double-floats. Inner sidebars keep glass styling but use
+  bslib’s in-flow grid so content is not pushed into a large empty
+  gutter beside a second absolute panel.
 - Improve: AdminLTE chrome (classic `shinydashboard` and `bs4Dash`) gets
   stronger glass overlay — translucent header/sidebar, soft-tinted
   value/info boxes, and clearer menu active states — without breaking

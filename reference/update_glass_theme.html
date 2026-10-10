@@ -11,7 +11,7 @@ Requires a page that used glass_theme() (so shiny-glass.js is loaded)."></head><
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@ Requires a page that used glass_theme() (so shiny-glass.js is loaded)."></head><
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -64,7 +65,14 @@ Requires a page that used <code><a href="glass_theme.html">glass_theme()</a></co
 <span>  ambient_motion <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scene <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  flatten <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  tokens <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  tokens <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refraction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  morph <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  press <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scroll_edge <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minimize_tabs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  icon_style <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  floating_sidebar <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,6 +126,14 @@ when <code>intensity</code> is omitted it is sent as intensity <code>0.12</code>
 <dt id="arg-tokens">tokens<a class="anchor" aria-label="anchor" href="#arg-tokens"></a></dt>
 <dd><p>Optional named list of CSS token overrides (see
 <code><a href="glass_add_tokens.html">glass_add_tokens()</a></code>). Applied live via CSS variables.</p></dd>
+
+
+<dt id="arg-refraction-morph-press-scroll-edge-minimize-tabs-floating-sidebar">refraction, morph, press, scroll_edge, minimize_tabs, floating_sidebar<a class="anchor" aria-label="anchor" href="#arg-refraction-morph-press-scroll-edge-minimize-tabs-floating-sidebar"></a></dt>
+<dd><p>Optional logicals. See <code><a href="glass_theme.html">glass_theme()</a></code>.</p></dd>
+
+
+<dt id="arg-icon-style">icon_style<a class="anchor" aria-label="anchor" href="#arg-icon-style"></a></dt>
+<dd><p>Optional <code>"clear"</code>, <code>"color"</code>, or <code>"all"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

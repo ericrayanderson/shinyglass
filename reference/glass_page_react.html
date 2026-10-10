@@ -17,7 +17,7 @@ CSS lives, and the page keeps the JS without the look."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,7 @@ CSS lives, and the page keeps the JS without the look."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -89,9 +90,12 @@ CSS lives, and the page keeps the JS without the look.</p>
 React client still owns the DOM. Build it from <code>GlassPage</code>, <code>GlassSidebar</code>,
 <code>GlassSurface</code> / <code>GlassCard</code>, and <code>GlassButton</code> on <code>window.shinyglass</code>.
 <code>useGlassTheme()</code> tracks the live mode (<code>light</code> / <code>dark</code> / <code>auto</code>), the
-resolved preset, scene, material, and intensity, plus whether Reduce
-Transparency, Increase Contrast, or forced colors are active. Its setters
-call <code>window.shinyglass.setPreset()</code> and the other existing mutators.
+resolved preset, scene, material, and intensity, plus refraction, morph,
+press, scroll edge, tab minimize, icon style, and floating sidebar, and
+whether Reduce Transparency, Increase Contrast, forced colors, or reduced
+motion are active. Its setters call <code>window.shinyglass.setPreset()</code> and
+the other mutators, including <code>setRefraction()</code> and <code>setIconStyle()</code>.
+<code>GlassSidebar</code> floats when <code>floating</code> is set or the theme opts in.
 <code>GlassIntensitySlider</code> runs from Ultra Clear to Tinted and defaults to
 <code>0.5</code>. <code>setMaterial("clear")</code> is deprecated and maps to intensity <code>0.12</code>.
 Wallpaper, type, and <code>--glass-*</code> tokens apply to the document. Those

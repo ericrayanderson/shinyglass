@@ -19,7 +19,7 @@ is not enough: shinyreact would suppress Bootstrap and drop this CSS)."></head><
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@ is not enough: shinyreact would suppress Bootstrap and drop this CSS)."></head><
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -83,6 +84,13 @@ is not enough: shinyreact would suppress Bootstrap and drop this CSS).</p>
 <span>  wallpaper <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  flatten <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tokens <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refraction <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  morph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  press <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scroll_edge <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  minimize_tabs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  icon_style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clear"</span>, <span class="st">"color"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
+<span>  floating_sidebar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -142,7 +150,8 @@ and Increase Contrast override the painted glass.</p></dd>
 
 
 <dt id="arg-specular">specular<a class="anchor" aria-label="anchor" href="#arg-specular"></a></dt>
-<dd><p>Pointer-driven specular highlight on glass surfaces (JS).</p></dd>
+<dd><p>Static top and bottom specular highlights. iOS 27 does not
+follow the pointer or device tilt. <code>FALSE</code> hides the highlights.</p></dd>
 
 
 <dt id="arg-nav-morph">nav_morph<a class="anchor" aria-label="anchor" href="#arg-nav-morph"></a></dt>
@@ -179,6 +188,51 @@ blur). See <code><a href="glass_flatten.html">glass_flatten()</a></code>.</p></d
 <dt id="arg-tokens">tokens<a class="anchor" aria-label="anchor" href="#arg-tokens"></a></dt>
 <dd><p>Named list of public CSS token overrides (see
 <code><a href="glass_css_tokens.html">glass_css_tokens()</a></code> / <code><a href="glass_add_tokens.html">glass_add_tokens()</a></code>).</p></dd>
+
+
+<dt id="arg-refraction">refraction<a class="anchor" aria-label="anchor" href="#arg-refraction"></a></dt>
+<dd><p><code>TRUE</code> (default) bends the backdrop through a convex
+squircle lens in Chromium (<code>backdrop-filter: url()</code> plus an SVG
+displacement map, index of refraction about 1.5). Safari and Firefox
+keep the blur and tint. Reduced transparency, increased contrast,
+forced colors, and flatten mode turn the lens off.</p></dd>
+
+
+<dt id="arg-morph">morph<a class="anchor" aria-label="anchor" href="#arg-morph"></a></dt>
+<dd><p><code>TRUE</code> (default) springs an active indicator between items
+in the same group (nav pills, tabs, button groups, the theme toggle)
+and scales menus and popovers out of their trigger. Click targets stay
+on the original controls.</p></dd>
+
+
+<dt id="arg-press">press<a class="anchor" aria-label="anchor" href="#arg-press"></a></dt>
+<dd><p><code>TRUE</code> (default) scales and slightly rotates glass buttons
+and nav links while pressed, then springs back. Reduced motion skips it.</p></dd>
+
+
+<dt id="arg-scroll-edge">scroll_edge<a class="anchor" aria-label="anchor" href="#arg-scroll-edge"></a></dt>
+<dd><p><code>TRUE</code> (default) lays a uniform toolbar backing and
+edge fade over floating bars while content scrolls underneath.</p></dd>
+
+
+<dt id="arg-minimize-tabs">minimize_tabs<a class="anchor" aria-label="anchor" href="#arg-minimize-tabs"></a></dt>
+<dd><p><code>TRUE</code> (default) shrinks top and bottom tab bars and
+nav pills while scrolling down, and expands them on scroll up or
+interaction. Reduced motion keeps them full size.</p></dd>
+
+
+<dt id="arg-icon-style">icon_style<a class="anchor" aria-label="anchor" href="#arg-icon-style"></a></dt>
+<dd><p><code>"clear"</code> (default) paints icons in nav bars, tab bars,
+and non-primary buttons as monochrome glass ink: <code>#1d1d1f</code> in light mode
+(a white glyph would fail the contrast floor) and near-white in dark
+mode. <code>"color"</code> leaves author colors. <code>"all"</code> also restyles icons
+inside cards, still skipping solid accent buttons.</p></dd>
+
+
+<dt id="arg-floating-sidebar">floating_sidebar<a class="anchor" aria-label="anchor" href="#arg-floating-sidebar"></a></dt>
+<dd><p><code>FALSE</code> (default). <code>TRUE</code> detaches bslib and
+<code>.glass-sidebar</code> panels into a rounded glass card with margin (iPadOS 26
+style). Off by default so existing layouts keep their docked sidebar.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

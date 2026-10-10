@@ -11,7 +11,7 @@ observe_glass() in the server function."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@ observe_glass() in the server function."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="../articles/playground.html">Try it</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -63,6 +64,13 @@ Dark / Auto toggle, intensity slider, and accent wells. Pair with
 <span>  wallpaper <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_surface <span class="op">=</span> <span class="st">"clear"</span>,</span>
 <span>  flatten <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  refraction <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  morph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  press <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scroll_edge <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  minimize_tabs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  icon_style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clear"</span>, <span class="st">"color"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
+<span>  floating_sidebar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  controls <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  theme <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -80,8 +88,9 @@ Dark / Auto toggle, intensity slider, and accent wells. Pair with
 <dd><p>Optional page title (<code><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">shiny::titlePanel()</a></code>).</p></dd>
 
 
-<dt id="arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten">preset, intensity, persist, scene, wallpaper, plot_surface, flatten<a class="anchor" aria-label="anchor" href="#arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten"></a></dt>
-<dd><p>Forwarded to <code><a href="glass_theme.html">glass_theme()</a></code>. Persistence defaults to <code>TRUE</code> here.</p></dd>
+<dt id="arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten-refraction-morph-press-scroll-edge-minimize-tabs-icon-style-floating-sidebar">preset, intensity, persist, scene, wallpaper, plot_surface, flatten, refraction, morph, press, scroll_edge, minimize_tabs, icon_style, floating_sidebar<a class="anchor" aria-label="anchor" href="#arg-preset-intensity-persist-scene-wallpaper-plot-surface-flatten-refraction-morph-press-scroll-edge-minimize-tabs-icon-style-floating-sidebar"></a></dt>
+<dd><p>Forwarded to <code><a href="glass_theme.html">glass_theme()</a></code>. Persistence defaults to <code>TRUE</code> here.
+<code>floating_sidebar</code> stays off unless you opt in.</p></dd>
 
 
 <dt id="arg-controls">controls<a class="anchor" aria-label="anchor" href="#arg-controls"></a></dt>

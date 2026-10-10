@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@
 <li><a class="dropdown-item" href="articles/theming.html">Theming and light/dark</a></li>
     <li><a class="dropdown-item" href="articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="articles/shinyreact.html">shinyreact</a></li>
+    <li><a class="dropdown-item" href="articles/shinychat.html">shinychat</a></li>
     <li><a class="dropdown-item" href="articles/playground.html">Try it</a></li>
   </ul>
 </li>
@@ -104,6 +105,7 @@
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="reference/glass_page.html">glass_page()</a></code> includes Light / Dark / Auto, the intensity slider, and accent wells. Set <code>persist = TRUE</code> (the default here) to remember those choices.</p>
 <p>The intensity slider mirrors iOS 27 <strong>Settings → Appearance → Liquid Glass</strong> (continuous Ultra Clear → Tinted). The default is <code>0.5</code>, Apple’s midpoint. Browsers cannot read that OS slider, so the in-app control is the supported way to match the look. Reduce Transparency paints solid fills with no backdrop blur. Increase Contrast and forced colors override the glass variables.</p>
+<p>Defaults also follow iOS 27 as far as a browser can. Chromium refracts the backdrop through a squircle lens. Safari and Firefox keep blur and tint. Active pills and tabs spring into each other, buttons press with a short spring, and floating bars pick up a scroll-edge fade. Tab bars shrink while you scroll down. Specular highlights are static (no pointer tilt). Icons in bars and non-primary buttons are monochrome clear glass (<code>icon_style = "clear"</code>). Pass <code>icon_style = "color"</code> to keep author colors. The detached sidebar is opt-in: <code>floating_sidebar = TRUE</code>.</p>
 <p>Dense charts and tables can opt into a regular panel with <code>glass_theme(plot_surface = "opaque")</code> while nav and controls stay on glass. The default <code>"clear"</code> look still shows the wallpaper through plot hosts. Use <code><a href="reference/glass_plot_surface_input.html">glass_plot_surface_input()</a></code> to toggle live (ggplot / plotly / gt / DT).</p>
 <p>Named wallpaper scenes (<code>tahoe</code>, <code>dusk</code>, <code>mesh</code>, <code>aurora</code>, <code>harbor</code>, <code>grove</code>) and optional <code>wallpaper=</code> photos stay behind a blur + wash so text meets the contrast floor. For chromote, PDF, or screenshots, call <code><a href="reference/glass_flatten.html">glass_flatten()</a></code> or open the app with <code>?glass_flatten=1</code>.</p>
 <p>Power users can read <code><a href="reference/glass_css_tokens.html">glass_css_tokens()</a></code> and override <code>--glass-*</code> variables with <code>glass_theme(tokens = list(blur = "28px"))</code> without forking SCSS.</p>
@@ -123,6 +125,10 @@
 </tr></thead>
 <tbody>
 <tr>
+<td><a href="inst/examples/shinychat-glass/app.R">Harbor notes</a></td>
+<td>Liquid Glass chat. Local script, or Gemini when the host has a key</td>
+</tr>
+<tr>
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Basics</a></td>
 <td>Theme switching and core controls</td>
 </tr>
@@ -138,12 +144,9 @@
 <td><a href="https://ericrayanderson.shinyapps.io/shinyglass-olympics/" class="external-link">Olympic medals</a></td>
 <td>A complete dashboard</td>
 </tr>
-<tr>
-<td><a href="https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/" class="external-link">plotly + gt</a></td>
-<td>Interactive charts and tables</td>
-</tr>
 </tbody>
 </table>
+<p>These five are the hosted set. Harbor notes is not on shinyapps.io yet; its app name is <code>shinyglass-chat</code>. plotly + gt remains a local example in <code>inst/examples/plotly-gt-demo.R</code>.</p>
 <p>Built for Bootstrap 5 and bslib. See <a href="https://ericrayanderson.github.io/shinyglass/articles/compatibility.html">compatibility</a> for supported widgets and older layouts.</p>
 <p>More: <a href="https://github.com/ericrayanderson/shinyglass/tree/main/inst/examples" class="external-link">examples</a> · <a href="https://github.com/ericrayanderson/shinyglass/tree/main/python" class="external-link">experimental Python package</a> · <a href="https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/VISUAL-QA.md" class="external-link">testing</a> · <a href="https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/SHINYAPPS-DEPLOY.md" class="external-link">deployment</a></p>
 </div>
@@ -151,7 +154,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><p><a href="https://github.com/ericrayanderson/shinyglass" class="external-link">Source code</a> <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report a bug</a> <a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Live demos</a> · <a href="https://ericrayanderson.shinyapps.io/shinyglass-plotly-gt/" class="external-link">plotly+gt</a></p></li>
+<li><p><a href="https://github.com/ericrayanderson/shinyglass" class="external-link">Source code</a> <a href="https://github.com/ericrayanderson/shinyglass/issues" class="external-link">Report a bug</a> <a href="https://ericrayanderson.shinyapps.io/shinyglass-demo/" class="external-link">Basics</a> · <a href="https://ericrayanderson.shinyapps.io/shinyglass-dashboard/" class="external-link">Dashboard</a> · <a href="https://ericrayanderson.shinyapps.io/shinyglass-inputs/" class="external-link">Inputs</a> · <a href="https://ericrayanderson.shinyapps.io/shinyglass-olympics/" class="external-link">Olympics</a> · <a href="articles/shinychat.html">Harbor notes</a></p></li>
 </ul>
 </div>
 

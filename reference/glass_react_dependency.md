@@ -8,7 +8,9 @@ serves `www/ui.js` as an ES module and exposes one React on
 `GlassStack`, `GlassButton`, `GlassTitle`, `GlassMuted`, `GlassRange`,
 and `GlassIntensitySlider` on `window.shinyglass` and as named exports.
 `useGlassTheme()` also reports `reducedTransparency`,
-`increasedContrast`, and `forcedColors`.
+`increasedContrast`, `forcedColors`, and `reducedMotion`, plus
+`refraction`, `morph`, `press`, `scrollEdge`, `minimizeTabs`,
+`iconStyle`, and `floatingSidebar`.
 
 ## Usage
 

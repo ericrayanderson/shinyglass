@@ -34,6 +34,13 @@ glass_theme(
   wallpaper = NULL,
   flatten = FALSE,
   tokens = NULL,
+  refraction = TRUE,
+  morph = TRUE,
+  press = TRUE,
+  scroll_edge = TRUE,
+  minimize_tabs = TRUE,
+  icon_style = c("clear", "color", "all"),
+  floating_sidebar = FALSE,
   ...
 )
 ```
@@ -93,7 +100,8 @@ glass_theme(
 
 - specular:
 
-  Pointer-driven specular highlight on glass surfaces (JS).
+  Static top and bottom specular highlights. iOS 27 does not follow the
+  pointer or device tilt. `FALSE` hides the highlights.
 
 - nav_morph:
 
@@ -136,6 +144,51 @@ glass_theme(
   [`glass_css_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_css_tokens.md)
   /
   [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md)).
+
+- refraction:
+
+  `TRUE` (default) bends the backdrop through a convex squircle lens in
+  Chromium (`backdrop-filter: url()` plus an SVG displacement map, index
+  of refraction about 1.5). Safari and Firefox keep the blur and tint.
+  Reduced transparency, increased contrast, forced colors, and flatten
+  mode turn the lens off.
+
+- morph:
+
+  `TRUE` (default) springs an active indicator between items in the same
+  group (nav pills, tabs, button groups, the theme toggle) and scales
+  menus and popovers out of their trigger. Click targets stay on the
+  original controls.
+
+- press:
+
+  `TRUE` (default) scales and slightly rotates glass buttons and nav
+  links while pressed, then springs back. Reduced motion skips it.
+
+- scroll_edge:
+
+  `TRUE` (default) lays a uniform toolbar backing and edge fade over
+  floating bars while content scrolls underneath.
+
+- minimize_tabs:
+
+  `TRUE` (default) shrinks top and bottom tab bars and nav pills while
+  scrolling down, and expands them on scroll up or interaction. Reduced
+  motion keeps them full size.
+
+- icon_style:
+
+  `"clear"` (default) paints icons in nav bars, tab bars, and
+  non-primary buttons as monochrome glass ink: `#1d1d1f` in light mode
+  (a white glyph would fail the contrast floor) and near-white in dark
+  mode. `"color"` leaves author colors. `"all"` also restyles icons
+  inside cards, still skipping solid accent buttons.
+
+- floating_sidebar:
+
+  `FALSE` (default). `TRUE` detaches bslib and `.glass-sidebar` panels
+  into a rounded glass card with margin (iPadOS 26 style). Off by
+  default so existing layouts keep their docked sidebar.
 
 - ...:
 
