@@ -2,6 +2,30 @@
 
 ## shinyglass 0.5.0
 
+### Mobile-ready
+
+- On a coarse pointer, the controls Playwright measures are at least
+  44px. That set is the theme toggle, the sidebar collapse toggle, nav
+  tabs, modal close, selects, DataTables pagination, popover triggers,
+  card expand, and the hit area on
+  [`actionLink()`](https://rdrr.io/pkg/shiny/man/actionButton.html) and
+  [`downloadLink()`](https://rdrr.io/pkg/shiny/man/downloadButton.html).
+  Harbor notes also checks the send button, edit button, composer,
+  sidebar toggle, sources button, history row, and scroll-to-bottom.
+- A popover on a coarse pointer at 393x852 closes on a second tap of its
+  trigger and on a tap outside. On a 390x852 touch viewport, the Harbor
+  notes sidebar toggle and close button both respond. The sources
+  offcanvas opens from its button and closes from its close button; on a
+  coarse pointer that button is at least 44px.
+- Phone widths do not add a horizontal page scroll bar. Harbor notes
+  stays within 2px at 390x844 and 393x852. The dashboard and Olympics
+  fixtures at 480px stay within 1px. `html` and `body` use
+  `overflow-x: clip`.
+- Playwright runs these checks at iPhone sizes (393x852 and 390x852,
+  with touch). The five hosted demos are also opened with the iPhone 16
+  profile at 393x852. That run expects no preview toggle, no embedded
+  frame, and one Shiny session.
+
 ### Breaking changes
 
 - The default intensity is `0.5`, Apple’s midpoint between Ultra Clear
@@ -122,13 +146,22 @@
   citation) with no API key, and uses
   [`ellmer::chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html)
   (Gemini Flash) when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each
-  session allows 8 messages of at most 400 characters. Quota and other
-  API errors fall back to the local script. Deploy key `chat`
-  (`shinyglass-chat`). When `GEMINI_API_KEY` is present in the deploy
-  environment, the chat bundle gets a temporary `.Renviron`.
-  shinyapps.io does not accept rsconnect `envVars`. The value is not
-  logged. Hosted app: [Harbor
+  visitor gets 8 messages of at most 400 characters, shared with the
+  phone preview. Quota and other API errors fall back to the local
+  script. Deploy key `chat` (`shinyglass-chat`). When `GEMINI_API_KEY`
+  is present in the deploy environment, the chat bundle gets a temporary
+  `.Renviron`. shinyapps.io does not accept rsconnect `envVars`. The
+  value is not logged. Hosted app: [Harbor
   notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
+- The five hosted demos have a desktop phone preview. On a wide screen
+  with a fine pointer, a glass control at the bottom right opens the
+  same app inside an iPhone frame. The choice is remembered in the
+  browser. A phone or a narrow window never gets the control, the frame,
+  or a second session, and does not download the preview script unless
+  `(pointer: fine) and (min-width: 900px)` matches. The frame loads the
+  same app with `?frame=0`, so the control does not nest, and no sixth
+  app is deployed. Harbor notes counts that frame toward the same
+  8-message visitor budget.
 - shinychat 0.5
   [`page_chat()`](https://posit-dev.github.io/shinychat/r/reference/page_chat.html)
   and
