@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Demo selection (core5 is the core set, including chat)
+        description: Demo selection (core5 is demo, dashboard, inputs, olympics, chat)
         type: choice
         default: core5
         options: [all, core5, demo, dashboard, intensity, inputs, olympics, plotly_gt, chat]
@@ -118,6 +118,7 @@ jobs:
           R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DEPLOY_APPS: ${{ inputs.apps }}
           DEPLOY_DRY_RUN: ${{ inputs.dry_run }}
         run: |
@@ -134,10 +135,12 @@ jobs:
             )
           }
           Sys.unsetenv(c("SHINYAPPS_TOKEN", "SHINYAPPS_SECRET"))
+          # GEMINI_API_KEY stays in the environment for the chat staging
+          # step. The deploy script reads the name and does not print it.
           apps <- Sys.getenv("DEPLOY_APPS")
           allowed <- c("demo", "dashboard", "intensity", "inputs", "olympics", "plotly_gt", "chat")
           if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
-          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,plotly_gt,chat"
+          if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,chat"
           stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
           args <- c("inst/scripts/deploy-shinyapps-demos.R",
                     "--account=ericrayanderson", paste0("--apps=", apps))

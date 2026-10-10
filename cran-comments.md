@@ -68,7 +68,8 @@ appear on CRAN before upload.
 ## Notes
 
 * Large README marketing assets stay on GitHub via `.Rbuildignore`.
-* Live demos: shinyglass-demo, -dashboard, -inputs, -plotly-gt, -olympics, -chat.
+* Live demos: shinyglass-demo, -dashboard, -inputs, -olympics, -chat.
+  plotly-gt remains a local example.
 * Experimental Python package is not in the CRAN tarball (version
   tracks 0.4.0; not a PyPI release).
 * Release checklist: `inst/scripts/CRAN-RELEASE.md` (devtools-only; not

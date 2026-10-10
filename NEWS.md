@@ -52,13 +52,18 @@
   inputs, DT, reactable, plotly, leaflet, ggplot2, echarts4r,
   shinyWidgets, modals, tooltips, modules, dynamic UI, dark mode, scroll,
   and print under the iOS 27 defaults and with refraction fallback.
-* Harbor notes (`inst/examples/shinychat-glass`) is a core demo next to
-  basics, dashboard, inputs, Olympics, and plotly + gt. It uses the dusk
-  wallpaper, streams a local script (thinking, a tool card, and a citation)
-  with no API key, and uses `ellmer::chat_google_gemini()` (Gemini Flash)
-  when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each session allows 8
+* Harbor notes (`inst/examples/shinychat-glass`) is one of the five hosted
+  demos, with basics, dashboard, inputs, and Olympics. plotly + gt stays a
+  local example (`inst/examples/plotly-gt-demo.R`) and stays in the deploy
+  catalog, outside that five-app set. Harbor notes uses the dusk wallpaper,
+  streams a local script (thinking, a tool card, and a citation) with no API
+  key, and uses `ellmer::chat_google_gemini()` (Gemini Flash) when
+  `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each session allows 8
   messages of at most 400 characters. Quota and other API errors fall
-  back to the local script. Deploy key `chat` (`shinyglass-chat`).
+  back to the local script. Deploy key `chat` (`shinyglass-chat`). When
+  `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
+  gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
+  `envVars`. The value is not logged.
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact

@@ -136,7 +136,15 @@ user_text <- function(value) {
 
 # Prefer GEMINI_API_KEY. GOOGLE_API_KEY is the name ellmer also reads.
 # The value is passed straight to ellmer and is never written to the log or UI.
+# A staged .Renviron next to app.R is how shinyapps.io receives the key.
+# readRenviron does not print values.
 gemini_key <- function() {
+  if (file.exists(".Renviron")) {
+    tryCatch(
+      suppressWarnings(readRenviron(".Renviron")),
+      error = function(e) invisible(NULL)
+    )
+  }
   for (name in c("GEMINI_API_KEY", "GOOGLE_API_KEY")) {
     value <- Sys.getenv(name, "")
     if (nzchar(value)) return(value)

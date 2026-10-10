@@ -14,19 +14,138 @@
 #
 # Usage (from package root):
 #   Rscript inst/scripts/deploy-shinyapps-demos.R
-#   Rscript inst/scripts/deploy-shinyapps-demos.R --apps=demo,dashboard
-#   Rscript inst/scripts/deploy-shinyapps-demos.R --account=myaccount --dry-run
+#   Rscript inst/scripts/deploy-shinyapps-demos.R --apps=core5
+#   Rscript inst/scripts/deploy-shinyapps-demos.R --apps=demo,chat
+#   Rscript inst/scripts/deploy-shinyapps-demos.R --apps=all --dry-run
+#
+# core5 (the default) is the five-app shinyapps.io set:
+#   shinyglass-demo, shinyglass-dashboard, shinyglass-inputs,
+#   shinyglass-olympics, shinyglass-chat.
+# plotly_gt stays in the catalog. inst/examples/plotly-gt-demo.R stays a
+# local example. intensity stays in the catalog too. `all` lists every
+# catalog entry, which is more than the five hosted slots.
 #
 # After deploy, paste the printed URLs into README.md "Live demos".
 #
 # Harbor notes (`chat`, shinyapps name shinyglass-chat) answers with a
-# local script unless a Gemini key is set on the app. In the shinyapps.io
-# dashboard, open the app, then Settings, then Variables, and add
-# GEMINI_API_KEY. GOOGLE_API_KEY is also accepted. Do not put the key in
-# this script, the repo, or the deploy logs. The live model is Gemini Flash
-# (gemini-3.7-flash, or SHINYGLASS_CHAT_MODEL). Each session allows 8
-# messages of at most 400 characters. A quota response (429) or any other
-# API error falls back to the local script and does not print the key.
+# local script unless GEMINI_API_KEY is set in the environment that runs
+# this script. The value is written to a temporary .Renviron in the chat
+# staging directory and is never printed. shinyapps.io rejects the
+# Connect-only envVars argument of deployApp(). The staged file is the
+# equivalent. Do not put the key in this script or the repo.
+# The live model is Gemini Flash (gemini-3.7-flash, or SHINYGLASS_CHAT_MODEL).
+# Each session allows 8 messages of at most 400 characters. A quota
+# response (429) or any other API error falls back to the local script.
+
+# Hosted set for a shinyapps.io plan with five slots. plotly_gt is absent
+# on purpose. olympics and chat stay.
+core5_keys <- c("demo", "dashboard", "inputs", "olympics", "chat")
+
+expand_app_keys <- function(apps_arg, catalog_names) {
+  if (identical(apps_arg, "core5")) {
+    return(core5_keys)
+  }
+  if (identical(apps_arg, "all")) {
+    return(catalog_names)
+  }
+  trimws(strsplit(apps_arg, ",", fixed = TRUE)[[1]])
+}
+
+# Unquoted .Renviron tokens only. ${...} would expand, and a quote or
+# newline would break the line. The value is never placed in a message.
+renviron_line <- function(name, value) {
+  if (!identical(name, "GEMINI_API_KEY")) {
+    stop("Refusing to stage an unexpected variable name.", call. = FALSE)
+  }
+  if (!is.character(value) || length(value) != 1L || is.na(value) || !nzchar(value)) {
+    stop("Refusing to stage an empty GEMINI_API_KEY.", call. = FALSE)
+  }
+  if (grepl("[^A-Za-z0-9_.=/+-]", value)) {
+    stop(
+      "Refusing to stage GEMINI_API_KEY because it contains characters this deploy path will not write.",
+      call. = FALSE
+    )
+  }
+  paste0(name, "=", value)
+}
+
+stage_chat_secret <- function(app_dir, app_name) {
+  if (!identical(app_name, "shinyglass-chat")) {
+    return(invisible(FALSE))
+  }
+  value <- Sys.getenv("GEMINI_API_KEY", "")
+  if (!nzchar(value)) {
+    message(
+      "GEMINI_API_KEY is unset. ", app_name,
+      " will keep the local script."
+    )
+    return(invisible(FALSE))
+  }
+  line <- renviron_line("GEMINI_API_KEY", value)
+  path <- file.path(app_dir, ".Renviron")
+  writeLines(line, path, useBytes = TRUE)
+  Sys.chmod(path, "0600")
+  message(
+    "Staged GEMINI_API_KEY for ", app_name,
+    " in a temporary .Renviron. The value was not logged."
+  )
+  invisible(TRUE)
+}
+
+`%||%` <- function(x, y) if (is.null(x) || !length(x) || (is.character(x) && !nzchar(x[[1]]))) y else x
+
+demo_catalog <- function(pkg_root) {
+  list(
+    demo = list(
+      appName = "shinyglass-demo",
+      source = file.path(pkg_root, "inst", "examples", "demo-app.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "ggplot2", "shinyglass")
+    ),
+    dashboard = list(
+      appName = "shinyglass-dashboard",
+      source = file.path(pkg_root, "inst", "examples", "bslib-dashboard.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "ggplot2", "DT", "shinyglass")
+    ),
+    intensity = list(
+      appName = "shinyglass-intensity",
+      source = file.path(pkg_root, "inst", "examples", "intensity-slider-demo.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "ggplot2", "shinyglass")
+    ),
+    inputs = list(
+      appName = "shinyglass-inputs",
+      source = file.path(pkg_root, "inst", "examples", "inputs-gallery.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "shinyglass")
+    ),
+    olympics = list(
+      appName = "shinyglass-olympics",
+      source = file.path(pkg_root, "inst", "shinyapps", "olympic-medals"),
+      kind = "dreamrs",
+      entry = "app-glass.R",
+      imports = c(
+        "shiny", "shinyWidgets", "ggplot2", "ggthemes", "ggtext", "bslib", "dplyr",
+        "data.table", "reactable", "tidyr", "shinyglass"
+      )
+    ),
+    plotly_gt = list(
+      appName = "shinyglass-plotly-gt",
+      source = file.path(pkg_root, "inst", "examples", "plotly-gt-demo.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "plotly", "gt", "waiter", "shinyglass")
+    ),
+    chat = list(
+      appName = "shinyglass-chat",
+      source = file.path(pkg_root, "inst", "examples", "shinychat-glass", "app.R"),
+      kind = "single",
+      imports = c("shiny", "bslib", "shinyglass", "shinychat", "ellmer", "later")
+    )
+  )
+}
+
+if (sys.nframe() == 0L) {
 
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -42,8 +161,7 @@ has_flag <- function(flag) any(args == flag)
 
 dry_run <- has_flag("--dry-run")
 account <- get_flag("--account", NULL)
-apps_arg <- get_flag("--apps", "demo,dashboard,intensity,inputs,olympics,plotly_gt,chat")
-app_keys <- trimws(strsplit(apps_arg, ",", fixed = TRUE)[[1]])
+apps_arg <- get_flag("--apps", "core5")
 
 if (!requireNamespace("rsconnect", quietly = TRUE)) {
   stop('Install rsconnect first: install.packages("rsconnect")', call. = FALSE)
@@ -88,54 +206,14 @@ if (is.list(sg_desc)) {
   }
 }
 
-catalog <- list(
-  demo = list(
-    appName = "shinyglass-demo",
-    source = file.path(pkg_root, "inst", "examples", "demo-app.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "ggplot2", "shinyglass")
-  ),
-  dashboard = list(
-    appName = "shinyglass-dashboard",
-    source = file.path(pkg_root, "inst", "examples", "bslib-dashboard.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "ggplot2", "DT", "shinyglass")
-  ),
-  intensity = list(
-    appName = "shinyglass-intensity",
-    source = file.path(pkg_root, "inst", "examples", "intensity-slider-demo.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "ggplot2", "shinyglass")
-  ),
-  inputs = list(
-    appName = "shinyglass-inputs",
-    source = file.path(pkg_root, "inst", "examples", "inputs-gallery.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "shinyglass")
-  ),
-  olympics = list(
-    appName = "shinyglass-olympics",
-    source = file.path(pkg_root, "inst", "shinyapps", "olympic-medals"),
-    kind = "dreamrs",
-    entry = "app-glass.R",
-    imports = c(
-      "shiny", "shinyWidgets", "ggplot2", "ggthemes", "ggtext", "bslib", "dplyr",
-      "data.table", "reactable", "tidyr", "shinyglass"
-    )
-  ),
-  plotly_gt = list(
-    appName = "shinyglass-plotly-gt",
-    source = file.path(pkg_root, "inst", "examples", "plotly-gt-demo.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "plotly", "gt", "waiter", "shinyglass")
-  ),
-  chat = list(
-    appName = "shinyglass-chat",
-    source = file.path(pkg_root, "inst", "examples", "shinychat-glass", "app.R"),
-    kind = "single",
-    imports = c("shiny", "bslib", "shinyglass", "shinychat", "ellmer", "later")
-  )
+catalog <- demo_catalog(pkg_root)
+stopifnot(
+  all(core5_keys %in% names(catalog)),
+  "olympics" %in% core5_keys,
+  "chat" %in% core5_keys,
+  !"plotly_gt" %in% core5_keys
 )
+app_keys <- expand_app_keys(apps_arg, names(catalog))
 
 unknown <- setdiff(app_keys, names(catalog))
 if (length(unknown)) {
@@ -205,8 +283,6 @@ stage_dreamrs <- function(app_src, entry, app_dir, imports) {
   write_demo_description(app_dir, imports)
 }
 
-`%||%` <- function(x, y) if (is.null(x) || !length(x) || (is.character(x) && !nzchar(x[[1]]))) y else x
-
 staging <- file.path(tempdir(), "shinyglass-deploy")
 dir.create(staging, showWarnings = FALSE, recursive = TRUE)
 
@@ -221,6 +297,9 @@ for (key in app_keys) {
   } else {
     stage_dreamrs(spec$source, spec$entry, app_dir, imports)
   }
+  # Names only travel in the log. The Connect-only envVars argument
+  # aborts on shinyapps.io, so the key rides in the staged file.
+  stage_chat_secret(app_dir, spec$appName)
 
   # Use the same dependency resolver as deployment, including in dry runs.
   deps <- rsconnect::appDependencies(app_dir)
@@ -276,3 +355,5 @@ if (length(urls)) {
 }
 
 message("\nDone.")
+
+}
