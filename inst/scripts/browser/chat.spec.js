@@ -106,7 +106,7 @@ test('sources panel has an empty state, real citations, and a quiet scrollbar', 
   await expect(panel).toBeHidden();
 
   await page.getByRole('button', { name: /tide at dawn/i }).click();
-  await expect(page.getByText('shinyglass docs').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText('1.4 m').first()).toBeVisible({ timeout: 20000 });
   await page.locator('#open_sources').click();
   await expect(panel).toBeVisible();
   await expect(panel.locator('a[href*="github.io/shinyglass"]')).toBeVisible();

@@ -446,32 +446,121 @@ ui <- tagList(
           var path = (location.pathname || '/').replace(/\\/$/, '') || '/';
           return 'harbor-notes:' + path;
         }
-        function bind() {
-          if (!window.Shiny || !Shiny.addCustomMessageHandler) return;
-          if (window.__harborNotesBound) return;
-          window.__harborNotesBound = true;
-          Shiny.addCustomMessageHandler('harbor-notes-save', function (msg) {
-            try {
-              localStorage.setItem(storageKey(), JSON.stringify({
-                v: 1,
-                messages: (msg && msg.messages) || []
-              }));
-            } catch (e) {}
-          });
-          var raw = null;
-          try { raw = localStorage.getItem(storageKey()); } catch (e) { raw = null; }
-          if (!raw) return;
-          var data = null;
-          try { data = JSON.parse(raw); } catch (e) { return; }
-          if (!data || !data.messages || !data.messages.length) return;
-          Shiny.setInputValue('harbor_notes_restore', data, { priority: 'event' });
+        function asList(value) {
+          if (!value) return [];
+          if (Array.isArray(value)) return value;
+          if (value.role || value.url || value.title) return [value];
+          return [];
         }
-        document.addEventListener('shiny:connected', bind);
-        if (window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected && Shiny.shinyapp.isConnected()) bind();
+        function readRaw() {
+          try {
+            var raw = localStorage.getItem(storageKey());
+            if (!raw) return null;
+            return JSON.parse(raw);
+          } catch (e) { return null; }
+        }
+        function writeNotes(messages, citations) {
+          var prev = readRaw();
+          var cites = citations;
+          if (!cites) cites = (prev && prev.citations) || [];
+          try {
+            localStorage.setItem(storageKey(), JSON.stringify({
+              v: 1,
+              messages: messages || [],
+              citations: cites || []
+            }));
+          } catch (e) {}
+        }
+        function snapshot() {
+          var nodes = document.querySelectorAll('.shiny-chat-user-message, .shiny-chat-message');
+          var out = [];
+          nodes.forEach(function (node) {
+            var pending = node.querySelector('.shiny-chat-message-content[data-pending]');
+            if (pending) return;
+            var role = node.classList.contains('shiny-chat-user-message') ? 'user' : 'assistant';
+            var body = node.querySelector('.shiny-chat-message-content') || node;
+            var text = (body.innerText || '').replace(/\\s+/g, ' ').trim();
+            if (!text) return;
+            out.push({ role: role, text: text.slice(0, 4000) });
+          });
+          return out;
+        }
+        function sendRestore() {
+          var data = readRaw();
+          var messages = asList(data && data.messages);
+          var citations = asList(data && data.citations);
+          Shiny.setInputValue('harbor_notes_restore', {
+            role: messages.map(function (m) { return m.role; }),
+            text: messages.map(function (m) { return m.text; }),
+            cite_title: citations.map(function (c) { return c.title || ''; }),
+            cite_url: citations.map(function (c) { return c.url || ''; }),
+            cite_note: citations.map(function (c) { return c.note || ''; })
+          }, { priority: 'event' });
+        }
+        function bind() {
+          if (!window.Shiny || !Shiny.addCustomMessageHandler || !Shiny.setInputValue) return false;
+          if (window.__harborNotesBound) return true;
+          window.__harborNotesBound = true;
+          var saveTimer = null;
+          var haveServerNotes = false;
+          var root = document.querySelector('shiny-chat-container') || document.body;
+          Shiny.addCustomMessageHandler('harbor-notes-save', function (msg) {
+            var cites = msg && Object.prototype.hasOwnProperty.call(msg, 'citations')
+              ? asList(msg.citations)
+              : null;
+            haveServerNotes = true;
+            writeNotes(asList(msg && msg.messages), cites);
+          });
+          Shiny.addCustomMessageHandler('harbor-notes-request', function (msg) {
+            sendRestore();
+          });
+          if (window.MutationObserver && root) {
+            var obs = new MutationObserver(function () {
+              if (haveServerNotes) return;
+              if (saveTimer) window.clearTimeout(saveTimer);
+              saveTimer = window.setTimeout(function () {
+                if (haveServerNotes) return;
+                var messages = snapshot();
+                if (messages.length) writeNotes(messages, null);
+              }, 200);
+            });
+            obs.observe(root, {
+              childList: true,
+              subtree: true,
+              characterData: true,
+              attributes: true,
+              attributeFilter: ['data-pending']
+            });
+          }
+          return true;
+        }
+        function arm() {
+          var $ = window.jQuery;
+          if (!$ || !window.Shiny) return false;
+          $(document).on('shiny:connected', bind);
+          if (window.Shiny.shinyapp && Shiny.shinyapp.isConnected && Shiny.shinyapp.isConnected()) bind();
+          return true;
+        }
+        if (!arm()) {
+          document.addEventListener('DOMContentLoaded', function () {
+            if (arm()) return;
+            var tries = 0;
+            var timer = window.setInterval(function () {
+              tries += 1;
+              if (arm() || tries > 40) window.clearInterval(timer);
+            }, 50);
+          });
+        }
       })();
     "))
   ),
   tags$div(id = "harbor_notice_host", uiOutput("harbor_notice")),
+  offcanvas(
+    id = "sources_panel",
+    title = "Sources",
+    placement = "end",
+    uiOutput("sources_body")
+  ),
   page_chat(
   "Harbor notes",
   icon = tags$img(
@@ -512,7 +601,11 @@ ui <- tagList(
     open = "open"
   ),
   toolbar = toolbar(
-    toolbar_input_button("open_sources", "Sources")
+    tagAppendAttributes(
+      toolbar_input_button("open_sources", "Sources"),
+      `data-bs-toggle` = "offcanvas",
+      `data-bs-target` = "#sources_panel"
+    )
   )
   )
 )
@@ -535,11 +628,15 @@ server <- function(input, output, session) {
   }
   note_log <- list()
   restoring <- FALSE
+  restore_started <- FALSE
   citations <- reactiveVal(list())
   fallback_notice <- reactiveVal(NULL)
 
   publish_notes <- function() {
-    session$sendCustomMessage("harbor-notes-save", list(messages = note_log))
+    session$sendCustomMessage("harbor-notes-save", list(
+      messages = note_log,
+      citations = citations()
+    ))
   }
 
   remember <- function(role, text) {
@@ -698,27 +795,22 @@ server <- function(input, output, session) {
   })
 
   normalize_restore <- function(payload) {
-    msgs <- if (is.list(payload)) payload$messages else NULL
-    if (is.null(msgs)) return(list())
-    if (is.data.frame(msgs)) {
-      return(lapply(seq_len(nrow(msgs)), function(i) {
-        list(role = as.character(msgs$role[[i]]), text = as.character(msgs$text[[i]]))
-      }))
+    if (!is.list(payload)) return(list())
+    roles <- payload$role
+    texts <- payload$text
+    if (is.null(roles) || is.null(texts)) {
+      msgs <- payload$messages
+      if (is.data.frame(msgs)) {
+        roles <- msgs$role
+        texts <- msgs$text
+      }
     }
-    if (is.list(msgs) && !is.null(msgs$role) && is.atomic(msgs$role)) {
-      return(lapply(seq_along(msgs$role), function(i) {
-        list(
-          role = as.character(msgs$role[[i]]),
-          text = as.character(msgs$text[[i]])
-        )
-      }))
-    }
-    lapply(msgs, function(msg) {
-      list(
-        role = as.character(msg$role %||% ""),
-        text = as.character(msg$text %||% "")
-      )
-    })
+    if (is.null(roles) || is.null(texts)) return(list())
+    roles <- as.character(unlist(roles, use.names = FALSE))
+    texts <- as.character(unlist(texts, use.names = FALSE))
+    n <- min(length(roles), length(texts))
+    if (!n) return(list())
+    lapply(seq_len(n), function(i) list(role = roles[[i]], text = texts[[i]]))
   }
 
   chat_enable_history(
@@ -740,6 +832,7 @@ server <- function(input, output, session) {
       ),
       session = session
     )
+    session$sendCustomMessage("harbor-notes-request", list())
   }, once = TRUE)
 
   observeEvent(input$chat_user_input, {
@@ -767,33 +860,58 @@ server <- function(input, output, session) {
   }, ignoreInit = TRUE)
 
   observeEvent(input$harbor_notes_restore, {
-    if (length(note_log)) return()
-    msgs <- normalize_restore(input$harbor_notes_restore)
+    if (restore_started || length(note_log)) return()
+    payload <- input$harbor_notes_restore
+    msgs <- normalize_restore(payload)
     msgs <- Filter(function(msg) {
       msg$role %in% c("user", "assistant") && nzchar(msg$text)
     }, msgs)
+    cite_titles <- as.character(unlist(payload$cite_title, use.names = FALSE))
+    cite_urls <- as.character(unlist(payload$cite_url, use.names = FALSE))
+    cite_notes <- as.character(unlist(payload$cite_note, use.names = FALSE))
+    n_cites <- max(length(cite_titles), length(cite_urls), length(cite_notes))
+    restored_cites <- if (n_cites) {
+      lapply(seq_len(n_cites), function(i) {
+        list(
+          title = if (i <= length(cite_titles)) cite_titles[[i]] else "",
+          url = if (i <= length(cite_urls)) cite_urls[[i]] else "",
+          note = if (i <= length(cite_notes)) cite_notes[[i]] else ""
+        )
+      })
+    } else {
+      list()
+    }
+    if (!length(msgs) && !length(restored_cites)) return()
+    restore_started <<- TRUE
+    if (length(restored_cites)) add_citations(restored_cites)
     if (!length(msgs)) return()
     restoring <<- TRUE
-    on.exit(restoring <<- FALSE)
-    for (msg in msgs) {
-      chat_append_message(
-        "chat",
-        list(role = msg$role, content = msg$text),
-        chunk = FALSE,
-        session = session
-      )
-      remember(msg$role, msg$text)
-    }
     turns <- tryCatch(
-      lapply(note_log, function(msg) ellmer::Turn(msg$role, msg$text)),
+      lapply(msgs, function(msg) ellmer::Turn(msg$role, msg$text)),
       error = function(e) NULL
     )
-    if (!is.null(turns)) {
+    if (!is.null(turns) && length(turns)) {
       try(client$set_turns(turns), silent = TRUE)
     }
+    session$onFlushed(function() {
+      on.exit(restoring <<- FALSE, add = TRUE)
+      for (msg in msgs) {
+        chat_append_message(
+          "chat",
+          list(role = msg$role, content = msg$text),
+          chunk = FALSE,
+          session = session
+        )
+        remember(msg$role, msg$text)
+      }
+    }, once = TRUE)
   }, ignoreInit = TRUE)
 
-  sources_body <- function(items) {
+  output$sources_body <- renderUI({
+    sources_panel(citations())
+  })
+
+  sources_panel <- function(items) {
     if (!length(items)) {
       return(div(
         class = "harbor-sources harbor-sources-empty",
@@ -821,17 +939,6 @@ server <- function(input, output, session) {
     )
   }
 
-  observeEvent(input$open_sources, {
-    show_offcanvas(
-      offcanvas(
-        id = "sources_panel",
-        title = "Sources",
-        placement = "end",
-        sources_body(citations())
-      ),
-      session = session
-    )
-  }, ignoreInit = TRUE)
 }
 
 app <- shinyApp(ui, server)
