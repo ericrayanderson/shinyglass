@@ -50,8 +50,7 @@
   pitfalls with their fixes. `vignette("shinyglass")` is that same guide
   and is what `browseVignettes("shinyglass")` lists. Help pages state
   types, defaults, and minimal examples, and they cross-link by topic.
-  Argument errors name the argument and the value to pass. The pkgdown
-  site publishes `llms.txt` and `llms-full.txt`.
+  Argument errors name the argument and the value to pass.
 * `glass_theme()`, `glass_page()`, and `update_glass_theme()` take
   `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`,
   `icon_style`, and `floating_sidebar`. Tokens include `--glass-ior`,

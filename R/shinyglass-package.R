@@ -133,8 +133,7 @@
 #'   the glass. [glass_flatten()] or `?glass_flatten=1` removes blur for
 #'   screenshots and PDF.
 #'
-#' `vignette("shinyglass")` is this same recipe, installed with the
-#' package, plus instructions you can paste.
+#' `vignette("shinyglass")` is this same recipe, installed with the package.
 #'
 #' @examples
 #' inherits(glass_theme(preset = "auto", intensity = 0.5), "bs_theme")

@@ -1,10 +1,5 @@
 url: https://ericrayanderson.github.io/shinyglass/
 
-# pkgdown >= 2.2 writes llms.txt and a .md copy of every page.
-# inst/scripts/build-llms.R then replaces llms.txt with the short index
-# and writes llms-full.txt. Set this to false only to turn both off.
-llm-docs: true
-
 template:
   bootstrap: 5
   bootswatch: flatly

@@ -150,8 +150,7 @@ the glass. \code{\link[=glass_flatten]{glass_flatten()}} or \code{?glass_flatten
 screenshots and PDF.
 }
 
-\code{vignette("shinyglass")} is this same recipe, installed with the
-package, plus instructions you can paste.
+\code{vignette("shinyglass")} is this same recipe, installed with the package.
 }
 
 \examples{
