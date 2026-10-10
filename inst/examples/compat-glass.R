@@ -61,6 +61,25 @@ ui <- function(request) {
     icon_style = icon_style
   )
 
+  if (identical(qs$shell, "page_sidebar")) {
+    return(page_sidebar(
+      title = "Page sidebar",
+      theme = theme,
+      sidebar = sidebar(
+        id = "page_side",
+        title = "Filters",
+        open = "desktop",
+        textInput("page_q", "Filter", "glass")
+      ),
+      div(
+        id = "page_main",
+        class = "p-3",
+        p("Page main content"),
+        actionButton("page_ping", "Ping")
+      )
+    ))
+  }
+
   plot_ui <- plotOutput("plot", height = "220px")
   if (isTRUE(compat_present[["shinycssloaders"]])) {
     plot_ui <- shinycssloaders::withSpinner(plot_ui, type = 4, color = "#007AFF")
@@ -206,7 +225,22 @@ ui <- function(request) {
               actionButton("pop_btn", "Open popover", class = "btn-outline-primary"),
               title = "Popover",
               "Popover body on glass."
-            )
+            ),
+            if (isTRUE(compat_present[["shinyWidgets"]])) {
+              shinyWidgets::dropMenu(
+                actionButton(
+                  "settings_btn",
+                  "Settings",
+                  class = "btn-outline-primary"
+                ),
+                p(id = "settings_body", "Settings body"),
+                placement = "bottom-start",
+                theme = "light",
+                padding = "0px"
+              )
+            } else {
+              missing_note("shinyWidgets")
+            }
           ),
           card(
             card_header("shinyjs and waiter"),
