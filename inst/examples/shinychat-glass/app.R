@@ -1,7 +1,10 @@
 # Harbor notes: the shinyglass chat demo.
-# Local script by default. GEMINI_API_KEY or GOOGLE_API_KEY uses Gemini Flash
-# with web search and thinking. A live reply with no grounding citations
-# gets topic-matched docs instead.
+# Local script by default. GEMINI_API_KEY or GOOGLE_API_KEY uses Gemini.
+# The chain is gemini-3.5-flash-lite, then gemini-3.8-flash, then
+# gemini-3.7-flash. SHINYGLASS_CHAT_MODEL is tried first when it is set.
+# Web search stays off (the free tier cannot sustain grounding). Sources
+# are the topic-matched pages. Thinking is requested when the model
+# accepts it, and the disclosure appears only when thoughts come back.
 #   shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 
 library(shiny)
@@ -202,6 +205,9 @@ chunk_words <- function(body) {
   as.list(chunks)
 }
 
+# The notice is a toast beside the transcript, never a chunk of the answer.
+# Keeping it out of these pieces is what stops "local note instead.glass_theme()"
+# after a reload.
 reply_pieces <- function(reply, notice = NULL) {
   pieces <- c(
     list(thinking_block(reply$thinking)),
@@ -209,7 +215,6 @@ reply_pieces <- function(reply, notice = NULL) {
     lapply(reply$citations, aside_html)
   )
   if (!is.null(reply$tool)) pieces <- c(pieces, list(reply$tool))
-  if (!is.null(notice) && nzchar(notice)) pieces <- c(list(notice), pieces)
   pieces
 }
 
@@ -306,16 +311,29 @@ gemini_key <- function() {
   NULL
 }
 
+# Tried in order on 503, 429, and 404. An override is first, then the
+# rest of the chain, without repeating a model.
+gemini_model_chain <- function() {
+  override <- Sys.getenv("SHINYGLASS_CHAT_MODEL", "")
+  defaults <- c(
+    "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
+    "gemini-3.7-flash"
+  )
+  models <- if (nzchar(override)) c(override, defaults) else defaults
+  unique(models[nzchar(models)])
+}
+
 gemini_model <- function() {
-  model <- Sys.getenv("SHINYGLASS_CHAT_MODEL", "gemini-3.7-flash")
-  if (!nzchar(model)) "gemini-3.7-flash" else model
+  chain <- gemini_model_chain()
+  if (!length(chain)) "gemini-3.5-flash-lite" else chain[[1L]]
 }
 
 harbor_system_prompt <- function() {
   paste(
     "You help with shinyglass, Shiny, and R, and with ordinary conversation.",
     "Answer clearly in a few sentences.",
-    "When a fact should be checked, search the web and cite the page.",
+    "Name the project or the document you rely on.",
     "Decline only a clearly unrelated or abusive request, in one short sentence, without role-play."
   )
 }
@@ -353,19 +371,104 @@ gate_turn <- function(text, used, live,
   list(action = "live", text = text, used = used + 1L, notice = NULL)
 }
 
-is_quota_error <- function(err) {
-  if (inherits(err, "httr2_http_429")) return(TRUE)
-  status <- NA_integer_
+error_status <- function(err) {
+  classes <- class(err)
+  hit <- grep("^httr2_http_[0-9]+$", classes, value = TRUE)
+  if (length(hit)) return(as.integer(sub("httr2_http_", "", hit[[1L]])))
   for (field in c("status_code", "status")) {
     value <- tryCatch(err[[field]], error = function(e) NULL)
-    if (is.numeric(value) && length(value) == 1L) {
-      status <- as.integer(value)
-      break
+    if (is.numeric(value) && length(value) == 1L && !is.na(value)) {
+      return(as.integer(value))
     }
   }
-  if (identical(status, 429L)) return(TRUE)
+  resp <- tryCatch(err$resp, error = function(e) NULL)
+  if (!is.null(resp)) {
+    status <- tryCatch(httr2::resp_status(resp), error = function(e) NA_integer_)
+    if (is.numeric(status) && length(status) == 1L && !is.na(status)) {
+      return(as.integer(status))
+    }
+  }
   msg <- tryCatch(conditionMessage(err), error = function(e) "")
-  grepl("429|RESOURCE_EXHAUSTED|quota|rate limit|too many requests", msg, ignore.case = TRUE)
+  found <- regexpr("\\b(400|404|429|500|503)\\b", msg)
+  if (found > 0L) return(as.integer(regmatches(msg, found)))
+  NA_integer_
+}
+
+is_quota_error <- function(err) {
+  if (identical(error_status(err), 429L)) return(TRUE)
+  msg <- tryCatch(conditionMessage(err), error = function(e) "")
+  grepl("RESOURCE_EXHAUSTED|quota|rate limit|too many requests", msg, ignore.case = TRUE)
+}
+
+# 503 high demand, 429 quota, and 404 (model hidden from new projects)
+# are the reasons to try the next model. Anything else stops the chain.
+is_capacity_error <- function(err) {
+  status <- error_status(err)
+  if (!is.na(status) && status %in% c(404L, 429L, 503L)) return(TRUE)
+  msg <- tryCatch(conditionMessage(err), error = function(e) "")
+  grepl(
+    "RESOURCE_EXHAUSTED|NOT_FOUND|high demand|quota|rate limit|too many requests|not available|unavailable",
+    msg,
+    ignore.case = TRUE
+  )
+}
+
+# Flash-lite may reject a thinking budget. Retry that same model once
+# without thinking params instead of treating it as a dead model.
+is_thinking_error <- function(err) {
+  status <- error_status(err)
+  if (!is.na(status) && status != 400L) return(FALSE)
+  msg <- tryCatch(conditionMessage(err), error = function(e) "")
+  grepl("thinking|thoughts|reasoning", msg, ignore.case = TRUE)
+}
+
+chain_decision <- function(err, plain = FALSE) {
+  if (is.null(err)) return("fail")
+  if (is_thinking_error(err) && !isTRUE(plain)) return("retry_plain")
+  if (is_capacity_error(err)) return("next")
+  "fail"
+}
+
+chain_attempt <- function(attempt, model, params) {
+  result <- tryCatch(attempt(model, params), error = function(e) e)
+  if (inherits(result, "error")) return(list(ok = FALSE, err = result))
+  if (is.list(result) && isTRUE(result$ok)) return(list(ok = TRUE, err = NULL))
+  if (is.list(result) && inherits(result$err, "error")) {
+    return(list(ok = FALSE, err = result$err))
+  }
+  list(ok = FALSE, err = simpleError("model attempt failed"))
+}
+
+# Pure walk used by the live client and by tests. `attempt(model, params)`
+# returns list(ok = TRUE) or an error (thrown or as list(ok = FALSE, err = )).
+walk_model_chain <- function(models, attempt) {
+  last_err <- NULL
+  for (model in models) {
+    outcome <- chain_attempt(attempt, model, gemini_params(model))
+    if (isTRUE(outcome$ok)) {
+      return(list(ok = TRUE, model = model, thinking = TRUE, notice = NULL, err = NULL))
+    }
+    last_err <- outcome$err
+    if (identical(chain_decision(last_err, FALSE), "retry_plain")) {
+      outcome <- chain_attempt(attempt, model, NULL)
+      if (isTRUE(outcome$ok)) {
+        return(list(ok = TRUE, model = model, thinking = FALSE, notice = NULL, err = NULL))
+      }
+      last_err <- outcome$err
+    }
+    if (!identical(chain_decision(last_err, TRUE), "next")) break
+  }
+  list(
+    ok = FALSE,
+    model = NA_character_,
+    thinking = FALSE,
+    notice = if (is.null(last_err)) {
+      "The live model could not answer just now. Here is the local note instead."
+    } else {
+      api_notice(last_err)
+    },
+    err = last_err
+  )
 }
 
 api_notice <- function(err) {
@@ -398,7 +501,7 @@ guarded_stream <- function(stream, text, on_fallback = NULL) {
       if (inherits(piece, "error")) {
         notice <- api_notice(piece)
         if (is.function(on_fallback)) on_fallback(notice)
-        fallback <<- mock_pieces(text, notice)
+        fallback <<- mock_pieces(text, NULL)
         next
       }
       if (promises::is.promise(piece)) {
@@ -408,8 +511,10 @@ guarded_stream <- function(stream, text, on_fallback = NULL) {
           onRejected = function(err) {
             notice <- api_notice(err)
             if (is.function(on_fallback)) on_fallback(notice)
-            fallback <<- mock_pieces(text, NULL)
-            notice
+            pieces <- mock_pieces(text, NULL)
+            if (!length(pieces)) return("")
+            fallback <<- if (length(pieces) > 1L) pieces[-1L] else list()
+            pieces[[1L]]
           }
         ))
       } else {
@@ -419,32 +524,41 @@ guarded_stream <- function(stream, text, on_fallback = NULL) {
   })
 }
 
-# Gemini 3 takes a thinking level. Older Gemini models take a token budget.
-# Either one makes ellmer send includeThoughts, so a live reply can show
-# "Thought for ..." instead of an empty hidden drawer.
+# Gemini 3 takes a thinking level. Flash-lite takes a small token budget
+# and may return no thoughts; the disclosure is omitted in that case.
+# Older Gemini models take a larger token budget. A 400 from thinking
+# retries the same model with params = NULL.
 gemini_params <- function(model = gemini_model()) {
-  if (grepl("^gemini-3", model)) {
+  model <- model %||% ""
+  if (grepl("flash-lite", model, fixed = TRUE)) {
+    ellmer::params(reasoning_tokens = 256L)
+  } else if (grepl("^gemini-3", model)) {
     ellmer::params(reasoning_effort = "low")
   } else {
     ellmer::params(reasoning_tokens = 1024L)
   }
 }
 
+new_gemini_client <- function(key, model, params = gemini_params(model)) {
+  ellmer::chat_google_gemini(
+    system_prompt = harbor_system_prompt(),
+    model = model,
+    api_key = key,
+    params = params
+  )
+}
+
 make_client <- function() {
+  models <- gemini_model_chain()
   if (identical(Sys.getenv("SHINYGLASS_CHAT_MOCK_LIVE"), "1")) {
-    return(list(client = make_mock_live_chat(), live = TRUE))
+    return(list(client = make_mock_live_chat(), live = TRUE, key = NULL, models = models))
   }
   key <- gemini_key()
   if (is.null(key)) {
-    return(list(client = make_echo_chat(), live = FALSE))
+    return(list(client = make_echo_chat(), live = FALSE, key = NULL, models = models))
   }
   client <- tryCatch(
-    ellmer::chat_google_gemini(
-      system_prompt = harbor_system_prompt(),
-      model = gemini_model(),
-      api_key = key,
-      params = gemini_params()
-    ),
+    new_gemini_client(key, models[[1L]], gemini_params(models[[1L]])),
     error = function(e) NULL
   )
   if (is.null(client)) {
@@ -452,18 +566,22 @@ make_client <- function() {
       "The Gemini client did not start. Using the local script.",
       call. = FALSE
     )
-    return(list(client = make_echo_chat(), live = FALSE))
+    return(list(client = make_echo_chat(), live = FALSE, key = NULL, models = models))
   }
-  tryCatch(
-    client$register_tool(ellmer::google_tool_web_search()),
-    error = function(e) {
-      warning(
-        "Web search could not be enabled. Live replies will use curated citations.",
-        call. = FALSE
-      )
-    }
-  )
-  list(client = client, live = TRUE)
+  list(client = client, live = TRUE, key = key, models = models)
+}
+
+# Green only after a reply that actually came from the model.
+# Amber when the session is on the local script.
+harbor_status_ui <- function(mode = c("ready", "live", "demo")) {
+  mode <- match.arg(mode)
+  if (identical(mode, "demo")) {
+    tags$span(class = "harbor-status", `data-mode` = "demo", "Demo replies")
+  } else if (identical(mode, "live")) {
+    tags$span(class = "harbor-status", `data-mode` = "live", "Live (Gemini)")
+  } else {
+    tags$span(class = "harbor-status", `data-mode` = "ready", "Live (Gemini)")
+  }
 }
 
 # Inline droplet. A data URI still loads when the app is hosted on a
@@ -481,6 +599,44 @@ harbor_icon_src <- function() {
   )
 }
 
+normalize_restore <- function(payload) {
+  if (!is.list(payload)) return(list())
+  roles <- payload$role
+  texts <- payload$text
+  if (is.null(roles) || is.null(texts)) {
+    msgs <- payload$messages
+    if (is.data.frame(msgs)) {
+      roles <- msgs$role
+      texts <- msgs$text
+    }
+  }
+  if (is.null(roles) || is.null(texts)) return(list())
+  roles <- as.character(unlist(roles, use.names = FALSE))
+  texts <- as.character(unlist(texts, use.names = FALSE))
+  n <- min(length(roles), length(texts))
+  if (!n) return(list())
+  thinkings <- payload$thinking
+  if (is.null(thinkings) && is.data.frame(payload$messages)) {
+    thinkings <- payload$messages$thinking
+  }
+  if (is.null(thinkings)) thinkings <- rep("", n)
+  thinkings <- as.character(unlist(thinkings, use.names = FALSE))
+  if (length(thinkings) < n) {
+    thinkings <- c(thinkings, rep("", n - length(thinkings)))
+  }
+  lapply(seq_len(n), function(i) {
+    list(role = roles[[i]], text = texts[[i]], thinking = thinkings[[i]])
+  })
+}
+
+restore_notice <- function(payload) {
+  notice <- payload$notice %||% ""
+  if (is.list(notice)) notice <- if (length(notice)) notice[[1L]] else ""
+  notice <- as.character(notice)
+  if (!length(notice) || is.na(notice[[1L]])) return("")
+  notice[[1L]]
+}
+
 glass_preset <- match.arg(
   Sys.getenv("SHINYGLASS_PRESET", "light"),
   c("light", "dark", "auto")
@@ -492,19 +648,31 @@ ui <- tagList(
     tags$link(rel = "alternate icon", type = "image/x-icon", href = "favicon.ico"),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
+      /* In-flow toast under the chat header. It must not cover the sidebar
+         or the sources offcanvas, and only the toast itself takes clicks. */
       #harbor_notice_host {
-        position: fixed;
-        z-index: 30;
-        top: 4.25rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: min(36rem, calc(100% - 1.5rem));
+        position: relative;
+        z-index: 2;
+        width: min(40rem, 100%);
+        margin: 0 auto;
+        padding: 0;
+        box-sizing: border-box;
         pointer-events: none;
+        display: flex;
+        justify-content: center;
+      }
+      #harbor_notice_host:has(.harbor-notice:not(.is-hidden)) {
+        margin-top: 0.35rem;
+        padding-inline: 16px;
       }
       .harbor-notice {
         pointer-events: auto;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.55rem;
+        width: 100%;
         margin: 0;
-        padding: 0.7rem 0.95rem;
+        padding: 0.65rem 0.55rem 0.65rem 0.95rem;
         border-radius: 1rem;
         color: var(--glass-body-color);
         background: color-mix(in srgb, var(--glass-bg) 88%, var(--glass-body-bg));
@@ -512,6 +680,60 @@ ui <- tagList(
         box-shadow: inset 0 1px 0 var(--glass-highlight), 0 12px 32px var(--glass-shadow);
         backdrop-filter: blur(18px) saturate(var(--glass-saturate));
         -webkit-backdrop-filter: blur(18px) saturate(var(--glass-saturate));
+      }
+      .harbor-notice.is-hidden { display: none; }
+      .harbor-notice-copy { margin: 0; flex: 1 1 auto; }
+      .harbor-notice-dismiss {
+        pointer-events: auto;
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        line-height: 1;
+      }
+      html.harbor-notes body::before {
+        animation: harbor-orb-intro 2.2s ease-out 1 forwards;
+      }
+      html.harbor-notes body::after {
+        animation: harbor-orb-intro 2.6s ease-out 1 forwards;
+      }
+      @keyframes harbor-orb-intro {
+        0% { transform: translate3d(0.45%, -0.3%, 0) scale(1.012); }
+        100% { transform: translate3d(0, 0, 0) scale(1); }
+      }
+      html.harbor-notes .shiny-chat-page-header,
+      html.harbor-notes .shiny-chat-composer,
+      html.harbor-notes .shiny-chat-btn-send,
+      html.harbor-notes .shiny-chat-edit-btn,
+      html.harbor-notes .shiny-chat-page-sidebar-toggle,
+      html.harbor-notes .bslib-toolbar .btn {
+        animation: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html.harbor-notes body::before,
+        html.harbor-notes body::after {
+          animation: none !important;
+          transform: none !important;
+        }
+        html.harbor-notes .shiny-chat-page-header,
+        html.harbor-notes .shiny-chat-composer,
+        html.harbor-notes .shiny-chat-btn-send,
+        html.harbor-notes .shiny-chat-edit-btn,
+        html.harbor-notes .shiny-chat-page-sidebar-toggle,
+        html.harbor-notes .bslib-toolbar .btn {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      html.harbor-notes .shiny-aside-pill img[src*='duckduckgo'],
+      html.harbor-notes .shiny-aside-pill img[src*='favicon'] {
+        visibility: hidden;
       }
       .harbor-footer-row {
         display: flex;
@@ -532,6 +754,24 @@ ui <- tagList(
         background: color-mix(in srgb, var(--glass-bg) 82%, transparent);
         border: 0.5px solid var(--glass-border);
         box-shadow: inset 0 1px 0 var(--glass-highlight);
+      }
+      .harbor-status[data-mode='live'] {
+        color: #0d6b3d;
+        background: color-mix(in srgb, #34c759 28%, var(--glass-bg));
+        border-color: color-mix(in srgb, #248a3d 55%, var(--glass-border));
+      }
+      .harbor-status[data-mode='demo'] {
+        color: #8a4b00;
+        background: color-mix(in srgb, #ff9f0a 30%, var(--glass-bg));
+        border-color: color-mix(in srgb, #c93400 35%, var(--glass-border));
+      }
+      html[data-glass-preset='dark'] .harbor-status[data-mode='live'],
+      html[data-glass-preset='auto'][data-bs-theme='dark'] .harbor-status[data-mode='live'] {
+        color: #b6f0c8;
+      }
+      html[data-glass-preset='dark'] .harbor-status[data-mode='demo'],
+      html[data-glass-preset='auto'][data-bs-theme='dark'] .harbor-status[data-mode='demo'] {
+        color: #ffd59a;
       }
       .harbor-sources { display: flex; flex-direction: column; gap: 0.55rem; }
       .harbor-sources-empty {
@@ -579,7 +819,61 @@ ui <- tagList(
       }
     ")),
     tags$script(HTML("
+      document.documentElement.classList.add('harbor-notes');
       (function () {
+        function svgIcon(inner, bg) {
+          var svg = \"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' fill='\" + bg + \"'/>\" + inner + \"</svg>\";
+          return 'data:image/svg+xml,' + encodeURIComponent(svg);
+        }
+        var ICONS = {
+          docs: svgIcon(\"<path fill='#fff' d='M3.2 3.1h4.3c.9 0 1.6.7 1.6 1.6v7.5H5.1c-1.1 0-1.9.8-1.9 1.9V3.1z'/><path fill='#dbe4ff' d='M8.3 3.1h4.5v8.3H8.3c-.7 0-1.3-.6-1.3-1.3V4.4c0-.7.6-1.3 1.3-1.3z'/>\", '#3b5bdb'),
+          github: svgIcon(\"<circle cx='5' cy='4.8' r='1.25' fill='#fff'/><circle cx='11' cy='4.8' r='1.25' fill='#fff'/><circle cx='8' cy='11.2' r='1.25' fill='#fff'/><path d='M5 6.1v2.1c0 1 .9 1.6 3 1.6h3V6.1' fill='none' stroke='#fff' stroke-width='1.15'/>\", '#24292f'),
+          apple: svgIcon(\"<path fill='#fff' d='M8.1 2.8c.2 1 .9 1.6 1.8 1.7C9.7 5.8 8.8 6.8 8.1 6.8S6.5 5.8 6.3 4.5c.8-.1 1.6-.8 1.8-1.7z'/><path fill='#fff' d='M8 6.5c1.7 0 2.7 1.1 2.7 2.7 0 1.9-1.2 3.8-2.7 3.8S5.3 11.1 5.3 9.2C5.3 7.6 6.3 6.5 8 6.5z'/>\", '#1d1d1f'),
+          posit: svgIcon(\"<circle cx='8' cy='8' r='3.15' fill='none' stroke='#fff' stroke-width='1.45'/><circle cx='8' cy='8' r='1.15' fill='#fff'/>\", '#447099')
+        };
+        function monogram(ch) {
+          var letter = (ch || '?').charAt(0).toUpperCase();
+          return svgIcon(\"<text x='8' y='11.2' text-anchor='middle' font-family='system-ui,sans-serif' font-size='9' font-weight='700' fill='#fff'>\" + letter + \"</text>\", '#5c6770');
+        }
+        function iconForHost(host) {
+          host = String(host || '').toLowerCase();
+          if (host.indexOf('apple.com') >= 0) return ICONS.apple;
+          if (host.indexOf('posit') >= 0) return ICONS.posit;
+          if (host === 'github.com' || host.slice(-11) === '.github.com') return ICONS.github;
+          if (host.indexOf('github.io') >= 0 || host.indexOf('docs') >= 0 || host.indexOf('tidyverse.org') >= 0) return ICONS.docs;
+          var bare = host.replace(/^www\\./, '');
+          return monogram(bare.charAt(0) || '?');
+        }
+        function hostFromFavicon(url) {
+          var raw = String(url || '');
+          var match = raw.match(/ip3\\/([^/?#]+?)\\.ico/i);
+          if (!match) return '';
+          try { return decodeURIComponent(match[1]); } catch (e) { return match[1]; }
+        }
+        function rewriteFavicon(value) {
+          var raw = String(value || '');
+          if (!raw || raw.indexOf('data:') === 0) return raw;
+          if (!/duckduckgo\\.com|gstatic\\.com\\/favicon|\\/favicons|favicon\\.ico/i.test(raw)) return raw;
+          return iconForHost(hostFromFavicon(raw));
+        }
+        try {
+          var desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+          if (desc && desc.set && desc.get) {
+            Object.defineProperty(HTMLImageElement.prototype, 'src', {
+              configurable: true,
+              enumerable: desc.enumerable,
+              get: function () { return desc.get.call(this); },
+              set: function (value) { desc.set.call(this, rewriteFavicon(value)); }
+            });
+          }
+          var origSet = Element.prototype.setAttribute;
+          Element.prototype.setAttribute = function (name, value) {
+            if (this instanceof HTMLImageElement && String(name).toLowerCase() === 'src') {
+              value = rewriteFavicon(value);
+            }
+            return origSet.call(this, name, value);
+          };
+        } catch (e) {}
         function storageKey() {
           var path = (location.pathname || '/').replace(/\\/$/, '') || '/';
           return 'harbor-notes:' + path;
@@ -597,17 +891,36 @@ ui <- tagList(
             return JSON.parse(raw);
           } catch (e) { return null; }
         }
-        function writeNotes(messages, citations) {
+        function writeNotes(messages, citations, notice) {
           var prev = readRaw();
           var cites = citations;
-          if (!cites) cites = (prev && prev.citations) || [];
+          if (cites == null) cites = (prev && prev.citations) || [];
+          var note = notice;
+          if (note == null) note = (prev && prev.notice) || '';
           try {
             localStorage.setItem(storageKey(), JSON.stringify({
-              v: 1,
+              v: 2,
               messages: messages || [],
-              citations: cites || []
+              citations: cites || [],
+              notice: note || ''
             }));
           } catch (e) {}
+        }
+        function plainText(node) {
+          if (!node) return '';
+          var clone = node.cloneNode(true);
+          clone.querySelectorAll('.shiny-chat-thinking, .shiny-tool-card, .shiny-chat-tool-call-row, .shiny-chat-tool-group, shiny-aside, .shiny-aside-pill').forEach(function (el) {
+            el.remove();
+          });
+          return (clone.innerText || '').replace(/\\s+/g, ' ').trim();
+        }
+        function thoughtText(node) {
+          var thought = node.querySelector('.shiny-chat-thinking');
+          if (!thought) return '';
+          var clone = thought.cloneNode(true);
+          var header = clone.querySelector('.shiny-chat-thinking-header, button');
+          if (header) header.remove();
+          return (clone.innerText || '').replace(/\\s+/g, ' ').trim();
         }
         function snapshot() {
           var nodes = document.querySelectorAll('.shiny-chat-user-message, .shiny-chat-message');
@@ -617,9 +930,11 @@ ui <- tagList(
             if (pending) return;
             var role = node.classList.contains('shiny-chat-user-message') ? 'user' : 'assistant';
             var body = node.querySelector('.shiny-chat-message-content') || node;
-            var text = (body.innerText || '').replace(/\\s+/g, ' ').trim();
+            var text = plainText(body);
             if (!text) return;
-            out.push({ role: role, text: text.slice(0, 4000) });
+            var item = { role: role, text: text.slice(0, 4000) };
+            if (role === 'assistant') item.thinking = thoughtText(body).slice(0, 2000);
+            out.push(item);
           });
           return out;
         }
@@ -630,10 +945,32 @@ ui <- tagList(
           Shiny.setInputValue('harbor_notes_restore', {
             role: messages.map(function (m) { return m.role; }),
             text: messages.map(function (m) { return m.text; }),
+            thinking: messages.map(function (m) { return m.thinking || ''; }),
+            notice: (data && data.notice) || '',
             cite_title: citations.map(function (c) { return c.title || ''; }),
             cite_url: citations.map(function (c) { return c.url || ''; }),
             cite_note: citations.map(function (c) { return c.note || ''; })
           }, { priority: 'event' });
+        }
+        function placeNotice() {
+          var host = document.getElementById('harbor_notice_host');
+          var header = document.querySelector('.shiny-chat-page-header');
+          var parent = header && header.parentElement;
+          if (!host || !parent) return;
+          if (host.previousElementSibling !== header) {
+            if (header.nextSibling) parent.insertBefore(host, header.nextSibling);
+            else parent.appendChild(host);
+          }
+        }
+        function armNotice() {
+          placeNotice();
+          var note = document.querySelector('#harbor_notice_host .harbor-notice');
+          if (!note || note.dataset.armed) return;
+          note.dataset.armed = '1';
+          var hide = function () { note.classList.add('is-hidden'); };
+          var button = note.querySelector('.harbor-notice-dismiss');
+          if (button) button.addEventListener('click', hide);
+          window.setTimeout(hide, 8000);
         }
         function bind() {
           if (!window.Shiny || !Shiny.addCustomMessageHandler || !Shiny.setInputValue) return false;
@@ -646,12 +983,26 @@ ui <- tagList(
             var cites = msg && Object.prototype.hasOwnProperty.call(msg, 'citations')
               ? asList(msg.citations)
               : null;
+            var note = msg && Object.prototype.hasOwnProperty.call(msg, 'notice')
+              ? (msg.notice || '')
+              : null;
             haveServerNotes = true;
-            writeNotes(asList(msg && msg.messages), cites);
+            writeNotes(asList(msg && msg.messages), cites, note);
           });
           Shiny.addCustomMessageHandler('harbor-notes-request', function (msg) {
             sendRestore();
           });
+          placeNotice();
+          armNotice();
+          if (window.MutationObserver) {
+            var noticeHost = document.getElementById('harbor_notice_host');
+            if (noticeHost) {
+              new MutationObserver(function () { armNotice(); }).observe(noticeHost, {
+                childList: true,
+                subtree: true
+              });
+            }
+          }
           if (window.MutationObserver && root) {
             var obs = new MutationObserver(function () {
               if (haveServerNotes) return;
@@ -762,21 +1113,27 @@ server <- function(input, output, session) {
   if (is.na(pace) || pace < 0) pace <- 0.11
   used <- 0L
 
+  note_log <- list()
+  restoring <- FALSE
+  restore_started <- FALSE
+  fell_back <- FALSE
+  citations <- reactiveVal(list())
+  fallback_notice <- reactiveVal(NULL)
+  reply_mode <- reactiveVal(if (live) "ready" else "demo")
+
   note_fallback <- function(notice, text = NULL) {
+    fell_back <<- TRUE
+    reply_mode("demo")
     if (!is.null(notice) && nzchar(notice)) fallback_notice(notice)
     if (!is.null(text)) add_citations(scripted_reply(text)$citations)
     invisible(notice)
   }
-  note_log <- list()
-  restoring <- FALSE
-  restore_started <- FALSE
-  citations <- reactiveVal(list())
-  fallback_notice <- reactiveVal(NULL)
 
   publish_notes <- function() {
     session$sendCustomMessage("harbor-notes-save", list(
       messages = note_log,
-      citations = citations()
+      citations = citations(),
+      notice = fallback_notice() %||% ""
     ))
   }
 
@@ -807,11 +1164,16 @@ server <- function(input, output, session) {
     invisible(NULL)
   }
 
-  remember <- function(role, text) {
-    text <- paste(text %||% "", collapse = "\n")
-    text <- trimws(text)
+  remember <- function(role, text, thinking = NULL) {
+    text <- trimws(paste(text %||% "", collapse = "\n"))
     if (!nzchar(text)) return(invisible(NULL))
-    note_log[[length(note_log) + 1L]] <<- list(role = role, text = text)
+    thinking <- trimws(paste(thinking %||% "", collapse = "\n"))
+    if (!nzchar(thinking)) thinking <- NULL
+    note_log[[length(note_log) + 1L]] <<- list(
+      role = role,
+      text = text,
+      thinking = thinking
+    )
     if (length(note_log) > 40L) {
       note_log <<- note_log[(length(note_log) - 39L):length(note_log)]
     }
@@ -871,24 +1233,35 @@ server <- function(input, output, session) {
       if (inherits(part, "shinychat_block") || inherits(part, "shinychat_thinking")) {
         return("")
       }
-      return(paste(part, collapse = "\n"))
+      value <- paste(part, collapse = "\n")
+      if (grepl("<", value, fixed = TRUE)) return("")
+      return(value)
     }
     if (inherits(part, "ellmer::ContentText")) {
       value <- tryCatch(part@text, error = function(e) NULL)
       if (is.null(value)) return("")
       return(paste(value, collapse = "\n"))
     }
+    ""
+  }
+
+  part_thinking <- function(part) {
     if (inherits(part, "ellmer::ContentThinking")) {
       value <- tryCatch(part@thinking, error = function(e) NULL)
-      if (is.null(value) || !nzchar(value)) return("")
-      return("")
+      if (is.null(value)) return("")
+      return(paste(value, collapse = "\n"))
+    }
+    if (inherits(part, "shinychat_thinking")) {
+      return(paste(as.character(part), collapse = "\n"))
     }
     ""
   }
 
   remember_parts <- function(parts) {
     text <- paste(vapply(parts, part_text, character(1)), collapse = "")
-    remember("assistant", text)
+    thinking <- trimws(paste(vapply(parts, part_thinking, character(1)), collapse = "\n"))
+    if (!nzchar(thinking)) thinking <- NULL
+    remember("assistant", text, thinking)
   }
 
   finish_live <- function(parts, text = NULL) {
@@ -904,46 +1277,131 @@ server <- function(input, output, session) {
   }
 
   pipe_live <- function(stream, text) {
+    fell_back <<- FALSE
     result <- chat_append("chat", stream)
     promises::then(
       result,
-      onFulfilled = function(value) finish_live(value, text),
+      onFulfilled = function(value) {
+        if (!fell_back) {
+          reply_mode("live")
+          fallback_notice(NULL)
+        }
+        finish_live(value, text)
+      },
       onRejected = function(err) NULL
     )
   }
 
   send_mock <- function(text, notice = NULL) {
     reply <- scripted_reply(text)
-    if (!is.null(notice) && nzchar(notice)) fallback_notice(notice)
+    if (!is.null(notice) && nzchar(notice)) {
+      fallback_notice(notice)
+      reply_mode("demo")
+    } else if (!live) {
+      fallback_notice(NULL)
+    }
     add_citations(reply$citations)
-    stream_pieces("chat", reply_pieces(reply, notice), session, pace)
-    remember("assistant", reply$body)
+    stream_pieces("chat", reply_pieces(reply, NULL), session, pace)
+    remember("assistant", reply$body, reply$thinking)
+  }
+
+  # Recreate the Gemini client so thinking params match the model.
+  # The local stand-in has no key; set_model is enough there.
+  switch_live_client <- function(model, params) {
+    if (is.null(built$key)) {
+      try(client$set_model(model), silent = TRUE)
+      return(TRUE)
+    }
+    turns <- tryCatch(client$get_turns(), error = function(e) NULL)
+    next_client <- tryCatch(
+      new_gemini_client(built$key, model, params),
+      error = function(e) NULL
+    )
+    if (is.null(next_client)) return(FALSE)
+    if (!is.null(turns) && length(turns)) {
+      try(next_client$set_turns(turns), silent = TRUE)
+    }
+    client <<- next_client
+    TRUE
   }
 
   start_live <- function(text) {
-    started <- tryCatch(
-      client$stream_async(text, stream = "content"),
-      error = function(e) e
-    )
-    if (inherits(started, "error")) {
-      send_mock(text, api_notice(started))
-      return(invisible(NULL))
+    models <- built$models
+    if (!length(models)) models <- gemini_model_chain()
+    index <- 1L
+    plain <- FALSE
+    last_err <- NULL
+
+    fail <- function(err) {
+      reply_mode("demo")
+      send_mock(text, api_notice(err))
+      invisible(NULL)
     }
-    if (promises::is.promise(started)) {
-      promises::then(
-        started,
-        onFulfilled = function(inner) {
-          pipe_live(guarded_stream(inner, text, on_fallback = function(notice) {
-            note_fallback(notice, text)
-          }), text)
-        },
-        onRejected = function(err) send_mock(text, api_notice(err))
+
+    succeed <- function(stream) {
+      pipe_live(guarded_stream(stream, text, on_fallback = function(notice) {
+        note_fallback(notice, text)
+      }), text)
+    }
+
+    attempt <- function() {
+      if (index > length(models)) return(fail(last_err))
+      model <- models[[index]]
+      params <- if (plain) NULL else gemini_params(model)
+      if (!switch_live_client(model, params)) {
+        index <<- index + 1L
+        plain <<- FALSE
+        return(attempt())
+      }
+      turns_before <- tryCatch(client$get_turns(), error = function(e) NULL)
+      started <- tryCatch(
+        client$stream_async(text, stream = "content"),
+        error = function(e) e
       )
-      return(invisible(NULL))
+      handle_started(started, turns_before)
     }
-    pipe_live(guarded_stream(started, text, on_fallback = function(notice) {
-      note_fallback(notice, text)
-    }), text)
+
+    rewind_turns <- function(turns_before) {
+      if (is.null(turns_before)) return(invisible(NULL))
+      try(client$set_turns(turns_before), silent = TRUE)
+      invisible(NULL)
+    }
+
+    handle_started <- function(started, turns_before) {
+      if (inherits(started, "error")) {
+        rewind_turns(turns_before)
+        return(advance(started))
+      }
+      if (promises::is.promise(started)) {
+        promises::then(
+          started,
+          onFulfilled = function(inner) succeed(inner),
+          onRejected = function(err) {
+            rewind_turns(turns_before)
+            advance(err)
+          }
+        )
+        return(invisible(NULL))
+      }
+      succeed(started)
+    }
+
+    advance <- function(err) {
+      last_err <<- err
+      decision <- chain_decision(err, plain)
+      if (identical(decision, "retry_plain")) {
+        plain <<- TRUE
+        return(attempt())
+      }
+      if (identical(decision, "next")) {
+        index <<- index + 1L
+        plain <<- FALSE
+        return(attempt())
+      }
+      fail(err)
+    }
+
+    attempt()
     invisible(NULL)
   }
 
@@ -962,36 +1420,48 @@ server <- function(input, output, session) {
   }
 
   output$harbor_status <- renderUI({
-    if (live) {
-      tags$span(class = "harbor-status", `data-mode` = "live", "Live (Gemini)")
-    } else {
-      tags$span(class = "harbor-status", `data-mode` = "demo", "Demo replies")
-    }
+    harbor_status_ui(reply_mode())
   })
 
   output$harbor_notice <- renderUI({
     msg <- fallback_notice()
     if (is.null(msg) || !nzchar(msg)) return(NULL)
-    tags$div(class = "harbor-notice", role = "status", msg)
+    tags$div(
+      class = "harbor-notice",
+      role = "status",
+      tags$p(class = "harbor-notice-copy", msg),
+      tags$button(
+        type = "button",
+        class = "harbor-notice-dismiss",
+        `aria-label` = "Dismiss notice",
+        "\u00d7"
+      )
+    )
   })
 
-  normalize_restore <- function(payload) {
-    if (!is.list(payload)) return(list())
-    roles <- payload$role
-    texts <- payload$text
-    if (is.null(roles) || is.null(texts)) {
-      msgs <- payload$messages
-      if (is.data.frame(msgs)) {
-        roles <- msgs$role
-        texts <- msgs$text
-      }
+  restore_message <- function(msg) {
+    thinking <- msg$thinking %||% ""
+    if (identical(msg$role, "assistant") && nzchar(thinking)) {
+      chat_append_message(
+        "chat",
+        list(role = "assistant", content = thinking_block(thinking)),
+        chunk = "start",
+        session = session
+      )
+      chat_append_message(
+        "chat",
+        list(role = "assistant", content = msg$text),
+        chunk = "end",
+        session = session
+      )
+    } else {
+      chat_append_message(
+        "chat",
+        list(role = msg$role, content = msg$text),
+        chunk = FALSE,
+        session = session
+      )
     }
-    if (is.null(roles) || is.null(texts)) return(list())
-    roles <- as.character(unlist(roles, use.names = FALSE))
-    texts <- as.character(unlist(texts, use.names = FALSE))
-    n <- min(length(roles), length(texts))
-    if (!n) return(list())
-    lapply(seq_len(n), function(i) list(role = roles[[i]], text = texts[[i]]))
   }
 
   chat_enable_history(
@@ -1037,6 +1507,8 @@ server <- function(input, output, session) {
   observeEvent(input$chat_history_new, {
     note_log <<- list()
     citations(list())
+    fallback_notice(NULL)
+    reply_mode(if (live) "ready" else "demo")
     publish_notes()
   }, ignoreInit = TRUE)
 
@@ -1062,8 +1534,15 @@ server <- function(input, output, session) {
     } else {
       list()
     }
-    if (!length(msgs) && !length(restored_cites)) return()
+    restored_note <- restore_notice(payload)
+    if (!length(msgs) && !length(restored_cites) && !nzchar(restored_note)) return()
     restore_started <<- TRUE
+    if (nzchar(restored_note)) {
+      fallback_notice(restored_note)
+      reply_mode("demo")
+    } else if (live && length(msgs)) {
+      reply_mode("live")
+    }
     if (length(restored_cites)) add_citations(restored_cites)
     if (!length(msgs)) return()
     restoring <<- TRUE
@@ -1077,13 +1556,8 @@ server <- function(input, output, session) {
     session$onFlushed(function() {
       on.exit(restoring <<- FALSE, add = TRUE)
       for (msg in msgs) {
-        chat_append_message(
-          "chat",
-          list(role = msg$role, content = msg$text),
-          chunk = FALSE,
-          session = session
-        )
-        remember(msg$role, msg$text)
+        restore_message(msg)
+        remember(msg$role, msg$text, msg$thinking)
       }
       publish_history()
     }, once = TRUE)
