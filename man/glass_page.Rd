@@ -67,7 +67,8 @@ if (interactive()) {
 }
 }
 \seealso{
-\code{\link[=glass_theme]{glass_theme()}}, \code{\link[=observe_glass]{observe_glass()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}
+\link{shinyglass}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=observe_glass]{observe_glass()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}
 
 Other glass themes:
 \code{\link[=glass_flatten]{glass_flatten()}},

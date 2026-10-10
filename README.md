@@ -56,7 +56,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-AI coding assistants: start from `vignette("ai-assistants")`.
+Usage: `?shinyglass` and `vignette("using")`.
 
 <p align="center">
 <img src="man/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode">

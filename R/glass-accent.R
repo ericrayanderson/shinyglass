@@ -46,8 +46,14 @@ glass_accent_input <- function(
     label = "Accent",
     selected = "blue",
     colors = glass_system_colors()) {
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
-  stopifnot(is.character(colors), length(colors) >= 1L, !is.null(names(colors)))
+  .glass_assert_input_id(inputId)
+  if (!(is.character(colors) && length(colors) >= 1L && !is.null(names(colors)))) {
+    stop(
+      "`colors` must be a named character vector of hex colors. ",
+      "The default is glass_system_colors(). Example: c(blue = \"#007AFF\", green = \"#34C759\").",
+      call. = FALSE
+    )
+  }
   selected <- trimws(as.character(selected))
   hex <- unname(colors[tolower(names(colors)) == tolower(selected)])
   if (!length(hex)) {
@@ -116,9 +122,9 @@ glass_accent_input <- function(
 #' @export
 observe_glass_accent <- function(input, session, inputId = "glass_accent") {
   if (missing(input) || missing(session)) {
-    stop("`input` and `session` are required.", call. = FALSE)
+    .glass_need_server("observe_glass_accent")
   }
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   shiny::observeEvent(
     input[[inputId]],
     {

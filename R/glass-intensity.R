@@ -65,18 +65,26 @@ glass_intensity_slider <- function(
     max_label = "Tinted",
     preview = TRUE,
     width = NULL) {
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   explicit_value <- !is.null(value)
-  stopifnot(
-    is.numeric(min), length(min) == 1L, is.finite(min),
-    is.numeric(max), length(max) == 1L, is.finite(max),
-    is.numeric(step), length(step) == 1L, is.finite(step), step > 0,
-    min >= 0, max <= 1, min < max
-  )
+  ok_range <- is.numeric(min) && length(min) == 1L && is.finite(min) &&
+    is.numeric(max) && length(max) == 1L && is.finite(max) &&
+    is.numeric(step) && length(step) == 1L && is.finite(step) && step > 0 &&
+    min >= 0 && max <= 1 && min < max
+  if (!ok_range) {
+    stop(
+      "`min`, `max`, and `step` must be finite numbers with 0 <= min < max <= 1 and step > 0. ",
+      "The usual call is glass_intensity_slider() with min 0, max 1, and step 0.01.",
+      call. = FALSE
+    )
+  }
   if (explicit_value) {
     value <- .glass_normalize_intensity(value)
     if (value < min || value > max) {
-      stop("`value` must be within `min` and `max`.", call. = FALSE)
+      stop(
+        "`value` must be within `min` and `max` (both inside 0 to 1). The default is 0.5.",
+        call. = FALSE
+      )
     }
   } else {
     value <- base::min(max, base::max(min, .glass_default_intensity()))
@@ -176,7 +184,10 @@ glass_intensity_slider <- function(
 #' }
 #' @export
 observe_glass_intensity <- function(input, session, inputId = "glass_intensity") {
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  if (missing(input) || missing(session)) {
+    .glass_need_server("observe_glass_intensity")
+  }
+  .glass_assert_input_id(inputId)
   shiny::observeEvent(
     input[[inputId]],
     {

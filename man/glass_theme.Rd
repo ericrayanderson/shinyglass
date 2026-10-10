@@ -174,8 +174,8 @@ if (interactive()) {
 
 }
 \seealso{
-\code{\link[=glass_page]{glass_page()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}},
-\code{\link[=glass_flatten]{glass_flatten()}}
+\link{shinyglass}, \code{\link[=glass_page]{glass_page()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
+\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=glass_flatten]{glass_flatten()}}
 
 Other glass themes:
 \code{\link[=glass_flatten]{glass_flatten()}},

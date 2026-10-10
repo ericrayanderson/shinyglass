@@ -44,10 +44,13 @@
 
 ## New features
 
-* Help pages now state types, defaults, and minimal examples, and they
-  cross-link by topic. `vignette("ai-assistants")` is a short note for
-  AI coding assistants, with a canonical app and copy-paste prompts. The
-  pkgdown site publishes `llms.txt` and `llms-full.txt`.
+* `?shinyglass` is a short usage guide: a minimal app, how to add glass
+  to an existing bslib or `fluidPage()` app, key options, the 0.5.0
+  migration, and common pitfalls with their fixes. `vignette("using")`
+  is the same guide, plus instructions you can paste. Help pages state
+  types, defaults, and minimal examples, and they cross-link by topic.
+  Argument errors name the argument and the value to pass. The pkgdown
+  site publishes `llms.txt` and `llms-full.txt`.
 * `glass_theme()`, `glass_page()`, and `update_glass_theme()` take
   `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`,
   `icon_style`, and `floating_sidebar`. Tokens include `--glass-ior`,

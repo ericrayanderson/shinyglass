@@ -56,8 +56,8 @@ navbar:
           href: articles/shinychat.html
         - text: Try it
           href: articles/playground.html
-        - text: AI coding assistants
-          href: articles/ai-assistants.html
+        - text: Using shinyglass
+          href: articles/using.html
     reference:
       text: Reference
       href: reference/index.html
@@ -73,6 +73,7 @@ reference:
 - title: Theme
   desc: Create and update a Liquid Glass theme for your Shiny app.
   contents:
+  - shinyglass-package
   - glass_theme
   - update_glass_theme
   - glass_theme_toggle
@@ -117,7 +118,7 @@ articles:
   - shinyreact
   - shinychat
   - playground
-  - ai-assistants
+  - using
 
 authors:
   Eric Anderson:

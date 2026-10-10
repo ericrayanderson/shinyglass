@@ -18,7 +18,8 @@
 #'   created from the arguments above.
 #'
 #' @return A Shiny UI tag list suitable as `shinyApp(ui = ...)`.
-#' @seealso [glass_theme()], [observe_glass()], [glass_intensity_slider()]
+#' @seealso [shinyglass], [glass_theme()], [observe_glass()],
+#'   [glass_intensity_slider()]
 #' @family glass themes
 #' @export
 #'

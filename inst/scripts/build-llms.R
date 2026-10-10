@@ -11,76 +11,6 @@ if (!dir.exists(docs)) {
   stop("docs/ is missing. Run pkgdown::build_site() first.", call. = FALSE)
 }
 
-# pkgdown renders every root *.md except a short built-in deny list.
-# AGENTS.md stays at the repo root for AI coding assistants.
-# It is not package docs, so drop the page pkgdown just wrote.
-agent_pages <- "AGENTS"
-unlink(file.path(docs, paste0(agent_pages, ".html")))
-unlink(file.path(docs, paste0(agent_pages, ".md")))
-
-sitemap <- file.path(docs, "sitemap.xml")
-if (file.exists(sitemap)) {
-  lines <- readLines(sitemap, warn = FALSE, encoding = "UTF-8")
-  drop <- grepl("AGENTS\\.html", lines, perl = TRUE)
-  if (any(drop)) writeLines(lines[!drop], sitemap, useBytes = TRUE)
-}
-
-search <- file.path(docs, "search.json")
-if (file.exists(search)) {
-  # Keep the original object text. Rewriting with jsonlite turns JSON null
-  # into {} and would change every other search hit.
-  raw <- paste(readLines(search, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
-  chars <- strsplit(raw, "", fixed = TRUE)[[1]]
-  n <- length(chars)
-  objects <- character()
-  i <- 1L
-  while (i <= n && chars[[i]] != "[") i <- i + 1L
-  i <- i + 1L
-  while (i <= n) {
-    while (i <= n && chars[[i]] %in% c(" ", "\n", "\r", "\t", ",")) i <- i + 1L
-    if (i > n || chars[[i]] == "]") break
-    if (chars[[i]] != "{") {
-      stop("search.json is not an array of objects.", call. = FALSE)
-    }
-    start <- i
-    depth <- 0L
-    in_str <- FALSE
-    escape <- FALSE
-    while (i <= n) {
-      ch <- chars[[i]]
-      if (in_str) {
-        if (escape) {
-          escape <- FALSE
-        } else if (ch == "\\") {
-          escape <- TRUE
-        } else if (ch == "\"") {
-          in_str <- FALSE
-        }
-      } else if (ch == "\"") {
-        in_str <- TRUE
-      } else if (ch == "{") {
-        depth <- depth + 1L
-      } else if (ch == "}") {
-        depth <- depth - 1L
-        if (depth == 0L) {
-          i <- i + 1L
-          break
-        }
-      }
-      i <- i + 1L
-    }
-    objects <- c(objects, paste(chars[start:(i - 1L)], collapse = ""))
-  }
-  keep <- !grepl("AGENTS\\.html", objects)
-  if (any(!keep)) {
-    writeLines(
-      paste0("[", paste(objects[keep], collapse = ","), "]"),
-      search,
-      useBytes = TRUE
-    )
-  }
-}
-
 if ("pkgdown" %in% loadedNamespaces() || requireNamespace("pkgdown", quietly = TRUE)) {
   has_llm <- exists("build_llm_docs", where = asNamespace("pkgdown"), inherits = FALSE)
   theme_md <- file.path(docs, "reference", "glass_theme.md")
@@ -104,6 +34,7 @@ link_line <- function(path, label, blurb) {
 }
 
 key_functions <- c(
+  link_line("reference/shinyglass-package.md", "shinyglass", "Package help. Minimal app, existing bslib or fluidPage app, options, 0.5.0 migration, pitfalls."),
   link_line("reference/glass_theme.md", "glass_theme()", "bslib theme. Intensity is 0 to 1, default 0.5. preset is light, dark, or auto."),
   link_line("reference/glass_page.md", "glass_page()", "fluidPage wrapper with the toggle, intensity slider, and accent wells. Persistence defaults to TRUE."),
   link_line("reference/update_glass_theme.md", "update_glass_theme()", "Change preset, intensity, scene, and other options in a running app."),
@@ -126,7 +57,7 @@ articles <- c(
   link_line("articles/shinyreact.md", "shinyreact", "Named theme, GlassPage, and useGlassTheme."),
   link_line("articles/shinychat.md", "shinychat", "page_chat() and offcanvas on glass."),
   link_line("articles/playground.md", "Try it", "A small app you can run locally."),
-  link_line("articles/ai-assistants.md", "AI coding assistants", "Canonical app and copy-paste prompts.")
+  link_line("articles/using.md", "Using shinyglass", "Minimal app, existing apps, options, migration, pitfalls, and paste-ready instructions.")
 )
 
 missing <- character()
@@ -193,7 +124,6 @@ writeLines(index, file.path(docs, "llms.txt"), useBytes = TRUE)
 
 md_files <- list.files(docs, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
 md_files <- md_files[!grepl("(^|/)llms(-full)?[.]txt$", md_files)]
-md_files <- md_files[basename(md_files) != "AGENTS.md"]
 # Stable order: home, reference, articles, news, then the rest.
 rank <- function(path) {
   rel <- sub(paste0("^", docs, "/"), "", path)

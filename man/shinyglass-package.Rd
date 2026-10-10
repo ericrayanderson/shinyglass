@@ -6,57 +6,144 @@
 \alias{shinyglass-package}
 \title{Liquid Glass Design Themes for 'shiny' Applications}
 \description{
-Drop-in Liquid Glass themes for \href{https://shiny.posit.co/}{shiny}. Call
-\code{\link[=glass_theme]{glass_theme()}} and pass the result to \verb{theme =} on \code{fluidPage()},
-\code{navbarPage()}, or any \href{https://rstudio.github.io/bslib/}{bslib}-aware page
-function to get translucent surfaces, backdrop blur, and system typography.
+Drop-in Liquid Glass themes for \href{https://shiny.posit.co/}{shiny}.
+Pass \code{\link[=glass_theme]{glass_theme()}} to \code{theme} on a bslib page or \code{fluidPage()}, or
+start from \code{\link[=glass_page]{glass_page()}}. Intensity runs from \code{0} (Ultra Clear) to \code{1}
+(Tinted). The default is \code{0.5}.
 }
-\section{Getting started}{
+\section{Minimal app}{
 
+\code{\link[=glass_page]{glass_page()}} includes Light / Dark / Auto, the intensity slider, and
+accent wells, and it turns persistence on. Call \code{\link[=observe_glass]{observe_glass()}} in the
+server. Keep plot backgrounds transparent and take ink from
+\code{\link[=glass_plot_colors]{glass_plot_colors()}}.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{library(shiny)
 library(shinyglass)
 
 ui <- glass_page(
-  title = "Liquid Glass",
-  persist = TRUE,
+  title = "Hello, glass",
   sliderInput("n", "Bars", 5, 30, 15),
   plotOutput("plot")
 )
 
 server <- function(input, output, session) \{
   observe_glass(input, session)
-  output$plot <- renderPlot(
-    barplot(seq_len(input$n), col = "#007AFF", border = NA),
-    bg = "transparent"
-  )
+  output$plot <- renderPlot(\{
+    pal <- glass_plot_colors(input = input)
+    barplot(seq_len(input$n), col = pal$fill, border = NA, col.axis = pal$ink)
+  \}, bg = "transparent")
 \}
+
+shinyApp(ui, server)
 }\if{html}{\out{</div>}}
-
-Light and dark presets are available via \code{glass_theme(preset = "dark")},
-or \code{preset = "auto"} to follow the OS. Switch at runtime with
-\code{\link[=update_glass_theme]{update_glass_theme()}} or \code{\link[=glass_theme_toggle]{glass_theme_toggle()}}. Material density is
-controlled with \code{\link[=glass_intensity_slider]{glass_intensity_slider()}} (Ultra Clear to Tinted, matching
-iOS 27 Settings -> Appearance -> Liquid Glass) or
-\code{glass_theme(intensity = )}. Use \code{plot_surface = "opaque"} when plots and
-tables need a denser panel. Named scenes (\code{glass_scenes()}), flatten mode
-(\code{\link[=glass_flatten]{glass_flatten()}}), and public CSS tokens (\code{\link[=glass_css_tokens]{glass_css_tokens()}}) are
-available. Accent color, blur, saturation, corner radius, and JS behaviors
-(\code{tint}, \code{specular}, \code{nav_morph}) are configurable.
-
-For \href{https://insightsengineering.github.io/teal/}{teal} apps, set
-\code{options(teal.bs_theme = glass_theme())} before calling \code{teal::init()}.
-For a shinyreact client, use \code{\link[=glass_page_react]{glass_page_react()}}. The page loads
-\code{GlassPage}, \code{GlassSidebar}, \code{GlassSurface}, \code{GlassButton}, and
-\code{useGlassTheme()} on \code{window.shinyglass}. Those classes follow the live
-\verb{--glass-*} tokens, so the client does not hard-code colors. Shadow roots
-can call \code{window.shinyglass.adoptShadow()}.
 }
 
+\section{Existing app}{
+
+Keep the page function you already use. Pass the theme, add the controls,
+and observe them. \code{page_sidebar()}, \code{page_fluid()}, \code{page_navbar()},
+\code{page_fillable()}, and \code{navbarPage()} all take \code{theme}.
+\code{fluidPage(theme = glass_theme())} works too.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(shiny)
+library(bslib)
+library(shinyglass)
+
+ui <- page_sidebar(
+  title = "Existing app",
+  theme = glass_theme(preset = "auto", intensity = 0.5),
+  sidebar = sidebar(
+    glass_theme_toggle(),
+    glass_intensity_slider()
+  ),
+  "Main column"
+)
+
+server <- function(input, output, session) \{
+  observe_glass(input, session)
+\}
+
+shinyApp(ui, server)
+}\if{html}{\out{</div>}}
+
+\code{\link[=glass_theme]{glass_theme()}} does not remember choices (\code{persist = FALSE}).
+\code{\link[=glass_page]{glass_page()}} does (\code{persist = TRUE}).
+}
+
+\section{Key options}{
+\tabular{lll}{
+   Argument \tab Default \tab Allowed \cr
+   \code{preset} \tab \code{"light"} on \code{\link[=glass_theme]{glass_theme()}}, \code{"auto"} on \code{\link[=glass_page]{glass_page()}} \tab \code{"light"}, \code{"dark"}, \code{"auto"} \cr
+   \code{intensity} \tab \code{0.5} \tab number from \code{0} (Ultra Clear) to \code{1} (Tinted) \cr
+   \code{primary} \tab \code{"#007AFF"} \tab hex, \code{rgb()}, or a name from \code{\link[=glass_system_colors]{glass_system_colors()}} \cr
+   \code{material} \tab \code{"regular"} \tab \code{"regular"}. \code{"clear"} is deprecated \cr
+   \code{plot_surface} \tab \code{"clear"} \tab \code{"clear"}, \code{"opaque"} \cr
+   \code{scene} \tab \code{"default"} (\code{"tahoe"} on \code{\link[=glass_page]{glass_page()}}) \tab \code{names(glass_scenes())} \cr
+   \code{persist} \tab \code{FALSE} (\code{TRUE} on \code{\link[=glass_page]{glass_page()}}) \tab \code{TRUE} or \code{FALSE} \cr
+   \code{refraction}, \code{morph}, \code{press}, \code{scroll_edge}, \code{minimize_tabs} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE} \cr
+   \code{icon_style} \tab \code{"clear"} \tab \code{"clear"}, \code{"color"}, \code{"all"} \cr
+   \code{floating_sidebar} \tab \code{FALSE} \tab \code{TRUE} or \code{FALSE} \cr
+   \code{specular} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE}. Highlights are static bands \cr
+}
+
+
+\code{\link[=update_glass_theme]{update_glass_theme()}} changes these in a running app. \code{NULL} leaves that
+setting alone. When the user picks Auto, \code{input$glass_preset} stays
+\code{"auto"}. Plot ink must use \code{\link[=glass_resolved_preset]{glass_resolved_preset()}}, which is \code{"light"}
+or \code{"dark"}.
+}
+
+\section{Migrating to 0.5.0}{
+
+\code{vignette("migrating")} is the full note.
+\itemize{
+\item Default intensity moved from \code{0.45} to \code{0.5}.
+\item \code{material = "clear"} is deprecated. Delete it and pass \code{intensity}.
+When \code{intensity} is omitted, clear maps to \code{0.12} and warns.
+To keep that look, write \code{intensity = 0.12}.
+\item Specular highlights no longer follow the pointer. \code{specular = FALSE}
+hides them.
+\item \code{refraction}, \code{morph}, \code{press}, \code{scroll_edge}, \code{minimize_tabs}, and
+\code{icon_style = "clear"} are on by default. \code{floating_sidebar} stays off.
+\item Page functions and click targets stay the same.
+}
+}
+
+\section{Pitfalls}{
+
+\itemize{
+\item App CSS that sets panel or text colors fights the theme. Use \verb{--glass-*}
+tokens from \code{\link[=glass_css_tokens]{glass_css_tokens()}}, or
+\code{glass_theme(tokens = list(blur = "28px"))}.
+\item Plots and tables are transparent. Pass \code{bg = "transparent"} to
+\code{renderPlot()}, or set \code{plot_surface = "opaque"} when the wallpaper
+makes the graphic hard to read. Color ink with \code{\link[=glass_plot_colors]{glass_plot_colors()}}.
+\item \code{\link[=observe_glass]{observe_glass()}} only watches \code{glass_toggle}, \code{glass_intensity}, and
+\code{glass_accent}. A custom id needs the matching \verb{observe_glass_*()} helper.
+\item For shinyreact, name the theme:
+\code{glass_page_react(theme = glass_theme())}. An unnamed theme drops the
+CSS. \code{page_react_html()} has no \code{theme} argument; pass
+\code{extra_deps = glass_theme_dependencies()}.
+\item shinychat: \code{page_chat(theme = glass_theme())}. bslib \code{offcanvas()} uses
+the same material.
+\item Reduced transparency, increased contrast, and forced colors override
+the glass. \code{\link[=glass_flatten]{glass_flatten()}} or \code{?glass_flatten=1} removes blur for
+screenshots and PDF.
+}
+
+Longer copy, including instructions you can paste into an AI coding
+assistant, is in \code{vignette("using")}.
+}
+
+\examples{
+inherits(glass_theme(preset = "auto", intensity = 0.5), "bs_theme")
+
+}
 \seealso{
-\code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=theme_glass]{theme_glass()}},
-\code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=update_glass_theme]{update_glass_theme()}}, \code{\link[=glass_flatten]{glass_flatten()}},
-\code{\link[=glass_css_tokens]{glass_css_tokens()}}, \code{\link[=glass_theme_dependencies]{glass_theme_dependencies()}}
+\code{\link[=glass_page]{glass_page()}}, \code{\link[=glass_theme]{glass_theme()}}, \code{\link[=update_glass_theme]{update_glass_theme()}},
+\code{\link[=observe_glass]{observe_glass()}}, \code{\link[=glass_intensity_slider]{glass_intensity_slider()}}, \code{\link[=glass_plot_colors]{glass_plot_colors()}},
+\code{\link[=glass_page_react]{glass_page_react()}}, \code{\link[=glass_flatten]{glass_flatten()}}
 }
 \author{
 \strong{Maintainer}: Eric Anderson \email{eric.ray.anderson@gmail.com} [copyright holder]
@@ -67,4 +154,3 @@ Authors:
 }
 
 }
-\keyword{internal}

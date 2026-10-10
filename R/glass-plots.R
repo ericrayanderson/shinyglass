@@ -188,7 +188,7 @@ glass_plot_surface_input <- function(
     selected = c("clear", "opaque"),
     width = NULL) {
   selected <- match.arg(selected)
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   sel <- shiny::selectInput(
     inputId = inputId,
     label = label,
@@ -231,9 +231,9 @@ glass_plot_surface_input <- function(
 #' @export
 observe_glass_plot_surface <- function(input, session, inputId = "plot_surface") {
   if (missing(input) || missing(session)) {
-    stop("`input` and `session` are required.", call. = FALSE)
+    .glass_need_server("observe_glass_plot_surface")
   }
-  stopifnot(is.character(inputId), length(inputId) == 1L, nzchar(inputId))
+  .glass_assert_input_id(inputId)
   shiny::observeEvent(
     input[[inputId]],
     {
