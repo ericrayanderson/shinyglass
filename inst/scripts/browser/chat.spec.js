@@ -46,8 +46,17 @@ test('scripted reply streams thinking, a citation, and a tool card', async ({ pa
   await page.getByRole('button', { name: /glass_theme work/i }).click();
   await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.getByText('You asked:')).toHaveCount(0);
-  await expect(page.locator('.shiny-chat-thinking').first()).toBeVisible();
-  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
+  const thinking = page.locator('.shiny-chat-thinking').first();
+  const thinkingHeader = page.locator('.shiny-chat-thinking-header').first();
+  await expect(thinking).toBeVisible();
+  await expect(thinkingHeader).toBeVisible();
+  await thinkingHeader.click();
+  const opened = await thinkingHeader.getAttribute('aria-expanded');
+  await thinkingHeader.click();
+  const closed = await thinkingHeader.getAttribute('aria-expanded');
+  expect(opened).not.toEqual(closed);
+  await expect(thinking).toContainText('theme API');
+  await expect(page.locator('#chat-drawer')).toHaveCount(0);
   const citation = page.locator('.shiny-aside-pill').first();
   await expect(citation).toBeVisible({ timeout: 20000 });
   await expect(page.getByRole('button', { name: 'shinyglass docs' }).first()).toBeVisible();
@@ -204,6 +213,42 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   const assistantBox = await page.locator('.shiny-chat-message .shiny-chat-message-content').first().boundingBox();
   expect(assistantBox.x).toBeGreaterThanOrEqual(12);
   expect(393 - (userBox.x + userBox.width)).toBeGreaterThanOrEqual(12);
+
+  const messages = await page.locator('.shiny-chat-messages').boundingBox();
+  const content = await page.locator('.shiny-chat-messages-content').boundingBox();
+  const composerCol = await page.locator('.shiny-chat-composer').boundingBox();
+  expect(messages.x).toBeGreaterThanOrEqual(-1);
+  expect(messages.x + messages.width).toBeLessThanOrEqual(394);
+  expect(content.x + content.width).toBeLessThanOrEqual(394);
+  expect(Math.abs(content.x - composerCol.x)).toBeLessThanOrEqual(2);
+  expect(Math.abs((content.x + content.width) - (composerCol.x + composerCol.width))).toBeLessThanOrEqual(2);
+
+  const overflow = await page.evaluate(() => (
+    document.documentElement.scrollWidth - document.documentElement.clientWidth
+  ));
+  expect(overflow).toBeLessThanOrEqual(2);
+
+  for (let i = 0; i < 4; i += 1) {
+    await page.evaluate((n) => {
+      window.Shiny.setInputValue(
+        'chat_user_input',
+        { text: 'Another harbor note ' + n + ' about shinyglass and the tide.' },
+        { priority: 'event' }
+      );
+    }, i);
+    await page.waitForTimeout(200);
+  }
+  await expect.poll(async () => page.locator('.shiny-chat-messages').evaluate((el) => {
+    if (el.scrollHeight <= el.clientHeight + 40) return 0;
+    el.scrollTop = 80;
+    el.dispatchEvent(new Event('scroll', { bubbles: true }));
+    return el.scrollTop;
+  }), { timeout: 20000 }).toBeGreaterThan(8);
+  const jump = page.locator('.shiny-chat-scroll-to-bottom').first();
+  await expect(jump).toBeVisible();
+  const jumpBox = await jump.boundingBox();
+  expect(jumpBox.width).toBeGreaterThanOrEqual(44);
+  expect(jumpBox.height).toBeGreaterThanOrEqual(44);
   await context.close();
 });
 
@@ -219,6 +264,60 @@ test('theme and the conversation stay after reload', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
   await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.harbor-status')).toBeVisible();
+});
+
+test('staged favicon is inline and the files answer 200', async ({ page, request }) => {
+  await gotoChat(page);
+  const href = await page.locator('link[rel="icon"]').first().getAttribute('href');
+  expect(href.startsWith('data:image/svg+xml')).toBeTruthy();
+  const mark = await page.locator('.harbor-mark').first().getAttribute('src');
+  expect(mark.startsWith('data:image/svg+xml')).toBeTruthy();
+  for (const path of ['favicon.svg', 'favicon.ico']) {
+    const res = await request.get(new URL(path, BASE).toString());
+    expect(res.status(), path).toBe(200);
+    expect((await res.body()).length).toBeGreaterThan(32);
+  }
+});
+
+test('mocked live replies show thinking and topic citations', async ({ page }) => {
+  const live = process.env.CHAT_MOCK_URL || 'http://127.0.0.1:3944/';
+  await page.goto(live, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('.harbor-status')).toContainText('Live (Gemini)');
+  await expect(page.locator('#chat-drawer')).toHaveCount(0);
+
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  const thinkingHeader = page.locator('.shiny-chat-thinking-header').first();
+  await expect(thinkingHeader).toBeVisible({ timeout: 20000 });
+  await thinkingHeader.click();
+  const opened = await thinkingHeader.getAttribute('aria-expanded');
+  await thinkingHeader.click();
+  const closed = await thinkingHeader.getAttribute('aria-expanded');
+  expect(opened).not.toEqual(closed);
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
+  await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
+
+  await page.locator('#open_sources').click();
+  const panel = page.locator('#sources_panel.offcanvas, .offcanvas.show').first();
+  await expect(panel).toBeVisible();
+  await expect(panel.locator('a[href*="github.io/shinyglass"]')).toBeVisible();
+  await expect(panel.locator('a[href*="human-interface-guidelines"]')).toBeVisible();
+  await expect(panel.locator('a[href*="shiny.posit.co"]')).toBeVisible();
+  await page.locator('#sources_panel .btn-close').click();
+
+  await page.goto(live, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await page.evaluate(() => {
+    window.Shiny.setInputValue(
+      'chat_user_input',
+      { text: "What's the tide at dawn?" },
+      { priority: 'event' }
+    );
+  });
+  await expect(page.getByText('1.4 m').first()).toBeVisible({ timeout: 20000 });
+  await page.locator('#open_sources').click();
+  await expect(panel).toBeVisible();
+  await expect(panel).toContainText('No sources yet');
 });
 
 test('phone width keeps the composer on screen', async ({ page }) => {

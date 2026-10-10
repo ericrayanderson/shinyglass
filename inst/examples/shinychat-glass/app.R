@@ -1,5 +1,7 @@
 # Harbor notes: the shinyglass chat demo.
-# Local script by default. GEMINI_API_KEY or GOOGLE_API_KEY uses Gemini Flash.
+# Local script by default. GEMINI_API_KEY or GOOGLE_API_KEY uses Gemini Flash
+# with web search and thinking. A live reply with no grounding citations
+# gets topic-matched docs instead.
 #   shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 
 library(shiny)
@@ -48,6 +50,21 @@ make_echo_chat <- function() {
     clone = function() make_echo_chat()
   )
   class(client) <- c("Chat", "R6")
+  client
+}
+
+# Test stand-in for a live Gemini turn. Yields thinking and text, and no
+# grounding citations, so the fallback has to attach topic-matched docs.
+make_mock_live_chat <- function() {
+  client <- make_echo_chat()
+  client$stream_async <- function(..., stream = "content") {
+    raw <- user_text(list(...))
+    reply <- scripted_reply(raw)
+    coro::gen({
+      yield(ellmer::ContentThinking(reply$thinking))
+      yield(ellmer::ContentText(reply$body))
+    })
+  }
   client
 }
 
@@ -140,6 +157,34 @@ scripted_reply <- function(text) {
     citations = cites,
     tool = theme_block()
   )
+}
+
+# Curated pages for a live reply that came back without grounding.
+# Tide-only notes stay empty. Glass, chat, and Shiny questions each
+# get the docs that match that topic.
+curated_citations <- function(text) {
+  cites <- docs_citations()
+  blob <- paste(text %||% "", collapse = " ")
+  glass <- grepl(
+    "glass|theme|liquid|preset|scene|intensity|material|shinyglass",
+    blob,
+    ignore.case = TRUE
+  )
+  chat <- chat_question(blob)
+  shiny <- grepl("shiny|bslib", blob, ignore.case = TRUE)
+  if (!glass && !chat && !shiny) return(list())
+  picked <- list()
+  if (glass) picked <- c(picked, cites[c(1L, 2L, 3L, 4L, 5L)])
+  if (chat) picked <- c(picked, cites[c(6L, 1L, 5L)])
+  if (shiny && !glass && !chat) picked <- c(picked, cites[c(5L, 1L, 6L)])
+  out <- list()
+  seen <- character()
+  for (item in picked) {
+    if (is.null(item$url) || item$url %in% seen) next
+    seen <- c(seen, item$url)
+    out[[length(out) + 1L]] <- item
+  }
+  out
 }
 
 chunk_words <- function(body) {
@@ -270,6 +315,7 @@ harbor_system_prompt <- function() {
   paste(
     "You help with shinyglass, Shiny, and R, and with ordinary conversation.",
     "Answer clearly in a few sentences.",
+    "When a fact should be checked, search the web and cite the page.",
     "Decline only a clearly unrelated or abusive request, in one short sentence, without role-play."
   )
 }
@@ -373,7 +419,21 @@ guarded_stream <- function(stream, text, on_fallback = NULL) {
   })
 }
 
+# Gemini 3 takes a thinking level. Older Gemini models take a token budget.
+# Either one makes ellmer send includeThoughts, so a live reply can show
+# "Thought for ..." instead of an empty hidden drawer.
+gemini_params <- function(model = gemini_model()) {
+  if (grepl("^gemini-3", model)) {
+    ellmer::params(reasoning_effort = "low")
+  } else {
+    ellmer::params(reasoning_tokens = 1024L)
+  }
+}
+
 make_client <- function() {
+  if (identical(Sys.getenv("SHINYGLASS_CHAT_MOCK_LIVE"), "1")) {
+    return(list(client = make_mock_live_chat(), live = TRUE))
+  }
   key <- gemini_key()
   if (is.null(key)) {
     return(list(client = make_echo_chat(), live = FALSE))
@@ -382,7 +442,8 @@ make_client <- function() {
     ellmer::chat_google_gemini(
       system_prompt = harbor_system_prompt(),
       model = gemini_model(),
-      api_key = key
+      api_key = key,
+      params = gemini_params()
     ),
     error = function(e) NULL
   )
@@ -393,7 +454,31 @@ make_client <- function() {
     )
     return(list(client = make_echo_chat(), live = FALSE))
   }
+  tryCatch(
+    client$register_tool(ellmer::google_tool_web_search()),
+    error = function(e) {
+      warning(
+        "Web search could not be enabled. Live replies will use curated citations.",
+        call. = FALSE
+      )
+    }
+  )
   list(client = client, live = TRUE)
+}
+
+# Inline droplet. A data URI still loads when the app is hosted on a
+# shinyapps.io subpath and the browser never asks the origin for /favicon.ico.
+harbor_icon_src <- function() {
+  paste0(
+    "data:image/svg+xml;base64,",
+    "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+",
+    "CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI4IiB5MT0iMiIgeDI9IjI0IiB5Mj0iMzAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4K",
+    "ICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRThGM0ZGIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMC40NSIgc3RvcC1jb2xvcj0iIzdDQjhGRiIvPgog",
+    "ICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDdBRkYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0",
+    "PSIzMiIgcng9IjgiIGZpbGw9IiMwQjFDMzMiLz4KICA8cGF0aCBmaWxsPSJ1cmwoI2cpIiBkPSJNMTYgNC4yYy0zLjYgNS4yLTguMiA4LjgtOC4yIDE0LjFhOC4yIDguMiAwIDAg",
+    "MCAxNi40IDBjMC01LjMtNC42LTguOS04LjItMTQuMXoiLz4KICA8ZWxsaXBzZSBjeD0iMTMuMSIgY3k9IjE2LjIiIHJ4PSIyLjIiIHJ5PSIzLjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9",
+    "IjAuNzIiLz4KPC9zdmc+Cg=="
+  )
 }
 
 glass_preset <- match.arg(
@@ -403,7 +488,7 @@ glass_preset <- match.arg(
 
 ui <- tagList(
   tags$head(
-    tags$link(rel = "icon", type = "image/svg+xml", href = "favicon.svg"),
+    tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
     tags$link(rel = "alternate icon", type = "image/x-icon", href = "favicon.ico"),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
@@ -617,12 +702,15 @@ ui <- tagList(
   page_chat(
   "Harbor notes",
   icon = tags$img(
-    src = "favicon.svg",
+    src = harbor_icon_src(),
     alt = "",
     class = "harbor-mark",
     width = "22",
     height = "22"
   ),
+  # An empty drawer mounts hidden with no trigger. Thinking lives on the
+  # "Thought for ..." disclosure, which only renders when thoughts exist.
+  drawer = FALSE,
   id = "chat",
   theme = glass_theme(
     preset = glass_preset,
@@ -803,18 +891,23 @@ server <- function(input, output, session) {
     remember("assistant", text)
   }
 
-  finish_live <- function(parts) {
-    add_citations(harvest_parts(parts))
-    add_citations(harvest_turns())
+  finish_live <- function(parts, text = NULL) {
+    if (!is.list(parts)) parts <- list()
+    found <- c(harvest_parts(parts), harvest_turns())
+    add_citations(found)
+    if (!length(found)) {
+      answer <- paste(vapply(parts, part_text, character(1)), collapse = "")
+      add_citations(curated_citations(paste(text %||% "", answer)))
+    }
     remember_parts(parts)
     invisible(parts)
   }
 
-  pipe_live <- function(stream) {
+  pipe_live <- function(stream, text) {
     result <- chat_append("chat", stream)
     promises::then(
       result,
-      onFulfilled = function(value) finish_live(value),
+      onFulfilled = function(value) finish_live(value, text),
       onRejected = function(err) NULL
     )
   }
@@ -842,7 +935,7 @@ server <- function(input, output, session) {
         onFulfilled = function(inner) {
           pipe_live(guarded_stream(inner, text, on_fallback = function(notice) {
             note_fallback(notice, text)
-          }))
+          }), text)
         },
         onRejected = function(err) send_mock(text, api_notice(err))
       )
@@ -850,7 +943,7 @@ server <- function(input, output, session) {
     }
     pipe_live(guarded_stream(started, text, on_fallback = function(notice) {
       note_fallback(notice, text)
-    }))
+    }), text)
     invisible(NULL)
   }
 

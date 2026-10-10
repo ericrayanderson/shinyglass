@@ -121,6 +121,30 @@ test_that("chat deploy stages GEMINI_API_KEY without logging it", {
   unlink(other, recursive = TRUE)
 })
 
+test_that("chat staging copies www favicons and the icon is inline", {
+  deploy_path <- testthat::test_path("../../inst/scripts/deploy-shinyapps-demos.R")
+  skip_if_not(file.exists(deploy_path))
+  src <- testthat::test_path("../../inst/examples/shinychat-glass/app.R")
+  skip_if_not(file.exists(src))
+
+  env <- new.env(parent = baseenv())
+  sys.source(deploy_path, env)
+
+  dest <- tempfile("chat-www-")
+  env$stage_single(src, dest, c("shiny", "bslib", "shinyglass", "shinychat", "ellmer", "later"))
+  on.exit(unlink(dest, recursive = TRUE), add = TRUE)
+
+  expect_true(file.exists(file.path(dest, "app.R")))
+  expect_true(file.exists(file.path(dest, "www", "favicon.svg")))
+  expect_true(file.exists(file.path(dest, "www", "favicon.ico")))
+  expect_gt(file.info(file.path(dest, "www", "favicon.ico"))$size, 32)
+
+  app <- paste(readLines(file.path(dest, "app.R"), warn = FALSE), collapse = "\n")
+  expect_match(app, "data:image/svg+xml;base64,", fixed = TRUE)
+  expect_false(grepl('href = "favicon.svg"', app, fixed = TRUE))
+  expect_match(app, 'href = "favicon.ico"', fixed = TRUE)
+})
+
 test_that("harbor notes loads a staged Renviron without printing the key", {
   app_path <- testthat::test_path("../../inst/examples/shinychat-glass/app.R")
   if (!file.exists(app_path)) {
