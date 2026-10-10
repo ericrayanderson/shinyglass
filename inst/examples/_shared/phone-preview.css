@@ -46,7 +46,7 @@
   flex: 0 0 auto;
 }
 
-@media (min-width: 900px) and (pointer: fine) {
+@media (pointer: fine) and (min-width: 900px) {
   html:not([data-phone-frame="0"]) .phone-preview-toggle {
     display: inline-flex;
   }

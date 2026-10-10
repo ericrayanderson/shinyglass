@@ -65,14 +65,46 @@ phone_preview <- function(page, app, request = NULL) {
   if (identical(frame, "0")) {
     meta[["shinyglass-phone-frame"]] <- "0"
   }
+  # Phones must not download the stylesheet or the script. The loader is an
+  # inline script at the end of the body, so it does not sit in the head
+  # and change when the app connects. It fetches the assets only when the
+  # desktop media query matches. The resource prefix matches the dependency.
+  prefix <- "shinyglass-phone-preview-0.5.0"
+  loader <- sprintf(
+    '<script id="shinyglass-phone-preview-loader">
+(function () {
+  var DESKTOP = "(pointer: fine) and (min-width: 900px)";
+  var root = document.documentElement;
+  var frameMeta = document.querySelector("meta[name=\\"shinyglass-phone-frame\\"]");
+  if (frameMeta && frameMeta.getAttribute("content") === "0") {
+    var appMeta = document.querySelector("meta[name=\\"shinyglass-phone-app\\"]");
+    if (appMeta) root.setAttribute("data-phone-app", appMeta.getAttribute("content") || "");
+    root.setAttribute("data-phone-frame", "0");
+    return;
+  }
+  var query = window.matchMedia(DESKTOP);
+  function load() {
+    if (!query.matches || document.querySelector("script[data-phone-preview]")) return;
+    var script = document.createElement("script");
+    script.src = "%s/phone-preview.js";
+    script.async = false;
+    script.setAttribute("data-phone-preview", "1");
+    document.head.appendChild(script);
+  }
+  if (typeof query.addEventListener === "function") query.addEventListener("change", load);
+  else if (typeof query.addListener === "function") query.addListener(load);
+  load();
+})();
+</script>',
+    prefix
+  )
   dep <- htmltools::htmlDependency(
     name = "shinyglass-phone-preview",
     version = "0.5.0",
     src = c(file = dir),
-    script = "phone-preview.js",
-    stylesheet = "phone-preview.css",
     meta = meta,
-    all_files = FALSE
+    all_files = TRUE
   )
-  htmltools::attachDependencies(page, dep, append = TRUE)
+  page <- htmltools::attachDependencies(page, dep, append = TRUE)
+  htmltools::tagList(page, htmltools::HTML(loader))
 }

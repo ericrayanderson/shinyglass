@@ -57,27 +57,7 @@ test('reduced motion drops the switch transition', async ({ page }) => {
   expect(duration === '0s' || duration === '0ms').toBeTruthy();
 });
 
-test('a 393px coarse phone does not show the toggle', async ({ browser }) => {
-  const iphone = devices['iPhone 14 Pro'];
-  const context = await browser.newContext({
-    ...iphone,
-    viewport: { width: 393, height: 852 },
-  });
-  const page = await context.newPage();
-  try {
-    await connected(page);
-    const coarse = await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches);
-    const narrow = await page.evaluate(() => window.matchMedia('(max-width: 899px)').matches);
-    expect(coarse || narrow).toBeTruthy();
-    expect(narrow).toBeTruthy();
-    await expect(page.locator('.phone-preview-toggle')).toBeHidden();
-    await expect(page.locator('#dist_plot')).toBeVisible();
-  } finally {
-    await context.close();
-  }
-});
-
-test('a narrow fine pointer does not show the toggle', async ({ browser }) => {
+test('a narrow fine pointer does not mount the preview', async ({ browser }) => {
   const context = await browser.newContext({
     viewport: { width: 393, height: 852 },
     hasTouch: false,
@@ -86,27 +66,221 @@ test('a narrow fine pointer does not show the toggle', async ({ browser }) => {
   const page = await context.newPage();
   try {
     await connected(page);
-    await expect(page.locator('.phone-preview-toggle')).toBeHidden();
+    expect(await page.evaluate(() => window.matchMedia('(pointer: fine) and (min-width: 900px)').matches)).toBe(false);
+    await expect(page.locator('.phone-preview-toggle')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('.phone-preview-root')).toHaveCount(0);
   } finally {
     await context.close();
   }
 });
 
-test('a wide coarse pointer does not show the toggle', async ({ browser }) => {
-  const iphone = devices['iPhone 14 Pro'];
+test('a wide coarse pointer does not mount the preview', async ({ browser }) => {
+  const iphone = devices['iPhone 16'];
   const context = await browser.newContext({
-    ...iphone,
+    userAgent: iphone.userAgent,
     viewport: { width: 1280, height: 800 },
+    deviceScaleFactor: iphone.deviceScaleFactor,
+    isMobile: true,
+    hasTouch: true,
   });
   const page = await context.newPage();
   try {
     await connected(page);
-    const coarse = await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches);
-    expect(coarse).toBeTruthy();
-    await expect(page.locator('.phone-preview-toggle')).toBeHidden();
-    await expect(page.locator('iframe.phone-preview-frame')).toBeHidden();
-    expect(await page.locator('iframe.phone-preview-frame').getAttribute('src')).toBeNull();
+    expect(await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches)).toBe(true);
+    expect(await page.evaluate(() => window.matchMedia('(pointer: fine) and (min-width: 900px)').matches)).toBe(false);
+    await expect(page.locator('.phone-preview-toggle')).toHaveCount(0);
+    await expect(page.locator('iframe')).toHaveCount(0);
+    await expect(page.locator('.phone-preview-root')).toHaveCount(0);
   } finally {
     await context.close();
   }
 });
+
+test('shrinking below 900px removes the frame and the extra session', async ({ page }) => {
+  test.setTimeout(90000);
+  const sockets = [];
+  page.on('websocket', (ws) => {
+    const rec = { url: ws.url(), open: true };
+    ws.on('close', () => { rec.open = false; });
+    sockets.push(rec);
+  });
+  const openShiny = () => sockets.filter((s) => /websocket/i.test(s.url) && s.open);
+
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.addInitScript(() => localStorage.setItem('shinyglass-phone-preview:demo', 'full'));
+  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect.poll(() => openShiny().map((s) => s.url)).toHaveLength(1);
+
+  await page.locator('.phone-preview-toggle').click();
+  await expect(page.locator('iframe.phone-preview-frame')).toBeVisible();
+  await expect.poll(() => openShiny().length, { timeout: 20000 }).toBe(2);
+
+  await page.setViewportSize({ width: 393, height: 852 });
+  await expect(page.locator('.phone-preview-toggle')).toHaveCount(0);
+  await expect(page.locator('iframe')).toHaveCount(0);
+  await expect(page.locator('.phone-preview-root')).toHaveCount(0);
+  await expect.poll(() => openShiny().length, { timeout: 15000 }).toBe(1);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)).not.toBe('hidden');
+  await expect(page.locator('#dist_plot')).toBeVisible();
+});
+
+const IPHONE_APPS = [
+  {
+    name: 'demo',
+    url: 'http://127.0.0.1:3945/',
+    selectors: ['h2', '#species', '#bins', '#dist_plot'],
+    ready: '#dist_plot',
+  },
+  {
+    name: 'dashboard',
+    url: 'http://127.0.0.1:3946/',
+    selectors: ['.bslib-page-title', '.bslib-value-box', '#dist_plot', '#tabs'],
+    ready: '.bslib-page-title',
+  },
+  {
+    name: 'inputs',
+    url: 'http://127.0.0.1:3947/',
+    selectors: ['.bslib-page-title', '#text', '#slider', '#numeric'],
+    ready: '#text',
+  },
+  {
+    name: 'olympics',
+    url: 'http://127.0.0.1:3948/',
+    selectors: ['.olympics-hero', '#btn', '#discipline'],
+    ready: '.olympics-hero',
+    img: '.olympics-hero img',
+  },
+  {
+    name: 'chat',
+    url: 'http://127.0.0.1:3949/',
+    selectors: ['#chat_page', '#project', '#chat_user_input'],
+    ready: '#chat_user_input',
+  },
+];
+
+function iphone16Context() {
+  const iphone = devices['iPhone 16'];
+  return {
+    userAgent: iphone.userAgent,
+    viewport: { width: 393, height: 852 },
+    screen: { width: 393, height: 852 },
+    deviceScaleFactor: iphone.deviceScaleFactor,
+    isMobile: true,
+    hasTouch: true,
+  };
+}
+
+async function stripPhonePreview(route) {
+  if (route.request().resourceType() !== 'document') {
+    await route.continue();
+    return;
+  }
+  const response = await route.fetch();
+  const headers = { ...response.headers() };
+  delete headers['content-length'];
+  delete headers['content-encoding'];
+  let body = await response.text();
+  body = body
+    .replace(/<meta\b[^>]*\bshinyglass-phone-[^>]*>/gi, '')
+    .replace(/<link\b[^>]*\bphone-preview\.css[^>]*>/gi, '')
+    .replace(/<script\b[^>]*\bphone-preview\.js[^>]*>\s*<\/script>/gi, '')
+    .replace(/<script\b[^>]*\bid="shinyglass-phone-preview-loader"[^>]*>[\s\S]*?<\/script>/gi, '');
+  await route.fulfill({ status: response.status(), headers, body });
+}
+
+async function settle(page, app) {
+  await page.waitForFunction(
+    () => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected(),
+    null,
+    { timeout: 60000 }
+  );
+  await page.waitForSelector(app.ready, { timeout: 30000 });
+  if (app.img) {
+    await page.waitForFunction((sel) => {
+      const img = document.querySelector(sel);
+      return img && img.complete && img.naturalWidth > 0;
+    }, app.img, { timeout: 30000 });
+  }
+  await page.evaluate(() => (document.fonts ? document.fonts.ready : null));
+  await page.waitForFunction(() => !document.getElementById('shiny-disconnected-overlay'), null, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(400);
+}
+
+async function layoutSnapshot(page, app) {
+  return page.evaluate((selectors) => {
+    function box(sel) {
+      const el = document.querySelector(sel);
+      if (!el) return { sel, missing: true };
+      const r = el.getBoundingClientRect();
+      return {
+        sel,
+        x: Math.round(r.x),
+        y: Math.round(r.y),
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+      };
+    }
+    const html = getComputedStyle(document.documentElement);
+    const body = getComputedStyle(document.body);
+    return {
+      boxes: selectors.map(box),
+      layout: {
+        htmlOverflow: html.overflow,
+        bodyOverflow: body.overflow,
+        htmlTouch: html.touchAction,
+        bodyTouch: body.touchAction,
+      },
+    };
+  }, app.selectors);
+}
+
+for (const app of IPHONE_APPS) {
+  test(`iPhone 16 leaves ${app.name} identical to main`, async ({ browser }) => {
+    test.setTimeout(120000);
+    const context = await browser.newContext(iphone16Context());
+    try {
+      const baselinePage = await context.newPage();
+      await baselinePage.route('**/*', stripPhonePreview);
+      await baselinePage.goto(app.url, { waitUntil: 'domcontentloaded' });
+      await settle(baselinePage, app);
+      const baselineHtml = await baselinePage.content();
+      expect(baselineHtml).not.toContain('phone-preview.js');
+      expect(baselineHtml).not.toContain('phone-preview.css');
+      const baseline = await layoutSnapshot(baselinePage, app);
+      expect(baseline.boxes.every((box) => !box.missing)).toBe(true);
+      await baselinePage.close();
+
+      const page = await context.newPage();
+      const sockets = [];
+      page.on('websocket', (ws) => {
+        const rec = { url: ws.url(), open: true };
+        ws.on('close', () => { rec.open = false; });
+        sockets.push(rec);
+      });
+      await page.goto(app.url, { waitUntil: 'domcontentloaded' });
+      await settle(page, app);
+      const live = await layoutSnapshot(page, app);
+
+      expect(await page.evaluate(() => window.matchMedia('(pointer: fine) and (min-width: 900px)').matches)).toBe(false);
+      expect(await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches)).toBe(true);
+      await expect(page.locator('.phone-preview-toggle')).toHaveCount(0);
+      await expect(page.locator('.phone-preview-root')).toHaveCount(0);
+      await expect(page.locator('iframe')).toHaveCount(0);
+      expect(page.frames().length).toBe(1);
+      expect(live.boxes.map((box) => box.sel)).toEqual(baseline.boxes.map((box) => box.sel));
+      for (let i = 0; i < live.boxes.length; i += 1) {
+        expect(live.boxes[i].missing, live.boxes[i].sel).toBeFalsy();
+        for (const key of ['x', 'y', 'w', 'h']) {
+          expect(Math.abs(live.boxes[i][key] - baseline.boxes[i][key]), `${live.boxes[i].sel} ${key}`).toBeLessThanOrEqual(1);
+        }
+      }
+      expect(live.layout).toEqual(baseline.layout);
+      const openShiny = sockets.filter((s) => /websocket/i.test(s.url) && s.open);
+      expect(openShiny).toHaveLength(1);
+    } finally {
+      await context.close();
+    }
+  });
+}

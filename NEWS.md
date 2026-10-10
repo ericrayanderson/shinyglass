@@ -112,7 +112,9 @@
 * The five hosted demos have a desktop phone preview. On a wide screen
   with a fine pointer, a glass control at the bottom right opens the
   same app inside an iPhone frame. The choice is remembered in the
-  browser. Phones and narrow windows do not show the control. The frame
+  browser. A phone or a narrow window never gets the control, the frame,
+  or a second session, and does not download the preview script unless
+  `(pointer: fine) and (min-width: 900px)` matches. The frame
   loads the same app with `?frame=0`, so the control does not nest, and
   no sixth app is deployed. Harbor notes counts that frame toward the
   same 8-message visitor budget.

@@ -29,8 +29,10 @@ test_that("phone preview attaches assets and suppresses the frame", {
   expect_identical(outer_dep$meta[["shinyglass-phone-app"]], "demo")
   expect_null(outer_dep$meta[["shinyglass-phone-frame"]])
   expect_identical(frame_dep$meta[["shinyglass-phone-frame"]], "0")
-  expect_identical(outer_dep$script, "phone-preview.js")
-  expect_identical(outer_dep$stylesheet, "phone-preview.css")
+  expect_null(outer_dep$script)
+  expect_null(outer_dep$stylesheet)
+  expect_match(as.character(outer), "shinyglass-phone-preview-loader", fixed = TRUE)
+  expect_match(as.character(outer), "(pointer: fine) and (min-width: 900px)", fixed = TRUE)
   expect_true(file.exists(file.path(outer_dep$src$file, "phone-preview.js")))
 
   # Attaching the dependency must not stack onto the shared page object.
