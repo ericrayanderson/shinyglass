@@ -5731,6 +5731,7 @@ html[data-glass-preset] {
   --shiny-chat-border: 0.5px solid var(--glass-border);
   --shiny-chat-btn-send-bg: var(--glass-accent, #{$glass-accent});
   --shiny-chat-btn-send-color: #fff;
+  --shiny-chat-greeting-max-width: 40rem;
   --shiny-chat-aside-marker-bg: color-mix(in srgb, var(--glass-bg) 82%, transparent);
   --shiny-chat-aside-marker-color: var(--glass-body-color);
   --shiny-chat-aside-marker-hover-bg: color-mix(in srgb, var(--glass-accent) 16%, var(--glass-bg));
@@ -5793,7 +5794,7 @@ html[data-glass-preset] .shiny-chat-footer {
 html[data-glass-preset] .shiny-chat-message .shiny-chat-message-content {
   align-self: start;
   justify-self: start;
-  max-width: #{"min(40rem, 100%)"};
+  max-width: 100%;
   margin-top: 0.15rem;
   padding: 0.75rem 1rem;
   border-radius: 1.15rem 1.15rem 1.15rem 0.4rem;
@@ -5840,7 +5841,21 @@ html[data-glass-preset] .shiny-chat-input .tiptap {
   -webkit-backdrop-filter:
     blur(calc(var(--glass-blur) * var(--glass-diffusion, 1.06)))
     saturate(var(--glass-saturate));
-  margin-inline: 0.15rem;
+}
+
+// One centered column for the transcript and the composer. User bubbles
+// sit on the right of that column, assistant bubbles on the left.
+html[data-glass-preset] .shiny-chat-messages-content,
+html[data-glass-preset] .shiny-chat-composer,
+html[data-glass-preset] shiny-chat-page .shiny-chat-layout > .shiny-chat-footer {
+  width: #{"min(40rem, 100%)"};
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+html[data-glass-preset] .shiny-chat-messages-content,
+html[data-glass-preset] .shiny-chat-composer {
+  padding-inline: 16px;
 }
 
 html[data-glass-preset] .shiny-chat-input .tiptap.is-empty::before {
@@ -5957,6 +5972,50 @@ html[data-glass-preset] .shiny-aside-popover {
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.55)) saturate(var(--glass-saturate));
 }
 
+// A tool card inside a bubble is nested glass. Drop the card sheen so the
+// inset does not turn muddy, especially in dark mode.
+html[data-glass-preset] .shiny-chat-message .shiny-tool-card,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-call-row,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-group {
+  background: color-mix(in srgb, var(--glass-body-bg) 28%, transparent) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0.5px solid color-mix(in srgb, var(--glass-body-color) 14%, transparent) !important;
+  border-radius: 0.9rem;
+  margin: 0.35rem 0 0;
+}
+
+html[data-glass-preset] .shiny-chat-message .shiny-tool-card::before,
+html[data-glass-preset] .shiny-chat-message .shiny-tool-card::after,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-call-row::before,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-call-row::after,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-group::before,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-group::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+html[data-glass-preset] .shiny-chat-message .shiny-tool-card > .card-header,
+html[data-glass-preset] .shiny-chat-message .shiny-tool-card > .card-body,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-group--framed > .shiny-chat-tool-group__row,
+html[data-glass-preset] .shiny-chat-message .shiny-chat-tool-call-row--framed > .shiny-chat-tool-call-row__summary {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+html[data-glass-preset="dark"] .shiny-chat-message .shiny-tool-card,
+html[data-glass-preset="dark"] .shiny-chat-message .shiny-chat-tool-call-row,
+html[data-glass-preset="dark"] .shiny-chat-message .shiny-chat-tool-group,
+html[data-glass-preset="auto"][data-bs-theme="dark"] .shiny-chat-message .shiny-tool-card,
+html[data-glass-preset="auto"][data-bs-theme="dark"] .shiny-chat-message .shiny-chat-tool-call-row,
+html[data-glass-preset="auto"][data-bs-theme="dark"] .shiny-chat-message .shiny-chat-tool-group {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
 html[data-glass-preset] .shiny-aside-pill {
   border: 0.5px solid var(--glass-border);
   box-shadow: inset 0 1px 0 var(--glass-highlight);
@@ -6068,11 +6127,24 @@ html[data-glass-preset] .offcanvas-body.glass-overflowing::-webkit-scrollbar-tra
     opacity: 1;
   }
 
+  html[data-glass-preset] .shiny-chat-input {
+    --_input-control-inset: 4px;
+  }
+
   html[data-glass-preset] .shiny-chat-input .tiptap {
-    min-height: 44px;
-    padding-top: 0.7rem !important;
-    padding-bottom: 0.7rem !important;
-    padding-right: 3.5rem !important;
+    min-height: 52px;
+    margin-inline: 0;
+    padding-top: 0.85rem !important;
+    padding-bottom: 0.85rem !important;
+    padding-right: 3.4rem !important;
+    border-radius: 999px !important;
+  }
+
+  html[data-glass-preset] .shiny-chat-btn-send {
+    width: 44px;
+    height: 44px;
+    right: 4px;
+    bottom: 4px;
   }
 
   html[data-glass-preset] .shiny-chat-composer {

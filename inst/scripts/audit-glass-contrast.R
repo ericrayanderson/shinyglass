@@ -499,7 +499,7 @@ catalog <- list(
         js = "
           (function() {
             const el = Array.from(document.querySelectorAll('.suggestion, button, [data-suggestion-submit]'))
-              .find((node) => /tide at dawn/i.test(node.textContent || ''));
+              .find((node) => /glass_theme work/i.test(node.textContent || ''));
             if (!el) return false;
             el.click();
             return true;

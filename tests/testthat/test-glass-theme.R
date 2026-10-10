@@ -960,6 +960,16 @@ test_that("shinychat glass example builds an app", {
   expect_match(flat, "free-tier limit")
   expect_match(flat, "1.4 m")
   expect_true(any(vapply(parts, function(x) inherits(x, "shinychat_block"), logical(1))))
+
+  theme <- env$scripted_reply("How does glass_theme work?")
+  expect_false(grepl("You asked", theme$body, fixed = TRUE))
+  expect_match(theme$body, "glass_theme")
+  expect_true(length(theme$citations) >= 1L)
+  tide <- env$scripted_reply("What's the tide at dawn?")
+  expect_false(grepl("You asked", tide$body, fixed = TRUE))
+  expect_false(grepl("?.", tide$body, fixed = TRUE))
+  expect_length(tide$citations, 0L)
+  expect_match(tide$body, "1.4 m")
 })
 
 test_that("compatibility example builds an app", {

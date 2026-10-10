@@ -111,7 +111,7 @@ capture_harbor <- function(preset, filename, port) {
     expression = "
       (function() {
         const el = Array.from(document.querySelectorAll('.suggestion, button, [data-suggestion-submit]'))
-          .find((node) => /tide at dawn/i.test(node.textContent || ''));
+          .find((node) => /glass_theme work/i.test(node.textContent || ''));
         if (!el) return false;
         el.click();
         return true;
@@ -129,7 +129,7 @@ capture_harbor <- function(preset, filename, port) {
           const tool = document.querySelector('.shiny-tool-card, .shiny-chat-tool-group');
           const cite = document.querySelector('.shiny-aside-pill');
           const text = document.body.innerText || '';
-          if (tool && cite && /Read the tide table/.test(text) && /1\\.4 m/.test(text)) {
+          if (tool && cite && /Read glass_theme/.test(text) && /Liquid Glass/.test(text)) {
             resolve(true);
             return;
           }

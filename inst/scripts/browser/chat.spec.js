@@ -43,17 +43,27 @@ test('harbor notes loads on dusk glass with a floating composer', async ({ page 
 
 test('scripted reply streams thinking, a citation, and a tool card', async ({ page }) => {
   await gotoChat(page);
-  await page.getByRole('button', { name: /tide at dawn/i }).click();
-  await expect(page.getByText('You asked:').first()).toBeVisible({ timeout: 20000 });
-  await expect(page.getByText("What's the tide at dawn?").first()).toBeVisible();
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText('You asked:')).toHaveCount(0);
   await expect(page.locator('.shiny-chat-thinking').first()).toBeVisible();
-  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('harbor log');
+  await expect(page.locator('.shiny-chat-thinking').first()).toContainText('theme API');
   const citation = page.locator('.shiny-aside-pill').first();
   await expect(citation).toBeVisible({ timeout: 20000 });
   await expect(page.getByRole('button', { name: 'shinyglass docs' }).first()).toBeVisible();
-  await expect(page.getByText('Read the tide table').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText('Read glass_theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.shiny-tool-card, .shiny-chat-tool-call-row, .shiny-chat-tool-group').first()).toBeVisible();
-  await expect(page.getByText('1.4 m').first()).toBeVisible();
+  const history = page.getByRole('region', { name: /conversation history/i });
+  await expect(history.getByText('How does glass_theme work?')).toBeVisible();
+  await expect(history).not.toContainText('No conversations yet');
+
+  const column = await page.locator('.shiny-chat-messages-content').boundingBox();
+  const userBox = await page.locator('.shiny-chat-user-message').first().boundingBox();
+  const assistantBox = await page.locator('.shiny-chat-message .shiny-chat-message-content').first().boundingBox();
+  expect(assistantBox.x).toBeGreaterThanOrEqual(column.x + 12);
+  expect(assistantBox.x).toBeLessThanOrEqual(column.x + 20);
+  expect(userBox.x + userBox.width).toBeGreaterThanOrEqual(column.x + column.width - 20);
+  expect(userBox.x + userBox.width).toBeLessThanOrEqual(column.x + column.width - 12);
 
   const bubble = page.locator('.shiny-chat-message .shiny-chat-message-content').first();
   const bubbleStyle = await bubble.evaluate((el) => {
@@ -105,8 +115,8 @@ test('sources panel has an empty state, real citations, and a quiet scrollbar', 
   await page.locator('#sources_panel .btn-close').click();
   await expect(panel).toBeHidden();
 
-  await page.getByRole('button', { name: /tide at dawn/i }).click();
-  await expect(page.getByText('1.4 m').first()).toBeVisible({ timeout: 20000 });
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  await expect(page.getByText('Read glass_theme').first()).toBeVisible({ timeout: 20000 });
   await page.locator('#open_sources').click();
   await expect(panel).toBeVisible();
   await expect(panel.locator('a[href*="github.io/shinyglass"]')).toBeVisible();
@@ -131,8 +141,8 @@ test('sources panel has an empty state, real citations, and a quiet scrollbar', 
 
 test('a long transcript fades under the header and the composer', async ({ page }) => {
   await gotoChat(page);
-  await page.getByRole('button', { name: /tide at dawn/i }).click();
-  await expect(page.getByText('1.4 m').first()).toBeVisible({ timeout: 20000 });
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  await expect(page.getByText('Read glass_theme').first()).toBeVisible({ timeout: 20000 });
   for (let i = 0; i < 3; i += 1) {
     await page.evaluate((n) => {
       window.Shiny.setInputValue(
@@ -175,13 +185,25 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   expect(send.width).toBeGreaterThanOrEqual(44);
   expect(send.height).toBeGreaterThanOrEqual(44);
   expect(composer.height).toBeGreaterThanOrEqual(44);
-  await page.getByRole('button', { name: /tide at dawn/i }).click();
+  const rightGap = (composer.x + composer.width) - (send.x + send.width);
+  const bottomGap = (composer.y + composer.height) - (send.y + send.height);
+  const topGap = send.y - composer.y;
+  expect(send.x).toBeGreaterThanOrEqual(composer.x + 2);
+  expect(rightGap).toBeGreaterThanOrEqual(2);
+  expect(topGap).toBeGreaterThanOrEqual(2);
+  expect(bottomGap).toBeGreaterThanOrEqual(2);
+  expect(Math.abs(rightGap - bottomGap)).toBeLessThan(3);
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
   await expect(page.locator('.shiny-chat-user-message').first()).toBeVisible({ timeout: 20000 });
   const edit = page.locator('.shiny-chat-edit-btn').first();
   await expect(edit).toBeVisible();
   const editBox = await edit.boundingBox();
   expect(editBox.width).toBeGreaterThanOrEqual(44);
   expect(editBox.height).toBeGreaterThanOrEqual(44);
+  const userBox = await page.locator('.shiny-chat-user-message').first().boundingBox();
+  const assistantBox = await page.locator('.shiny-chat-message .shiny-chat-message-content').first().boundingBox();
+  expect(assistantBox.x).toBeGreaterThanOrEqual(12);
+  expect(393 - (userBox.x + userBox.width)).toBeGreaterThanOrEqual(12);
   await context.close();
 });
 
@@ -190,12 +212,12 @@ test('theme and the conversation stay after reload', async ({ page }) => {
   const toggle = page.locator('bslib-input-dark-mode');
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark', { timeout: 5000 });
-  await page.getByRole('button', { name: /tide at dawn/i }).click();
-  await expect(page.getByText('You asked:').first()).toBeVisible({ timeout: 20000 });
+  await page.getByRole('button', { name: /glass_theme work/i }).click();
+  await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await expect(page.locator('html')).toHaveAttribute('data-glass-preset', 'dark');
-  await expect(page.getByText('You asked:').first()).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText('Liquid Glass bslib theme').first()).toBeVisible({ timeout: 20000 });
   await expect(page.locator('.harbor-status')).toBeVisible();
 });
 

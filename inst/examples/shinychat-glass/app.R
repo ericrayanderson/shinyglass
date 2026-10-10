@@ -55,8 +55,8 @@ thinking_block <- function(text) {
   structure(text, class = "shinychat_thinking")
 }
 
-# Real pages the scripted reply can cite. Each URL is public and stable.
-harbor_citations <- function() {
+# Real pages a shinyglass or Shiny reply can cite. Each URL is public.
+docs_citations <- function() {
   list(
     list(
       title = "shinyglass docs",
@@ -100,19 +100,49 @@ aside_html <- function(item) {
   )
 }
 
-harbor_reply_text <- function(text) {
-  text <- gsub("[[:space:]]+", " ", trimws(text %||% ""))
-  if (!nzchar(text)) text <- "the morning harbor"
-  if (nchar(text) > 90) text <- paste0(substr(text, 1, 87), "...")
-  paste0(
-    "Dawn at the harbor is quiet. You asked: ", text, ". ",
-    "High tide is 1.4 m at 06:10, and the water is already turning."
+harbor_question <- function(text) {
+  grepl("tide|harbor|harbour|dawn|field log", text %||% "", ignore.case = TRUE)
+}
+
+chat_question <- function(text) {
+  grepl("chat|shinychat|composer|bubble", text %||% "", ignore.case = TRUE)
+}
+
+# Scripted answers follow the question. Tide notes stay a side path and
+# do not cite the shinyglass docs. Everything else stays on Shiny.
+scripted_reply <- function(text) {
+  if (harbor_question(text)) {
+    return(list(
+      thinking = "Checking the harbor log for dawn.",
+      body = "Dawn at the harbor is quiet. High tide is 1.4 m at 06:10, and the water is already turning.",
+      citations = list(),
+      tool = tide_block()
+    ))
+  }
+  cites <- docs_citations()
+  if (chat_question(text)) {
+    return(list(
+      thinking = "Checking how a Shiny chat picks up glass.",
+      body = paste(
+        "Pass theme = glass_theme() to page_chat().",
+        "The composer, bubbles, and sidebar then share the same Liquid Glass material as the rest of the app."
+      ),
+      citations = cites[c(6L, 1L, 5L)],
+      tool = NULL
+    ))
+  }
+  list(
+    thinking = "Looking through the shinyglass theme API.",
+    body = paste(
+      "glass_theme() builds a Liquid Glass bslib theme.",
+      "Choose a preset, a scene, and an intensity, and inputs, cards, and chat use the same material."
+    ),
+    citations = cites,
+    tool = theme_block()
   )
 }
 
-# Group words so the reply types itself, without splitting a citation tag.
-harbor_pieces <- function(text) {
-  body <- harbor_reply_text(text)
+chunk_words <- function(body) {
   words <- strsplit(body, " ", fixed = TRUE)[[1]]
   chunks <- character()
   buf <- character()
@@ -124,12 +154,37 @@ harbor_pieces <- function(text) {
     }
   }
   if (length(buf)) chunks <- c(chunks, paste0(paste(buf, collapse = " "), " "))
-  cites <- lapply(harbor_citations(), aside_html)
-  c(
-    list(thinking_block("Checking the harbor log for dawn.")),
-    as.list(chunks),
-    cites,
-    list(tide_block())
+  as.list(chunks)
+}
+
+reply_pieces <- function(reply, notice = NULL) {
+  pieces <- c(
+    list(thinking_block(reply$thinking)),
+    chunk_words(reply$body),
+    lapply(reply$citations, aside_html)
+  )
+  if (!is.null(reply$tool)) pieces <- c(pieces, list(reply$tool))
+  if (!is.null(notice) && nzchar(notice)) pieces <- c(list(notice), pieces)
+  pieces
+}
+
+theme_block <- function() {
+  structure(
+    list(
+      type = "tool_result",
+      version = 1L,
+      request_id = "theme-1",
+      tool_name = "glass_theme",
+      status = "success",
+      title = "Read glass_theme",
+      label = "shinyglass",
+      value_preview = "preset, scene, intensity",
+      value = "glass_theme(preset, scene, intensity) builds the Liquid Glass theme.",
+      show_request = FALSE,
+      expanded = TRUE,
+      open_style = "framed"
+    ),
+    class = c("shinychat_tool_result", "shinychat_tool_card", "shinychat_block")
   )
 }
 
@@ -276,9 +331,7 @@ api_notice <- function(err) {
 }
 
 mock_pieces <- function(text, notice = NULL) {
-  pieces <- harbor_pieces(text)
-  if (!is.null(notice) && nzchar(notice)) pieces <- c(list(notice), pieces)
-  pieces
+  reply_pieces(scripted_reply(text), notice)
 }
 
 # Keep API failures inside the stream. chat_append would otherwise warn with
@@ -582,10 +635,10 @@ ui <- tagList(
   placeholder = "Message",
   greeting = paste(
     "## Harbor notes",
-    "Liquid Glass, on this machine.",
+    "Liquid Glass for Shiny, on this machine.",
     "",
-    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Dawn tide\">What's the tide at dawn?</span>",
-    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Field log\">Show the field log</span>",
+    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Theme\">How does glass_theme work?</span>",
+    "* <span class=\"suggestion submit\" data-suggestion-submit=\"true\" title=\"Chat\">Style a Shiny chat</span>",
     sep = "\n"
   ),
   footer = tags$div(
@@ -621,9 +674,9 @@ server <- function(input, output, session) {
   if (is.na(pace) || pace < 0) pace <- 0.11
   used <- 0L
 
-  note_fallback <- function(notice) {
+  note_fallback <- function(notice, text = NULL) {
     if (!is.null(notice) && nzchar(notice)) fallback_notice(notice)
-    add_citations(harbor_citations())
+    if (!is.null(text)) add_citations(scripted_reply(text)$citations)
     invisible(notice)
   }
   note_log <- list()
@@ -639,6 +692,33 @@ server <- function(input, output, session) {
     ))
   }
 
+  # History only records turns that travel through chat_append(). The
+  # scripted path writes messages directly, so publish the sidebar row
+  # from the note log. The title is the first user message.
+  publish_history <- function() {
+    if (!length(note_log)) return(invisible(NULL))
+    controller <- tryCatch(
+      shinychat:::get_session_chat_bookmark_info(session, "chat.history-controller"),
+      error = function(e) NULL
+    )
+    if (is.null(controller)) return(invisible(NULL))
+    turns <- tryCatch(
+      lapply(note_log, function(msg) {
+        role <- if (identical(msg$role, "assistant")) "assistant" else "user"
+        ellmer::Turn(role, msg$text)
+      }),
+      error = function(e) NULL
+    )
+    if (is.null(turns) || !length(turns)) return(invisible(NULL))
+    if (!live) {
+      try(client$set_turns(turns), silent = TRUE)
+    }
+    recs <- tryCatch(lapply(turns, ellmer::contents_record), error = function(e) NULL)
+    if (is.null(recs)) return(invisible(NULL))
+    tryCatch(controller$on_response(recs), error = function(e) NULL)
+    invisible(NULL)
+  }
+
   remember <- function(role, text) {
     text <- paste(text %||% "", collapse = "\n")
     text <- trimws(text)
@@ -647,7 +727,10 @@ server <- function(input, output, session) {
     if (length(note_log) > 40L) {
       note_log <<- note_log[(length(note_log) - 39L):length(note_log)]
     }
-    if (!restoring) publish_notes()
+    if (!restoring) {
+      publish_notes()
+      publish_history()
+    }
     invisible(NULL)
   }
 
@@ -737,10 +820,11 @@ server <- function(input, output, session) {
   }
 
   send_mock <- function(text, notice = NULL) {
+    reply <- scripted_reply(text)
     if (!is.null(notice) && nzchar(notice)) fallback_notice(notice)
-    add_citations(harbor_citations())
-    stream_pieces("chat", mock_pieces(text, notice), session, pace)
-    remember("assistant", harbor_reply_text(text))
+    add_citations(reply$citations)
+    stream_pieces("chat", reply_pieces(reply, notice), session, pace)
+    remember("assistant", reply$body)
   }
 
   start_live <- function(text) {
@@ -756,13 +840,17 @@ server <- function(input, output, session) {
       promises::then(
         started,
         onFulfilled = function(inner) {
-          pipe_live(guarded_stream(inner, text, on_fallback = note_fallback))
+          pipe_live(guarded_stream(inner, text, on_fallback = function(notice) {
+            note_fallback(notice, text)
+          }))
         },
         onRejected = function(err) send_mock(text, api_notice(err))
       )
       return(invisible(NULL))
     }
-    pipe_live(guarded_stream(started, text, on_fallback = note_fallback))
+    pipe_live(guarded_stream(started, text, on_fallback = function(notice) {
+      note_fallback(notice, text)
+    }))
     invisible(NULL)
   }
 
@@ -904,6 +992,7 @@ server <- function(input, output, session) {
         )
         remember(msg$role, msg$text)
       }
+      publish_history()
     }, once = TRUE)
   }, ignoreInit = TRUE)
 
