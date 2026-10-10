@@ -138,6 +138,9 @@ test_that("chat staging copies www favicons and the icon is inline", {
   expect_true(file.exists(file.path(dest, "www", "favicon.svg")))
   expect_true(file.exists(file.path(dest, "www", "favicon.ico")))
   expect_gt(file.info(file.path(dest, "www", "favicon.ico"))$size, 32)
+  expect_true(file.exists(file.path(dest, "phone-preview", "phone-preview.js")))
+  expect_true(file.exists(file.path(dest, "phone-preview", "phone-preview.css")))
+  expect_true(file.exists(file.path(dest, "phone-preview", "phone-preview.R")))
 
   app <- paste(readLines(file.path(dest, "app.R"), warn = FALSE), collapse = "\n")
   expect_match(app, "data:image/svg+xml;base64,", fixed = TRUE)

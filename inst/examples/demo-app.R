@@ -3,7 +3,29 @@ library(bslib)
 library(ggplot2)
 library(shinyglass)
 
-ui <- glass_page(
+local({
+  hits <- file.path(getwd(), "phone-preview", "phone-preview.R")
+  root <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(8L)) {
+    hits <- c(
+      hits,
+      file.path(root, "inst", "examples", "_shared", "phone-preview.R"),
+      file.path(root, "_shared", "phone-preview.R")
+    )
+    parent <- dirname(root)
+    if (identical(parent, root)) break
+    root <- parent
+  }
+  installed <- system.file("examples", "_shared", "phone-preview.R", package = "shinyglass")
+  if (nzchar(installed)) hits <- c(hits, installed)
+  hit <- hits[file.exists(hits)]
+  if (!length(hit)) stop("Missing phone preview helper.", call. = FALSE)
+  app_env <- parent.env(environment())
+  assign(".phone_preview_dir", dirname(normalizePath(hit[[1L]], winslash = "/")), envir = app_env)
+  sys.source(hit[[1L]], envir = app_env)
+})
+
+demo_page <- glass_page(
   title = "Liquid Glass",
   persist = TRUE,
   scene = "tahoe",
@@ -49,6 +71,10 @@ server <- function(input, output, session) {
     }
     p
   }, bg = "transparent", height = 260, res = 96)
+}
+
+ui <- function(request) {
+  phone_preview(demo_page, app = "demo", request = request)
 }
 
 shinyApp(ui, server)

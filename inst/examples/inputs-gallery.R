@@ -11,6 +11,28 @@ library(shiny)
 library(bslib)
 library(shinyglass)
 
+local({
+  hits <- file.path(getwd(), "phone-preview", "phone-preview.R")
+  root <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(8L)) {
+    hits <- c(
+      hits,
+      file.path(root, "inst", "examples", "_shared", "phone-preview.R"),
+      file.path(root, "_shared", "phone-preview.R")
+    )
+    parent <- dirname(root)
+    if (identical(parent, root)) break
+    root <- parent
+  }
+  installed <- system.file("examples", "_shared", "phone-preview.R", package = "shinyglass")
+  if (nzchar(installed)) hits <- c(hits, installed)
+  hit <- hits[file.exists(hits)]
+  if (!length(hit)) stop("Missing phone preview helper.", call. = FALSE)
+  app_env <- parent.env(environment())
+  assign(".phone_preview_dir", dirname(normalizePath(hit[[1L]], winslash = "/")), envir = app_env)
+  sys.source(hit[[1L]], envir = app_env)
+})
+
 `%||%` <- function(x, y) {
   if (is.null(x) || length(x) == 0L || (is.character(x) && !nzchar(x[[1]]))) y else x
 }
@@ -20,7 +42,7 @@ glass_preset <- match.arg(
   c("light", "dark", "auto")
 )
 
-ui <- page_sidebar(
+inputs_page <- page_sidebar(
   title = "Shiny Inputs Gallery",
   theme = glass_theme(preset = glass_preset),
   fillable = FALSE,
@@ -326,6 +348,10 @@ server <- function(input, output, session) {
       modal_text = input$modal_text
     )
   })
+}
+
+ui <- function(request) {
+  phone_preview(inputs_page, app = "inputs", request = request)
 }
 
 shinyApp(ui, server)

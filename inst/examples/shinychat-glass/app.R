@@ -12,6 +12,28 @@ library(bslib)
 library(shinyglass)
 library(shinychat)
 
+local({
+  hits <- file.path(getwd(), "phone-preview", "phone-preview.R")
+  root <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(8L)) {
+    hits <- c(
+      hits,
+      file.path(root, "inst", "examples", "_shared", "phone-preview.R"),
+      file.path(root, "_shared", "phone-preview.R")
+    )
+    parent <- dirname(root)
+    if (identical(parent, root)) break
+    root <- parent
+  }
+  installed <- system.file("examples", "_shared", "phone-preview.R", package = "shinyglass")
+  if (nzchar(installed)) hits <- c(hits, installed)
+  hit <- hits[file.exists(hits)]
+  if (!length(hit)) stop("Missing phone preview helper.", call. = FALSE)
+  app_env <- parent.env(environment())
+  assign(".phone_preview_dir", dirname(normalizePath(hit[[1L]], winslash = "/")), envir = app_env)
+  sys.source(hit[[1L]], envir = app_env)
+})
+
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 # History reads provider@name. Register once so re-sourcing does not rebuild it.
@@ -704,8 +726,19 @@ harbor_system_prompt <- function() {
 }
 
 # Public demo limits. Over-long notes and extra turns stay on the local script.
+# The phone preview is a second session, so the 8 live messages are a
+# visitor budget in localStorage, shared by the page and the iframe.
 chat_max_messages <- 8L
 chat_max_chars <- 400L
+
+harbor_turn_budget <- function(used, visitor) {
+  one <- function(value) {
+    if (is.null(value) || !length(value)) return(0L)
+    n <- suppressWarnings(as.integer(value[[1L]]))
+    if (length(n) != 1L || is.na(n) || n < 0L) 0L else n
+  }
+  max(one(used), one(visitor))
+}
 
 gate_turn <- function(text, used, live,
                       max_messages = chat_max_messages,
@@ -1009,8 +1042,45 @@ glass_preset <- match.arg(
   c("light", "dark", "auto")
 )
 
-ui <- tagList(
+harbor_page <- tagList(
   tags$head(
+    tags$script(HTML("
+      (function () {
+        var KEY = 'shinyglass-harbor-turns';
+        function read() {
+          try {
+            var n = parseInt(localStorage.getItem(KEY) || '0', 10);
+            return isFinite(n) && n > 0 ? Math.floor(n) : 0;
+          } catch (e) {
+            return 0;
+          }
+        }
+        function report() {
+          if (!window.Shiny || !Shiny.setInputValue) return;
+          Shiny.setInputValue('harbor_visitor_turns', read(), {priority: 'event'});
+        }
+        function save(n) {
+          if (!isFinite(n) || n < 0) return;
+          try { localStorage.setItem(KEY, String(Math.floor(n))); } catch (e) {}
+        }
+        function bind() {
+          if (!window.Shiny || bind.done) return;
+          bind.done = true;
+          Shiny.addCustomMessageHandler('harbor-turns-save', function (msg) {
+            save(msg && msg.used);
+          });
+          report();
+        }
+        document.addEventListener('shiny:connected', function () {
+          bind();
+          report();
+        });
+        window.addEventListener('storage', function (e) {
+          if (e.key === KEY) report();
+        });
+        if (window.Shiny) bind();
+      })();
+    ")),
     tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
     tags$style(HTML("
       .harbor-mark { display: block; width: 22px; height: 22px; }
@@ -1981,8 +2051,11 @@ server <- function(input, output, session) {
 
   answer <- function(text) {
     raw <- user_text(text)
-    decision <- gate_turn(raw, used, live)
+    decision <- gate_turn(raw, harbor_turn_budget(used, input$harbor_visitor_turns), live)
     used <<- decision$used
+    if (identical(decision$action, "live")) {
+      session$sendCustomMessage("harbor-turns-save", list(used = decision$used))
+    }
     if (identical(decision$action, "ignore")) return(invisible(NULL))
     remember("user", raw)
     if (identical(decision$action, "live")) {
@@ -2196,6 +2269,10 @@ server <- function(input, output, session) {
     )
   }
 
+}
+
+ui <- function(request) {
+  phone_preview(harbor_page, app = "chat", request = request)
 }
 
 app <- shinyApp(ui, server)

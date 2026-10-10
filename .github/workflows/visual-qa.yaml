@@ -21,7 +21,7 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgload, any::jsonlite, local::.
+          extra-packages: any::pkgload, any::jsonlite, any::ggplot2, local::.
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -34,6 +34,10 @@ jobs:
         env:
           RUN_SHINY_TESTS: '1'
           RUN_BENCHMARK: '1'
+      - run: npx playwright test phone-preview.spec.js
+        working-directory: inst/scripts/browser
+        env:
+          RUN_PHONE_TESTS: '1'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

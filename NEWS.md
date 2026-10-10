@@ -101,13 +101,21 @@
   catalog, outside that five-app set. Harbor notes uses the dusk wallpaper,
   streams a local script (thinking, a tool card, and a citation) with no API
   key, and uses `ellmer::chat_google_gemini()` (Gemini Flash) when
-  `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each session allows 8
-  messages of at most 400 characters. Quota and other API errors fall
+  `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each visitor gets 8
+  messages of at most 400 characters, shared with the phone preview.
+  Quota and other API errors fall
   back to the local script. Deploy key `chat` (`shinyglass-chat`). When
   `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
   gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
   `envVars`. The value is not logged. Hosted app:
   [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
+* The five hosted demos have a desktop phone preview. On a wide screen
+  with a fine pointer, a glass control at the bottom right opens the
+  same app inside an iPhone frame. The choice is remembered in the
+  browser. Phones and narrow windows do not show the control. The frame
+  loads the same app with `?frame=0`, so the control does not nest, and
+  no sixth app is deployed. Harbor notes counts that frame toward the
+  same 8-message visitor budget.
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact

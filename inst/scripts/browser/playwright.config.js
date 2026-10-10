@@ -4,7 +4,7 @@ module.exports = defineConfig({
   testMatch: '*.spec.js',
   use: { headless: true, launchOptions: { executablePath: process.env.CHROME_PATH, args: JSON.parse(process.env.CHROME_ARGS || "[]") } },
   reporter: 'list',
-  workers: (process.env.RUN_SHINY_TESTS || process.env.RUN_COMPAT_TESTS || process.env.RUN_CHAT_TESTS) ? 1 : undefined,
+  workers: (process.env.RUN_SHINY_TESTS || process.env.RUN_COMPAT_TESTS || process.env.RUN_CHAT_TESTS || process.env.RUN_PHONE_TESTS) ? 1 : undefined,
   timeout: 45000,
   webServer: (() => {
     const servers = [];
@@ -21,6 +21,14 @@ module.exports = defineConfig({
         command: 'Rscript compat-app.R',
         url: 'http://127.0.0.1:3942',
         timeout: 180000,
+        reuseExistingServer: false,
+      });
+    }
+    if (process.env.RUN_PHONE_TESTS) {
+      servers.push({
+        command: 'Rscript phone-preview-app.R',
+        url: 'http://127.0.0.1:3945',
+        timeout: 120000,
         reuseExistingServer: false,
       });
     }

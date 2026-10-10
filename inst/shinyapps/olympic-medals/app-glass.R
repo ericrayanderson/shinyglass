@@ -9,6 +9,28 @@ library(reactable)
 library(tidyr)
 library(shinyglass)
 
+local({
+  hits <- file.path(getwd(), "phone-preview", "phone-preview.R")
+  root <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+  for (i in seq_len(8L)) {
+    hits <- c(
+      hits,
+      file.path(root, "inst", "examples", "_shared", "phone-preview.R"),
+      file.path(root, "_shared", "phone-preview.R")
+    )
+    parent <- dirname(root)
+    if (identical(parent, root)) break
+    root <- parent
+  }
+  installed <- system.file("examples", "_shared", "phone-preview.R", package = "shinyglass")
+  if (nzchar(installed)) hits <- c(hits, installed)
+  hit <- hits[file.exists(hits)]
+  if (!length(hit)) stop("Missing phone preview helper.", call. = FALSE)
+  app_env <- parent.env(environment())
+  assign(".phone_preview_dir", dirname(normalizePath(hit[[1L]], winslash = "/")), envir = app_env)
+  sys.source(hit[[1L]], envir = app_env)
+})
+
 source("R/data.R")
 source("R/visualisation.R")
 
@@ -18,7 +40,7 @@ glass_preset <- match.arg(
 )
 medals_summer <- readRDS(file = "datas/medals_summer.rds")
 
-ui <- fluidPage(
+olympics_page <- fluidPage(
   title = "R-Olympics",
   theme = glass_theme(preset = glass_preset),
   tags$head(
@@ -241,6 +263,10 @@ server <- function(input, output, session) {
       write.csv(data_in(), file)
     }
   )
+}
+
+ui <- function(request) {
+  phone_preview(olympics_page, app = "olympics", request = request)
 }
 
 shinyApp(ui = ui, server = server)

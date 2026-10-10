@@ -1,0 +1,159 @@
+/* Desktop-only phone preview. Phones and narrow windows never see the control. */
+
+.phone-preview-toggle {
+  display: none;
+  position: fixed;
+  z-index: 1200;
+  right: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  align-items: center;
+  gap: 0.45rem;
+  box-sizing: border-box;
+  min-height: 36px;
+  min-width: 36px;
+  margin: 0;
+  padding: 0.4rem 0.95rem 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-stroke, rgba(255, 255, 255, 0.55));
+  background: var(--glass-bg, rgba(255, 255, 255, 0.72));
+  color: var(--glass-body-color, var(--bs-body-color, #1d1d1f));
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  font: 600 0.8125rem/1.1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.phone-preview-toggle:hover {
+  background: var(--glass-bg-hover, rgba(255, 255, 255, 0.84));
+}
+
+.phone-preview-toggle:active {
+  transform: scale(0.98);
+}
+
+.phone-preview-toggle:focus-visible {
+  outline: 2px solid var(--glass-accent, #007aff);
+  outline-offset: 3px;
+}
+
+.phone-preview-icon {
+  display: block;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 900px) and (pointer: fine) {
+  html:not([data-phone-frame="0"]) .phone-preview-toggle {
+    display: inline-flex;
+  }
+}
+
+html[data-phone-frame="0"] .phone-preview-toggle {
+  display: none !important;
+}
+
+.phone-preview-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.phone-preview-root[hidden] {
+  display: none !important;
+}
+
+html.phone-preview-on .phone-preview-root:not([hidden]) {
+  opacity: 1;
+}
+
+html.phone-preview-on {
+  overflow: hidden;
+}
+
+html.phone-preview-on body {
+  overflow: hidden;
+}
+
+/* Keep the glass wallpaper (body background and the orb layers). */
+html.phone-preview-on body > :not(.phone-preview-root):not(.phone-preview-toggle) {
+  display: none !important;
+}
+
+.phone-preview-sizer {
+  position: relative;
+  pointer-events: none;
+}
+
+.phone-preview-device {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 413px;
+  height: 872px;
+  padding: 10px;
+  border-radius: 55px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(165deg, #3a3a3c 0%, #1c1c1e 38%, #0b0b0d 100%);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.18);
+  transform-origin: top left;
+  pointer-events: auto;
+}
+
+.phone-preview-screen {
+  position: relative;
+  width: 393px;
+  height: 852px;
+  overflow: hidden;
+  border-radius: 45px;
+  background: #000;
+}
+
+.phone-preview-frame {
+  display: block;
+  width: 393px;
+  height: 852px;
+  border: 0;
+  background: #000;
+}
+
+.phone-preview-island {
+  position: absolute;
+  z-index: 2;
+  top: 11px;
+  left: 50%;
+  width: 120px;
+  height: 35px;
+  margin: 0;
+  border-radius: 20px;
+  background: #000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-preview-root,
+  .phone-preview-device,
+  .phone-preview-toggle {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .phone-preview-toggle:active {
+    transform: none;
+  }
+}
