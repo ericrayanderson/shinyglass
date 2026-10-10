@@ -2,8 +2,10 @@
 
 ## Live demo
 
-The [basics demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/)
-is a full Shiny app with theme persistence, intensity, accent wells, and
+[Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) is
+the flagship chat. The [basics
+demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/) is a full
+Shiny app with theme persistence, intensity, accent wells, and
 [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)
 plots. Apps may take a moment to wake up.
 
@@ -11,7 +13,7 @@ plots. Apps may take a moment to wake up.
 
 Paste this into the [Shinylive editor](https://shinylive.io/r/editor/)
 (install shinyglass from GitHub in the editor if the CRAN build is older
-than 0.4.0):
+than 0.5.0):
 
 ``` r
 

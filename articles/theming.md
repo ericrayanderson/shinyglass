@@ -124,6 +124,8 @@ glass_theme(
 `material = "clear"` is deprecated. Use a low `intensity` (Ultra Clear
 is `0`) when chrome sits over rich media and labels stay bold. Omitting
 `intensity` with `material = "clear"` still maps to `0.12` and warns.
+What changed in 0.5.0, and how to sit closer to the previous look, is
+[`vignette("migrating")`](https://ericrayanderson.github.io/shinyglass/articles/migrating.md).
 
 Reduce Transparency (the OS setting) paints opaque fills and turns
 backdrop blur off, including before JavaScript runs. Increase Contrast

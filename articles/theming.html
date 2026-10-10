@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
+    <li><a class="dropdown-item" href="../articles/migrating.html">Migrating to 0.5.0</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
@@ -249,7 +250,8 @@ server can stay in sync.</p>
 <code>intensity</code> (Ultra Clear is <code>0</code>) when chrome sits
 over rich media and labels stay bold. Omitting <code>intensity</code>
 with <code>material = "clear"</code> still maps to <code>0.12</code> and
-warns.</p>
+warns. What changed in 0.5.0, and how to sit closer to the previous
+look, is <code><a href="../articles/migrating.html">vignette("migrating")</a></code>.</p>
 <p>Reduce Transparency (the OS setting) paints opaque fills and turns
 backdrop blur off, including before JavaScript runs. Increase Contrast
 and forced colors override the inline glass variables. The in-app slider

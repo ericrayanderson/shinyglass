@@ -53,7 +53,11 @@ observeEvent(input$open_sources, {
 })
 ```
 
-Harbor notes is a core demo, with the dusk wallpaper behind the glass:
+Harbor notes is a core demo, with the dusk wallpaper behind the glass.
+The hosted app is [Harbor
+notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). It
+answers with Gemini Flash and falls back to the local script if the API
+errors.
 
 ``` r
 
@@ -65,11 +69,14 @@ panel, a short answer, a citation chip, and a tide-table tool card.
 `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) switches that session to
 [`ellmer::chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html)
 with Gemini Flash (`gemini-3.7-flash`, or `SHINYGLASS_CHAT_MODEL`). The
-system prompt keeps answers short and on shinyglass, Shiny, and R. A
-public session allows 8 messages of at most 400 characters. If the API
-errors or returns a quota response (429), the demo shows a short notice
-and continues with the local script. The key is never written to the log
-or the page. History uses
-`history_options(store = "memory", title = NULL)`, so nothing is written
-to disk and no model is asked for a title. The sidebar starts open on
-desktop and collapses into the page menu on a phone.
+system prompt helps with shinyglass, Shiny, R, and ordinary
+conversation, and declines only a clearly unrelated or abusive request.
+A small chip reads Live (Gemini) or Demo replies. A public session
+allows 8 messages of at most 400 characters. If the API errors or
+returns a quota response (429), a glass notice explains the fallback and
+the local script continues. The key is never written to the log or the
+page. The theme choice and the conversation are kept in the browser’s
+local storage, which is what “Notes stay on this machine” refers to. The
+shinychat history store stays in memory, so nothing is written to the
+server disk and no model is asked for a title. The sidebar starts open
+on desktop and collapses into the page menu on a phone.

@@ -4,7 +4,7 @@ shinyglass is a **theme layer**, not a universal skin. It targets
 Bootstrap 5 / bslib surfaces first, then overlays denser dashboard
 stacks where practical.
 
-## Support matrix (as of 0.4.0)
+## Support matrix (as of 0.5.0)
 
 | Stack | Status | Notes |
 |----|----|----|
@@ -26,6 +26,8 @@ stacks where practical.
 | echarts4r / highcharter / apex | Partial | Host wrapper glass; chart internals set in R |
 | Bootstrap 3-only apps | Limited | Theme is BS5 via bslib |
 | **shinyreact** | Supported | [`glass_page_react()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page_react.md) loads the React components and `useGlassTheme()` ([`vignette("shinyreact")`](https://ericrayanderson.github.io/shinyglass/articles/shinyreact.md)). `page_react(theme = glass_theme())` gets the CSS without the component module. `page_react_html()` takes [`glass_theme_dependencies()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_dependencies.md) as `extra_deps`. Do not hard-code panel colors. Shadow roots need `window.shinyglass.adoptShadow()`. |
+| **shinychat** | Supported | `page_chat(theme = glass_theme())` and embedded `chat_ui()`. See [`vignette("shinychat")`](https://ericrayanderson.github.io/shinyglass/articles/shinychat.md) and [`vignette("migrating")`](https://ericrayanderson.github.io/shinyglass/articles/migrating.md). |
+| bslib `offcanvas()` | Supported | Glass material, scale from the trigger, scroll edge on the header. Bootstrap still owns the slide. |
 
 ## Layout contract
 
@@ -56,7 +58,7 @@ Dual-theme contrast audit (optional ecosystem apps skip if packages
 missing):
 
 ``` r
-Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_gt,chrome
+Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_gt,chrome,chat
 ```
 
 ## Tips

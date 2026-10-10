@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
+    <li><a class="dropdown-item" href="../articles/migrating.html">Migrating to 0.5.0</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
@@ -74,7 +75,7 @@
 It targets Bootstrap 5 / bslib surfaces first, then overlays denser
 dashboard stacks where practical.</p>
 <div class="section level2">
-<h2 id="support-matrix-as-of-0-4-0">Support matrix (as of 0.4.0)<a class="anchor" aria-label="anchor" href="#support-matrix-as-of-0-4-0"></a>
+<h2 id="support-matrix-as-of-0-5-0">Support matrix (as of 0.5.0)<a class="anchor" aria-label="anchor" href="#support-matrix-as-of-0-5-0"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -199,6 +200,21 @@ component module. <code>page_react_html()</code> takes
 not hard-code panel colors. Shadow roots need
 <code>window.shinyglass.adoptShadow()</code>.</td>
 </tr>
+<tr class="odd">
+<td><strong>shinychat</strong></td>
+<td>Supported</td>
+<td>
+<code>page_chat(theme = glass_theme())</code> and embedded
+<code>chat_ui()</code>. See <code><a href="../articles/shinychat.html">vignette("shinychat")</a></code> and
+<code><a href="../articles/migrating.html">vignette("migrating")</a></code>.</td>
+</tr>
+<tr class="even">
+<td>bslib <code>offcanvas()</code>
+</td>
+<td>Supported</td>
+<td>Glass material, scale from the trigger, scroll edge on the header.
+Bootstrap still owns the slide.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -231,7 +247,7 @@ overlay only.</li>
 <span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/shinyreact-glass"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Dual-theme contrast audit (optional ecosystem apps skip if packages
 missing):</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>Rscript inst<span class="sc">/</span>scripts<span class="sc">/</span>audit<span class="sc">-</span>glass<span class="sc">-</span>contrast.R <span class="sc">--</span>apps<span class="ot">=</span>demo,dashboard,inputs,plotly_gt,chrome</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>Rscript inst<span class="sc">/</span>scripts<span class="sc">/</span>audit<span class="sc">-</span>glass<span class="sc">-</span>contrast.R <span class="sc">--</span>apps<span class="ot">=</span>demo,dashboard,inputs,plotly_gt,chrome,chat</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tips">Tips<a class="anchor" aria-label="anchor" href="#tips"></a>

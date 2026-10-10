@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">shinyglass</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/theming.html">Theming and light/dark</a></li>
+    <li><a class="dropdown-item" href="../articles/migrating.html">Migrating to 0.5.0</a></li>
     <li><a class="dropdown-item" href="../articles/compatibility.html">Ecosystem compatibility</a></li>
     <li><a class="dropdown-item" href="../articles/shinyreact.html">shinyreact</a></li>
     <li><a class="dropdown-item" href="../articles/shinychat.html">shinychat</a></li>
@@ -114,7 +115,9 @@ chrome.</p>
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>Harbor notes is a core demo, with the dusk wallpaper behind the
-glass:</p>
+glass. The hosted app is <a href="https://ericrayanderson.shinyapps.io/shinyglass-chat/" class="external-link">Harbor
+notes</a>. It answers with Gemini Flash and falls back to the local
+script if the API errors.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples/shinychat-glass"</span>, package <span class="op">=</span> <span class="st">"shinyglass"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>With no API key the reply is a local script. It streams a thinking
@@ -122,15 +125,18 @@ panel, a short answer, a citation chip, and a tide-table tool card.
 <code>GEMINI_API_KEY</code> (or <code>GOOGLE_API_KEY</code>) switches
 that session to <code><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">ellmer::chat_google_gemini()</a></code> with Gemini
 Flash (<code>gemini-3.7-flash</code>, or
-<code>SHINYGLASS_CHAT_MODEL</code>). The system prompt keeps answers
-short and on shinyglass, Shiny, and R. A public session allows 8
-messages of at most 400 characters. If the API errors or returns a quota
-response (429), the demo shows a short notice and continues with the
-local script. The key is never written to the log or the page. History
-uses <code>history_options(store = "memory", title = NULL)</code>, so
-nothing is written to disk and no model is asked for a title. The
-sidebar starts open on desktop and collapses into the page menu on a
-phone.</p>
+<code>SHINYGLASS_CHAT_MODEL</code>). The system prompt helps with
+shinyglass, Shiny, R, and ordinary conversation, and declines only a
+clearly unrelated or abusive request. A small chip reads Live (Gemini)
+or Demo replies. A public session allows 8 messages of at most 400
+characters. If the API errors or returns a quota response (429), a glass
+notice explains the fallback and the local script continues. The key is
+never written to the log or the page. The theme choice and the
+conversation are kept in the browser’s local storage, which is what
+“Notes stay on this machine” refers to. The shinychat history store
+stays in memory, so nothing is written to the server disk and no model
+is asked for a title. The sidebar starts open on desktop and collapses
+into the page menu on a phone.</p>
   </main>
 </div>
 

@@ -4,6 +4,8 @@
 
 - [Theming and
   light/dark](https://ericrayanderson.github.io/shinyglass/articles/theming.md):
+- [Migrating to
+  0.5.0](https://ericrayanderson.github.io/shinyglass/articles/migrating.md):
 - [Ecosystem
   compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.md):
 - [Using shinyglass with
