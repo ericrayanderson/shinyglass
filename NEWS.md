@@ -129,6 +129,18 @@
 
 ## Bug fixes
 
+* On a phone, a collapsible `page_sidebar()` or `layout_sidebar()` opens as
+  a full-height overlay. The collapse toggle stays above the panel and
+  closes it, and a tap outside the panel closes it too. The open panel no
+  longer wears a white band across the top in dark mode.
+* Settings menus and popovers close on a click or tap outside, and they
+  have a 44px close button. The shinychat app menu closes on a tap outside
+  the sidebar.
+* Coarse pointers get a 44px target on buttons, selects, nav links, the
+  card fullscreen control, and `actionLink()` / `downloadLink()`. Those
+  links are at least 32px on a fine pointer. Nav tabs do not scale when
+  pressed.
+
 * Harbor notes keeps the conversation list at the top of the sidebar, on
   the glass surface, with the same padding as the rest of the column.
 * Light-mode assistant replies use a thin rim and a bright top highlight,

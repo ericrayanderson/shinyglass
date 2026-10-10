@@ -708,9 +708,15 @@
     }
   }
 
+  function tippyOpen(inst) {
+    if (!inst || !inst.state) return false;
+    // tippy 4 reports isVisible. Later tippy reports isShown.
+    return !!(inst.state.isShown || inst.state.isVisible);
+  }
+
   function hideTippy(inst) {
     try {
-      if (inst && inst.state && inst.state.isShown) inst.hide();
+      if (tippyOpen(inst)) inst.hide();
     } catch (e) { /* ignore */ }
   }
 
@@ -718,8 +724,140 @@
     return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
   }
 
+  function closeTippyTrigger(trigger) {
+    if (trigger && trigger._tippy) hideTippy(trigger._tippy);
+  }
+
+  function closePopoverEl(popEl) {
+    if (!popEl) return;
+    var pid = popEl.getAttribute("id");
+    var trig = pid && document.querySelector('[aria-describedby="' + pid + '"]');
+    try {
+      var Pop = window.bootstrap && window.bootstrap.Popover;
+      var pinst = Pop && trig && Pop.getInstance(trig);
+      if (pinst) pinst.hide();
+      else popEl.classList.remove("show");
+    } catch (err) { /* ignore */ }
+  }
+
+  function dropMenuOwner(node) {
+    var cur = node;
+    while (cur && cur !== document.body) {
+      if (cur.classList && cur.classList.contains("drop-menu-input")) return cur;
+      if (cur.id) {
+        var owner = document.querySelector('.drop-menu-input[data-template="' + cur.id + '"]');
+        if (owner) return owner;
+      }
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function hideDropMenu(menu) {
+    if (!menu) return;
+    var id = menu.getAttribute("data-target");
+    var trigger = id && document.getElementById(id);
+    closeTippyTrigger(trigger);
+  }
+
+  function makeOverlayClose(onClick) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-close glass-overlay-close";
+    btn.setAttribute("aria-label", "Close");
+    btn.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      onClick(ev);
+    });
+    return btn;
+  }
+
+  // Settings drop menus and bslib popovers get a glass close control and
+  // dismiss when the pointer goes up outside the panel.
+  function ensureOverlayClose() {
+    var menus = document.querySelectorAll(".drop-menu-input");
+    var i;
+    for (i = 0; i < menus.length; i++) {
+      var menu = menus[i];
+      var tid = menu.getAttribute("data-template");
+      var template = tid && document.getElementById(tid);
+      if (!template || template.querySelector(".glass-overlay-close")) continue;
+      var bar = document.createElement("div");
+      bar.className = "glass-overlay-header";
+      bar.appendChild(makeOverlayClose(function (ev) {
+        hideDropMenu(dropMenuOwner(ev.currentTarget));
+      }));
+      template.insertBefore(bar, template.firstChild);
+    }
+    var pops = document.querySelectorAll(".popover");
+    var j;
+    for (j = 0; j < pops.length; j++) {
+      var pop = pops[j];
+      var header = pop.querySelector(".popover-header");
+      if (header) header.classList.add("glass-overlay-header");
+      // bslib already mounts a tiny absolute close control in the body.
+      // Grow that one. A second button sits underneath it and never receives the tap.
+      var native = pop.querySelector(".btn-close:not(.glass-overlay-close)") || pop.querySelector(".btn-close");
+      var extras = pop.querySelectorAll(".glass-overlay-close");
+      var k;
+      if (native) {
+        native.classList.add("glass-overlay-close");
+        for (k = 0; k < extras.length; k++) {
+          if (extras[k] !== native) extras[k].remove();
+        }
+        continue;
+      }
+      if (pop.querySelector(".glass-overlay-close")) continue;
+      if (!header) {
+        header = document.createElement("div");
+        header.className = "popover-header glass-overlay-header";
+        var body = pop.querySelector(".popover-body");
+        if (body) pop.insertBefore(header, body);
+        else pop.insertBefore(header, pop.firstChild);
+      }
+      header.appendChild(makeOverlayClose(function (ev) {
+        closePopoverEl(ev.currentTarget.closest(".popover"));
+      }));
+    }
+  }
+
+  function dismissChatMenus(target, e) {
+    var pages = document.querySelectorAll("shiny-chat-page[data-mobile-menu-open]");
+    var i;
+    for (i = 0; i < pages.length; i++) {
+      var chat = pages[i];
+      var aside = chat.querySelector(".shiny-chat-page-sidebar");
+      var toggle = chat.querySelector(".shiny-chat-page-sidebar-toggle");
+      if (aside && (aside.contains(target) || pointInRect(e.clientX, e.clientY, aside.getBoundingClientRect()))) continue;
+      if (toggle && (toggle.contains(target) || pointInRect(e.clientX, e.clientY, toggle.getBoundingClientRect()))) continue;
+      var closeBtn = chat.querySelector(".shiny-chat-page-sidebar-close");
+      if (closeBtn) closeBtn.click();
+      else chat.removeAttribute("data-mobile-menu-open");
+    }
+  }
+
+  function dismissMobileSidebars(target, e) {
+    var wide = false;
+    try {
+      wide = window.matchMedia("(min-width: 576px)").matches;
+    } catch (err) { wide = false; }
+    if (wide) return;
+    var layouts = document.querySelectorAll('.bslib-sidebar-layout[data-collapsible-mobile="true"]:not(.sidebar-collapsed)');
+    var i;
+    for (i = 0; i < layouts.length; i++) {
+      var layout = layouts[i];
+      var sidebar = layout.querySelector(":scope > .sidebar");
+      var toggle = layout.querySelector(":scope > .collapse-toggle");
+      if (!toggle) continue;
+      if (toggle.contains(target) || pointInRect(e.clientX, e.clientY, toggle.getBoundingClientRect())) continue;
+      if (sidebar && (sidebar.contains(target) || pointInRect(e.clientX, e.clientY, sidebar.getBoundingClientRect()))) continue;
+      toggle.click();
+    }
+  }
+
   // Second tap on a Settings drop menu or bslib popover closes it. A tap
-  // outside the panel closes it too. Desktop click toggle is left alone.
+  // or click outside the panel closes it on coarse and fine pointers.
   function bindOverlayDismiss() {
     // Swallow only the click from the tap that closed the panel. A later
     // tap (its pointerdown is newer than that pointerup) still opens it,
@@ -729,10 +867,11 @@
       if (arm && e.timeStamp > arm.upTs) arm.olderThan = e.timeStamp;
     }, true);
     document.addEventListener("pointerup", function (e) {
-      if (!coarsePointer()) return;
       if (e.button != null && e.button !== 0) return;
       var target = e.target;
       if (!target || !target.closest) return;
+      if (target.closest(".glass-overlay-close")) return;
+      var coarse = coarsePointer();
       var x = e.clientX;
       var y = e.clientY;
       var closedOnTrigger = false;
@@ -746,12 +885,11 @@
         var pop = inst.popper;
         var onTrigger = trigger.contains(target) || pointInRect(x, y, trigger.getBoundingClientRect());
         var onPop = pop && (pop === target || pop.contains(target));
-        if (onTrigger) {
-          hideTippy(inst);
-          closedOnTrigger = true;
-          continue;
-        }
-        if (!onPop) hideTippy(inst);
+        if (onPop) continue;
+        // Fine pointers let the trigger's own click toggle the menu.
+        if (onTrigger && !coarse) continue;
+        hideTippy(inst);
+        if (onTrigger) closedOnTrigger = true;
       }
       var pops = document.querySelectorAll(".popover.show");
       var j;
@@ -764,14 +902,12 @@
         if (trig) {
           onTrig = trig.contains(target) || pointInRect(x, y, trig.getBoundingClientRect());
         }
-        try {
-          var Pop = window.bootstrap && window.bootstrap.Popover;
-          var pinst = Pop && trig && Pop.getInstance(trig);
-          if (pinst) pinst.hide();
-          else popEl.classList.remove("show");
-        } catch (err) { /* ignore */ }
+        if (onTrig && !coarse) continue;
+        closePopoverEl(popEl);
         if (onTrig) closedOnTrigger = true;
       }
+      dismissChatMenus(target, e);
+      dismissMobileSidebars(target, e);
       if (closedOnTrigger) {
         var stamp = e.timeStamp;
         arm = { upTs: stamp, olderThan: Infinity };
@@ -779,6 +915,9 @@
           if (arm && arm.upTs === stamp) arm = null;
         }, 700);
       }
+    }, true);
+    document.addEventListener("shown.bs.popover", function () {
+      ensureOverlayClose();
     }, true);
     document.addEventListener("click", function (e) {
       if (!arm) return;
@@ -801,6 +940,9 @@
       // Press scale on a popover or drop-menu trigger swallows the second tap
       // on touch, so the menu stays open. Chat header controls skip it too.
       if (target.closest(".drop-menu-input, [data-bs-toggle='popover'], .shiny-chat-page-header, .shiny-chat-page-sidebar-toggle, .shiny-chat-page-sidebar-close, bslib-input-dark-mode, .shiny-chat-history-itemmenu, .shiny-chat-history-close")) return;
+      // Tabs and navbar links stay still. A press scale moves the hit box
+      // through the spring and the next click is treated as unstable.
+      if (el.matches(".nav-link, [role='tab']") && el.closest(".nav-tabs, .navbar-nav, .nav-pills, [role='tablist']")) return;
       if (el.disabled || el.getAttribute("aria-disabled") === "true" || el.classList.contains("disabled")) return;
       if (target.closest("input, textarea, select, .form-control")) return;
       var rect = el.getBoundingClientRect();
@@ -860,6 +1002,7 @@
     ios27Started = true;
     bindPressPhysics();
     bindOverlayDismiss();
+    ensureOverlayClose();
     bindMenuMorph();
     bindScrollEdges();
     bindTabInteraction();
@@ -918,6 +1061,7 @@
       pending = true;
       window.requestAnimationFrame(function () {
         pending = false;
+        ensureOverlayClose();
         scheduleIos27Motion();
       });
     });

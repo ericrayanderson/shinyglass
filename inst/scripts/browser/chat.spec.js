@@ -657,6 +657,23 @@ test('mobile header controls respond without a transition delay', async ({ brows
   await context.close();
 });
 
+test('mobile app menu closes on a tap outside the sidebar', async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 393, height: 852 },
+    isMobile: true,
+    hasTouch: true
+  });
+  const page = await context.newPage();
+  await gotoChat(page);
+  const toggle = page.locator('.shiny-chat-page-sidebar-toggle');
+  await toggle.click();
+  await expect(page.locator('shiny-chat-page')).toHaveAttribute('data-mobile-menu-open', 'true');
+  const aside = await page.locator('.shiny-chat-page-sidebar').boundingBox();
+  await page.touchscreen.tap(Math.min(380, aside.x + aside.width + 24), 420);
+  await expect(page.locator('shiny-chat-page')).not.toHaveAttribute('data-mobile-menu-open', 'true');
+  await context.close();
+});
+
 test('history list sits at the top of the glass sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 835 });
   await gotoChat(page);

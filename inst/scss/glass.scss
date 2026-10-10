@@ -4891,28 +4891,69 @@ body.glass-scroll-edge .bslib-sidebar-layout > .main::before {
     margin-right: 0 !important;
   }
 
-  // Stacked bslib sidebar (below sm we do not absolute-float): full-width glass
-  .bslib-sidebar-layout {
+  // Below sm, bslib does not use the desktop float. Always-open sidebars
+  // stack in flow as a capped glass panel. Collapsible sidebars are a
+  // full-height overlay: a max-height cap leaves a blank main region, and
+  // a top-weighted highlight reads as a white band on a tall dark panel.
+  .bslib-sidebar-layout:not([data-collapsible-mobile="true"]) {
     > .sidebar {
-      // width + horizontal margin would overflow 100vw; inset via margin only
       box-sizing: border-box !important;
       width: auto !important;
       max-width: none !important;
       margin: var(--glass-float-margin) !important;
       // CSS min() — quote so Sass does not unit-check vh vs rem
       max-height: #{'min(70vh, 28rem)'} !important;
+      background: color-mix(in srgb, var(--glass-body-bg) 72%, var(--glass-bg)) !important;
+      background-image: none !important;
+
+      &::before {
+        opacity: 0 !important;
+        background: none !important;
+      }
+    }
+  }
+
+  .bslib-sidebar-layout[data-collapsible-mobile="true"] {
+    > .sidebar {
+      box-sizing: border-box !important;
+      align-self: stretch !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: none !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: color-mix(in srgb, var(--glass-body-bg) 78%, var(--glass-bg)) !important;
+      background-image: none !important;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 28%, transparent),
+        0 0 0 0.5px var(--glass-border) !important;
+
+      &::before,
+      &::after {
+        opacity: 0 !important;
+        background: none !important;
+      }
     }
 
+    > .sidebar > .sidebar-content {
+      overflow-y: auto;
+    }
+
+    // bslib paints the open aside at the offcanvas layer (1045). The glass
+    // toggle was pinned at 30–40, so the aside took the hit.
+    > .collapse-toggle {
+      z-index: 1060 !important;
+      pointer-events: auto !important;
+    }
+  }
+
+  .bslib-sidebar-layout {
     > .main,
     > .main.bslib-page-main {
       padding-left: var(--glass-float-margin) !important;
       padding-right: var(--glass-float-margin) !important;
       min-width: 0 !important;
-    }
-
-    > .collapse-toggle {
-      // Keep toggle tappable above content
-      z-index: 40 !important;
     }
   }
 
@@ -6442,6 +6483,10 @@ html[data-glass-preset] bslib-input-dark-mode {
 
 html[data-glass-preset] :is(a.action-button, a.shiny-download-link) {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 32px;
 }
 
 html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
@@ -6454,8 +6499,63 @@ html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
   transform: translate(-50%, -50%);
 }
 
+// Nav tabs stay put on press. A scale on the link moves its hit box for
+// the whole spring and makes the next click look unstable.
+html[data-glass-preset] :is(.nav-tabs, .navbar-nav, .nav-pills, [role="tablist"]) :is(.nav-link, [role="tab"]) {
+  transform: none !important;
+  scale: 1 !important;
+  rotate: 0deg !important;
+}
+
+html[data-glass-preset] .glass-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.35rem 0.45rem;
+  min-height: 44px;
+  background: transparent;
+  border-bottom: 0.5px solid var(--glass-border);
+}
+
+html[data-glass-preset] .popover-header.glass-overlay-header {
+  justify-content: space-between;
+  padding-right: 3.25rem;
+}
+
+html[data-glass-preset] .popover .btn-close.glass-overlay-close {
+  position: absolute !important;
+  top: 0.35rem !important;
+  right: 0.35rem !important;
+  z-index: 2;
+  background-size: 1rem;
+}
+
+html[data-glass-preset] .glass-overlay-close {
+  box-sizing: border-box;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  margin: 0 0 0 auto;
+  padding: 0 !important;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--glass-bg) 88%, transparent);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  opacity: 0.92;
+  flex: 0 0 auto;
+}
+
+html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-sidebar-scrim {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 @media (pointer: coarse) {
   html[data-glass-preset] :is(
+    .btn,
     .glass-theme-toggle .btn,
     .glass-theme-toggle .action-button,
     .nav-link,
@@ -6465,9 +6565,27 @@ html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
     .pagination .page-link,
     .dataTables_paginate .page-link,
     [data-bs-toggle="popover"],
-    .modal .btn
+    .modal .btn,
+    a.action-button,
+    a.shiny-download-link
   ) {
-    min-height: 44px;
+    box-sizing: border-box;
+    min-height: 44px !important;
+  }
+
+  html[data-glass-preset] :is(.btn, .nav-link, .form-select, .selectize-control .selectize-input) {
+    min-height: 44px !important;
+  }
+
+  // Native <select> ignores min-height. Set the used height.
+  html[data-glass-preset] :is(select.form-select, select.form-control, select.shiny-input-select) {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  html[data-glass-preset] body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
+  html[data-glass-preset] body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
+    transform: none !important;
   }
 
   html[data-glass-preset] :is(
@@ -6485,12 +6603,19 @@ html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
     .bslib-sidebar-layout > .collapse-toggle,
     .bslib-full-screen-enter
   ) {
-    width: 44px;
-    height: 44px;
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 
   html[data-glass-preset] .bslib-full-screen-enter {
-    opacity: 0.85;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    opacity: 0.85 !important;
   }
 
   html[data-glass-preset] .shiny-chat-history-item,
