@@ -238,6 +238,30 @@ test('modals, popovers, tooltips, downloads, dynamic UI, and modules work', asyn
   await page.locator('#pop_btn').click();
   await expect(page.locator('.popover.show, .popover').last()).toBeVisible();
   await expect(page.locator('.popover').last()).toContainText('Popover body');
+  const popClose = page.locator('.popover.show .glass-overlay-close');
+  await expect(popClose).toBeVisible();
+  const popCloseBox = await popClose.boundingBox();
+  expect(popCloseBox.width).toBeGreaterThanOrEqual(43.4);
+  expect(popCloseBox.height).toBeGreaterThanOrEqual(43.4);
+  await page.mouse.click(8, 8);
+  await expect(page.locator('.popover.show')).toHaveCount(0);
+  await page.locator('#pop_btn').click();
+  await expect(page.locator('.popover.show')).toBeVisible();
+  await popClose.click();
+  await expect(page.locator('.popover.show')).toHaveCount(0);
+
+  if (await hasPkg(page, 'shinyWidgets')) {
+    const settings = page.locator('#settings_btn');
+    await settings.click();
+    await expect(page.locator('#settings_body')).toBeVisible();
+    await expect(page.locator('.glass-overlay-close').last()).toBeVisible();
+    await page.mouse.click(8, 8);
+    await expect(page.locator('#settings_body')).toBeHidden();
+    await settings.click();
+    await expect(page.locator('#settings_body')).toBeVisible();
+    await page.locator('.tippy-content .glass-overlay-close, .tippy-box .glass-overlay-close').first().click();
+    await expect(page.locator('#settings_body')).toBeHidden();
+  }
 
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#dl').click();
@@ -407,16 +431,18 @@ test('coarse pointers keep glass controls at least 44px', async ({ browser }) =>
   expect(caret.width).toBeGreaterThanOrEqual(selBox.width - 8);
   expect(caret.height).toBeGreaterThanOrEqual(selBox.height - 8);
 
-  const linkHit = await page.locator('#compat_link').evaluate((el) => {
-    const text = el.getBoundingClientRect();
-    const after = getComputedStyle(el, '::after');
-    return {
-      textH: text.height,
-      hit: Math.max(parseFloat(after.width) || 0, parseFloat(after.height) || 0)
-    };
+  await atLeast(page.locator('#ping'), 44);
+  await atLeast(page.locator('#sel_native'), 44);
+  await atLeast(page.locator('#compat_link'), 44);
+  await atLeast(page.locator('#compat_dl_link'), 44);
+  const linkScale = await page.locator('a.nav-link[data-value="Inputs"]').evaluate((el) => {
+    el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true, clientX: 20, clientY: 20, pointerId: 1 }));
+    const cs = getComputedStyle(el);
+    const scale = el.style.scale || cs.scale || '1';
+    el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true, clientX: 20, clientY: 20, pointerId: 1 }));
+    return scale;
   });
-  expect(linkHit.hit).toBeGreaterThanOrEqual(44);
-  expect(linkHit.textH).toBeLessThan(36);
+  expect(linkScale === '1' || linkScale === 'none' || linkScale === '').toBeTruthy();
 
   await showNav('Layout');
   await atLeast(page.locator('.bslib-sidebar-layout > .collapse-toggle').first(), 44);
@@ -445,5 +471,78 @@ test('coarse pointers keep glass controls at least 44px', async ({ browser }) =>
   const modalClose = page.locator('.modal.show .btn-close, .modal.show [data-bs-dismiss="modal"], .modal.show [data-dismiss="modal"]').first();
   await expect(modalClose).toBeVisible({ timeout: 8000 });
   await atLeast(modalClose, 44);
+  await context.close();
+});
+
+test('fine pointers keep action and download links at least 32px', async ({ page }) => {
+  await gotoCompat(page);
+  const link = await page.locator('#compat_link').boundingBox();
+  const download = await page.locator('#compat_dl_link').boundingBox();
+  expect(link.height).toBeGreaterThanOrEqual(31.4);
+  expect(download.height).toBeGreaterThanOrEqual(31.4);
+});
+
+test('mobile sidebars open and close from the toggle', async ({ browser }) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 393, height: 852 },
+    deviceScaleFactor: 2
+  });
+  const page = await context.newPage();
+
+  async function cycle(mainSelector) {
+    const layout = page.locator('.bslib-sidebar-layout').first();
+    const toggle = layout.locator('> .collapse-toggle');
+    const main = layout.locator('> .main');
+    await expect(toggle).toBeVisible();
+    await expect(layout).toHaveClass(/sidebar-collapsed/);
+    await expect(page.locator(mainSelector)).toBeVisible();
+    await toggle.click();
+    await expect(layout).not.toHaveClass(/sidebar-collapsed/);
+    const geom = await page.evaluate(() => {
+      const layout = document.querySelector('.bslib-sidebar-layout');
+      const sidebar = layout.querySelector(':scope > .sidebar');
+      const toggle = layout.querySelector(':scope > .collapse-toggle');
+      const lr = layout.getBoundingClientRect();
+      const sr = sidebar.getBoundingClientRect();
+      const tr = toggle.getBoundingClientRect();
+      const hit = document.elementFromPoint(tr.left + tr.width / 2, tr.top + tr.height / 2);
+      return {
+        sideH: sr.height,
+        layoutH: lr.height,
+        gapBelow: lr.bottom - sr.bottom,
+        hitToggle: !!(hit && (hit === toggle || toggle.contains(hit))),
+        bg: getComputedStyle(sidebar).backgroundImage
+      };
+    });
+    expect(geom.hitToggle).toBeTruthy();
+    expect(geom.sideH).toBeGreaterThan(geom.layoutH - 8);
+    expect(geom.gapBelow).toBeLessThan(8);
+    expect(geom.bg === 'none' || geom.bg === '').toBeTruthy();
+    await toggle.click();
+    await expect(layout).toHaveClass(/sidebar-collapsed/);
+    await expect(page.locator(mainSelector)).toBeVisible();
+    await expect.poll(async () => main.evaluate((el) => Number(getComputedStyle(el).opacity))).toBeGreaterThan(0.9);
+  }
+
+  await page.goto(`${BASE}?shell=page_sidebar&preset=dark`, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('#page_main')).toBeVisible();
+  await cycle('#page_main');
+  await page.locator('.bslib-sidebar-layout > .collapse-toggle').click();
+  await expect(page.locator('.bslib-sidebar-layout').first()).not.toHaveClass(/sidebar-collapsed/);
+  await page.locator('.bslib-page-title, .navbar-brand').first().click();
+  await expect(page.locator('.bslib-sidebar-layout').first()).toHaveClass(/sidebar-collapsed/);
+  await expect(page.locator('#page_main')).toBeVisible();
+
+  await page.goto(`${BASE}?preset=light`, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await page.evaluate(() => {
+    const link = document.querySelector('a.nav-link[data-value="Layout"]');
+    if (link) link.click();
+  });
+  await expect(page.locator('#side_echo')).toBeVisible();
+  await cycle('#side_echo');
   await context.close();
 });
