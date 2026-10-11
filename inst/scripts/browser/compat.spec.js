@@ -328,12 +328,17 @@ test('press, morph, scroll edge, and tab minimize follow the defaults', async ({
   await page.mouse.down();
   await expect.poll(() => ping.evaluate((el) => el.style.scale)).toBe('0.965');
   await page.mouse.up();
+  // The held press is a real click: exactly one ping before moving on.
+  await expect(page.locator('#ping_out')).toHaveText('pings 1');
 
   await page.evaluate(() => window.scrollTo(0, 900));
   await expect(page.locator('body')).toHaveClass(/glass-scroll-edge/);
   await expect(page.locator('body')).toHaveClass(/glass-tabs-min/);
   await page.locator('#ping').click();
-  await expect(page.locator('#ping_out')).toHaveText('pings 1');
+  await expect(page.locator('#ping_out')).toHaveText('pings 2');
+  // Guard against a late duplicate from press physics.
+  await page.waitForTimeout(500);
+  await expect(page.locator('#ping_out')).toHaveText('pings 2');
 });
 
 test('fallback mode keeps blur and tint without a lens and inputs still work', async ({ page }) => {
