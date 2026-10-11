@@ -240,6 +240,11 @@ test('modals, popovers, tooltips, downloads, dynamic UI, and modules work', asyn
   await expect(page.locator('.popover').last()).toContainText('Popover body');
   const popClose = page.locator('.popover.show .glass-overlay-close');
   await expect(popClose).toBeVisible();
+  // The popover scales in from its trigger. Measure after that settles.
+  await page.waitForFunction(() => {
+    const pop = document.querySelector('.popover.show');
+    return !!pop && pop.getAnimations({ subtree: true }).every((a) => a.playState !== 'running');
+  });
   const popCloseBox = await popClose.boundingBox();
   expect(popCloseBox.width).toBeGreaterThanOrEqual(43.4);
   expect(popCloseBox.height).toBeGreaterThanOrEqual(43.4);
@@ -529,6 +534,37 @@ test('fine pointers keep action and download links at least 32px', async ({ page
   const download = await page.locator('#compat_dl_link').boundingBox();
   expect(link.height).toBeGreaterThanOrEqual(31.4);
   expect(download.height).toBeGreaterThanOrEqual(31.4);
+});
+
+test('Escape closes popovers and Settings drop menus and returns focus', async ({ page }) => {
+  await gotoCompat(page);
+  await openNav(page, 'Overlays');
+
+  const popBtn = page.locator('#pop_btn');
+  await page.evaluate(() => {
+    window.__glassPopShown = false;
+    document.addEventListener('shown.bs.popover', () => { window.__glassPopShown = true; }, { once: true });
+  });
+  await popBtn.click();
+  await expect(page.locator('.popover.show')).toBeVisible();
+  await page.waitForFunction(() => window.__glassPopShown === true);
+  await page.keyboard.press('Escape');
+  await expect.poll(() => page.locator('.popover.show').count(), { timeout: 10000 }).toBe(0);
+  await expect(popBtn).toBeFocused();
+
+  if (await hasPkg(page, 'shinyWidgets')) {
+    const settings = page.locator('#settings_btn');
+    const menuOpen = () => page.evaluate(() => {
+      const t = document.getElementById('settings_btn');
+      const inst = t && t._tippy;
+      return !!(inst && inst.state && (inst.state.isShown || inst.state.isVisible));
+    });
+    await settings.click();
+    await expect.poll(menuOpen, { timeout: 10000 }).toBe(true);
+    await page.keyboard.press('Escape');
+    await expect.poll(menuOpen, { timeout: 10000 }).toBe(false);
+    await expect(settings).toBeFocused();
+  }
 });
 
 test('mobile sidebars open and close from the toggle', async ({ browser }) => {

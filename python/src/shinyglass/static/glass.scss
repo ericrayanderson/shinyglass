@@ -6815,6 +6815,12 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     transform: translateY(-50%);
   }
 
+  // Wrapped pill rows sit 12px apart (44px hit box minus the 32px pill),
+  // so one row's hit box does not cover the row above it.
+  #{$root} .harbor-pills {
+    row-gap: 12px;
+  }
+
   #{$root} .offcanvas-header .btn-close,
   #{$root} .offcanvas .btn-close {
     box-sizing: border-box !important;

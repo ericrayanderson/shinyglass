@@ -921,6 +921,41 @@
     document.addEventListener("shown.bs.popover", function () {
       ensureOverlayClose();
     }, true);
+    // Escape closes open Settings drop menus and bslib popovers and returns
+    // focus to the control that opened them. An open selectize list inside
+    // the panel takes the first Escape.
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape" && e.key !== "Esc") return;
+      var target = e.target;
+      var sel = target && target.closest && target.closest(".selectize-control");
+      if (sel && sel.querySelector(".selectize-input.dropdown-active")) return;
+      var returnTo = null;
+      var menus = document.querySelectorAll(".drop-menu-input");
+      var i;
+      for (i = 0; i < menus.length; i++) {
+        var id = menus[i].getAttribute("data-target");
+        var trigger = id && document.getElementById(id);
+        var inst = trigger && trigger._tippy;
+        if (!tippyOpen(inst)) continue;
+        hideTippy(inst);
+        if (!returnTo) returnTo = trigger;
+      }
+      var pops = document.querySelectorAll(".popover.show");
+      var j;
+      for (j = 0; j < pops.length; j++) {
+        var pid = pops[j].getAttribute("id");
+        var trig = pid && document.querySelector('[aria-describedby="' + pid + '"]');
+        closePopoverEl(pops[j]);
+        if (!returnTo && trig) returnTo = trig;
+      }
+      if (returnTo && typeof returnTo.focus === "function") {
+        try {
+          returnTo.focus({ preventScroll: true });
+        } catch (err) {
+          returnTo.focus();
+        }
+      }
+    });
     document.addEventListener("click", function (e) {
       if (!arm) return;
       // Clicks from the closing tap are older than the next pointerdown.
