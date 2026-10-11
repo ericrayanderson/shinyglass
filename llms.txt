@@ -10,6 +10,9 @@ guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
 · [Release
 notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
+![Harbor notes in the phone frame on the dusk
+wallpaper](reference/figures/phone-frame-harbor.png)
+
 ## Built for phones
 
 Playwright checks phone-sized viewports (393x852 and 390x852, with
@@ -19,7 +22,9 @@ closes on a second tap and on a tap outside. The Harbor notes sidebar
 toggle and close button both respond. Harbor notes does not scroll
 sideways at 393x852 or 390x844, and neither do the 480px dashboard and
 Olympics fixtures. The sources offcanvas opens and closes from its own
-buttons.
+buttons. The desktop phone frame sets `data-glass-pointer="coarse"` on
+the framed app, so the preview uses those same sizes. Content starts
+below the status bar, and the frame does not show a desktop scrollbar.
 
 ![Basics demo in an iPhone-sized
 frame](reference/figures/phone-frame-demo.png)
@@ -180,6 +185,8 @@ and override `--glass-*` variables with
 ## Live demos
 
 Apps may take a moment to wake up.
+
+Try it on your phone, or press Phone view on a desktop.
 
 | Demo | Explore |
 |----|----|

@@ -34,8 +34,8 @@ page, still pass `theme = glass_theme()` to
 
 Light and dark surface tokens ship as dual CSS custom-property packs on
 `[data-glass-preset]`. Switching preset updates
-`document.documentElement.dataset.glassPreset` — no Sass recompile and
-no full page reload.
+`document.documentElement.dataset.glassPreset`: no Sass recompile and no
+full page reload.
 
 ## Runtime updates from the server
 
@@ -166,7 +166,7 @@ follows that split:
 [`glass_plot_surface_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_surface_input.md)
 is the drop-in control. Optional
 [`dt_options_glass()`](https://ericrayanderson.github.io/shinyglass/reference/dt_options_glass.md)
-keeps DataTables inside the card (`scrollX`, wrapping headers) — the
+keeps DataTables inside the card (`scrollX`, wrapping headers). The
 visible skin is still package CSS, not a DT theme dialect.
 
 ``` r
@@ -202,8 +202,8 @@ default values for a pack. Live updates:
 
 Use \[glass_intensity_slider()\] for a live Ultra Clear → Tinted
 control. It mirrors iOS 27 **Settings → Appearance → Liquid Glass**. The
-web cannot read that OS slider, so the in-app control is intentional —
-it is the supported way to match the system look from a Shiny app:
+web cannot read that OS slider, so the in-app control is intentional. It
+is the supported way to match the system look from a Shiny app:
 
 ``` r
 

@@ -65,13 +65,13 @@ Rscript inst/scripts/audit-glass-contrast.R --apps=demo,dashboard,inputs,plotly_
 
 ## Tips
 
-- Prefer bslib page functions when you can — glass was designed around
+- Prefer bslib page functions when you can. Glass was designed around
   them.
 - For plotly dark mode, pass transparent `paper_bgcolor` /
   `plot_bgcolor` in [`layout()`](https://rdrr.io/r/graphics/layout.html)
   (or
-  [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md))
-  — see `plotly-gt-demo.R`; CSS handles the modebar. Use
+  [`plotly_glass()`](https://ericrayanderson.github.io/shinyglass/reference/plotly_glass.md)).
+  See `plotly-gt-demo.R`; CSS handles the modebar. Use
   `plot_surface = "opaque"` when the chart itself needs a panel.
 - For print / chromote / PDF, call
   [`glass_flatten()`](https://ericrayanderson.github.io/shinyglass/reference/glass_flatten.md)

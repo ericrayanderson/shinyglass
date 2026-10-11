@@ -50,10 +50,12 @@ names(glass_token_pack("light"))
 #> [23] "--glass-refract-contrast"   "--glass-ior"               
 #> [25] "--glass-refraction-scale"   "--glass-dispersion"        
 #> [27] "--glass-diffusion"          "--glass-specular-top"      
-#> [29] "--glass-specular-bottom"    "--glass-edge"              
-#> [31] "--glass-press-scale"        "--glass-scroll-edge-fade"  
-#> [33] "--glass-minimize-scale"     "--glass-icon-clear"        
-#> [35] "--glass-wallpaper-wash"     "--glass-plot-panel"        
+#> [29] "--glass-specular-bottom"    "--glass-sheen-end"         
+#> [31] "--glass-fill-sheen-end"     "--glass-edge-span"         
+#> [33] "--glass-edge"               "--glass-press-scale"       
+#> [35] "--glass-scroll-edge-fade"   "--glass-minimize-scale"    
+#> [37] "--glass-icon-clear"         "--glass-wallpaper-wash"    
+#> [39] "--glass-plot-panel"        
 glass_token_pack("dark")[["--glass-body-color"]]
 #> [1] "#f5f5f7"
 ```
