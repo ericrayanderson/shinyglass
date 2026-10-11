@@ -11,7 +11,7 @@ approximate the 0.4.0 look.
 
 * local: Debian 13, R 4.6.1
 * GitHub Actions: Windows (R 4.5), macOS (R 4.5), Ubuntu (devel, release, oldrel)
-* win-builder: R-devel and R-release (pending)
+* win-builder: R-devel and R-release (4.6.1), both OK with 0 errors, 0 warnings and 0 notes
 
 ## R CMD check results
 
