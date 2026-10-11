@@ -210,7 +210,8 @@
   panel and closes it, and a tap outside the panel closes it too. The
   open panel no longer wears a white band across the top in dark mode.
 - Settings menus and popovers close on a click or tap outside, and they
-  have a 44px close button. The shinychat app menu closes on a tap
+  have a 44px close button. Escape closes them too and returns focus to
+  the control that opened them. The shinychat app menu closes on a tap
   outside the sidebar.
 - Coarse pointers get a 44px hit area on glass controls, and fine
   pointers stay at least 32px. That covers buttons, the Light/Dark/Auto
@@ -219,6 +220,8 @@
   [`actionLink()`](https://rdrr.io/pkg/shiny/man/actionButton.html) /
   [`downloadLink()`](https://rdrr.io/pkg/shiny/man/downloadButton.html).
   Those links keep their text size. Nav tabs do not scale when pressed.
+- On a coarse pointer, wrapped rows of Harbor notes citation pills sit
+  12px apart, so each pill keeps a 44px tap target.
 - Light-mode chat replies use a thin rim and a bright top highlight, in
   the same family as the user bubble and the composer.
 - Ultra Clear (intensity 0) keeps a hairline and a top specular
