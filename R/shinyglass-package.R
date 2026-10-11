@@ -37,6 +37,14 @@
 #' shinyApp(ui, server)
 #' ```
 #'
+#' @section Mobile support:
+#' The same app works on desktop and phone with no extra code. Controls
+#' are sized for touch, sidebars and popovers open and close as expected
+#' on a phone, and pages do not scroll sideways. On a desktop, each live
+#' demo has a Phone view button that shows it in a phone-sized frame.
+#'
+#' \if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in a phone-sized frame"}}
+#'
 #' @section Existing app:
 #' Keep the page function you already use. Pass the theme, add the controls,
 #' and observe them. `page_sidebar()`, `page_fluid()`, `page_navbar()`,
@@ -113,14 +121,6 @@
 #' * `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs`, and
 #'   `icon_style = "clear"` are on by default. `floating_sidebar` stays off.
 #' * Page functions and click targets stay the same.
-#'
-#' @section Mobile support:
-#' Mobile is fully supported. Controls are sized for touch, sidebars and
-#' popovers open and close as expected on a phone, and pages do not
-#' scroll sideways. On a desktop, each live demo has a Phone view button
-#' that shows it in a phone-sized frame.
-#'
-#' \if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in a phone-sized frame"}}
 #'
 #' @section Pitfalls:
 #' * App CSS that sets panel or text colors fights the theme. Use `--glass-*`

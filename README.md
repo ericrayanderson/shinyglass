@@ -29,6 +29,16 @@ Development builds (GitHub):
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
+## Mobile support
+
+The same app works on desktop and phone with no extra code. Controls are sized for touch, sidebars and popovers open and close as expected on a phone, and pages do not scroll sideways. On a desktop, each live demo has a Phone view button that shows it in a phone-sized frame.
+
+<p align="center">
+<img src="man/figures/harbor-notes.png" width="58%" alt="Harbor notes chat on a desktop browser, light mode">
+<img src="man/figures/phone-frame-harbor.png" width="36%" alt="The same Harbor notes app in a phone-sized frame">
+</p>
+<p align="center"><em>Harbor notes on desktop and on a phone, from the same code.</em></p>
+
 ## Quick start
 
 ```r
@@ -142,14 +152,6 @@ These five are the hosted set. plotly + gt stays a local example in `inst/exampl
 </p>
 
 Harbor notes is the flagship demo: a shinychat window on the dusk wallpaper, with a floating composer, a scripted reply (thinking, a citation, and a tide-table tool card), and an offcanvas sources panel. [Open Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The hosted app answers with Gemini Flash and falls back to a local script if the API errors. The same app is in `inst/examples/shinychat-glass`.
-
-## Mobile support
-
-Mobile is fully supported. Controls are sized for touch, sidebars and popovers open and close as expected on a phone, and pages do not scroll sideways. On a desktop, each live demo has a Phone view button that shows it in a phone-sized frame.
-
-<p align="center">
-<img src="man/figures/phone-frame-harbor.png" width="360" alt="Harbor notes shown in a phone-sized frame">
-</p>
 
 ## Compatibility
 
