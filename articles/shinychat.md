@@ -68,15 +68,16 @@ With no API key the reply is a local script. It streams a thinking
 panel, a short answer, a citation chip, and a tide-table tool card.
 `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) switches that session to
 [`ellmer::chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html)
-with Gemini Flash (`gemini-3.7-flash`, or `SHINYGLASS_CHAT_MODEL`). The
-system prompt helps with shinyglass, Shiny, R, and ordinary
-conversation, and declines only a clearly unrelated or abusive request.
-A small chip reads Live (Gemini) or Demo replies. A public session
-allows 8 messages of at most 400 characters. If the API errors or
-returns a quota response (429), a glass notice explains the fallback and
-the local script continues. The key is never written to the log or the
-page. The theme choice and the conversation are kept in the browser’s
-local storage, which is what “Notes stay on this machine” refers to. The
+with `gemini-3.5-flash-lite`, falling back to `gemini-3.8-flash` and
+`gemini-3.7-flash` (`SHINYGLASS_CHAT_MODEL` is tried first when set).
+Live replies stay focused on shinyglass, Shiny, R, and ordinary
+conversation, and decline only a clearly unrelated or abusive request. A
+small chip reads Live (Gemini) or Demo replies. A public session allows
+8 messages of at most 400 characters. If the API errors or returns a
+quota response (429), a glass notice explains the fallback and the local
+script continues. The key is never written to the log or the page. The
+theme choice and the conversation are kept in the browser’s local
+storage, which is what “Notes stay on this machine” refers to. The
 shinychat history store stays in memory, so nothing is written to the
 server disk and no model is asked for a title. The sidebar starts open
 on desktop and collapses into the page menu on a phone.

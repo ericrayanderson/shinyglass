@@ -22,9 +22,7 @@ closes on a second tap and on a tap outside. The Harbor notes sidebar
 toggle and close button both respond. Harbor notes does not scroll
 sideways at 393x852 or 390x844, and neither do the 480px dashboard and
 Olympics fixtures. The sources offcanvas opens and closes from its own
-buttons. The desktop phone frame sets `data-glass-pointer="coarse"` on
-the framed app, so the preview uses those same sizes. Content starts
-below the status bar, and the frame does not show a desktop scrollbar.
+buttons.
 
 ![Basics demo in an iPhone-sized
 frame](reference/figures/phone-frame-demo.png)
