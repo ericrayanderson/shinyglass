@@ -209,6 +209,11 @@
   opens as a full-height overlay. The collapse toggle stays above the
   panel and closes it, and a tap outside the panel closes it too. The
   open panel no longer wears a white band across the top in dark mode.
+- A page that scrolls the window no longer flickers between the compact
+  and full navbar near the scroll threshold. The height change from
+  compacting moved the scroll position, which read as a scroll the other
+  way. That shift is now ignored, and compacting starts 16px past the
+  threshold.
 - Settings menus and popovers close on a click or tap outside, and they
   have a 44px close button. Escape closes them too and returns focus to
   the control that opened them. The shinychat app menu closes on a tap
