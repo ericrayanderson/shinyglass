@@ -45,6 +45,15 @@ in the server. Keep plot backgrounds transparent and take ink from
 
     shinyApp(ui, server)
 
+## Mobile support
+
+The same app works on desktop and phone with no extra code. Controls are
+sized for touch, sidebars and popovers open and close as expected on a
+phone, and pages do not scroll sideways. On a desktop, each live demo
+has a Phone view button that shows it in a phone-sized frame.
+
+![Basics demo in a phone-sized frame](figures/phone-frame-demo.png)
+
 ## Existing app
 
 Keep the page function you already use. Pass the theme, add the
@@ -137,15 +146,6 @@ is the full note.
   off.
 
 - Page functions and click targets stay the same.
-
-## Mobile support
-
-Mobile is fully supported. Controls are sized for touch, sidebars and
-popovers open and close as expected on a phone, and pages do not scroll
-sideways. On a desktop, each live demo has a Phone view button that
-shows it in a phone-sized frame.
-
-![Basics demo in a phone-sized frame](figures/phone-frame-demo.png)
 
 ## Pitfalls
 

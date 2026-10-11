@@ -112,6 +112,15 @@ server.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="mobile-support">Mobile support<a class="anchor" aria-label="anchor" href="#mobile-support"></a>
+</h2>
+<p>The same app works on desktop and phone with no extra code. Controls
+are sized for touch, sidebars and popovers open and close as expected on
+a phone, and pages do not scroll sideways. On a desktop, each live demo
+has a Phone view button that shows it in a phone-sized frame.</p>
+<p><img src="../reference/figures/phone-frame-demo.png" class="r-plt" alt="Basics demo in a phone-sized frame" width="280px"></p>
+</div>
+<div class="section level2">
 <h2 id="add-glass-to-an-existing-app">Add glass to an existing app<a class="anchor" aria-label="anchor" href="#add-glass-to-an-existing-app"></a>
 </h2>
 <p>Keep the page you already have. bslib <code><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">page_sidebar()</a></code>,
@@ -297,15 +306,6 @@ Build the client from <code>window.shinyglass</code>
 (<code>GlassPage</code>, <code>GlassCard</code>,
 <code>GlassButton</code>, <code>GlassIntensitySlider</code>,
 <code>useGlassTheme</code>). Do not bundle a second React.</p>
-</div>
-<div class="section level2">
-<h2 id="mobile-support">Mobile support<a class="anchor" aria-label="anchor" href="#mobile-support"></a>
-</h2>
-<p>Mobile is fully supported. Controls are sized for touch, sidebars and
-popovers open and close as expected on a phone, and pages do not scroll
-sideways. On a desktop, each live demo has a Phone view button that
-shows it in a phone-sized frame.</p>
-<p><img src="../reference/figures/phone-frame-demo.png" class="r-plt" alt="Basics demo in a phone-sized frame" width="280px"></p>
 </div>
 <div class="section level2">
 <h2 id="pitfalls-and-fixes">Pitfalls and fixes<a class="anchor" aria-label="anchor" href="#pitfalls-and-fixes"></a>

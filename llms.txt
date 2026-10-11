@@ -31,6 +31,19 @@ Development builds (GitHub):
 remotes::install_github("ericrayanderson/shinyglass")
 ```
 
+## Mobile support
+
+The same app works on desktop and phone with no extra code. Controls are
+sized for touch, sidebars and popovers open and close as expected on a
+phone, and pages do not scroll sideways. On a desktop, each live demo
+has a Phone view button that shows it in a phone-sized frame.
+
+![Harbor notes chat on a desktop browser, light
+mode](reference/figures/harbor-notes.png)![The same Harbor notes app in
+a phone-sized frame](reference/figures/phone-frame-harbor.png)
+
+*Harbor notes on desktop and on a phone, from the same code.*
+
 ## Quick start
 
 ``` r
@@ -166,16 +179,6 @@ citation, and a tide-table tool card), and an offcanvas sources panel.
 notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The
 hosted app answers with Gemini Flash and falls back to a local script if
 the API errors. The same app is in `inst/examples/shinychat-glass`.
-
-## Mobile support
-
-Mobile is fully supported. Controls are sized for touch, sidebars and
-popovers open and close as expected on a phone, and pages do not scroll
-sideways. On a desktop, each live demo has a Phone view button that
-shows it in a phone-sized frame.
-
-![Harbor notes shown in a phone-sized
-frame](reference/figures/phone-frame-harbor.png)
 
 ## Compatibility
 

@@ -49,6 +49,16 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
+## Mobile support
+
+The same app works on desktop and phone with no extra code. Controls are
+sized for touch, sidebars and popovers open and close as expected on a
+phone, and pages do not scroll sideways. On a desktop, each live demo
+has a Phone view button that shows it in a phone-sized frame.
+
+![Basics demo in a phone-sized
+frame](../reference/figures/phone-frame-demo.png)
+
 ## Add glass to an existing app
 
 Keep the page you already have. bslib
@@ -175,16 +185,6 @@ has no `theme` argument. Pass `extra_deps = glass_theme_dependencies()`.
 Build the client from `window.shinyglass` (`GlassPage`, `GlassCard`,
 `GlassButton`, `GlassIntensitySlider`, `useGlassTheme`). Do not bundle a
 second React.
-
-## Mobile support
-
-Mobile is fully supported. Controls are sized for touch, sidebars and
-popovers open and close as expected on a phone, and pages do not scroll
-sideways. On a desktop, each live demo has a Phone view button that
-shows it in a phone-sized frame.
-
-![Basics demo in a phone-sized
-frame](../reference/figures/phone-frame-demo.png)
 
 ## Pitfalls and fixes
 
