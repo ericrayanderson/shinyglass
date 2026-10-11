@@ -24,6 +24,8 @@
 ^man/figures/plotly-gt.*\.png$
 ^man/figures/intensity-slider.*\.(png|gif)$
 ^man/figures/harbor-notes.*\.png$
+^man/figures/phone-frame-harbor\.png$
+^man/figures/phone-view\.(gif|mp4)$
 # Examples that need vendor data/scripts or screenshot-only deps
 ^inst/examples/dreamrs-
 ^inst/examples/superzip-glass\.R$
