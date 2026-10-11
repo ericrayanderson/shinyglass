@@ -45,6 +45,16 @@ shinyApp(ui, server)
 }\if{html}{\out{</div>}}
 }
 
+\section{Mobile support}{
+
+The same app works on desktop and phone with no extra code. Controls
+are sized for touch, sidebars and popovers open and close as expected
+on a phone, and pages do not scroll sideways. On a desktop, each live
+demo has a Phone view button that shows it in a phone-sized frame.
+
+\if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in a phone-sized frame"}}
+}
+
 \section{Existing app}{
 
 Keep the page function you already use. Pass the theme, add the controls,
@@ -126,16 +136,6 @@ hides them.
 \code{icon_style = "clear"} are on by default. \code{floating_sidebar} stays off.
 \item Page functions and click targets stay the same.
 }
-}
-
-\section{Mobile support}{
-
-Mobile is fully supported. Controls are sized for touch, sidebars and
-popovers open and close as expected on a phone, and pages do not
-scroll sideways. On a desktop, each live demo has a Phone view button
-that shows it in a phone-sized frame.
-
-\if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in a phone-sized frame"}}
 }
 
 \section{Pitfalls}{
