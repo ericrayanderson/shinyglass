@@ -10,9 +10,8 @@ approximate the 0.4.0 look.
 ## Test environments
 
 * local: Debian 13, R 4.6.1
-* GitHub Actions: Windows (R 4.5), macOS (release), Ubuntu (devel, release, oldrel)
-* win-builder devel: 0 errors | 0 warnings | 0 notes
-* win-builder release: 0 errors | 0 warnings | 0 notes
+* GitHub Actions: Windows (R 4.5), macOS (R 4.5), Ubuntu (devel, release, oldrel)
+* win-builder: R-devel and R-release (pending)
 
 ## R CMD check results
 
