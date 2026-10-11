@@ -16,10 +16,10 @@ try {
   var light = preset !== "dark";
   var c = light
     ? {bgA:0.12,bgHoverA:0.20,contentA:0.18,contentHoverA:0.26,borderA:0.72,rimA:0.94,lipA:0.24,highlightA:1,specularA:0.90,edgeSheenA:0.62,innerGlowA:0.28,menuA:0.74,blurScale:1.08,refractA:0.10,refractB:0.06,brightness:1.02,contrast:1.02}
-    : {bgA:0.08,bgHoverA:0.14,contentA:0.08,contentHoverA:0.12,borderA:0.42,rimA:0.60,lipA:0.64,highlightA:0.48,specularA:0.56,edgeSheenA:0.34,innerGlowA:0.16,menuA:0.66,blurScale:1.08,refractA:0.08,refractB:0.06,brightness:1.02,contrast:1.02};
+    : {bgA:0.08,bgHoverA:0.14,contentA:0.08,contentHoverA:0.12,borderA:0.42,rimA:0.60,lipA:0.64,highlightA:0.16,specularA:0.56,edgeSheenA:0.08,innerGlowA:0.06,menuA:0.66,blurScale:1.08,refractA:0.08,refractB:0.06,brightness:1.02,contrast:1.02};
   var d = light
     ? {bgA:0.48,bgHoverA:0.62,contentA:0.56,contentHoverA:0.68,borderA:0.98,rimA:1,lipA:0.42,highlightA:1,specularA:1,edgeSheenA:0.88,innerGlowA:0.48,menuA:0.94,blurScale:1.14,refractA:0.28,refractB:0.18,brightness:1.06,contrast:1.06}
-    : {bgA:0.24,bgHoverA:0.32,contentA:0.20,contentHoverA:0.28,borderA:0.68,rimA:0.86,lipA:0.92,highlightA:0.72,specularA:0.82,edgeSheenA:0.52,innerGlowA:0.26,menuA:0.92,blurScale:1.14,refractA:0.22,refractB:0.16,brightness:1.06,contrast:1.06};
+    : {bgA:0.24,bgHoverA:0.32,contentA:0.20,contentHoverA:0.28,borderA:0.68,rimA:0.86,lipA:0.92,highlightA:0.26,specularA:0.82,edgeSheenA:0.12,innerGlowA:0.10,menuA:0.92,blurScale:1.14,refractA:0.22,refractB:0.16,brightness:1.06,contrast:1.06};
   function L(k) { return c[k] + (d[k] - c[k]) * t; }
   function rgba(r, g, b, a) {
     return "rgba(" + Math.round(r) + ", " + Math.round(g) + ", " + Math.round(b) + ", " + a.toFixed(4) + ")";
@@ -38,6 +38,21 @@ try {
   root.style.setProperty("--glass-specular", rgba(255, 255, 255, L("specularA")));
   root.style.setProperty("--glass-edge-sheen", rgba(255, 255, 255, L("edgeSheenA")));
   root.style.setProperty("--glass-inner-glow", rgba(255, 255, 255, L("innerGlowA")));
+  if (!light) {
+    root.style.setProperty("--glass-specular-top", rgba(255, 255, 255, 0.14 + 0.08 * t));
+    root.style.setProperty("--glass-specular-bottom", rgba(255, 255, 255, 0.16));
+    root.style.setProperty("--glass-fill-sheen-end", "12px");
+    root.style.setProperty("--glass-sheen-end", "8px");
+    root.style.setProperty("--glass-edge-span", "10px");
+    root.style.setProperty("--glass-bottom-sheen-end", "8px");
+    root.style.setProperty("--glass-content-catch-end", "12px");
+    root.style.setProperty("--glass-content-sheen-end", "8px");
+    root.style.setProperty("--glass-content-bottom-end", "8px");
+    root.style.setProperty("--glass-top-bloom-y", "1px");
+    root.style.setProperty("--glass-top-bloom-blur", "0px");
+    root.style.setProperty("--glass-inner-bloom-y", "1px");
+    root.style.setProperty("--glass-inner-bloom-blur", "0px");
+  }
   root.style.setProperty("--glass-menu-bg", rgba(menu.r, menu.g, menu.b, L("menuA")));
   root.style.setProperty("--glass-refract-a", rgba(ra.r, ra.g, ra.b, L("refractA")));
   root.style.setProperty("--glass-refract-b", rgba(rb.r, rb.g, rb.b, L("refractB")));

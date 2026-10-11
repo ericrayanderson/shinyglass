@@ -82,7 +82,8 @@ capture_url <- function(
     width = 1400L,
     height = 560L,
     click = NULL,
-    collapse_sidebar = FALSE) {
+    collapse_sidebar = FALSE,
+    clip_viewport = FALSE) {
   b <- chromote::ChromoteSession$new()
   on.exit(tryCatch(b$close(), error = function(e) NULL), add = TRUE)
   b$set_viewport_size(width = width, height = height)
@@ -114,14 +115,45 @@ capture_url <- function(
   }
 
   dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
-  b$screenshot(out_path)
+  if (isTRUE(clip_viewport)) {
+    b$screenshot(out_path, cliprect = c(0, 0, width, height))
+  } else {
+    b$screenshot(out_path)
+  }
   invisible(out_path)
 }
 
-run_example <- function(app_dir, port) {
+run_example <- function(app_dir, port, navbar_content = FALSE) {
   prep <- prepare_patched_app_dir(app_dir)
   if (!prep$ok) {
     stop("Cannot patch app: ", prep$reason)
+  }
+  if (isTRUE(navbar_content)) {
+    ui_path <- file.path(prep$dir, "ui.R")
+    txt <- paste(readLines(ui_path, warn = FALSE), collapse = "\n")
+    txt <- sub(
+      'tabPanel("Component 1")',
+      paste(
+        'tabPanel("Component 1",',
+        '  h3("Component 1"),',
+        '  p("The main view sits under the navbar. Switch tabs to compare the other components."),',
+        '  fluidRow(',
+        '    column(6, wellPanel(',
+        '      h4("Summary"),',
+        '      p("12 active series, updated this morning.")',
+        '    )),',
+        '    column(6, wellPanel(',
+        '      h4("Notes"),',
+        '      p("Glass navbar links stay readable above this content.")',
+        '    ))',
+        '  )',
+        ')',
+        sep = "\n"
+      ),
+      txt,
+      fixed = TRUE
+    )
+    writeLines(txt, ui_path)
   }
   app_path <- normalizePath(prep$dir, winslash = "/")
   run_expr <- sprintf(
@@ -180,7 +212,8 @@ shots <- list(
     dest = "04-download.png",
     type = "example",
     path = file.path(examples_dir, "010-download"),
-    height = 520L
+    height = 560L,
+    clip_viewport = TRUE
   ),
   list(
     dest = "05-datatables.png",
@@ -198,7 +231,9 @@ shots <- list(
     dest = "07-navbar.png",
     type = "example",
     path = file.path(examples_dir, "015-layout-navbar"),
-    height = 520L
+    height = 560L,
+    clip_viewport = TRUE,
+    navbar_content = TRUE
   ),
   list(
     dest = "08-page-sidebar.png",
@@ -218,6 +253,11 @@ shots <- list(
 
 base_port <- 4200L
 results <- character()
+gallery_only <- Sys.getenv("SHINYGLASS_GALLERY_ONLY", "")
+if (nzchar(gallery_only)) {
+  keep <- strsplit(gallery_only, ",", fixed = TRUE)[[1]]
+  shots <- Filter(function(s) s$dest %in% keep, shots)
+}
 
 for (i in seq_along(shots)) {
   shot <- shots[[i]]
@@ -234,7 +274,7 @@ for (i in seq_along(shots)) {
       if (!dir.exists(shot$path)) {
         stop("not found: ", shot$path)
       }
-      run_example(shot$path, port)
+      run_example(shot$path, port, navbar_content = isTRUE(shot$navbar_content))
     }
   }, error = function(e) {
     warning("Skipping ", shot$dest, " — ", conditionMessage(e))
@@ -256,7 +296,8 @@ for (i in seq_along(shots)) {
       dest,
       height = shot$height,
       click = shot$click %||% NULL,
-      collapse_sidebar = isTRUE(shot$collapse_sidebar)
+      collapse_sidebar = isTRUE(shot$collapse_sidebar),
+      clip_viewport = isTRUE(shot$clip_viewport)
     )
     TRUE
   }, error = function(e) {
@@ -267,6 +308,11 @@ for (i in seq_along(shots)) {
   })
 
   if (ok) {
+    if (shot$dest %in% c("04-download.png", "07-navbar.png")) {
+      thumb_dir <- file.path(gallery_dir, "thumbs")
+      dir.create(thumb_dir, recursive = TRUE, showWarnings = FALSE)
+      file.copy(dest, file.path(thumb_dir, shot$dest), overwrite = TRUE)
+    }
     results <- c(results, shot$dest)
     message("  -> ", dest)
   }

@@ -18,9 +18,12 @@
 #' sidebar toggle and close button both respond. Harbor notes does not
 #' scroll sideways at 393x852 or 390x844, and neither do the 480px
 #' dashboard and Olympics fixtures. The sources offcanvas opens and
-#' closes from its own buttons.
+#' closes from its own buttons. The desktop phone frame sets
+#' `data-glass-pointer="coarse"` on the framed app, so the preview uses
+#' those same sizes. Content starts below the status bar, and the frame
+#' does not show a desktop scrollbar.
 #'
-#' \figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}
+#' \if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}}
 #'
 #' @section Minimal app:
 #' [glass_page()] includes Light / Dark / Auto, the intensity slider, and

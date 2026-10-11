@@ -95,14 +95,14 @@ shiny::runApp("inst/examples/bslib-dashboard.R")
 
 For **each** of light + dark screenshots:
 
-1. **Pagination** — page 1 active (accent + light ink); 2–N readable; ellipsis not a light-grey brick; Previous/Next not solid black.
-2. **Slider value chip** — readable ink on accent.
-3. **Primary button** — light label on brand fill.
-4. **Value boxes** — title + big number readable on every theme color shown.
-5. **Selectize multi tags** — chip text readable; open dropdown is opaque.
-6. **Active tab** — label contrast OK.
-7. **Disabled control** — e.g. Previous on page 1; muted glass, not Bootstrap light grey in dark.
-8. **Layout honesty** — if the app has a sidebar, show it (or truly collapse). Do not leave an empty left reserve under a full-width navbar.
+1. **Pagination**: page 1 active (accent + light ink); 2–N readable; ellipsis not a light-grey brick; Previous/Next not solid black.
+2. **Slider value chip**: readable ink on accent.
+3. **Primary button**: light label on brand fill.
+4. **Value boxes**: title + big number readable on every theme color shown.
+5. **Selectize multi tags**: chip text readable; open dropdown is opaque.
+6. **Active tab**: label contrast OK.
+7. **Disabled control**: e.g. Previous on page 1; muted glass, not Bootstrap light grey in dark.
+8. **Layout honesty**: if the app has a sidebar, show it (or truly collapse). Do not leave an empty left reserve under a full-width navbar.
 
 ## Failure pattern to remember
 
@@ -133,7 +133,7 @@ Before merge or shinyapps redeploy:
 3. [ ] Spot-check inputs-gallery selectize open + slider chip + datepicker  
 3b. [ ] Spot-check chrome-kitchen-sink in dark: calendar, notifications, modal ×, navbar **More** menu, accordion
 4. [ ] Recapture README figures if UI chrome changed  
-   (`Rscript inst/scripts/capture-demo-screenshots.R` — keep dashboard sidebar visible)  
+   (`Rscript inst/scripts/capture-demo-screenshots.R`: keep dashboard sidebar visible)  
 5. [ ] `Rscript -e 'devtools::test()'` (or `testthat::test_local()`)  
 6. [ ] Redeploy demos if examples or package CSS changed  
    (`Rscript inst/scripts/deploy-shinyapps-demos.R`)

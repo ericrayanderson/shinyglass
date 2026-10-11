@@ -80,6 +80,7 @@ phone_preview <- function(page, app, request = NULL) {
     var appMeta = document.querySelector("meta[name=\\"shinyglass-phone-app\\"]");
     if (appMeta) root.setAttribute("data-phone-app", appMeta.getAttribute("content") || "");
     root.setAttribute("data-phone-frame", "0");
+    root.setAttribute("data-glass-pointer", "coarse");
     return;
   }
   var query = window.matchMedia(DESKTOP);
@@ -98,11 +99,23 @@ phone_preview <- function(page, app, request = NULL) {
 </script>',
     prefix
   )
+  # The framed document sets the attribute in the head, before the body
+  # paints, so the safe-area padding is in place on the first frame.
+  boot <- NULL
+  if (identical(frame, "0")) {
+    boot <- htmltools::HTML(paste0(
+      '<script id="shinyglass-phone-frame-boot">',
+      'document.documentElement.setAttribute("data-phone-frame","0");',
+      'document.documentElement.setAttribute("data-glass-pointer","coarse");',
+      "</script>"
+    ))
+  }
   dep <- htmltools::htmlDependency(
     name = "shinyglass-phone-preview",
     version = "0.5.0",
     src = c(file = dir),
     meta = meta,
+    head = boot,
     all_files = TRUE
   )
   page <- htmltools::attachDependencies(page, dep, append = TRUE)

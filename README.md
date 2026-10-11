@@ -10,9 +10,13 @@ Glass themes for [Shiny](https://shiny.posit.co/), built on [bslib](https://rstu
 
 [Documentation](https://ericrayanderson.github.io/shinyglass/) · [Theming guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html) · [Release notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
+<p align="center">
+<img src="man/figures/phone-frame-harbor.png" width="600" alt="Harbor notes in the phone frame on the dusk wallpaper">
+</p>
+
 ## Built for phones
 
-Playwright checks phone-sized viewports (393x852 and 390x852, with touch). On a coarse pointer, the controls those tests measure are at least 44px, including the sidebar toggle and popover triggers. A popover closes on a second tap and on a tap outside. The Harbor notes sidebar toggle and close button both respond. Harbor notes does not scroll sideways at 393x852 or 390x844, and neither do the 480px dashboard and Olympics fixtures. The sources offcanvas opens and closes from its own buttons.
+Playwright checks phone-sized viewports (393x852 and 390x852, with touch). On a coarse pointer, the controls those tests measure are at least 44px, including the sidebar toggle and popover triggers. A popover closes on a second tap and on a tap outside. The Harbor notes sidebar toggle and close button both respond. Harbor notes does not scroll sideways at 393x852 or 390x844, and neither do the 480px dashboard and Olympics fixtures. The sources offcanvas opens and closes from its own buttons. The desktop phone frame sets `data-glass-pointer="coarse"` on the framed app, so the preview uses those same sizes. Content starts below the status bar, and the frame does not show a desktop scrollbar.
 
 <p align="center">
 <img src="man/figures/phone-frame-demo.png" width="280" alt="Basics demo in an iPhone-sized frame">
@@ -147,6 +151,8 @@ with `glass_theme(tokens = list(blur = "28px"))` without forking SCSS.
 ## Live demos
 
 Apps may take a moment to wake up.
+
+Try it on your phone, or press Phone view on a desktop.
 
 | Demo | Explore |
 |------|---------|

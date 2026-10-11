@@ -6,12 +6,22 @@ function glassParseColor(str) {
     return null;
   }
   const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
-  if (!m) return null;
+  if (m) {
+    return {
+      r: +m[1],
+      g: +m[2],
+      b: +m[3],
+      a: m[4] === undefined ? 1 : +m[4]
+    };
+  }
+  // Chrome resolves color-mix() to color(srgb … / a), not rgba().
+  const c = str.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/i);
+  if (!c) return null;
   return {
-    r: +m[1],
-    g: +m[2],
-    b: +m[3],
-    a: m[4] === undefined ? 1 : +m[4]
+    r: Math.round(+c[1] * 255),
+    g: Math.round(+c[2] * 255),
+    b: Math.round(+c[3] * 255),
+    a: c[4] === undefined ? 1 : +c[4]
   };
 }
 
@@ -296,8 +306,240 @@ function runGlassAudit(selectors, preset, minContrast, textAA) {
     }
   }
 
+  // The caller names the preset it asked for. Only score dark sheens when the
+  // page actually resolved to dark — a light page passed in as "dark" has
+  // dark ink, and estimating that ink over black looks like a failed title.
+  if (document.documentElement.dataset.glassPreset === "dark") {
+    glassAuditTitleSheen(all);
+    glassAuditValueBoxShowcase(all);
+  }
+
   return {
     preset: document.documentElement.dataset.glassPreset || preset,
     findings: all
   };
+}
+
+// Dark glass used to paint a percentage-based white gradient. On a tall
+// sidebar or card that band was 60–90px and sat under the title. The top
+// highlight must be a 1px rim plus a short sheen.
+function glassSheenReach(image, boxHeight) {
+  if (!image || image === "none") return null;
+  const parts = String(image).split(/linear-gradient\(/i).slice(1);
+  let worst = null;
+  parts.forEach((part) => {
+    const colors = [];
+    const re = /(?:rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)|color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\))\s*([0-9.]+(?:px|%))?/gi;
+    let match;
+    while ((match = re.exec(part))) {
+      const srgb = match[1] === undefined;
+      colors.push({
+        r: srgb ? Math.round(+match[5] * 255) : +match[1],
+        g: srgb ? Math.round(+match[6] * 255) : +match[2],
+        b: srgb ? Math.round(+match[7] * 255) : +match[3],
+        a: srgb
+          ? (match[8] === undefined ? 1 : +match[8])
+          : (match[4] === undefined ? 1 : +match[4]),
+        stop: match[9] || null
+      });
+    }
+    if (colors.length < 2) return;
+    const start = colors[0];
+    const white = start.r > 220 && start.g > 220 && start.b > 220 && start.a > 0.15;
+    if (!white) return;
+    const fade = colors.find((c) => c.a < 0.05) || colors[colors.length - 1];
+    if (!fade.stop) return;
+    const reach = fade.stop.slice(-1) === "%"
+      ? (parseFloat(fade.stop) / 100) * boxHeight
+      : parseFloat(fade.stop);
+    if (!isFinite(reach)) return;
+    if (!worst || reach > worst.reach) {
+      worst = { alpha: start.a, reach: reach, stop: fade.stop };
+    }
+  });
+  return worst;
+}
+
+function glassAuditTitleSheen(all) {
+  const surfaces = document.querySelectorAll(
+    ".bslib-sidebar-layout > .sidebar, .bslib-page-sidebar .sidebar, .card, .bslib-card, .bslib-value-box, .value-box, .stati"
+  );
+  const titleSel = [
+    ".sidebar-title",
+    ".card-header",
+    ".card-title",
+    ".bslib-value-box .value-box-title",
+    ".bslib-value-box .value-box-value",
+    ".value-box-title",
+    ".value-box-value"
+  ].join(", ");
+  const seen = new Set();
+  const limit = Math.min(surfaces.length, 12);
+  for (let i = 0; i < limit; i++) {
+    const el = surfaces[i];
+    if (seen.has(el)) continue;
+    seen.add(el);
+    const box = el.getBoundingClientRect();
+    if (box.width < 8 || box.height < 8) continue;
+    const before = getComputedStyle(el, "::before");
+    const own = getComputedStyle(el);
+    const reachBefore = glassSheenReach(before.backgroundImage, box.height);
+    const reachOwn = glassSheenReach(own.backgroundImage, box.height);
+    const reach = [reachBefore, reachOwn]
+      .filter(Boolean)
+      .sort((a, b) => b.reach - a.reach)[0];
+    const label = (el.className && String(el.className).split(/\s+/).slice(0, 2).join(".")) || el.tagName;
+    if (reach && reach.reach > 24) {
+      all.push({
+        level: "FAIL",
+        code: "wide-sheen",
+        message:
+          "dark top sheen fades over " +
+          Math.round(reach.reach) +
+          "px (stop " +
+          reach.stop +
+          ", alpha " +
+          reach.alpha.toFixed(2) +
+          ") on ." +
+          label,
+        meta: { selector: label, reach_px: Math.round(reach.reach), stop: reach.stop }
+      });
+    }
+    // An 8px rim does not sit under the title glyphs. Scoring every header
+    // within 12px painted that rim as a white film and failed light ink.
+    if (!reach || reach.reach <= 12) continue;
+    const titles = el.querySelectorAll(titleSel);
+    const titleLimit = Math.min(titles.length, 4);
+    for (let t = 0; t < titleLimit; t++) {
+      const title = titles[t];
+      const tb = title.getBoundingClientRect();
+      if (!tb.height) continue;
+      const text = (title.innerText || "").trim().slice(0, 40);
+      if (!text) continue;
+      const overlaps = tb.top < box.top + reach.reach;
+      if (!overlaps) continue;
+      const ink = glassParseColor(getComputedStyle(title).color);
+      const page = { r: 0, g: 0, b: 0, a: 1 };
+      const film = glassParseColor(own.backgroundColor) || { r: 255, g: 255, b: 255, a: 0.16 };
+      let bg = glassComposite(film, page) || page;
+      if (reach && reach.alpha > 0) {
+        bg = glassComposite({ r: 255, g: 255, b: 255, a: Math.min(reach.alpha, 0.35) }, bg) || bg;
+      }
+      const fg = glassComposite(ink, bg);
+      if (!fg) continue;
+      const ratio = glassContrastRatio(fg, bg);
+      if (ratio < 4.5) {
+        all.push({
+          level: "FAIL",
+          code: "title-over-sheen",
+          message:
+            "title over the dark top sheen is " +
+            Math.round(ratio * 100) / 100 +
+            ':1 for "' +
+            text +
+            '"',
+          meta: {
+            selector: title.className || "title",
+            text: text,
+            contrast: Math.round(ratio * 100) / 100
+          }
+        });
+      }
+    }
+  }
+}
+
+function glassAuditValueBoxShowcase(all) {
+  const boxes = document.querySelectorAll(
+    ".bslib-value-box, .small-box, .info-box, .value-box"
+  );
+  const textSel = [
+    ".value-box-value",
+    ".value-box-title",
+    ".small-box h3",
+    ".small-box p",
+    ".info-box-number",
+    ".info-box-text"
+  ].join(", ");
+  const limit = Math.min(boxes.length, 8);
+  for (let i = 0; i < limit; i++) {
+    const el = boxes[i];
+    const box = el.getBoundingClientRect();
+    if (box.width < 8 || box.height < 8) continue;
+    const showcase = el.querySelector(
+      ".value-box-showcase, .icon-large, .icon, .info-box-icon"
+    );
+    if (showcase) {
+      const sc = getComputedStyle(showcase);
+      const before = getComputedStyle(showcase, "::before");
+      const reach =
+        glassSheenReach(sc.backgroundImage, box.height) ||
+        glassSheenReach(before.backgroundImage, box.height);
+      if (reach && reach.reach > 24) {
+        all.push({
+          level: "FAIL",
+          code: "value-box-showcase-sheen",
+          message:
+            "value-box showcase sheen fades over " +
+            Math.round(reach.reach) +
+            "px",
+          meta: { reach_px: Math.round(reach.reach) }
+        });
+      }
+      const wash = glassParseColor(sc.backgroundColor);
+      const sb = showcase.getBoundingClientRect();
+      if (
+        wash &&
+        wash.r > 220 &&
+        wash.g > 220 &&
+        wash.b > 220 &&
+        wash.a > 0.35 &&
+        sb.width > 48 &&
+        sb.height > 48
+      ) {
+        all.push({
+          level: "FAIL",
+          code: "value-box-showcase-wash",
+          message: "value-box showcase is a large near-white plate under the text"
+        });
+      }
+    }
+    const textEl = el.querySelector(textSel);
+    if (!textEl) continue;
+    const tb = textEl.getBoundingClientRect();
+    if (!tb.width || !tb.height) continue;
+    const cx = Math.min(Math.max(tb.left + 12, box.left + 4), box.right - 4);
+    const cy = Math.min(Math.max(tb.top + Math.min(tb.height / 2, 16), box.top + 4), box.bottom - 4);
+    const top = document.elementFromPoint(cx, cy);
+    if (top && !el.contains(top)) {
+      const name = (top.className && String(top.className).split(/\s+/).slice(0, 2).join(".")) || top.tagName;
+      all.push({
+        level: "FAIL",
+        code: "value-box-covered",
+        message: "value box text is covered by ." + name,
+        meta: { text: (textEl.innerText || "").trim().slice(0, 40) }
+      });
+    }
+    const ink = glassParseColor(getComputedStyle(textEl).color);
+    const film = glassParseColor(getComputedStyle(el).backgroundColor);
+    const page = { r: 28, g: 28, b: 30, a: 1 };
+    const bg = glassComposite(film, page) || page;
+    const fg = glassComposite(ink, bg);
+    if (!fg) continue;
+    const ratio = glassContrastRatio(fg, bg);
+    const label = (textEl.innerText || "").trim().slice(0, 40);
+    if (label && ratio < 4.5) {
+      all.push({
+        level: "FAIL",
+        code: "value-box-contrast",
+        message:
+          "value box text is " +
+          Math.round(ratio * 100) / 100 +
+          ':1 for "' +
+          label +
+          '"',
+        meta: { contrast: Math.round(ratio * 100) / 100, text: label }
+      });
+    }
+  }
 }

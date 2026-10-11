@@ -19,7 +19,7 @@ A named list for \code{DT::datatable(options = )}.
 \description{
 Host CSS already skins DataTables (pagination, ink, opaque/clear panels).
 This helper is optional: it keeps tables inside glass cards with wrapping
-headers and in-card horizontal scroll — the same contract used by the
+headers and in-card horizontal scroll, the same contract used by the
 dashboard demo.
 }
 \examples{

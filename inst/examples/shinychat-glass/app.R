@@ -1776,13 +1776,20 @@ server <- function(input, output, session) {
   # History only records turns that travel through chat_append(). The
   # scripted path writes messages directly, so publish the sidebar row
   # from the note log. The title is the first user message.
-  publish_history <- function() {
+  publish_history <- function(attempt = 1L) {
     if (!length(note_log)) return(invisible(NULL))
     controller <- tryCatch(
       shinychat:::get_session_chat_bookmark_info(session, "chat.history-controller"),
       error = function(e) NULL
     )
-    if (is.null(controller)) return(invisible(NULL))
+    # The browser token arrives after first paint. A click before that
+    # used to no-op, so the sidebar stayed on "No conversations yet".
+    if (is.null(controller) || is.null(controller$partition)) {
+      if (attempt < 24L) {
+        later::later(function() publish_history(attempt + 1L), 0.25)
+      }
+      return(invisible(NULL))
+    }
     turns <- tryCatch(
       lapply(note_log, function(msg) {
         role <- if (identical(msg$role, "assistant")) "assistant" else "user"

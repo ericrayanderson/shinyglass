@@ -736,6 +736,11 @@ test_that("compiled CSS and JS ship shipping-iOS-27 edge tokens", {
   expect_match(scss, "--glass-border: rgba\\(255, 255, 255, 0.55\\)")
   expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.95\\)")
   expect_match(scss, "--glass-specular: rgba\\(255, 255, 255, 0.69\\)")
+  expect_match(scss, "--glass-specular-top: rgba\\(255, 255, 255, 0.20\\)")
+  expect_match(scss, "--glass-sheen-end: 8px", fixed = TRUE)
+  expect_match(scss, "--glass-fill-sheen-end: 12px", fixed = TRUE)
+  expect_match(js, "highlightA: 0.16")
+  expect_match(js, "--glass-sheen-end")
   expect_match(scss, "--glass-refract-brightness")
   expect_match(scss, "--glass-refract-contrast")
 })
@@ -904,6 +909,13 @@ test_that("iOS 27 motion defaults are on and the floating sidebar is opt-in", {
   expect_match(scss, "--glass-specular-top")
   expect_match(scss, "--glass-edge")
   expect_match(scss, "min-height: 44px", fixed = TRUE)
+  expect_match(scss, "data-glass-pointer", fixed = TRUE)
+  expect_match(scss, "--glass-safe-top: 59px", fixed = TRUE)
+  expect_match(scss, "--glass-safe-bottom: 34px", fixed = TRUE)
+  expect_match(scss, "scrollbar-width: none !important", fixed = TRUE)
+  expect_match(scss, "file-selector-button", fixed = TRUE)
+  expect_match(scss, ".irs-handle, .noUi-handle)::before", fixed = TRUE)
+  expect_match(scss, ".harbor-pill, .shiny-aside-pill)::before", fixed = TRUE)
   expect_match(scss, "glass-table-scrim", fixed = TRUE)
   expect_match(scss, "vscomp-dropbox-close-button", fixed = TRUE)
   expect_match(scss, "data-full-screen", fixed = TRUE)
@@ -1226,6 +1238,25 @@ test_that("shinychat glass example builds an app", {
   expect_identical(env$gemini_model(), "gemini-3.8-flash")
   expect_identical(env$gemini_model_chain()[[1L]], "gemini-3.8-flash")
   expect_true("gemini-3.5-flash-lite" %in% env$gemini_model_chain())
+})
+
+test_that("dark value boxes, map tiles, and table headers stay readable", {
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, ".leaflet-container {", fixed = TRUE)
+  expect_match(scss, "overflow: hidden !important;", fixed = TRUE)
+  expect_match(scss, "body .small-box,\n  body .info-box,\n  .bslib-value-box", fixed = TRUE)
+  expect_match(scss, "background: #1c1c1e !important;", fixed = TRUE)
+  expect_match(scss, ".apexcharts-canvas .apexcharts-text", fixed = TRUE)
+})
+
+test_that("the contrast audit checks value-box showcase coverage", {
+  # inst/scripts is Rbuildignored, so the installed package has no copy.
+  js_path <- system.file("scripts", "audit-glass-contrast.js", package = "shinyglass")
+  skip_if(!nzchar(js_path), "audit script is not installed")
+  js <- paste(readLines(js_path, warn = FALSE), collapse = "\n")
+  expect_match(js, "function glassAuditValueBoxShowcase", fixed = TRUE)
+  expect_match(js, "value-box-showcase", fixed = TRUE)
+  expect_match(js, "value-box-covered", fixed = TRUE)
 })
 
 test_that("compatibility example builds an app", {

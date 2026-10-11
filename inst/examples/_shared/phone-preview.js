@@ -19,6 +19,8 @@
   if (frameMeta && frameMeta.getAttribute("content") === "0") {
     root.setAttribute("data-phone-app", appId);
     root.setAttribute("data-phone-frame", "0");
+    // The iframe is a fine pointer. Coarse rules still have to match a phone.
+    root.setAttribute("data-glass-pointer", "coarse");
     return;
   }
 
@@ -26,8 +28,29 @@
   var storageKey = "shinyglass-phone-preview:" + appId;
   var DEVICE_W = 413;
   var DEVICE_H = 872;
-  var MARGIN = 72;
   var ui = null;
+
+  function phoneTime() {
+    var d = new Date();
+    var h = d.getHours() % 12;
+    if (h === 0) h = 12;
+    var m = String(d.getMinutes());
+    if (m.length < 2) m = "0" + m;
+    return h + ":" + m;
+  }
+
+  function chromeMode(el) {
+    var node = el || root;
+    var theme = node.getAttribute("data-bs-theme") || "";
+    var preset = node.getAttribute("data-glass-preset") || "";
+    if (theme === "dark" || theme === "light") return theme;
+    if (preset === "dark" || preset === "light") return preset;
+    try {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    } catch (err) {
+      return "light";
+    }
+  }
 
   function readMode() {
     try {
@@ -73,20 +96,61 @@
       '<div class="phone-preview-sizer">' +
       '<div class="phone-preview-device">' +
       '<div class="phone-preview-screen">' +
+      '<div class="phone-preview-status" aria-hidden="true">' +
+      '<span class="phone-preview-time"></span>' +
+      '<span class="phone-preview-status-glyphs">' +
+      '<svg viewBox="0 0 18 12" width="17" height="12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.5"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="0.5"></rect><rect x="10" y="3" width="3" height="9" rx="0.5"></rect><rect x="15" y="0" width="3" height="12" rx="0.5"></rect></svg>' +
+      '<svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M8 10.6a1.15 1.15 0 1 0 .01 0z"></path><path d="M4.1 7.3a5.5 5.5 0 0 1 7.8 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><path d="M1.5 4.7a9.1 9.1 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>' +
+      '<svg viewBox="0 0 25 12" width="25" height="12" aria-hidden="true"><rect x="0.7" y="0.7" width="20" height="10.6" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.3"></rect><rect x="2.3" y="2.3" width="15.2" height="7.4" rx="1"></rect><path d="M22.2 4h1.1c.7 0 1.2.5 1.2 1.1v1.8c0 .6-.5 1.1-1.2 1.1h-1.1z"></path></svg>' +
+      "</span></div>" +
       '<div class="phone-preview-island" aria-hidden="true"></div>' +
+      '<div class="phone-preview-home" aria-hidden="true"><span class="phone-preview-home-bar"></span></div>' +
       "</div></div></div>";
 
     var sizer = stage.querySelector(".phone-preview-sizer");
     var device = stage.querySelector(".phone-preview-device");
     var screen = stage.querySelector(".phone-preview-screen");
     var label = toggle.querySelector(".phone-preview-label");
+    var clock = window.setInterval(function () {
+      var time = screen.querySelector(".phone-preview-time");
+      if (time) time.textContent = phoneTime();
+    }, 30000);
+    screen.querySelector(".phone-preview-time").textContent = phoneTime();
+    screen.setAttribute("data-phone-chrome", chromeMode(root));
     var phoneOn = false;
 
+    function watchChrome(frame) {
+      if (frame.getAttribute("data-chrome-watch")) return;
+      frame.setAttribute("data-chrome-watch", "1");
+      function apply() {
+        var doc = null;
+        try {
+          doc = frame.contentDocument;
+        } catch (err) {
+          doc = null;
+        }
+        var node = doc && doc.documentElement ? doc.documentElement : root;
+        screen.setAttribute("data-phone-chrome", chromeMode(node));
+        if (!doc || !doc.documentElement || frame._chromeObs) return;
+        try {
+          frame._chromeObs = new MutationObserver(function () {
+            screen.setAttribute("data-phone-chrome", chromeMode(doc.documentElement));
+          });
+          frame._chromeObs.observe(doc.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-bs-theme", "data-glass-preset"]
+          });
+        } catch (err) {}
+      }
+      frame.addEventListener("load", apply);
+    }
+
     function fit() {
+      // About 90% of the window, on the shorter axis, so a short desktop
+      // still shows a large phone. Aspect stays 413:872. Scale may exceed 1.
       var scale = Math.min(
-        (window.innerHeight - MARGIN) / DEVICE_H,
-        (window.innerWidth - MARGIN) / DEVICE_W,
-        1
+        (window.innerHeight * 0.9) / DEVICE_H,
+        (window.innerWidth * 0.9) / DEVICE_W
       );
       if (!isFinite(scale) || scale <= 0) scale = 1;
       sizer.style.width = DEVICE_W * scale + "px";
@@ -97,6 +161,10 @@
     function dropFrame() {
       var frame = screen.querySelector("iframe.phone-preview-frame");
       if (!frame) return false;
+      if (frame._chromeObs) {
+        frame._chromeObs.disconnect();
+        frame._chromeObs = null;
+      }
       frame.removeAttribute("src");
       frame.remove();
       return true;
@@ -111,6 +179,7 @@
         screen.insertBefore(frame, screen.firstChild);
       }
       if (!frame.getAttribute("src")) frame.setAttribute("src", frameUrl());
+      watchChrome(frame);
     }
 
     function setPhone(on, persist) {
@@ -152,6 +221,7 @@
       destroy: function () {
         var wasOn = root.classList.contains("phone-preview-on");
         window.removeEventListener("resize", onResize);
+        window.clearInterval(clock);
         dropFrame();
         stage.remove();
         toggle.remove();

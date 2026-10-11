@@ -69,6 +69,10 @@ disable_content_tint <- function(session) {
 capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height = 1100L,
                         env = character(), disable_tint = FALSE,
                         hide_sidebar_toggle = FALSE) {
+  only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
+  if (nzchar(only) && !basename(out_path) %in% strsplit(only, ",", fixed = TRUE)[[1]]) {
+    return(invisible(NULL))
+  }
   url <- sprintf("http://127.0.0.1:%d", port)
   args <- commandArgs(trailingOnly = FALSE)
   file_arg <- grep("^--file=", args, value = TRUE)
@@ -152,7 +156,14 @@ fig_dir <- file.path(pkg_root, "man", "figures")
 dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 
 demo_lines <- readLines(file.path(pkg_root, "inst", "examples", "demo-app.R"))
-demo_lines <- sub("glass_theme\\(\\)", "glass_theme(preset = \"dark\")", demo_lines)
+# glass_page() does not contain glass_theme(), so the old substitution
+# left this capture on the light default.
+demo_lines <- sub(
+  "demo_page <- glass_page(",
+  "demo_page <- glass_page(\n  preset = \"dark\",",
+  demo_lines,
+  fixed = TRUE
+)
 tmp_demo <- tempfile(fileext = ".R")
 writeLines(demo_lines, tmp_demo)
 on.exit(unlink(tmp_demo), add = TRUE)

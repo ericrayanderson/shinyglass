@@ -144,6 +144,45 @@ capture_harbor <- function(preset, filename, port) {
     timeout = 25000
   )
   if (!isTRUE(replied$result$value)) stop("Scripted reply did not finish (", preset, ")")
+
+  listed <- b$Runtime$evaluate(
+    expression = "
+      new Promise((resolve) => {
+        const deadline = Date.now() + 12000;
+        const check = () => {
+          const empty = document.querySelector('.shiny-chat-history-empty');
+          const item = document.querySelector('.shiny-chat-history-item, .shiny-chat-history-item-select');
+          const label = (item && (item.innerText || item.textContent) || '').trim();
+          if (item && label && (!empty || empty.offsetParent === null)) {
+            resolve(label.slice(0, 80));
+            return;
+          }
+          if (Date.now() > deadline) { resolve(''); return; }
+          setTimeout(check, 250);
+        };
+        check();
+      });
+    ",
+    awaitPromise = TRUE,
+    returnByValue = TRUE,
+    timeout = 15000
+  )
+  if (!nzchar(listed$result$value %||% "")) {
+    stop("Sidebar did not list the current conversation (", preset, ")")
+  }
+
+  b$Runtime$evaluate(
+    expression = "
+      (function() {
+        const active = document.activeElement;
+        if (active && active !== document.body) active.blur();
+        document.querySelectorAll('.ProseMirror, .tiptap, [contenteditable=\"true\"]').forEach((el) => {
+          el.blur();
+        });
+        window.getSelection()?.removeAllRanges();
+      })();
+    "
+  )
   b$Runtime$evaluate(
     expression = "
       (function() {

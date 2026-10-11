@@ -185,6 +185,18 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --bs-tertiary-color: rgba(29, 29, 31, 0.48);
   --bs-emphasis-color: #1d1d1f;
   --bs-border-color: rgba(0, 0, 0, 0.08);
+  // Light sheen still tracks the surface. Dark overrides these with short lengths.
+  --glass-fill-sheen-end: 30%;
+  --glass-sheen-end: 26%;
+  --glass-edge-span: 34%;
+  --glass-bottom-sheen-end: 20%;
+  --glass-content-catch-end: 34%;
+  --glass-content-sheen-end: 24%;
+  --glass-content-bottom-end: 18%;
+  --glass-top-bloom-y: 10px;
+  --glass-top-bloom-blur: 22px;
+  --glass-inner-bloom-y: 12px;
+  --glass-inner-bloom-blur: 28px;
   color-scheme: light;
 }
 
@@ -204,12 +216,13 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-lip: rgba(0, 0, 0, 0.86);
   --glass-shadow: rgba(0, 0, 0, 0.52);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.68);
-  --glass-highlight: rgba(255, 255, 255, 0.60);
+  // 1px rim stays on --glass-stroke-tb. The sheen itself stays faint.
+  --glass-highlight: rgba(255, 255, 255, 0.22);
   --glass-specular: rgba(255, 255, 255, 0.69);
-  --glass-specular-top: rgba(255, 255, 255, 0.92);
-  --glass-specular-bottom: rgba(255, 255, 255, 0.62);
+  --glass-specular-top: rgba(255, 255, 255, 0.20);
+  --glass-specular-bottom: rgba(255, 255, 255, 0.16);
   --glass-edge: rgba(0, 0, 0, 0.88);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.43);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.10);
   --glass-ior: 1.5;
   --glass-refraction-scale: 42;
   --glass-dispersion: 0.06;
@@ -226,7 +239,19 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-1: rgba(10, 132, 255, 0.42);
   --glass-orb-2: rgba(191, 90, 242, 0.28);
   --glass-orb-3: rgba(255, 159, 10, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.21);
+  --glass-inner-glow: rgba(255, 255, 255, 0.08);
+  // Short lengths, not percentages: a tall sidebar must not grow a 60–90px wash.
+  --glass-fill-sheen-end: 12px;
+  --glass-sheen-end: 8px;
+  --glass-edge-span: 10px;
+  --glass-bottom-sheen-end: 8px;
+  --glass-content-catch-end: 12px;
+  --glass-content-sheen-end: 8px;
+  --glass-content-bottom-end: 8px;
+  --glass-top-bloom-y: 1px;
+  --glass-top-bloom-blur: 0px;
+  --glass-inner-bloom-y: 1px;
+  --glass-inner-bloom-blur: 0px;
   --glass-stroke-side: rgba(0, 0, 0, 0.86);
   --glass-stroke-tb: rgba(255, 255, 255, 0.55);
   --bs-body-bg: var(--glass-body-bg);
@@ -332,7 +357,7 @@ body::after {
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--glass-highlight) 48%, transparent) 0%,
-      transparent 30%
+      transparent var(--glass-fill-sheen-end, 30%)
     ),
     linear-gradient(
       180deg,
@@ -360,7 +385,7 @@ body::after {
     inset 0 -1px 0 var(--glass-lip),
     inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
     inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
-    inset 0 10px 22px color-mix(in srgb, var(--glass-highlight) 28%, transparent),
+    inset 0 var(--glass-top-bloom-y, 10px) var(--glass-top-bloom-blur, 22px) color-mix(in srgb, var(--glass-highlight) 28%, transparent),
     inset 0.7px 0 0 var(--glass-refract-a, transparent),
     inset -0.7px 0 0 var(--glass-refract-b, transparent);
   overflow: $overflow;
@@ -380,17 +405,17 @@ body::after {
       linear-gradient(
         180deg,
         var(--glass-specular-top, var(--glass-specular)) 0%,
-        transparent 26%
+        transparent var(--glass-sheen-end, 26%)
       ),
       linear-gradient(
         0deg,
         var(--glass-specular-bottom, color-mix(in srgb, var(--glass-specular) 70%, transparent)) 0%,
-        transparent 20%
+        transparent var(--glass-bottom-sheen-end, 20%)
       ),
       linear-gradient(
         180deg,
         var(--glass-edge-sheen) 0%,
-        transparent 34%
+        transparent var(--glass-edge-span, 34%)
       );
     border-radius: inherit;
     pointer-events: none;
@@ -411,7 +436,7 @@ body::after {
     box-shadow:
       inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 90%, transparent),
       inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 52%, transparent),
-      inset 0 12px 28px var(--glass-inner-glow),
+      inset 0 var(--glass-inner-bloom-y, 12px) var(--glass-inner-bloom-blur, 28px) var(--glass-inner-glow),
       inset 0 -16px 30px color-mix(in srgb, var(--glass-lip) 70%, transparent),
       inset 0 -1px 14px color-mix(in srgb, var(--glass-refract-a, transparent) 40%, transparent);
     pointer-events: none;
@@ -427,7 +452,7 @@ body::after {
     linear-gradient(
       165deg,
       color-mix(in srgb, var(--glass-highlight) 18%, transparent) 0%,
-      transparent 34%
+      transparent var(--glass-content-catch-end, 34%)
     ),
     var(--glass-bg-content, var(--glass-bg));
   // Slightly less blur than chrome — content hierarchy (no glass-on-glass mud)
@@ -465,12 +490,12 @@ body::after {
       linear-gradient(
         180deg,
         color-mix(in srgb, var(--glass-specular-top, var(--glass-specular)) 78%, transparent) 0%,
-        transparent 24%
+        transparent var(--glass-content-sheen-end, 24%)
       ),
       linear-gradient(
         0deg,
         color-mix(in srgb, var(--glass-specular-bottom, var(--glass-specular)) 70%, transparent) 0%,
-        transparent 18%
+        transparent var(--glass-content-bottom-end, 18%)
       );
     border-radius: inherit;
     pointer-events: none;
@@ -1136,6 +1161,15 @@ body.glass-nav-expanded {
     background: rgba(58, 58, 60, 0.94) !important;
     opacity: 1 !important;
   }
+
+  // navlistPanel pills (Carte / Data) were a low-opacity film on the sheen.
+  .nav-pills .nav-link:not(.active),
+  .nav-stacked > li:not(.active) > a,
+  .nav.flex-column .nav-link:not(.active) {
+    color: #f5f5f7 !important;
+    opacity: 1 !important;
+    background: rgba(44, 44, 48, 0.94) !important;
+  }
 }
 
 @mixin glass-button-type {
@@ -1599,12 +1633,24 @@ html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + labe
   accent-color: #{$glass-accent};
 }
 
-// btn-check + primary (and similar) must keep light label ink
+// Solid primary keeps light ink. Outline segments (shinyWidgets
+// radioGroupButtons) sit on light glass, so white ink disappears.
 .btn-check:checked + .btn-primary,
-.btn-check:active + .btn-primary,
-.btn-check:checked + .btn-outline-primary,
-.btn-check:active + .btn-outline-primary {
+.btn-check:active + .btn-primary {
   color: #fff !important;
+}
+
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
+.radio-group-buttons .btn-check:checked + .btn {
+  color: var(--glass-body-color) !important;
+  background: color-mix(in srgb, var(--glass-accent, #{$primary}) 22%, var(--glass-bg)) !important;
+  border-color: color-mix(in srgb, var(--glass-accent, #{$primary}) 55%, var(--glass-border)) !important;
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-accent, #{$primary}) 40%, transparent) !important;
+  font-weight: 600;
+  opacity: 1 !important;
 }
 
 // Active list/nav/pagination text on primary fill should stay light
@@ -3556,8 +3602,9 @@ body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.45rem;
   margin-bottom: 0.75rem;
-  // Popups and controls must escape the rounded frame.
-  overflow: visible;
+  // Clip tiles and overlay panes. overflow:visible let a white tile
+  // paint across the neighboring value boxes.
+  overflow: hidden;
 }
 
 .leaflet-popup-pane,
@@ -3568,6 +3615,66 @@ body .Reactable {
 .leaflet-container {
   background: color-mix(in srgb, var(--glass-bg) 40%, #1a1a2e 60%);
   font-family: inherit;
+  overflow: hidden !important;
+}
+
+// Dark value boxes sit on an opaque plate. A translucent fill plus
+// backdrop blur pulls a bright neighbor (a map tile, a white card) into
+// a white blob under the number.
+:root[data-glass-preset="dark"] {
+  body .small-box,
+  body .info-box,
+  .bslib-value-box {
+    background: color-mix(in srgb, var(--bs-primary, #007aff) 12%, #1c1c1e) !important;
+    background-color: color-mix(in srgb, var(--bs-primary, #007aff) 12%, #1c1c1e) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  body .small-box::before,
+  body .info-box::before,
+  .bslib-value-box::before {
+    background-image:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 8px),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0%, transparent 8px) !important;
+  }
+
+  .bslib-value-box .value-box-showcase,
+  body .small-box .icon,
+  body .small-box .icon-large,
+  body .info-box .info-box-icon {
+    background: transparent !important;
+    background-image: none !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  .rt-thead .rt-th,
+  .rt-thead .rt-th .rt-th-inner,
+  table.dataTable thead th,
+  table.dataTable thead td,
+  .table > thead > tr > th,
+  .gt_heading,
+  .gt_col_heading {
+    background: #1c1c1e !important;
+    background-color: #1c1c1e !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  .apexcharts-canvas .apexcharts-text,
+  .apexcharts-canvas .apexcharts-legend-text,
+  .apexcharts-canvas .apexcharts-title-text,
+  .apexcharts-canvas .apexcharts-xaxis-label,
+  .apexcharts-canvas .apexcharts-yaxis-label {
+    fill: #f5f5f7 !important;
+  }
+
+  .apexcharts-canvas .apexcharts-gridline,
+  .apexcharts-canvas .apexcharts-xaxis line,
+  .apexcharts-canvas .apexcharts-yaxis line {
+    stroke: rgba(245, 245, 247, 0.45) !important;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -4189,6 +4296,10 @@ body .product-info {
   min-height: 7em;
   overflow: hidden;
   box-sizing: border-box;
+  color: var(--glass-body-color) !important;
+  background: var(--glass-menu-bg);
+  border-radius: calc(var(--glass-radius) * 0.85);
+  padding: 0.75rem 0.85rem;
 
   > img {
     flex: 0 0 auto;
@@ -4217,6 +4328,8 @@ body .product-info {
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
+    color: var(--glass-body-color) !important;
+    opacity: 1 !important;
   }
 }
 
@@ -4224,11 +4337,13 @@ body .shiny-output-error,
 body .shiny-output-error-no-pat,
 body .shiny-output-error-validation {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
-  background: var(--glass-bg) !important;
-  color: inherit !important;
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-body-color) !important;
   line-height: 1.5 !important;
   padding: 2rem 1.25rem !important;
   text-align: center;
+  opacity: 1 !important;
 }
 
 .plot-spin {
@@ -6553,8 +6668,8 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
   cursor: pointer;
 }
 
-@media (pointer: coarse) {
-  html[data-glass-preset] :is(
+@mixin glass-pointer-coarse($root) {
+  #{$root} :is(
     .btn,
     .glass-theme-toggle .btn,
     .glass-theme-toggle .action-button,
@@ -6573,22 +6688,22 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] :is(.btn, .nav-link, .form-select, .selectize-control .selectize-input) {
+  #{$root} :is(.btn, .nav-link, .form-select, .selectize-control .selectize-input) {
     min-height: 44px !important;
   }
 
   // Native <select> ignores min-height. Set the used height.
-  html[data-glass-preset] :is(select.form-select, select.form-control, select.shiny-input-select) {
+  #{$root} :is(select.form-select, select.form-control, select.shiny-input-select) {
     height: 44px !important;
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
-  html[data-glass-preset] body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
+  #{$root} body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
+  #{$root} body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
     transform: none !important;
   }
 
-  html[data-glass-preset] :is(
+  #{$root} :is(
     .bslib-sidebar-layout > .collapse-toggle,
     .bslib-full-screen-enter,
     .btn-close,
@@ -6599,7 +6714,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px;
   }
 
-  html[data-glass-preset] :is(
+  #{$root} :is(
     .bslib-sidebar-layout > .collapse-toggle,
     .bslib-full-screen-enter
   ) {
@@ -6610,7 +6725,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px !important;
   }
 
-  html[data-glass-preset] .bslib-full-screen-enter {
+  #{$root} .bslib-full-screen-enter {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -6618,59 +6733,229 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     opacity: 0.85 !important;
   }
 
-  html[data-glass-preset] .shiny-chat-history-item,
-  html[data-glass-preset] .shiny-chat-history-item-select {
+  #{$root} .shiny-chat-history-item,
+  #{$root} .shiny-chat-history-item-select {
     min-height: 44px;
   }
 
-  html[data-glass-preset] :is(a.action-button, a.shiny-download-link)::after {
+  #{$root} :is(a.action-button, a.shiny-download-link)::after {
     width: 44px;
     height: 44px;
   }
+
+  // Single-line fields were 31-38px. Closed selects and selectize were 36-42px.
+  #{$root} :is(
+    input.form-control:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+    textarea.form-control
+  ) {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} :is(
+    .selectize-control.single .selectize-input,
+    select.form-select,
+    select.form-control,
+    select.shiny-input-select,
+    .bootstrap-select > .dropdown-toggle,
+    .vscomp-toggle-button
+  ) {
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} .selectize-control.multi .selectize-input {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  #{$root} input[type="file"].form-control {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #{$root} :is(.btn-file, .btn-file.btn),
+  #{$root} input[type="file"].form-control::file-selector-button {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  #{$root} :is(
+    .pagination .page-link,
+    .dataTables_paginate .page-link,
+    .dataTables_paginate .paginate_button,
+    .rt-pagination .rt-page-button
+  ) {
+    box-sizing: border-box !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  #{$root} .shiny-chat-thinking-header {
+    box-sizing: border-box !important;
+    display: flex;
+    align-items: center;
+    min-height: 44px !important;
+  }
+
+  // Pills keep their visual size. The hit box grows to 44px.
+  #{$root} :is(.harbor-pill, .shiny-aside-pill) {
+    position: relative;
+  }
+
+  #{$root} :is(.harbor-pill, .shiny-aside-pill)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  #{$root} .offcanvas-header .btn-close,
+  #{$root} .offcanvas .btn-close {
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+  }
+
+  // Marks stay about 18px. The label row is the 44px target.
+  #{$root} :is(.checkbox, .radio) > label,
+  #{$root} .form-check,
+  #{$root} .form-check-label {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 44px;
+    margin-bottom: 0;
+  }
+
+  #{$root} .form-check-label {
+    flex: 1 1 auto;
+  }
+
+  // Thumb art stays small. The hit box is 44px and does not change layout.
+  #{$root} :is(.irs-handle, .noUi-handle) {
+    overflow: visible;
+  }
+
+  #{$root} :is(.irs-handle, .noUi-handle)::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  // min-height: 44px on every .btn, plus flex-wrap and the default stretch,
+  // turned Light/Dark/Auto into a tall column inside the phone frame.
+  // Segmented controls stay one 44px row at their natural width.
+  #{$root} .glass-theme-toggle {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    align-self: flex-start !important;
+    flex: 0 0 auto !important;
+    height: auto !important;
+    width: auto !important;
+    max-width: 100%;
+  }
+
+  #{$root} .glass-theme-toggle :is(.btn, .action-button) {
+    flex: 0 1 auto !important;
+    align-self: center !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    width: auto !important;
+    white-space: nowrap;
+  }
+
+  #{$root} :is(.radio-group-buttons .btn-group, .btn-group-container-sw) {
+    align-items: center !important;
+    align-self: flex-start !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  #{$root} :is(.radio-group-buttons .btn-group, .btn-group-container-sw) :is(.btn, label.btn) {
+    align-self: center !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  // Tab and pill rows were stretching to the height of a tall flex parent.
+  #{$root} :is(.nav-pills, .nav-tabs, .navbar-nav) {
+    align-self: flex-start;
+    height: auto !important;
+  }
+
+  #{$root} :is(.nav-pills, .nav-tabs, .navbar-nav) :is(.nav-link, .nav-item) {
+    align-self: center;
+    flex-grow: 0;
+    height: auto;
+    min-height: 44px;
+  }
 }
 
-@media (pointer: coarse), (max-width: 799px) {
-  html[data-glass-preset] {
+@mixin glass-pointer-coarse-narrow($root) {
+  #{$root} {
     --shiny-chat-btn-send-size: 44px;
     --shiny-chat-input-icon-size: 22px;
   }
 
-  html[data-glass-preset] .shiny-chat-btn-send,
-  html[data-glass-preset] .shiny-chat-edit-btn,
-  html[data-glass-preset] .shiny-chat-page-sidebar-toggle,
-  html[data-glass-preset] .shiny-chat-page-sidebar-close,
-  html[data-glass-preset] .bslib-toolbar .btn,
-  html[data-glass-preset] .shiny-chat-history-new,
-  html[data-glass-preset] .shiny-chat-history-close,
-  html[data-glass-preset] .shiny-chat-history-itemmenu > button,
-  html[data-glass-preset] bslib-input-dark-mode {
+  #{$root} .shiny-chat-btn-send,
+  #{$root} .shiny-chat-edit-btn,
+  #{$root} .shiny-chat-page-sidebar-toggle,
+  #{$root} .shiny-chat-page-sidebar-close,
+  #{$root} .bslib-toolbar .btn,
+  #{$root} .shiny-chat-history-new,
+  #{$root} .shiny-chat-history-close,
+  #{$root} .shiny-chat-history-itemmenu > button,
+  #{$root} bslib-input-dark-mode {
     min-width: 44px;
     min-height: 44px;
   }
 
-  html[data-glass-preset] .shiny-chat-history-itemmenu > button {
+  #{$root} .shiny-chat-history-itemmenu > button {
     width: 44px;
     height: 44px;
   }
 
-  html[data-glass-preset] bslib-input-dark-mode {
+  #{$root} bslib-input-dark-mode {
     --size: 32px;
     --size-xxs: 6px;
   }
 
-  html[data-glass-preset] .shiny-chat-edit-btn {
+  #{$root} .shiny-chat-edit-btn {
     width: 44px;
     height: 44px;
     opacity: 1;
   }
 
-  html[data-glass-preset] .shiny-chat-input {
+  #{$root} .shiny-chat-input {
     --_input-control-inset: 4px;
     --_input-padding-bottom: 0px;
     padding-bottom: 0;
   }
 
-  html[data-glass-preset] .shiny-chat-input .tiptap {
+  #{$root} .shiny-chat-input .tiptap {
     min-height: 52px;
     margin-inline: 0;
     padding-top: 0.85rem !important;
@@ -6679,7 +6964,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     border-radius: 999px !important;
   }
 
-  html[data-glass-preset] .shiny-chat-input .shiny-chat-btn-send {
+  #{$root} .shiny-chat-input .shiny-chat-btn-send {
     box-sizing: border-box;
     width: 44px;
     height: 44px;
@@ -6689,7 +6974,7 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     bottom: 4px;
   }
 
-  html[data-glass-preset] .shiny-chat-scroll-to-bottom {
+  #{$root} .shiny-chat-scroll-to-bottom {
     box-sizing: border-box;
     width: 44px;
     height: 44px;
@@ -6697,8 +6982,100 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px;
   }
 
-  html[data-glass-preset] .shiny-chat-composer {
+  #{$root} .shiny-chat-composer {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (pointer: coarse) {
+  @include glass-pointer-coarse("html[data-glass-preset]");
+}
+
+@include glass-pointer-coarse("html[data-glass-preset][data-glass-pointer='coarse']");
+
+@media (pointer: coarse), (max-width: 799px) {
+  @include glass-pointer-coarse-narrow("html[data-glass-preset]");
+}
+
+@include glass-pointer-coarse-narrow("html[data-glass-preset][data-glass-pointer='coarse']");
+
+
+// Desktop phone frame (?frame=0). The iframe has no iOS safe area. A
+// transparent border is the 59px status bar and 34px home indicator:
+// borders stay put while the page scrolls, so content never enters the
+// island. Real phones keep env(safe-area-inset-*) and do not match this.
+html[data-phone-frame="0"] {
+  --glass-safe-top: 59px;
+  --glass-safe-bottom: 34px;
+  height: 100%;
+  overflow: hidden;
+  background: var(--glass-page-bg);
+  background-color: var(--glass-body-bg);
+}
+
+html[data-phone-frame="0"] body {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  border-top: var(--glass-safe-top) solid transparent;
+  border-bottom: var(--glass-safe-bottom) solid transparent;
+}
+
+// Viewport-sized shells ignore the border and would run under the home
+// indicator. Fill the body's content box instead.
+html[data-phone-frame="0"] :is(shiny-chat-page, body > .bslib-page-fill) {
+  flex: 1 1 auto;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+}
+
+html[data-phone-frame="0"] :is(.fixed-top, .navbar.fixed-top) {
+  top: var(--glass-safe-top) !important;
+}
+
+html[data-phone-frame="0"] :is(.fixed-bottom, .navbar.fixed-bottom, nav.fixed-bottom) {
+  bottom: var(--glass-safe-bottom) !important;
+}
+
+html[data-phone-frame="0"] :is(.offcanvas, .shiny-chat-page-sidebar) {
+  top: var(--glass-safe-top) !important;
+  bottom: var(--glass-safe-bottom) !important;
+}
+
+// iPhones do not keep a desktop scrollbar. Scrolling and momentum still work.
+html[data-phone-frame="0"],
+html[data-phone-frame="0"] *,
+html[data-glass-pointer="coarse"],
+html[data-glass-pointer="coarse"] * {
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+html[data-phone-frame="0"]::-webkit-scrollbar,
+html[data-phone-frame="0"] *::-webkit-scrollbar,
+html[data-glass-pointer="coarse"]::-webkit-scrollbar,
+html[data-glass-pointer="coarse"] *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+@media (pointer: coarse) {
+  html,
+  html * {
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html::-webkit-scrollbar,
+  html *::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
   }
 }
 

@@ -26,16 +26,10 @@ capture_demo <- function(preset = c("light", "dark"), out_path, port) {
 
   if (identical(preset, "dark")) {
     lines <- sub(
-      "glass_theme\\((?:preset\\s*=\\s*\"[^\"]*\"\\s*)?\\)",
-      "glass_theme(preset = \"dark\")",
+      "demo_page <- glass_page(",
+      "demo_page <- glass_page(\n  preset = \"dark\",",
       lines,
-      perl = TRUE
-    )
-    lines <- sub(
-      "glass_theme_toggle\\(selected\\s*=\\s*\"[^\"]*\"\\)",
-      "glass_theme_toggle(selected = \"dark\")",
-      lines,
-      perl = TRUE
+      fixed = TRUE
     )
   }
 

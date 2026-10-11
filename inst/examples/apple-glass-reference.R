@@ -124,35 +124,45 @@ server <- function(input, output, session) {
   output$hero_plot <- renderPlot({
     df <- plot_data()
     cols <- palette_colors[[input$palette]]
-    text_col <- if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
+    # Default to the page preset. The resolved input arrives after the first
+    # flush; the light default would draw dark ink on a dark card.
+    preset <- glass_resolved_preset(input, default = glass_preset)
+    # Both presets use an opaque panel so points, axes, and the density
+    # sit on a known fill instead of the wallpaper.
+    surface <- "opaque"
+    ink <- if (identical(preset, "dark")) "#f5f5f7" else "#1d1d1f"
+    grid <- grDevices::adjustcolor(ink, alpha.f = if (identical(preset, "dark")) 0.55 else 0.38)
+    # Ocean blue is #007AFF. On the dark panel a lighter blue keeps the
+    # points and the density stroke obvious.
+    point <- if (identical(preset, "dark")) "#64D2FF" else cols[[1]]
+    density_fill <- if (identical(preset, "dark")) "#64D2FF" else cols[[2]]
 
     p <- ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 3, alpha = 0.85) +
-      scale_color_manual(values = cols) +
+      geom_point(size = 3.6, alpha = 1, color = point, show.legend = FALSE) +
       labs(
         title = paste("Iris —", input$palette, "palette"),
         x = "Sepal length",
         y = "Sepal width"
       ) +
-      theme_minimal(base_size = 14) +
+      theme_glass(preset, base_size = 14, surface = surface) +
       theme(
-        panel.background = element_rect(fill = "transparent", color = NA),
-        plot.background = element_rect(fill = "transparent", color = NA),
-        legend.background = element_rect(fill = "transparent", color = NA),
         legend.position = "bottom",
-        text = element_text(color = text_col),
-        axis.text = element_text(color = text_col),
-        axis.title = element_text(color = text_col),
-        plot.title = element_text(color = text_col)
+        panel.grid.major = element_line(color = grid, linewidth = 0.45),
+        axis.line = element_line(color = ink, linewidth = 0.6),
+        axis.ticks = element_line(color = ink, linewidth = 0.45),
+        axis.text = element_text(color = ink),
+        axis.title = element_text(color = ink),
+        plot.title = element_text(color = ink)
       )
 
     if (isTRUE(input$density)) {
       p <- p + geom_density(
         aes(x = Sepal.Length),
         inherit.aes = FALSE,
-        fill = cols[[2]],
-        alpha = 0.25,
-        color = NA
+        fill = density_fill,
+        alpha = if (identical(preset, "light")) 0.55 else 0.45,
+        color = point,
+        linewidth = 0.9
       )
     }
 

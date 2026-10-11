@@ -24,6 +24,8 @@
 ^man/figures/plotly-gt.*\.png$
 ^man/figures/intensity-slider.*\.(png|gif)$
 ^man/figures/harbor-notes.*\.png$
+^man/figures/phone-frame-harbor\.png$
+^man/figures/phone-view\.(gif|mp4)$
 # Examples that need vendor data/scripts or screenshot-only deps
 ^inst/examples/dreamrs-
 ^inst/examples/superzip-glass\.R$
@@ -33,7 +35,7 @@
 ^inst/examples/teal-glass-demo\.R$
 ^inst/examples/querychat-demo\.R$
 ^inst/examples/quarto$
-# Shiny for Python spike (Option 2) — not part of the CRAN tarball
+# Shiny for Python spike (Option 2), not part of the CRAN tarball
 ^python$
 ^check$
 ^CRAN-SUBMISSION$

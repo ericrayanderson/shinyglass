@@ -424,6 +424,34 @@ test('coarse pointers keep glass controls at least 44px', async ({ browser }) =>
   }
 
   await atLeast(page.locator('.glass-theme-toggle .btn').first(), 44);
+  await atLeast(page.locator('#date'), 44);
+  const fileHit = await page.locator('input#file, .shiny-input-container:has(#file) input[type="file"]').first().evaluate((el) => {
+    const btn = el.closest('.btn-file');
+    const selector = getComputedStyle(el, '::file-selector-button');
+    const btnBox = btn ? btn.getBoundingClientRect() : null;
+    return {
+      file: el.getBoundingClientRect().height,
+      browse: btnBox ? btnBox.height : 0,
+      selector: parseFloat(selector.height) || 0
+    };
+  });
+  expect(Math.max(fileHit.file, fileHit.browse, fileHit.selector)).toBeGreaterThanOrEqual(43.4);
+  const checkRow = await page.locator('#show_extra').evaluate((el) => {
+    const label = el.closest('label') || el.closest('.form-check');
+    const row = (label || el).getBoundingClientRect();
+    const mark = el.getBoundingClientRect();
+    return { row: row.height, mark: mark.height };
+  });
+  expect(checkRow.row).toBeGreaterThanOrEqual(43.4);
+  expect(checkRow.mark).toBeLessThanOrEqual(22);
+  await expect(page.locator('.irs-handle').first()).toBeVisible();
+  const thumb = await page.locator('.irs-handle').first().evaluate((el) => {
+    const hit = getComputedStyle(el, '::before');
+    const visual = el.getBoundingClientRect();
+    return { hit: parseFloat(hit.height) || 0, visual: visual.height };
+  });
+  expect(thumb.hit).toBeGreaterThanOrEqual(44);
+  expect(thumb.visual).toBeLessThan(thumb.hit);
   const sel = page.locator('.shiny-input-container:has(#sel) .selectize-input');
   const selBox = await sel.boundingBox();
   expect(selBox.height).toBeGreaterThanOrEqual(43.4);
@@ -446,11 +474,14 @@ test('coarse pointers keep glass controls at least 44px', async ({ browser }) =>
 
   await showNav('Layout');
   await atLeast(page.locator('.bslib-sidebar-layout > .collapse-toggle').first(), 44);
+  await atLeast(page.locator('#mod-ans'), 44);
   await atLeast(page.locator('#classic_tabs .nav-link, .nav-tabs .nav-link').first(), 44);
 
   await showNav('Data');
   await expect(page.locator('.dataTables_paginate .page-link').first()).toBeVisible({ timeout: 20000 });
   await atLeast(page.locator('.dataTables_paginate .page-link').first(), 44);
+  await expect(page.locator('.rt-pagination .rt-page-button').first()).toBeVisible({ timeout: 20000 });
+  await atLeast(page.locator('.rt-pagination .rt-page-button').first(), 44);
   await atLeast(page.locator('.bslib-card:has(.dataTables_wrapper) .bslib-full-screen-enter').first(), 44);
 
   await showNav('Overlays');

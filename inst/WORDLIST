@@ -5,6 +5,7 @@ nikdelvin
 Surdeddd
 AdminLTE
 Apple
+ApexCharts
 aurora
 Bootswatch
 bundler
@@ -62,6 +63,7 @@ Glass
 Golden
 grey
 greys
+gridlines
 grove
 gt
 harbor
@@ -117,6 +119,7 @@ revdepcheck
 rsconnect
 rhandsontable
 Sass
+scrollbar
 scss
 selectize
 shiny

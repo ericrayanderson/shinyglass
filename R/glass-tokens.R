@@ -271,15 +271,18 @@ glass_token_pack <- function(preset = c("light", "dark")) {
     `--glass-dispersion` = "0.06",
     `--glass-diffusion` = "1.06",
     `--glass-specular-top` = if (identical(preset, "dark")) {
-      "rgba(255, 255, 255, 0.92)"
+      "rgba(255, 255, 255, 0.20)"
     } else {
       "rgba(255, 255, 255, 1)"
     },
     `--glass-specular-bottom` = if (identical(preset, "dark")) {
-      "rgba(255, 255, 255, 0.62)"
+      "rgba(255, 255, 255, 0.16)"
     } else {
       "rgba(255, 255, 255, 0.78)"
     },
+    `--glass-sheen-end` = if (identical(preset, "dark")) "8px" else "26%",
+    `--glass-fill-sheen-end` = if (identical(preset, "dark")) "12px" else "30%",
+    `--glass-edge-span` = if (identical(preset, "dark")) "10px" else "34%",
     `--glass-edge` = if (identical(preset, "dark")) {
       "rgba(0, 0, 0, 0.88)"
     } else {

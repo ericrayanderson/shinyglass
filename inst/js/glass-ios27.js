@@ -702,6 +702,8 @@
 
   function coarsePointer() {
     try {
+      var root = document.documentElement;
+      if (root && root.getAttribute("data-glass-pointer") === "coarse") return true;
       return window.matchMedia("(pointer: coarse)").matches;
     } catch (e) {
       return false;

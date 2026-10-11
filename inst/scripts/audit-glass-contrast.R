@@ -550,6 +550,17 @@ core_selectors <- c(
   ".form-check-input:checked",
   ".navbar",
   ".card",
+  ".card-header",
+  ".card-title",
+  ".sidebar-title",
+  ".bslib-value-box .value-box-title",
+  ".bslib-value-box .value-box-value",
+  ".bslib-value-box .value-box-showcase",
+  ".value-box-title",
+  ".value-box-value",
+  ".small-box h3",
+  ".small-box .icon-large",
+  ".info-box .info-box-number",
   ".selectize-input",
   ".selectize-dropdown",
   ".irs-single",
@@ -796,6 +807,20 @@ run_case <- function(app_key, preset, port) {
       meta = list(wait = spec$wait)
     )))
   }
+
+  # Apps such as the demo use preset = "auto" and ignore SHINYGLASS_PRESET.
+  # Apply the requested pack in the page so a dark run is actually dark.
+  tryCatch(
+    b$Runtime$evaluate(
+      expression = sprintf(
+        "(function(){ if (window.shinyglass && window.shinyglass.setPreset) window.shinyglass.setPreset(%s); return document.documentElement.dataset.glassPreset || null; })();",
+        jsonlite::toJSON(preset, auto_unbox = TRUE)
+      ),
+      returnByValue = TRUE
+    ),
+    error = function(e) NULL
+  )
+  Sys.sleep(0.35)
 
   collect_sample <- function(phase, keep_all = FALSE) {
     val <- tryCatch(

@@ -19,16 +19,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # Feasible win-builder / rhub stand-in. Do not submit this
-          # branch to win-builder or rhub. Ubuntu covers release, devel,
-          # and oldrel. Windows and macOS stay on R 4.5: pak cannot
-          # install R 4.6 dependencies there (zstd macOS binaries for
-          # knitr/xfun, and no Windows pak binary index for 4.6).
-          - {os: ubuntu-latest,  r: 'devel'}
-          - {os: ubuntu-latest,  r: 'release'}
-          - {os: ubuntu-latest,  r: 'oldrel-1'}
-          - {os: macos-latest,   r: '4.5'}
-          - {os: windows-latest, r: '4.5'}
+          # Ubuntu covers release, devel, and oldrel. The release cell
+          # builds the PDF manual. Windows and macOS stay on R 4.5: pak
+          # cannot install R 4.6 dependencies there (zstd macOS binaries
+          # for knitr/xfun, and no Windows pak binary index for 4.6).
+          - {os: ubuntu-latest,  r: 'devel',    manual: false}
+          - {os: ubuntu-latest,  r: 'release',  manual: true}
+          - {os: ubuntu-latest,  r: 'oldrel-1', manual: false}
+          - {os: macos-latest,   r: '4.5',      manual: false}
+          - {os: windows-latest, r: '4.5',      manual: false}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -50,10 +49,17 @@ jobs:
           extra-packages: any::rcmdcheck, any::urlchecker, any::spelling, commonmark, xml2
           needs: check
 
+      - uses: r-lib/actions/setup-tinytex@v2
+        if: matrix.config.manual
+
+      - name: Install inconsolata
+        if: matrix.config.manual
+        run: tlmgr install inconsolata
+
       - uses: r-lib/actions/check-r-package@v2
         with:
-          args: 'c("--as-cran", "--no-manual")'
-          build_args: 'c("--no-manual", "--compact-vignettes=gs+qpdf")'
+          args: ${{ matrix.config.manual && 'c("--as-cran")' || 'c("--as-cran", "--no-manual")' }}
+          build_args: ${{ matrix.config.manual && 'c("--compact-vignettes=gs+qpdf")' || 'c("--no-manual", "--compact-vignettes=gs+qpdf")' }}
 
       - name: Check URLs + Spelling
         if: matrix.config.r == 'release' && matrix.config.os == 'ubuntu-latest'

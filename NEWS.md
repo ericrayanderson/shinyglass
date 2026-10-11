@@ -4,10 +4,14 @@
 
 * On a coarse pointer, the controls Playwright measures are at least 44px.
   That set is the theme toggle, the sidebar collapse toggle, nav tabs,
-  modal close, selects, DataTables pagination, popover triggers, card
-  expand, and the hit area on `actionLink()` and `downloadLink()`. Harbor
-  notes also checks the send button, edit button, composer, sidebar
-  toggle, sources button, history row, and scroll-to-bottom.
+  modal close, text inputs, selects and selectize, the file Browse button,
+  DataTables and reactable pagination, popover triggers, card expand, and
+  the hit area on `actionLink()` and `downloadLink()`. Checkbox and radio
+  rows are at least 44px tall; the marks stay about 18px. Slider thumbs
+  keep their size and use a 44px hit area. Harbor notes also checks the
+  send button, edit button, composer, sidebar toggle, sources button,
+  history row, scroll-to-bottom, the thinking disclosure, source-pill hit
+  area, and the sources close button.
 * A popover on a coarse pointer at 393x852 closes on a second tap of its
   trigger and on a tap outside. On a 390x852 touch viewport, the Harbor
   notes sidebar toggle and close button both respond. The sources
@@ -18,8 +22,8 @@
   at 480px stay within 1px. `html` and `body` use `overflow-x: clip`.
 * Playwright runs these checks at iPhone sizes (393x852 and 390x852, with
   touch). The five hosted demos are also opened with the iPhone 16
-  profile at 393x852. That run expects no preview toggle, no embedded frame, and
-  one Shiny session.
+  profile at 393x852. That run expects no preview toggle, no embedded
+  frame, and one Shiny session.
 
 ## Breaking changes
 
@@ -32,6 +36,14 @@
   the ambient specular drift are gone. `specular = TRUE` still paints the
   highlights. `specular = FALSE` hides them. iOS 27 does not tilt glass.
   Pointer tracking is not available in 0.5.0.
+* In dark mode the top highlight is a 1px rim plus a short sheen (about
+  8–12px). A tall sidebar or card no longer grows a white band over its title.
+* Dark value boxes use an opaque plate, and a Leaflet map clips its tiles,
+  so a bright neighbor cannot wash out the number.
+* Dark table headers use a near-black backing so a light-grey header label
+  stays readable. ApexCharts axis text and gridlines follow the dark ink.
+* On a coarse pointer, the Light / Dark / Auto segmented control stays one
+  row, 44px tall, at its normal width.
 * Glass edges are darker, and diffusion is more even across chrome and
   content. Fill alphas are unchanged.
 * Chromium bends the backdrop through a convex squircle lens (index of
@@ -124,26 +136,19 @@
   key, and uses `ellmer::chat_google_gemini()` (Gemini Flash) when
   `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. Each visitor gets 8
   messages of at most 400 characters, shared with the phone preview.
-  Quota and other API errors fall
-  back to the local script. Deploy key `chat` (`shinyglass-chat`). When
-  `GEMINI_API_KEY` is present in the deploy environment, the chat bundle
-  gets a temporary `.Renviron`. shinyapps.io does not accept rsconnect
-  `envVars`. The value is not logged. Hosted app:
+  Quota and other API errors fall back to the local script. Live Harbor
+  notes replies stay specific to shinyglass (`glass_theme()`,
+  `glass_page()`, the intensity slider, the physics, and shinychat).
+  Deploy key `chat` (`shinyglass-chat`). When `GEMINI_API_KEY` is present
+  in the deploy environment, the chat bundle gets a temporary `.Renviron`.
+  shinyapps.io does not accept rsconnect `envVars`. The value is not
+  logged. Hosted app:
   [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
-* The five hosted demos have a desktop phone preview. On a wide screen
-  with a fine pointer, a glass control at the bottom right opens the
-  same app inside an iPhone frame. The choice is remembered in the
-  browser. A phone or a narrow window never gets the control, the frame,
-  or a second session, and does not download the preview script unless
-  `(pointer: fine) and (min-width: 900px)` matches. The frame
-  loads the same app with `?frame=0`, so the control does not nest, and
-  no sixth app is deployed. Harbor notes counts that frame toward the
-  same 8-message visitor budget.
 * shinychat 0.5 `page_chat()` and `chat_ui()` pick up the glass pack:
   full-window header and history sidebar, message bubbles, a floating
   composer, thinking panels, tool rows, citation chips, artifact
-  previews, toolbars, and the slash-command menu. Assistant replies
-  use a neutral glass bubble, including while the reply is streaming.
+  previews, toolbars, and the slash-command menu. Chat replies use a
+  neutral glass bubble, including while the reply is streaming.
   User bubbles stay the tinted pill. A scrolled transcript fades under
   the header and the composer instead of clipping on the bar. On a
   coarse pointer the send button, edit button, and composer are at
@@ -158,6 +163,11 @@
   the trigger, and show a scroll edge on the header. Bootstrap still
   owns the slide.
 
+## Demos
+
+* The five hosted demos have a desktop phone preview (`?frame=0`, coarse
+  pointer) on a wide fine-pointer screen. A phone never gets the control.
+
 ## Bug fixes
 
 * On a phone, a collapsible `page_sidebar()` or `layout_sidebar()` opens as
@@ -167,32 +177,13 @@
 * Settings menus and popovers close on a click or tap outside, and they
   have a 44px close button. The shinychat app menu closes on a tap outside
   the sidebar.
-* Coarse pointers get a 44px target on buttons, selects, nav links, the
-  card full-screen control, and `actionLink()` / `downloadLink()`. Those
-  links are at least 32px on a fine pointer. Nav tabs do not scale when
-  pressed.
-
-* Harbor notes keeps the conversation list at the top of the sidebar, on
-  the glass surface, with the same padding as the rest of the column.
-* Light-mode assistant replies use a thin rim and a bright top highlight,
-  in the same family as the user bubble and the composer.
-* The live system prompt names the shinyglass APIs, so replies stay
-  specific to `glass_theme()`, `glass_page()`, the intensity slider, the
-  physics, and shinychat support.
-* Live replies request a short thinking summary, so the "Thought for ..."
-  disclosure can appear. If the model returns none, the disclosure stays
-  hidden.
-* The history row title fills the row: 32px on a fine pointer and 44px on
-  a coarse pointer.
-* The live status chip in dark mode uses lighter text on a darker green
-  so it clears the 4.5:1 contrast floor.
-* Setting `SHINYGLASS_CHAT_FORCE_FALLBACK` to `1` shows the demo chip and
-  the fallback toast. That path is for tests.
 * Coarse pointers get a 44px hit area on glass controls, and fine pointers
-  stay at least 32px. That covers the Light/Dark/Auto toggle, the sidebar
-  toggle, card expand, nav tabs, modal close, selects, pagination, and
-  popover triggers. `actionLink()` and `downloadLink()` keep their text
-  size and gain a larger invisible hit area.
+  stay at least 32px. That covers buttons, the Light/Dark/Auto toggle, the
+  sidebar toggle, card expand, nav tabs, modal close, selects, pagination,
+  popover triggers, and `actionLink()` / `downloadLink()`. Those links keep
+  their text size. Nav tabs do not scale when pressed.
+* Light-mode chat replies use a thin rim and a bright top highlight,
+  in the same family as the user bubble and the composer.
 * Ultra Clear (intensity 0) keeps a hairline and a top specular highlight,
   including the settings strip on `glass_page()`.
 * A card opened full screen fills the overlay. Plots and tables use the
@@ -356,11 +347,11 @@
 * Dark pack no longer re-locks default / outline / download labels to compiled
   `$primary`. Download links and ghost focus rings follow `--glass-accent`.
   Accent `<select id="accent">` applies `setPrimary` immediately.
-* [glass_intensity_slider()] / [observe_glass_intensity()] — iOS 27-style
+* [glass_intensity_slider()] / [observe_glass_intensity()]: iOS 27-style
   **Ultra Clear → Tinted** control. `glass_theme(intensity = )` sets the
   starting value (`0`–`1`, default `0.45`); [update_glass_theme()] and
   `window.shinyglass.setIntensity()` update it live.
-* [glass_preset_input()] / [observe_glass_preset_input()] — client-first
+* [glass_preset_input()] / [observe_glass_preset_input()]: client-first
   Light/Dark/Auto select (applies `setPreset` immediately; server sync is
   optional). Prefer this over a bare `selectInput()` + `update_glass_theme()`
   alone on hosts that rewrite custom messages.
@@ -444,7 +435,7 @@
   `color-contrast()` picks white on brand blues/purples (white on `#007AFF` is
   ~4.02:1 and failed the old 4.5 gate). Solid `.bg-*` / `.text-bg-*` fills
   (including `bslib::value_box(theme=)`) get luminance-based ink via
-  `glass-on()` / `--glass-on-*` — not body color on solid primary. Safety nets
+  `glass-on()` / `--glass-on-*`, not body color on solid primary. Safety nets
   remain for checks, radios, switches, pagination, and list-group active.
 * Accent rules target Shiny markup (`.shiny-input-checkbox`) as well as
   Bootstrap `.form-check-input`.
@@ -475,8 +466,8 @@
   glass styling but use bslib's in-flow grid so content is not pushed into a
   large empty gutter beside a second absolute panel.
 * Improve: AdminLTE chrome (classic `shinydashboard` and `bs4Dash`) gets stronger
-  glass overlay — translucent header/sidebar, soft-tinted value/info boxes, and
-  clearer menu active states — without breaking AdminLTE layout.
+  glass overlay: translucent header/sidebar, soft-tinted value/info boxes, and
+  clearer menu active states, without breaking AdminLTE layout.
 
 # shinyglass 0.1.0
 
