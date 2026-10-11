@@ -1264,8 +1264,6 @@
       if (!body) return;
 
       var y = Math.max(0, window.scrollY);
-      var dy = y - lastScrollY;
-      lastScrollY = y;
       // iOS 27 scroll-edge: uniform toolbar while content sits under floating
       // chrome. Contrast-only: keep under reduced-motion and when nav_morph
       // is off. Compact-on-scroll-down remains a separate motion treatment.
@@ -1285,10 +1283,14 @@
 
       var now = Date.now();
       if (now < settleUntil) {
-        // Layout shift from our own toggle. Do not count it as travel.
-        travel = 0;
+        // The bar is still settling after a compact toggle. Keep the
+        // pre-toggle baseline; the re-check measures travel against it, so
+        // the few px of layout shift stay under TRAVEL and real scrolling
+        // in this window is not lost.
         return;
       }
+      var dy = y - lastScrollY;
+      lastScrollY = y;
       if (dy !== 0) {
         travel = (travel === 0 || (dy > 0) === (travel > 0)) ? travel + dy : dy;
       }
@@ -1298,27 +1300,27 @@
       // Scrolling down inside the hysteresis band keeps its travel, so a
       // later step past the band still compacts.
 
-      var changed = false;
+      var changed = false; // glass-nav-compact only; it changes layout
       if (!minimizeTabsEnabled() || reducedMotion || y <= threshold || now < holdUntil) {
-        changed = toggle(body, "glass-tabs-min", false) || changed;
+        toggle(body, "glass-tabs-min", false);
       } else if (down) {
-        changed = toggle(body, "glass-tabs-min", true) || changed;
+        toggle(body, "glass-tabs-min", true);
       } else if (up) {
-        changed = toggle(body, "glass-tabs-min", false) || changed;
+        toggle(body, "glass-tabs-min", false);
       }
 
       if (!navMorphEnabled() || reducedMotion) {
         toggle(body, "glass-nav-compact", false);
         toggle(body, "glass-nav-expanded", false);
       } else if (y <= threshold) {
-        changed = toggle(body, "glass-nav-compact", false) || changed;
-        changed = toggle(body, "glass-nav-expanded", true) || changed;
+        changed = toggle(body, "glass-nav-compact", false);
+        toggle(body, "glass-nav-expanded", true);
       } else if (down) {
-        changed = toggle(body, "glass-nav-compact", true) || changed;
-        changed = toggle(body, "glass-nav-expanded", false) || changed;
+        changed = toggle(body, "glass-nav-compact", true);
+        toggle(body, "glass-nav-expanded", false);
       } else if (up) {
-        changed = toggle(body, "glass-nav-compact", false) || changed;
-        changed = toggle(body, "glass-nav-expanded", true) || changed;
+        changed = toggle(body, "glass-nav-compact", false);
+        toggle(body, "glass-nav-expanded", true);
       }
 
       if (changed) {
@@ -1327,7 +1329,6 @@
         if (settleTimer) window.clearTimeout(settleTimer);
         settleTimer = window.setTimeout(function () {
           settleTimer = 0;
-          lastScrollY = Math.max(0, window.scrollY);
           updateNavMorph();
         }, SETTLE_MS + 20);
       }
