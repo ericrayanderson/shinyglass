@@ -1240,6 +1240,14 @@ test_that("shinychat glass example builds an app", {
   expect_true("gemini-3.5-flash-lite" %in% env$gemini_model_chain())
 })
 
+test_that("Escape closes glass overlays and pill rows keep 44px targets", {
+  js <- paste(readLines(system.file("js", "glass-ios27.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, 'e.key !== "Escape"', fixed = TRUE)
+  expect_match(js, "returnTo.focus(", fixed = TRUE)
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, ".harbor-pills {\n    row-gap: 12px;", fixed = TRUE)
+})
+
 test_that("dark value boxes, map tiles, and table headers stay readable", {
   scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(scss, ".leaflet-container {", fixed = TRUE)
