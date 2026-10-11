@@ -69,9 +69,10 @@ shiny::runApp(system.file("examples/shinychat-glass", package = "shinyglass"))
 With no API key the reply is a local script. It streams a thinking panel,
 a short answer, a citation chip, and a tide-table tool card.
 `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) switches that session to
-`ellmer::chat_google_gemini()` with Gemini Flash (`gemini-3.7-flash`,
-or `SHINYGLASS_CHAT_MODEL`). The system prompt helps with shinyglass,
-Shiny, R, and ordinary conversation, and declines only a clearly
+`ellmer::chat_google_gemini()` with `gemini-3.5-flash-lite`, falling
+back to `gemini-3.8-flash` and `gemini-3.7-flash` (`SHINYGLASS_CHAT_MODEL`
+is tried first when set). Live replies stay focused on shinyglass,
+Shiny, R, and ordinary conversation, and decline only a clearly
 unrelated or abusive request. A small chip reads Live (Gemini) or
 Demo replies. A public session allows 8 messages of at most 400
 characters. If the API errors or returns a quota response (429), a
