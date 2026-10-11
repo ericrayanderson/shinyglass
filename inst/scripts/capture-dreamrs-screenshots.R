@@ -178,8 +178,8 @@ capture_dreamrs_app <- function(
   only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
   if (nzchar(only)) {
     want <- strsplit(only, ",", fixed = TRUE)[[1]]
-    if (!basename(out_light) %in% want) out_light <- NULL
-    if (!basename(out_dark) %in% want) out_dark <- NULL
+    if (is.null(out_light) || !basename(out_light) %in% want) out_light <- NULL
+    if (is.null(out_dark) || !basename(out_dark) %in% want) out_dark <- NULL
     if (is.null(out_light) && is.null(out_dark)) return(invisible(NULL))
   }
 
@@ -276,10 +276,13 @@ capture_dreamrs_app(
   height = 960L,
   wait_mode = "olympic"
 )
+# No dark shot. statiCard(color = "#112446", animate = TRUE) writes that
+# navy as an inline color and as fill on the value, so the numbers stay
+# near-black on dark glass. The light figure is the one we keep.
 capture_dreamrs_app(
   "tdb-naissances",
   file.path(fig_dir, "dreamrs-tdb-naissances.png"),
-  file.path(fig_dir, "dreamrs-tdb-naissances-dark.png"),
+  NULL,
   port = 3864L,
   height = 920L,
   wait_mode = "naissances"
