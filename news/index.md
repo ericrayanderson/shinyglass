@@ -2,6 +2,8 @@
 
 ## shinyglass 0.5.0
 
+CRAN release: 2026-10-11
+
 ### Mobile-ready
 
 - On a coarse pointer, the controls Playwright measures are at least
