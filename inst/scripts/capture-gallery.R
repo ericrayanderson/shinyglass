@@ -253,6 +253,11 @@ shots <- list(
 
 base_port <- 4200L
 results <- character()
+gallery_only <- Sys.getenv("SHINYGLASS_GALLERY_ONLY", "")
+if (nzchar(gallery_only)) {
+  keep <- strsplit(gallery_only, ",", fixed = TRUE)[[1]]
+  shots <- Filter(function(s) s$dest %in% keep, shots)
+}
 
 for (i in seq_along(shots)) {
   shot <- shots[[i]]

@@ -175,6 +175,13 @@ capture_dreamrs_app <- function(
   if (!file.exists(app_file)) {
     stop("Missing ", app_file)
   }
+  only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
+  if (nzchar(only)) {
+    want <- strsplit(only, ",", fixed = TRUE)[[1]]
+    if (!basename(out_light) %in% want) out_light <- NULL
+    if (!basename(out_dark) %in% want) out_dark <- NULL
+    if (is.null(out_light) && is.null(out_dark)) return(invisible(NULL))
+  }
 
   capture_one <- function(out_path, preset = c("light", "dark")) {
     preset <- match.arg(preset)
@@ -248,8 +255,8 @@ capture_dreamrs_app <- function(
     message("Saved ", out_path)
   }
 
-  capture_one(out_light, "light")
-  capture_one(out_dark, "dark")
+  if (!is.null(out_light)) capture_one(out_light, "light")
+  if (!is.null(out_dark)) capture_one(out_dark, "dark")
 }
 
 capture_dreamrs_app(

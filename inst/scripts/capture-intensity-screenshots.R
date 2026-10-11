@@ -128,6 +128,10 @@ start_app <- function(preset, port) {
 }
 
 capture_shot <- function(preset, intensity, out_name, port) {
+  only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
+  if (nzchar(only) && !out_name %in% strsplit(only, ",", fixed = TRUE)[[1]]) {
+    return(invisible(NULL))
+  }
   out_path <- file.path(fig_dir, out_name)
   app <- start_app(preset, port)
   on.exit(

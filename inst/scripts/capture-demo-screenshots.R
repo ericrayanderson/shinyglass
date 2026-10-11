@@ -226,6 +226,10 @@ capture_app <- function(
     wait_mode = c("default", "querychat", "plotly_gt"),
     prep = NULL) {
   wait_mode <- match.arg(wait_mode)
+  only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
+  if (nzchar(only) && !basename(out_path) %in% strsplit(only, ",", fixed = TRUE)[[1]]) {
+    return(invisible(NULL))
+  }
   url <- sprintf("http://127.0.0.1:%d", port)
   args <- commandArgs(trailingOnly = FALSE)
   file_arg <- grep("^--file=", args, value = TRUE)
