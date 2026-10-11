@@ -6827,6 +6827,85 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
 @include glass-pointer-coarse-narrow("html[data-glass-preset][data-glass-pointer='coarse']");
 
 
+// Desktop phone frame (?frame=0). The iframe has no iOS safe area. A
+// transparent border is the 59px status bar and 34px home indicator:
+// borders stay put while the page scrolls, so content never enters the
+// island. Real phones keep env(safe-area-inset-*) and do not match this.
+html[data-phone-frame="0"] {
+  --glass-safe-top: 59px;
+  --glass-safe-bottom: 34px;
+  height: 100%;
+  overflow: hidden;
+  background: var(--glass-page-bg);
+  background-color: var(--glass-body-bg);
+}
+
+html[data-phone-frame="0"] body {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  border-top: var(--glass-safe-top) solid transparent;
+  border-bottom: var(--glass-safe-bottom) solid transparent;
+}
+
+// Viewport-sized shells ignore the border and would run under the home
+// indicator. Fill the body's content box instead.
+html[data-phone-frame="0"] :is(shiny-chat-page, body > .bslib-page-fill) {
+  flex: 1 1 auto;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+}
+
+html[data-phone-frame="0"] :is(.fixed-top, .navbar.fixed-top) {
+  top: var(--glass-safe-top) !important;
+}
+
+html[data-phone-frame="0"] :is(.fixed-bottom, .navbar.fixed-bottom, nav.fixed-bottom) {
+  bottom: var(--glass-safe-bottom) !important;
+}
+
+html[data-phone-frame="0"] :is(.offcanvas, .shiny-chat-page-sidebar) {
+  top: var(--glass-safe-top) !important;
+  bottom: var(--glass-safe-bottom) !important;
+}
+
+// iPhones do not keep a desktop scrollbar. Scrolling and momentum still work.
+html[data-phone-frame="0"],
+html[data-phone-frame="0"] *,
+html[data-glass-pointer="coarse"],
+html[data-glass-pointer="coarse"] * {
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+html[data-phone-frame="0"]::-webkit-scrollbar,
+html[data-phone-frame="0"] *::-webkit-scrollbar,
+html[data-glass-pointer="coarse"]::-webkit-scrollbar,
+html[data-glass-pointer="coarse"] *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+@media (pointer: coarse) {
+  html,
+  html * {
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html::-webkit-scrollbar,
+  html *::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+  }
+}
+
 html[data-glass-preset] .offcanvas-backdrop.show {
   background-color: rgba(15, 15, 20, 0.38);
   backdrop-filter: blur(8px);

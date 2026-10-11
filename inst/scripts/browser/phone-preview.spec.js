@@ -128,9 +128,97 @@ test('a wide coarse pointer does not mount the preview', async ({ browser }) => 
     await expect(page.locator('.phone-preview-toggle')).toHaveCount(0);
     await expect(page.locator('iframe')).toHaveCount(0);
     await expect(page.locator('.phone-preview-root')).toHaveCount(0);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth)).toBe('none');
   } finally {
     await context.close();
   }
+});
+
+test('the phone frame clears the island and fills the window', async ({ page }) => {
+  test.setTimeout(90000);
+  await page.setViewportSize({ width: 1024, height: 594 });
+  await page.addInitScript(() => localStorage.setItem('shinyglass-phone-preview:demo', 'phone'));
+  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+
+  const outerScroll = await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarWidth);
+  expect(outerScroll).not.toBe('none');
+
+  const device = page.locator('.phone-preview-device');
+  await expect(device).toBeVisible();
+  const box = await device.boundingBox();
+  expect(Math.abs(box.height - 594 * 0.9)).toBeLessThan(3);
+  expect(Math.abs(box.width / box.height - 413 / 872)).toBeLessThan(0.02);
+
+  await expect(page.locator('.phone-preview-status')).toBeVisible();
+  await expect(page.locator('.phone-preview-time')).toHaveText(/^\d{1,2}:\d{2}$/);
+  await expect(page.locator('.phone-preview-status-glyphs svg')).toHaveCount(3);
+  await expect(page.locator('.phone-preview-home-bar')).toBeVisible();
+
+  const island = await page.locator('.phone-preview-island').boundingBox();
+  const time = await page.locator('.phone-preview-time').boundingBox();
+  const glyphs = await page.locator('.phone-preview-status-glyphs').boundingBox();
+  expect(time.x + time.width).toBeLessThan(island.x - 1);
+  expect(glyphs.x).toBeGreaterThan(island.x + island.width + 1);
+
+  const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
+  await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForSelector('.glass-page-controls', { timeout: 30000 });
+  const framed = await child.evaluate(() => {
+    const bodyStyle = getComputedStyle(document.body);
+    const content = document.querySelector('.glass-page-controls');
+    const top = content.getBoundingClientRect().top;
+    document.body.scrollTop = document.body.scrollHeight;
+    const underIsland = document.elementFromPoint(196, 24);
+    const underHome = document.elementFromPoint(196, 830);
+    return {
+      scrollbar: getComputedStyle(document.documentElement).scrollbarWidth,
+      borderTop: parseFloat(bodyStyle.borderTopWidth),
+      borderBottom: parseFloat(bodyStyle.borderBottomWidth),
+      top,
+      underIsland: underIsland === document.body || underIsland === document.documentElement,
+      underHome: underHome === document.body || underHome === document.documentElement,
+    };
+  });
+  expect(framed.scrollbar).toBe('none');
+  expect(framed.borderTop).toBeGreaterThanOrEqual(59);
+  expect(framed.borderBottom).toBeGreaterThanOrEqual(34);
+  expect(framed.top).toBeGreaterThanOrEqual(58);
+  expect(framed.underIsland).toBe(true);
+  expect(framed.underHome).toBe(true);
+
+  const chrome = await page.locator('.phone-preview-screen').getAttribute('data-phone-chrome');
+  const theme = await child.evaluate(() => document.documentElement.getAttribute('data-bs-theme') || '');
+  if (theme === 'light' || theme === 'dark') expect(chrome).toBe(theme);
+});
+
+test('the framed chat header sits below the island', async ({ page }) => {
+  test.setTimeout(90000);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.addInitScript(() => localStorage.setItem('shinyglass-phone-preview:chat', 'phone'));
+  await page.goto('http://127.0.0.1:3949/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
+  await expect(page.locator('iframe.phone-preview-frame')).toBeVisible();
+  const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
+  await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForSelector('.shiny-chat-page-header', { timeout: 30000 });
+  const layout = await child.evaluate(() => {
+    const header = document.querySelector('.shiny-chat-page-header').getBoundingClientRect();
+    const composer = document.querySelector('.shiny-chat-composer, .shiny-chat-input');
+    const composerBox = composer ? composer.getBoundingClientRect() : null;
+    const underIsland = document.elementFromPoint(196, 24);
+    return {
+      headerTop: header.top,
+      composerBottom: composerBox ? composerBox.bottom : null,
+      underIsland: underIsland === document.body || underIsland === document.documentElement,
+      scrollbar: getComputedStyle(document.documentElement).scrollbarWidth,
+    };
+  });
+  expect(layout.headerTop).toBeGreaterThanOrEqual(58);
+  expect(layout.composerBottom).not.toBeNull();
+  expect(layout.composerBottom).toBeLessThanOrEqual(852 - 34 + 1);
+  expect(layout.underIsland).toBe(true);
+  expect(layout.scrollbar).toBe('none');
 });
 
 test('shrinking below 900px removes the frame and the extra session', async ({ page }) => {

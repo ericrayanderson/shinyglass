@@ -14,7 +14,10 @@
   area, and the sources close button.
 * The desktop phone frame loads with `?frame=0` and sets
   `data-glass-pointer="coarse"` on the framed document. Those coarse sizes
-  then apply inside the preview.
+  then apply inside the preview. The frame draws a status bar and a home
+  indicator, and the app content starts below the island. The framed page
+  hides the desktop scrollbar. The device scales to about 90% of the
+  window height.
 * A popover on a coarse pointer at 393x852 closes on a second tap of its
   trigger and on a tap outside. On a 390x852 touch viewport, the Harbor
   notes sidebar toggle and close button both respond. The sources

@@ -35,6 +35,8 @@ test_that("phone preview attaches assets and suppresses the frame", {
   expect_match(as.character(outer), "(pointer: fine) and (min-width: 900px)", fixed = TRUE)
   expect_match(as.character(framed), "data-glass-pointer", fixed = TRUE)
   expect_match(as.character(framed), "coarse", fixed = TRUE)
+  expect_match(as.character(frame_dep$head), "shinyglass-phone-frame-boot", fixed = TRUE)
+  expect_null(outer_dep$head)
   expect_true(file.exists(file.path(outer_dep$src$file, "phone-preview.js")))
 
   # Attaching the dependency must not stack onto the shared page object.
