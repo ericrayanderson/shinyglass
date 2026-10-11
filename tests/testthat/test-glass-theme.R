@@ -1240,6 +1240,19 @@ test_that("shinychat glass example builds an app", {
   expect_true("gemini-3.5-flash-lite" %in% env$gemini_model_chain())
 })
 
+test_that("dark value boxes, map tiles, and table headers stay readable", {
+  scss <- paste(readLines(system.file("scss", "glass.scss", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(scss, ".leaflet-container {", fixed = TRUE)
+  expect_match(scss, "overflow: hidden !important;", fixed = TRUE)
+  expect_match(scss, "body .small-box,\n  body .info-box,\n  .bslib-value-box", fixed = TRUE)
+  expect_match(scss, "background: #1c1c1e !important;", fixed = TRUE)
+  expect_match(scss, ".apexcharts-canvas .apexcharts-text", fixed = TRUE)
+  js <- paste(readLines(system.file("scripts", "audit-glass-contrast.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "function glassAuditValueBoxShowcase", fixed = TRUE)
+  expect_match(js, "value-box-showcase", fixed = TRUE)
+  expect_match(js, "value-box-covered", fixed = TRUE)
+})
+
 test_that("compatibility example builds an app", {
   skip_if_not_installed("bslib")
   path <- system.file("examples", "compat-glass.R", package = "shinyglass")

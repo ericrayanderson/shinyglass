@@ -298,6 +298,7 @@ function runGlassAudit(selectors, preset, minContrast, textAA) {
 
   if (preset === "dark" || document.documentElement.dataset.glassPreset === "dark") {
     glassAuditTitleSheen(all);
+    glassAuditValueBoxShowcase(all);
   }
 
   return {
@@ -425,6 +426,101 @@ function glassAuditTitleSheen(all) {
           }
         });
       }
+    }
+  }
+}
+
+function glassAuditValueBoxShowcase(all) {
+  const boxes = document.querySelectorAll(
+    ".bslib-value-box, .small-box, .info-box, .value-box"
+  );
+  const textSel = [
+    ".value-box-value",
+    ".value-box-title",
+    ".small-box h3",
+    ".small-box p",
+    ".info-box-number",
+    ".info-box-text"
+  ].join(", ");
+  const limit = Math.min(boxes.length, 8);
+  for (let i = 0; i < limit; i++) {
+    const el = boxes[i];
+    const box = el.getBoundingClientRect();
+    if (box.width < 8 || box.height < 8) continue;
+    const showcase = el.querySelector(
+      ".value-box-showcase, .icon-large, .icon, .info-box-icon"
+    );
+    if (showcase) {
+      const sc = getComputedStyle(showcase);
+      const before = getComputedStyle(showcase, "::before");
+      const reach =
+        glassSheenReach(sc.backgroundImage, box.height) ||
+        glassSheenReach(before.backgroundImage, box.height);
+      if (reach && reach.reach > 24) {
+        all.push({
+          level: "FAIL",
+          code: "value-box-showcase-sheen",
+          message:
+            "value-box showcase sheen fades over " +
+            Math.round(reach.reach) +
+            "px",
+          meta: { reach_px: Math.round(reach.reach) }
+        });
+      }
+      const wash = glassParseColor(sc.backgroundColor);
+      const sb = showcase.getBoundingClientRect();
+      if (
+        wash &&
+        wash.r > 220 &&
+        wash.g > 220 &&
+        wash.b > 220 &&
+        wash.a > 0.35 &&
+        sb.width > 48 &&
+        sb.height > 48
+      ) {
+        all.push({
+          level: "FAIL",
+          code: "value-box-showcase-wash",
+          message: "value-box showcase is a large near-white plate under the text"
+        });
+      }
+    }
+    const textEl = el.querySelector(textSel);
+    if (!textEl) continue;
+    const tb = textEl.getBoundingClientRect();
+    if (!tb.width || !tb.height) continue;
+    const cx = Math.min(Math.max(tb.left + 12, box.left + 4), box.right - 4);
+    const cy = Math.min(Math.max(tb.top + Math.min(tb.height / 2, 16), box.top + 4), box.bottom - 4);
+    const top = document.elementFromPoint(cx, cy);
+    if (top && !el.contains(top)) {
+      const name = (top.className && String(top.className).split(/\s+/).slice(0, 2).join(".")) || top.tagName;
+      all.push({
+        level: "FAIL",
+        code: "value-box-covered",
+        message: "value box text is covered by ." + name,
+        meta: { text: (textEl.innerText || "").trim().slice(0, 40) }
+      });
+    }
+    const ink = glassParseColor(getComputedStyle(textEl).color);
+    const film = glassParseColor(getComputedStyle(el).backgroundColor);
+    const page = { r: 28, g: 28, b: 30, a: 1 };
+    const bg = glassComposite(film, page) || page;
+    const fg = glassComposite(ink, bg);
+    if (!fg) continue;
+    const ratio = glassContrastRatio(fg, bg);
+    const label = (textEl.innerText || "").trim().slice(0, 40);
+    if (label && ratio < 4.5) {
+      all.push({
+        level: "FAIL",
+        code: "value-box-contrast",
+        message:
+          "value box text is " +
+          Math.round(ratio * 100) / 100 +
+          ':1 for "' +
+          label +
+          '"',
+        meta: { contrast: Math.round(ratio * 100) / 100, text: label }
+      });
     }
   }
 }

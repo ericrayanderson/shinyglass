@@ -3602,8 +3602,9 @@ body .Reactable {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
   padding: 0.45rem;
   margin-bottom: 0.75rem;
-  // Popups and controls must escape the rounded frame.
-  overflow: visible;
+  // Clip tiles and overlay panes. overflow:visible let a white tile
+  // paint across the neighboring value boxes.
+  overflow: hidden;
 }
 
 .leaflet-popup-pane,
@@ -3614,6 +3615,66 @@ body .Reactable {
 .leaflet-container {
   background: color-mix(in srgb, var(--glass-bg) 40%, #1a1a2e 60%);
   font-family: inherit;
+  overflow: hidden !important;
+}
+
+// Dark value boxes sit on an opaque plate. A translucent fill plus
+// backdrop blur pulls a bright neighbor (a map tile, a white card) into
+// a white blob under the number.
+:root[data-glass-preset="dark"] {
+  body .small-box,
+  body .info-box,
+  .bslib-value-box {
+    background: color-mix(in srgb, var(--bs-primary, #007aff) 12%, #1c1c1e) !important;
+    background-color: color-mix(in srgb, var(--bs-primary, #007aff) 12%, #1c1c1e) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  body .small-box::before,
+  body .info-box::before,
+  .bslib-value-box::before {
+    background-image:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 8px),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0%, transparent 8px) !important;
+  }
+
+  .bslib-value-box .value-box-showcase,
+  body .small-box .icon,
+  body .small-box .icon-large,
+  body .info-box .info-box-icon {
+    background: transparent !important;
+    background-image: none !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  .rt-thead .rt-th,
+  .rt-thead .rt-th .rt-th-inner,
+  table.dataTable thead th,
+  table.dataTable thead td,
+  .table > thead > tr > th,
+  .gt_heading,
+  .gt_col_heading {
+    background: #1c1c1e !important;
+    background-color: #1c1c1e !important;
+    color: var(--glass-body-color) !important;
+  }
+
+  .apexcharts-canvas .apexcharts-text,
+  .apexcharts-canvas .apexcharts-legend-text,
+  .apexcharts-canvas .apexcharts-title-text,
+  .apexcharts-canvas .apexcharts-xaxis-label,
+  .apexcharts-canvas .apexcharts-yaxis-label {
+    fill: #f5f5f7 !important;
+  }
+
+  .apexcharts-canvas .apexcharts-gridline,
+  .apexcharts-canvas .apexcharts-xaxis line,
+  .apexcharts-canvas .apexcharts-yaxis line {
+    stroke: rgba(245, 245, 247, 0.45) !important;
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -69,6 +69,10 @@ disable_content_tint <- function(session) {
 capture_app <- function(app_path, out_path, port = 3847L, width = 1400L, height = 1100L,
                         env = character(), disable_tint = FALSE,
                         hide_sidebar_toggle = FALSE) {
+  only <- Sys.getenv("SHINYGLASS_CAPTURE_ONLY", "")
+  if (nzchar(only) && !basename(out_path) %in% strsplit(only, ",", fixed = TRUE)[[1]]) {
+    return(invisible(NULL))
+  }
   url <- sprintf("http://127.0.0.1:%d", port)
   args <- commandArgs(trailingOnly = FALSE)
   file_arg <- grep("^--file=", args, value = TRUE)

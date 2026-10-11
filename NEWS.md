@@ -44,6 +44,10 @@
   Pointer tracking is not available in 0.5.0.
 * In dark mode the top highlight is a 1px rim plus a short sheen (about
   8–12px). A tall sidebar or card no longer grows a white band over its title.
+* Dark value boxes use an opaque plate, and a Leaflet map clips its tiles,
+  so a bright neighbor cannot wash out the number.
+* Dark table headers use a near-black backing so a light-grey header label
+  stays readable. ApexCharts axis text and gridlines follow the dark ink.
 * On a coarse pointer, the Light / Dark / Auto segmented control stays one
   row, 44px tall, at its normal width.
 * Glass edges are darker, and diffusion is more even across chrome and
