@@ -487,16 +487,34 @@ test('coarse pointers keep glass controls at least 44px', async ({ browser }) =>
   await showNav('Overlays');
   await atLeast(page.locator('#pop_btn'), 44);
   const popBtn = page.locator('#pop_btn');
-  await popBtn.click();
-  await expect(page.locator('.popover.show')).toBeVisible();
+  // Bootstrap ignores a toggle while the show transition and the morph
+  // scale-in are still running. Wait for shown.bs.popover and for the
+  // popover's animations to finish before the touch tap.
+  const openPopover = async () => {
+    await page.evaluate(() => {
+      window.__glassPopShown = false;
+      document.addEventListener('shown.bs.popover', () => { window.__glassPopShown = true; }, { once: true });
+    });
+    await popBtn.click();
+    await expect(page.locator('.popover.show')).toBeVisible();
+    await page.waitForFunction(() => window.__glassPopShown === true);
+    await page.waitForFunction(() => {
+      const pop = document.querySelector('.popover.show');
+      return !!pop && pop.getAnimations({ subtree: true }).every((a) => a.playState !== 'running');
+    });
+  };
+  // One tap only, so a regression that needs two taps still fails. Poll
+  // for the close because the hide transition takes a few frames.
+  const tapUntilClosed = async (x, y) => {
+    await page.touchscreen.tap(x, y);
+    await expect.poll(() => page.locator('.popover.show').count(), { timeout: 10000 }).toBe(0);
+  };
+  await openPopover();
   const popBox = await popBtn.boundingBox();
-  await page.touchscreen.tap(popBox.x + popBox.width / 2, popBox.y + popBox.height / 2);
-  await expect(page.locator('.popover.show')).toHaveCount(0);
-  await expect(page.locator('.popover')).toHaveCount(0);
-  await popBtn.click();
-  await expect(page.locator('.popover.show')).toBeVisible();
-  await page.touchscreen.tap(12, 12);
-  await expect(page.locator('.popover.show')).toHaveCount(0);
+  await tapUntilClosed(popBox.x + popBox.width / 2, popBox.y + popBox.height / 2);
+  await expect.poll(() => page.locator('.popover').count(), { timeout: 5000 }).toBe(0);
+  await openPopover();
+  await tapUntilClosed(12, 12);
   await page.locator('#open_modal').scrollIntoViewIfNeeded();
   await page.locator('#open_modal').click();
   const modalClose = page.locator('.modal.show .btn-close, .modal.show [data-bs-dismiss="modal"], .modal.show [data-dismiss="modal"]').first();
