@@ -66,7 +66,7 @@
       <h1>Using shinyglass</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/v0.5.0/vignettes/shinyglass.Rmd" class="external-link"><code>vignettes/shinyglass.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/main/vignettes/shinyglass.Rmd" class="external-link"><code>vignettes/shinyglass.Rmd</code></a></small>
       <div class="d-none name"><code>shinyglass.Rmd</code></div>
     </div>
 
@@ -80,23 +80,10 @@ available as <code><a href="../reference/shinyglass-package.html">help("shinygla
 <p>Intensity runs from <code>0</code> (Ultra Clear) to <code>1</code>
 (Tinted). The default is <code>0.5</code>. Do not pass
 <code>material = "clear"</code>; that argument is deprecated.</p>
-<div class="section level2">
-<h2 id="built-for-phones">Built for phones<a class="anchor" aria-label="anchor" href="#built-for-phones"></a>
-</h2>
-<p>Playwright checks phone-sized viewports (393x852 and 390x852, with
-touch). On a coarse pointer, the controls those tests measure are at
-least 44px, including the sidebar toggle and popover triggers. A popover
-closes on a second tap and on a tap outside. The Harbor notes sidebar
-toggle and close button both respond. Harbor notes does not scroll
-sideways at 393x852 or 390x844, and neither do the 480px dashboard and
-Olympics fixtures. The sources offcanvas opens and closes from its own
-buttons.</p>
-<p><img src="../reference/figures/phone-frame-demo.png" class="r-plt" alt="Basics demo in an iPhone-sized frame" width="280px"></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="fu"><a href="../reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, <span class="st">"bs_theme"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-</div>
 <div class="section level2">
 <h2 id="minimal-app">Minimal app<a class="anchor" aria-label="anchor" href="#minimal-app"></a>
 </h2>
@@ -310,6 +297,15 @@ Build the client from <code>window.shinyglass</code>
 (<code>GlassPage</code>, <code>GlassCard</code>,
 <code>GlassButton</code>, <code>GlassIntensitySlider</code>,
 <code>useGlassTheme</code>). Do not bundle a second React.</p>
+</div>
+<div class="section level2">
+<h2 id="mobile-support">Mobile support<a class="anchor" aria-label="anchor" href="#mobile-support"></a>
+</h2>
+<p>Mobile is fully supported. Controls are sized for touch, sidebars and
+popovers open and close as expected on a phone, and pages do not scroll
+sideways. On a desktop, each live demo has a Phone view button that
+shows it in a phone-sized frame.</p>
+<p><img src="../reference/figures/phone-frame-demo.png" class="r-plt" alt="Basics demo in a phone-sized frame" width="280px"></p>
 </div>
 <div class="section level2">
 <h2 id="pitfalls-and-fixes">Pitfalls and fixes<a class="anchor" aria-label="anchor" href="#pitfalls-and-fixes"></a>

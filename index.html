@@ -69,75 +69,22 @@
 <p>Glass themes for <a href="https://shiny.posit.co/" class="external-link">Shiny</a>, built on <a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a>. Add translucent surfaces, live light/dark switching, and adjustable glass intensity to your app.</p>
 <p><a href="https://ericrayanderson.github.io/shinyglass/">Documentation</a> · <a href="https://ericrayanderson.github.io/shinyglass/articles/theming.html">Theming guide</a> · <a href="https://ericrayanderson.github.io/shinyglass/news/index.html">Release notes</a></p>
 <p align="center">
-<img src="reference/figures/phone-frame-harbor.png" width="600" alt="Harbor notes in the phone frame on the dusk wallpaper"></p>
-<div class="section level2">
-<h2 id="built-for-phones">Built for phones<a class="anchor" aria-label="anchor" href="#built-for-phones"></a>
-</h2>
-<p>Playwright checks phone-sized viewports (393x852 and 390x852, with touch). On a coarse pointer, the controls those tests measure are at least 44px, including the sidebar toggle and popover triggers. A popover closes on a second tap and on a tap outside. The Harbor notes sidebar toggle and close button both respond. Harbor notes does not scroll sideways at 393x852 or 390x844, and neither do the 480px dashboard and Olympics fixtures. The sources offcanvas opens and closes from its own buttons.</p>
-<p align="center">
-<img src="reference/figures/phone-frame-demo.png" width="280" alt="Basics demo in an iPhone-sized frame"></p>
-</div>
-<div class="section level2">
-<h2 id="quick-recipe">Quick recipe<a class="anchor" aria-label="anchor" href="#quick-recipe"></a>
-</h2>
-<p>On an existing bslib page, pass <code><a href="reference/glass_theme.html">glass_theme()</a></code> as <code>theme</code> and observe the controls:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">page_sidebar</a></span><span class="op">(</span></span>
-<span>  title <span class="op">=</span> <span class="st">"Existing app"</span>,</span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>  sidebar <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/sidebar.html" class="external-link">sidebar</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="st">"Main column"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="reference/observe_glass.html">observe_glass</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="reference/glass_page.html">glass_page()</a></code> is the same idea in one call. It includes Light / Dark / Auto, the intensity slider, and accent wells. Intensity runs from <code>0</code> (Ultra Clear) to <code>1</code> (Tinted). The default is <code>0.5</code>. Do not pass <code>material = "clear"</code>; that argument is deprecated.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/glass_page.html">glass_page</a></span><span class="op">(</span></span>
-<span>  title <span class="op">=</span> <span class="st">"Hello, glass"</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Bars"</span>, <span class="fl">5</span>, <span class="fl">30</span>, <span class="fl">15</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="reference/observe_glass.html">observe_glass</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/glass_plot_colors.html">glass_plot_colors</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">input</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">pal</span><span class="op">$</span><span class="va">fill</span>, border <span class="op">=</span> <span class="cn">NA</span>, col.axis <span class="op">=</span> <span class="va">pal</span><span class="op">$</span><span class="va">ink</span><span class="op">)</span></span>
-<span>  <span class="op">}</span>, bg <span class="op">=</span> <span class="st">"transparent"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>The installed package has the full recipe (options, the 0.5.0 migration, and pitfalls): <code><a href="reference/shinyglass-package.html">?shinyglass</a></code> and <code><a href="articles/shinyglass.html">vignette("shinyglass")</a></code>.</p>
-<p align="center">
-<img src="reference/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode"><img src="reference/figures/harbor-notes-dark.png" width="48%" alt="Harbor notes chat on Liquid Glass, dark mode"></p>
-<p>Harbor notes is the flagship demo: a shinychat window on the dusk wallpaper, with a floating composer, a scripted reply (thinking, a citation, and a tide-table tool card), and an offcanvas sources panel. <a href="https://ericrayanderson.shinyapps.io/shinyglass-chat/" class="external-link">Open Harbor notes</a>. The hosted app answers with Gemini Flash and falls back to a local script if the API errors. The same app is in <code>inst/examples/shinychat-glass</code>.</p>
-</div>
+<img src="reference/figures/bslib-dashboard.png" width="100%" alt="A bslib dashboard with the shinyglass theme in light mode: glass sidebar, value boxes, a plot card, and a data table"></p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
 <p>CRAN <strong>0.5.0</strong>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"shinyglass"</span><span class="op">)</span></span></code></pre></div>
 <p>Development builds (GitHub):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ericrayanderson/shinyglass"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
 <span></span>
@@ -158,18 +105,50 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="reference/glass_page.html">glass_page()</a></code> includes Light / Dark / Auto, the intensity slider, and accent wells. Set <code>persist = TRUE</code> (the default here) to remember those choices.</p>
+<p><code><a href="reference/glass_page.html">glass_page()</a></code> includes Light / Dark / Auto, the intensity slider, and accent wells. <code>persist = TRUE</code> (the default for <code><a href="reference/glass_page.html">glass_page()</a></code>) remembers those choices between visits.</p>
+</div>
+<div class="section level2">
+<h2 id="quick-recipe">Quick recipe<a class="anchor" aria-label="anchor" href="#quick-recipe"></a>
+</h2>
+<p>On an existing bslib page, pass <code><a href="reference/glass_theme.html">glass_theme()</a></code> as <code>theme</code> and observe the controls:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericrayanderson.github.io/shinyglass/">shinyglass</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">page_sidebar</a></span><span class="op">(</span></span>
+<span>  title <span class="op">=</span> <span class="st">"Existing app"</span>,</span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="reference/glass_theme.html">glass_theme</a></span><span class="op">(</span>preset <span class="op">=</span> <span class="st">"auto"</span>, intensity <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  sidebar <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/sidebar.html" class="external-link">sidebar</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="reference/glass_theme_toggle.html">glass_theme_toggle</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="reference/glass_intensity_slider.html">glass_intensity_slider</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  <span class="st">"Main column"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="reference/observe_glass.html">observe_glass</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">session</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span></code></pre></div>
+<p>Intensity runs from <code>0</code> (Ultra Clear) to <code>1</code> (Tinted). The default is <code>0.5</code>. Do not pass <code>material = "clear"</code>; that argument is deprecated.</p>
+<p>The installed package has the full recipe (options, the 0.5.0 migration, and pitfalls): <code><a href="reference/shinyglass-package.html">?shinyglass</a></code> and <code><a href="articles/shinyglass.html">vignette("shinyglass")</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="theming">Theming<a class="anchor" aria-label="anchor" href="#theming"></a>
+</h2>
 <p>The intensity slider mirrors iOS 27 <strong>Settings → Appearance → Liquid Glass</strong> (continuous Ultra Clear → Tinted). The default is <code>0.5</code>, Apple’s midpoint. Browsers cannot read that OS slider, so the in-app control is the supported way to match the look. Reduce Transparency paints solid fills with no backdrop blur. Increase Contrast and forced colors override the glass variables.</p>
 <p>Defaults also follow iOS 27 as far as a browser can. Chromium refracts the backdrop through a squircle lens. Safari and Firefox keep blur and tint. Active pills and tabs spring into each other, buttons press with a short spring, and floating bars pick up a scroll-edge fade. Tab bars shrink while you scroll down. Specular highlights are static (no pointer tilt). Icons in bars and non-primary buttons are monochrome clear glass (<code>icon_style = "clear"</code>). Pass <code>icon_style = "color"</code> to keep author colors. The detached sidebar is opt-in: <code>floating_sidebar = TRUE</code>.</p>
 <p>Dense charts and tables can opt into a regular panel with <code>glass_theme(plot_surface = "opaque")</code> while nav and controls stay on glass. The default <code>"clear"</code> look still shows the wallpaper through plot hosts. Use <code><a href="reference/glass_plot_surface_input.html">glass_plot_surface_input()</a></code> to toggle live (ggplot / plotly / gt / DT).</p>
 <p>Named wallpaper scenes (<code>tahoe</code>, <code>dusk</code>, <code>mesh</code>, <code>aurora</code>, <code>harbor</code>, <code>grove</code>) and optional <code>wallpaper=</code> photos stay behind a blur + wash so text meets the contrast floor. For chromote, PDF, or screenshots, call <code><a href="reference/glass_flatten.html">glass_flatten()</a></code> or open the app with <code>?glass_flatten=1</code>.</p>
 <p>Power users can read <code><a href="reference/glass_css_tokens.html">glass_css_tokens()</a></code> and override <code>--glass-*</code> variables with <code>glass_theme(tokens = list(blur = "28px"))</code> without forking SCSS.</p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="72%" alt="Glass intensity changing from clear to tinted"></p>
 </div>
 <div class="section level2">
 <h2 id="live-demos">Live demos<a class="anchor" aria-label="anchor" href="#live-demos"></a>
 </h2>
 <p>Apps may take a moment to wake up.</p>
-<p>Try it on your phone, or press Phone view on a desktop.</p>
 <table class="table">
 <colgroup>
 <col width="40%">
@@ -204,8 +183,19 @@
 </table>
 <p>These five are the hosted set. plotly + gt stays a local example in <code>inst/examples/plotly-gt-demo.R</code>.</p>
 <p align="center">
-<img src="https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif" width="72%" alt="Glass intensity changing from clear to tinted"></p>
-<p>The intensity slider still runs from Ultra Clear to Tinted. The default is <code>0.5</code>.</p>
+<img src="reference/figures/harbor-notes.png" width="48%" alt="Harbor notes chat on Liquid Glass, light mode"><img src="reference/figures/harbor-notes-dark.png" width="48%" alt="Harbor notes chat on Liquid Glass, dark mode"></p>
+<p>Harbor notes is the flagship demo: a shinychat window on the dusk wallpaper, with a floating composer, a scripted reply (thinking, a citation, and a tide-table tool card), and an offcanvas sources panel. <a href="https://ericrayanderson.shinyapps.io/shinyglass-chat/" class="external-link">Open Harbor notes</a>. The hosted app answers with Gemini Flash and falls back to a local script if the API errors. The same app is in <code>inst/examples/shinychat-glass</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="mobile-support">Mobile support<a class="anchor" aria-label="anchor" href="#mobile-support"></a>
+</h2>
+<p>Mobile is fully supported. Controls are sized for touch, sidebars and popovers open and close as expected on a phone, and pages do not scroll sideways. On a desktop, each live demo has a Phone view button that shows it in a phone-sized frame.</p>
+<p align="center">
+<img src="reference/figures/phone-frame-harbor.png" width="360" alt="Harbor notes shown in a phone-sized frame"></p>
+</div>
+<div class="section level2">
+<h2 id="compatibility">Compatibility<a class="anchor" aria-label="anchor" href="#compatibility"></a>
+</h2>
 <p>Built for Bootstrap 5 and bslib. See <a href="https://ericrayanderson.github.io/shinyglass/articles/compatibility.html">compatibility</a> for supported widgets and older layouts.</p>
 <p>More: <a href="https://github.com/ericrayanderson/shinyglass/tree/main/inst/examples" class="external-link">examples</a> · <a href="https://github.com/ericrayanderson/shinyglass/tree/main/python" class="external-link">experimental Python package</a> · <a href="https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/VISUAL-QA.md" class="external-link">testing</a> · <a href="https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/SHINYAPPS-DEPLOY.md" class="external-link">deployment</a></p>
 </div>

@@ -10,94 +10,9 @@ guide](https://ericrayanderson.github.io/shinyglass/articles/theming.html)
 · [Release
 notes](https://ericrayanderson.github.io/shinyglass/news/index.html)
 
-![Harbor notes in the phone frame on the dusk
-wallpaper](reference/figures/phone-frame-harbor.png)
-
-## Built for phones
-
-Playwright checks phone-sized viewports (393x852 and 390x852, with
-touch). On a coarse pointer, the controls those tests measure are at
-least 44px, including the sidebar toggle and popover triggers. A popover
-closes on a second tap and on a tap outside. The Harbor notes sidebar
-toggle and close button both respond. Harbor notes does not scroll
-sideways at 393x852 or 390x844, and neither do the 480px dashboard and
-Olympics fixtures. The sources offcanvas opens and closes from its own
-buttons.
-
-![Basics demo in an iPhone-sized
-frame](reference/figures/phone-frame-demo.png)
-
-## Quick recipe
-
-On an existing bslib page, pass
-[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
-as `theme` and observe the controls:
-
-``` r
-
-library(shiny)
-library(bslib)
-library(shinyglass)
-
-ui <- page_sidebar(
-  title = "Existing app",
-  theme = glass_theme(preset = "auto", intensity = 0.5),
-  sidebar = sidebar(
-    glass_theme_toggle(),
-    glass_intensity_slider()
-  ),
-  "Main column"
-)
-
-server <- function(input, output, session) {
-  observe_glass(input, session)
-}
-
-shinyApp(ui, server)
-```
-
-[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
-is the same idea in one call. It includes Light / Dark / Auto, the
-intensity slider, and accent wells. Intensity runs from `0` (Ultra
-Clear) to `1` (Tinted). The default is `0.5`. Do not pass
-`material = "clear"`; that argument is deprecated.
-
-``` r
-
-ui <- glass_page(
-  title = "Hello, glass",
-  sliderInput("n", "Bars", 5, 30, 15),
-  plotOutput("plot")
-)
-
-server <- function(input, output, session) {
-  observe_glass(input, session)
-  output$plot <- renderPlot({
-    pal <- glass_plot_colors(input = input)
-    barplot(seq_len(input$n), col = pal$fill, border = NA, col.axis = pal$ink)
-  }, bg = "transparent")
-}
-
-shinyApp(ui, server)
-```
-
-The installed package has the full recipe (options, the 0.5.0 migration,
-and pitfalls):
-[`?shinyglass`](https://ericrayanderson.github.io/shinyglass/reference/shinyglass-package.md)
-and
-[`vignette("shinyglass")`](https://ericrayanderson.github.io/shinyglass/articles/shinyglass.md).
-
-![Harbor notes chat on Liquid Glass, light
-mode](reference/figures/harbor-notes.png)![Harbor notes chat on Liquid
-Glass, dark mode](reference/figures/harbor-notes-dark.png)
-
-Harbor notes is the flagship demo: a shinychat window on the dusk
-wallpaper, with a floating composer, a scripted reply (thinking, a
-citation, and a tide-table tool card), and an offcanvas sources panel.
-[Open Harbor
-notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The
-hosted app answers with Gemini Flash and falls back to a local script if
-the API errors. The same app is in `inst/examples/shinychat-glass`.
+![A bslib dashboard with the shinyglass theme in light mode: glass
+sidebar, value boxes, a plot card, and a data
+table](reference/figures/bslib-dashboard.png)
 
 ## Install
 
@@ -144,7 +59,49 @@ shinyApp(ui, server)
 
 [`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md)
 includes Light / Dark / Auto, the intensity slider, and accent wells.
-Set `persist = TRUE` (the default here) to remember those choices.
+`persist = TRUE` (the default for
+[`glass_page()`](https://ericrayanderson.github.io/shinyglass/reference/glass_page.md))
+remembers those choices between visits.
+
+## Quick recipe
+
+On an existing bslib page, pass
+[`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+as `theme` and observe the controls:
+
+``` r
+
+library(shiny)
+library(bslib)
+library(shinyglass)
+
+ui <- page_sidebar(
+  title = "Existing app",
+  theme = glass_theme(preset = "auto", intensity = 0.5),
+  sidebar = sidebar(
+    glass_theme_toggle(),
+    glass_intensity_slider()
+  ),
+  "Main column"
+)
+
+server <- function(input, output, session) {
+  observe_glass(input, session)
+}
+
+shinyApp(ui, server)
+```
+
+Intensity runs from `0` (Ultra Clear) to `1` (Tinted). The default is
+`0.5`. Do not pass `material = "clear"`; that argument is deprecated.
+
+The installed package has the full recipe (options, the 0.5.0 migration,
+and pitfalls):
+[`?shinyglass`](https://ericrayanderson.github.io/shinyglass/reference/shinyglass-package.md)
+and
+[`vignette("shinyglass")`](https://ericrayanderson.github.io/shinyglass/articles/shinyglass.md).
+
+## Theming
 
 The intensity slider mirrors iOS 27 **Settings → Appearance → Liquid
 Glass** (continuous Ultra Clear → Tinted). The default is `0.5`, Apple’s
@@ -180,11 +137,12 @@ Power users can read
 and override `--glass-*` variables with
 `glass_theme(tokens = list(blur = "28px"))` without forking SCSS.
 
+![Glass intensity changing from clear to
+tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
+
 ## Live demos
 
 Apps may take a moment to wake up.
-
-Try it on your phone, or press Phone view on a desktop.
 
 | Demo | Explore |
 |----|----|
@@ -197,11 +155,29 @@ Try it on your phone, or press Phone view on a desktop.
 These five are the hosted set. plotly + gt stays a local example in
 `inst/examples/plotly-gt-demo.R`.
 
-![Glass intensity changing from clear to
-tinted](https://raw.githubusercontent.com/ericrayanderson/shinyglass/main/man/figures/intensity-slider.gif)
+![Harbor notes chat on Liquid Glass, light
+mode](reference/figures/harbor-notes.png)![Harbor notes chat on Liquid
+Glass, dark mode](reference/figures/harbor-notes-dark.png)
 
-The intensity slider still runs from Ultra Clear to Tinted. The default
-is `0.5`.
+Harbor notes is the flagship demo: a shinychat window on the dusk
+wallpaper, with a floating composer, a scripted reply (thinking, a
+citation, and a tide-table tool card), and an offcanvas sources panel.
+[Open Harbor
+notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The
+hosted app answers with Gemini Flash and falls back to a local script if
+the API errors. The same app is in `inst/examples/shinychat-glass`.
+
+## Mobile support
+
+Mobile is fully supported. Controls are sized for touch, sidebars and
+popovers open and close as expected on a phone, and pages do not scroll
+sideways. On a desktop, each live demo has a Phone view button that
+shows it in a phone-sized frame.
+
+![Harbor notes shown in a phone-sized
+frame](reference/figures/phone-frame-harbor.png)
+
+## Compatibility
 
 Built for Bootstrap 5 and bslib. See
 [compatibility](https://ericrayanderson.github.io/shinyglass/articles/compatibility.html)

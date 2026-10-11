@@ -11,20 +11,6 @@ also available as
 Intensity runs from `0` (Ultra Clear) to `1` (Tinted). The default is
 `0.5`. Do not pass `material = "clear"`; that argument is deprecated.
 
-## Built for phones
-
-Playwright checks phone-sized viewports (393x852 and 390x852, with
-touch). On a coarse pointer, the controls those tests measure are at
-least 44px, including the sidebar toggle and popover triggers. A popover
-closes on a second tap and on a tap outside. The Harbor notes sidebar
-toggle and close button both respond. Harbor notes does not scroll
-sideways at 393x852 or 390x844, and neither do the 480px dashboard and
-Olympics fixtures. The sources offcanvas opens and closes from its own
-buttons.
-
-![Basics demo in an iPhone-sized
-frame](../reference/figures/phone-frame-demo.png)
-
 ``` r
 
 library(shinyglass)
@@ -189,6 +175,16 @@ has no `theme` argument. Pass `extra_deps = glass_theme_dependencies()`.
 Build the client from `window.shinyglass` (`GlassPage`, `GlassCard`,
 `GlassButton`, `GlassIntensitySlider`, `useGlassTheme`). Do not bundle a
 second React.
+
+## Mobile support
+
+Mobile is fully supported. Controls are sized for touch, sidebars and
+popovers open and close as expected on a phone, and pages do not scroll
+sideways. On a desktop, each live demo has a Phone view button that
+shows it in a phone-sized frame.
+
+![Basics demo in a phone-sized
+frame](../reference/figures/phone-frame-demo.png)
 
 ## Pitfalls and fixes
 

@@ -48,7 +48,7 @@ browseVignettes("shinyglass") lists that vignette.'></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Liquid Glass Design Themes for 'shiny' Applications</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/v0.5.0/R/shinyglass-package.R" class="external-link"><code>R/shinyglass-package.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ericrayanderson/shinyglass/blob/main/R/shinyglass-package.R" class="external-link"><code>R/shinyglass-package.R</code></a></small>
       <div class="d-none name"><code>shinyglass-package.Rd</code></div>
     </div>
 
@@ -66,20 +66,6 @@ This is the installed usage page. <code>help("shinyglass")</code> and
     <p>Pass <code><a href="glass_theme.html">glass_theme()</a></code> to <code>theme</code> on a bslib page or <code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage()</a></code>, or
 start from <code><a href="glass_page.html">glass_page()</a></code>. Intensity runs from <code>0</code> (Ultra Clear) to <code>1</code>
 (Tinted). The default is <code>0.5</code>.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="built-for-phones">Built for phones<a class="anchor" aria-label="anchor" href="#built-for-phones"></a></h2>
-
-
-<p>Playwright checks phone-sized viewports (393x852 and 390x852, with
-touch). On a coarse pointer, the controls those tests measure are at
-least 44px, including the sidebar toggle and popover triggers. A
-popover closes on a second tap and on a tap outside. The Harbor notes
-sidebar toggle and close button both respond. Harbor notes does not
-scroll sideways at 393x852 or 390x844, and neither do the 480px
-dashboard and Olympics fixtures. The sources offcanvas opens and
-closes from its own buttons.</p>
-<p><img src="figures/phone-frame-demo.png" width="280" alt="Basics demo in an iPhone-sized frame"></p>
     </div>
     <div class="section level2">
     <h2 id="minimal-app">Minimal app<a class="anchor" aria-label="anchor" href="#minimal-app"></a></h2>
@@ -168,6 +154,16 @@ hides them.</p></li>
 <code>icon_style = "clear"</code> are on by default. <code>floating_sidebar</code> stays off.</p></li>
 <li><p>Page functions and click targets stay the same.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="mobile-support">Mobile support<a class="anchor" aria-label="anchor" href="#mobile-support"></a></h2>
+
+
+<p>Mobile is fully supported. Controls are sized for touch, sidebars and
+popovers open and close as expected on a phone, and pages do not
+scroll sideways. On a desktop, each live demo has a Phone view button
+that shows it in a phone-sized frame.</p>
+<p><img src="figures/phone-frame-demo.png" width="280" alt="Basics demo in a phone-sized frame"></p>
+    </div>
     <div class="section level2">
     <h2 id="pitfalls">Pitfalls<a class="anchor" aria-label="anchor" href="#pitfalls"></a></h2>
 
