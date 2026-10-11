@@ -1230,26 +1230,46 @@
   });
 
   // compact navbar on scroll down; expand on scroll up
-  // Note: htmlDependency scripts often load in <head> before <body> exists —
+  // Note: htmlDependency scripts often load in <head> before <body> exists -
   // never touch document.body until DOM is ready.
+  //
+  // Compacting a static navbar changes its height. Scroll anchoring then
+  // moves window.scrollY by that amount, which would read as a scroll in
+  // the other direction and flip the bar back (a loop near the threshold).
+  // Scroll that arrives while the bar settles after a toggle is treated as
+  // layout, not user intent, and a direction must travel TRAVEL px before
+  // it counts. One re-check runs when the settle window ends.
   (function () {
     var threshold = 56;
+    // Compact only past threshold + HYSTERESIS, so the height lost by
+    // compacting cannot carry scrollY back under the threshold.
+    var HYSTERESIS = 16;
+    var TRAVEL = 24;
+    var SETTLE_MS = 450;
     var lastScrollY = window.scrollY || 0;
+    var travel = 0;
+    var settleUntil = 0;
+    var settleTimer = 0;
     var ticking = false;
 
+    function toggle(body, cls, on) {
+      if (body.classList.contains(cls) === on) return false;
+      body.classList.toggle(cls, on);
+      return true;
+    }
+
     function updateNavMorph() {
+      ticking = false;
       var body = document.body;
       if (!body) return;
 
       var y = Math.max(0, window.scrollY);
+      var dy = y - lastScrollY;
+      lastScrollY = y;
       // iOS 27 scroll-edge: uniform toolbar while content sits under floating
       // chrome. Contrast-only: keep under reduced-motion and when nav_morph
       // is off. Compact-on-scroll-down remains a separate motion treatment.
-      if (scrollEdgeEnabled() && y > threshold) {
-        body.classList.add("glass-scroll-edge");
-      } else {
-        body.classList.remove("glass-scroll-edge");
-      }
+      toggle(body, "glass-scroll-edge", scrollEdgeEnabled() && y > threshold);
 
       var reducedMotion = false;
       try {
@@ -1262,37 +1282,55 @@
           holdUntil = window.shinyglass._tabsHoldUntil() || 0;
         }
       } catch (eHold) { holdUntil = 0; }
-      if (!minimizeTabsEnabled() || reducedMotion || y <= threshold || Date.now() < holdUntil) {
-        body.classList.remove("glass-tabs-min");
-      } else if (y > lastScrollY + 2) {
-        body.classList.add("glass-tabs-min");
-      } else if (y < lastScrollY - 2) {
-        body.classList.remove("glass-tabs-min");
+
+      var now = Date.now();
+      if (now < settleUntil) {
+        // Layout shift from our own toggle. Do not count it as travel.
+        travel = 0;
+        return;
+      }
+      if (dy !== 0) {
+        travel = (travel === 0 || (dy > 0) === (travel > 0)) ? travel + dy : dy;
+      }
+      var down = travel >= TRAVEL && y > threshold + HYSTERESIS;
+      var up = travel <= -TRAVEL;
+      if (down || up) travel = 0;
+      // Scrolling down inside the hysteresis band keeps its travel, so a
+      // later step past the band still compacts.
+
+      var changed = false;
+      if (!minimizeTabsEnabled() || reducedMotion || y <= threshold || now < holdUntil) {
+        changed = toggle(body, "glass-tabs-min", false) || changed;
+      } else if (down) {
+        changed = toggle(body, "glass-tabs-min", true) || changed;
+      } else if (up) {
+        changed = toggle(body, "glass-tabs-min", false) || changed;
       }
 
       if (!navMorphEnabled() || reducedMotion) {
-        body.classList.remove("glass-nav-compact", "glass-nav-expanded");
-        lastScrollY = y;
-        ticking = false;
-        return;
+        toggle(body, "glass-nav-compact", false);
+        toggle(body, "glass-nav-expanded", false);
+      } else if (y <= threshold) {
+        changed = toggle(body, "glass-nav-compact", false) || changed;
+        changed = toggle(body, "glass-nav-expanded", true) || changed;
+      } else if (down) {
+        changed = toggle(body, "glass-nav-compact", true) || changed;
+        changed = toggle(body, "glass-nav-expanded", false) || changed;
+      } else if (up) {
+        changed = toggle(body, "glass-nav-compact", false) || changed;
+        changed = toggle(body, "glass-nav-expanded", true) || changed;
       }
 
-      var scrollingDown = y > lastScrollY + 2;
-      var scrollingUp = y < lastScrollY - 2;
-
-      if (y <= threshold) {
-        body.classList.remove("glass-nav-compact");
-        body.classList.add("glass-nav-expanded");
-      } else if (scrollingDown) {
-        body.classList.add("glass-nav-compact");
-        body.classList.remove("glass-nav-expanded");
-      } else if (scrollingUp) {
-        body.classList.remove("glass-nav-compact");
-        body.classList.add("glass-nav-expanded");
+      if (changed) {
+        settleUntil = now + SETTLE_MS;
+        travel = 0;
+        if (settleTimer) window.clearTimeout(settleTimer);
+        settleTimer = window.setTimeout(function () {
+          settleTimer = 0;
+          lastScrollY = Math.max(0, window.scrollY);
+          updateNavMorph();
+        }, SETTLE_MS + 20);
       }
-
-      lastScrollY = y;
-      ticking = false;
     }
 
     window.addEventListener(

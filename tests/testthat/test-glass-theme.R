@@ -1240,6 +1240,12 @@ test_that("shinychat glass example builds an app", {
   expect_true("gemini-3.5-flash-lite" %in% env$gemini_model_chain())
 })
 
+test_that("compact navbar ignores its own layout shift", {
+  js <- paste(readLines(system.file("js", "shiny-glass.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+  expect_match(js, "var SETTLE_MS = ", fixed = TRUE)
+  expect_match(js, "y > threshold + HYSTERESIS", fixed = TRUE)
+})
+
 test_that("Escape closes glass overlays and pill rows keep 44px targets", {
   js <- paste(readLines(system.file("js", "glass-ios27.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
   expect_match(js, 'e.key !== "Escape"', fixed = TRUE)

@@ -883,7 +883,7 @@
         var id = menus[i].getAttribute("data-target");
         var trigger = id && document.getElementById(id);
         var inst = trigger && trigger._tippy;
-        if (!inst || !inst.state || !inst.state.isShown) continue;
+        if (!tippyOpen(inst)) continue;
         var pop = inst.popper;
         var onTrigger = trigger.contains(target) || pointInRect(x, y, trigger.getBoundingClientRect());
         var onPop = pop && (pop === target || pop.contains(target));

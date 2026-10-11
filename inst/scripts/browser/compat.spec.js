@@ -567,6 +567,43 @@ test('Escape closes popovers and Settings drop menus and returns focus', async (
   }
 });
 
+test('compact navbar settles within a second near the scroll threshold', async ({ page }) => {
+  // Compacting the static navbar shortens it, and scroll anchoring moves
+  // scrollY by that amount. That shift must not read as a scroll the other
+  // way and flip the bar back (it used to loop forever near 56px).
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await gotoCompat(page);
+  const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  test.skip(max < 140, 'fixture does not scroll the window');
+  await page.evaluate(() => {
+    window.__navToggles = 0;
+    window.__navScrolls = 0;
+    new MutationObserver((ms) => {
+      for (const m of ms) if (m.attributeName === 'class') window.__navToggles++;
+    }).observe(document.body, { attributes: true });
+    addEventListener('scroll', () => { window.__navScrolls++; }, { passive: true });
+  });
+  const tab = page.locator('a.nav-link[data-value="Inputs"], button.nav-link[data-value="Inputs"]').first();
+  for (const target of [48, 56, 58, 62, 66, 72, 80]) {
+    for (const from of [0, target + 80]) {
+      await page.evaluate((v) => scrollTo(0, v), from);
+      await page.waitForTimeout(150);
+      await page.mouse.move(640, 400);
+      await page.mouse.wheel(0, target - from);
+      // Settle budget: one second after the gesture.
+      await page.waitForTimeout(1000);
+      const before = await tab.boundingBox();
+      await page.evaluate(() => { window.__navToggles = 0; window.__navScrolls = 0; });
+      await page.waitForTimeout(1000);
+      const after = await tab.boundingBox();
+      const counts = await page.evaluate(() => ({ toggles: window.__navToggles, scrolls: window.__navScrolls }));
+      expect(counts, `scrolled ${from} -> ${target}`).toEqual({ toggles: 0, scrolls: 0 });
+      expect(Math.abs(after.y - before.y), `tab y ${from} -> ${target}`).toBeLessThan(0.5);
+      expect(Math.abs(after.height - before.height), `tab height ${from} -> ${target}`).toBeLessThan(0.5);
+    }
+  }
+});
+
 test('mobile sidebars open and close from the toggle', async ({ browser }) => {
   const context = await browser.newContext({
     hasTouch: true,
