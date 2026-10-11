@@ -17,20 +17,6 @@ Pass \code{\link[=glass_theme]{glass_theme()}} to \code{theme} on a bslib page o
 start from \code{\link[=glass_page]{glass_page()}}. Intensity runs from \code{0} (Ultra Clear) to \code{1}
 (Tinted). The default is \code{0.5}.
 }
-\section{Built for phones}{
-
-Playwright checks phone-sized viewports (393x852 and 390x852, with
-touch). On a coarse pointer, the controls those tests measure are at
-least 44px, including the sidebar toggle and popover triggers. A
-popover closes on a second tap and on a tap outside. The Harbor notes
-sidebar toggle and close button both respond. Harbor notes does not
-scroll sideways at 393x852 or 390x844, and neither do the 480px
-dashboard and Olympics fixtures. The sources offcanvas opens and
-closes from its own buttons.
-
-\if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}}
-}
-
 \section{Minimal app}{
 
 \code{\link[=glass_page]{glass_page()}} includes Light / Dark / Auto, the intensity slider, and
@@ -140,6 +126,16 @@ hides them.
 \code{icon_style = "clear"} are on by default. \code{floating_sidebar} stays off.
 \item Page functions and click targets stay the same.
 }
+}
+
+\section{Mobile support}{
+
+Mobile is fully supported. Controls are sized for touch, sidebars and
+popovers open and close as expected on a phone, and pages do not
+scroll sideways. On a desktop, each live demo has a Phone view button
+that shows it in a phone-sized frame.
+
+\if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in a phone-sized frame"}}
 }
 
 \section{Pitfalls}{

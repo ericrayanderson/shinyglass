@@ -56,6 +56,25 @@ jobs:
         if: matrix.config.manual
         run: tlmgr install inconsolata
 
+      # Once a version is on CRAN, main carries that same version until the
+      # next bump, and the remote incoming check then fails on "Insufficient
+      # package version". Skip only the remote part in that case; URLs are
+      # still checked by urlchecker below.
+      - name: Skip remote incoming check when this version is already on CRAN
+        shell: Rscript {0}
+        run: |
+          v <- read.dcf("DESCRIPTION", fields = c("Package", "Version"))
+          db <- tryCatch(
+            available.packages(repos = "https://cloud.r-project.org"),
+            error = function(e) NULL
+          )
+          on_cran <- !is.null(db) && v[1, "Package"] %in% rownames(db) &&
+            package_version(db[v[1, "Package"], "Version"]) >= package_version(v[1, "Version"])
+          if (on_cran) {
+            message("Version ", v[1, "Version"], " is already on CRAN; skipping remote incoming checks.")
+            cat("_R_CHECK_CRAN_INCOMING_REMOTE_=false\n", file = Sys.getenv("GITHUB_ENV"), append = TRUE)
+          }
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: ${{ matrix.config.manual && 'c("--as-cran")' || 'c("--as-cran", "--no-manual")' }}
