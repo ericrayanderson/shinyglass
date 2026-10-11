@@ -185,6 +185,18 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --bs-tertiary-color: rgba(29, 29, 31, 0.48);
   --bs-emphasis-color: #1d1d1f;
   --bs-border-color: rgba(0, 0, 0, 0.08);
+  // Light sheen still tracks the surface. Dark overrides these with short lengths.
+  --glass-fill-sheen-end: 30%;
+  --glass-sheen-end: 26%;
+  --glass-edge-span: 34%;
+  --glass-bottom-sheen-end: 20%;
+  --glass-content-catch-end: 34%;
+  --glass-content-sheen-end: 24%;
+  --glass-content-bottom-end: 18%;
+  --glass-top-bloom-y: 10px;
+  --glass-top-bloom-blur: 22px;
+  --glass-inner-bloom-y: 12px;
+  --glass-inner-bloom-blur: 28px;
   color-scheme: light;
 }
 
@@ -204,12 +216,13 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-lip: rgba(0, 0, 0, 0.86);
   --glass-shadow: rgba(0, 0, 0, 0.52);
   --glass-elevated-shadow: rgba(0, 0, 0, 0.68);
-  --glass-highlight: rgba(255, 255, 255, 0.60);
+  // 1px rim stays on --glass-stroke-tb. The sheen itself stays faint.
+  --glass-highlight: rgba(255, 255, 255, 0.22);
   --glass-specular: rgba(255, 255, 255, 0.69);
-  --glass-specular-top: rgba(255, 255, 255, 0.92);
-  --glass-specular-bottom: rgba(255, 255, 255, 0.62);
+  --glass-specular-top: rgba(255, 255, 255, 0.20);
+  --glass-specular-bottom: rgba(255, 255, 255, 0.16);
   --glass-edge: rgba(0, 0, 0, 0.88);
-  --glass-edge-sheen: rgba(255, 255, 255, 0.43);
+  --glass-edge-sheen: rgba(255, 255, 255, 0.10);
   --glass-ior: 1.5;
   --glass-refraction-scale: 42;
   --glass-dispersion: 0.06;
@@ -226,7 +239,19 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   --glass-orb-1: rgba(10, 132, 255, 0.42);
   --glass-orb-2: rgba(191, 90, 242, 0.28);
   --glass-orb-3: rgba(255, 159, 10, 0.16);
-  --glass-inner-glow: rgba(255, 255, 255, 0.21);
+  --glass-inner-glow: rgba(255, 255, 255, 0.08);
+  // Short lengths, not percentages: a tall sidebar must not grow a 60–90px wash.
+  --glass-fill-sheen-end: 12px;
+  --glass-sheen-end: 8px;
+  --glass-edge-span: 10px;
+  --glass-bottom-sheen-end: 8px;
+  --glass-content-catch-end: 12px;
+  --glass-content-sheen-end: 8px;
+  --glass-content-bottom-end: 8px;
+  --glass-top-bloom-y: 1px;
+  --glass-top-bloom-blur: 0px;
+  --glass-inner-bloom-y: 1px;
+  --glass-inner-bloom-blur: 0px;
   --glass-stroke-side: rgba(0, 0, 0, 0.86);
   --glass-stroke-tb: rgba(255, 255, 255, 0.55);
   --bs-body-bg: var(--glass-body-bg);
@@ -332,7 +357,7 @@ body::after {
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--glass-highlight) 48%, transparent) 0%,
-      transparent 30%
+      transparent var(--glass-fill-sheen-end, 30%)
     ),
     linear-gradient(
       180deg,
@@ -360,7 +385,7 @@ body::after {
     inset 0 -1px 0 var(--glass-lip),
     inset 1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
     inset -1.35px 0 0 var(--glass-stroke-side, rgba(0, 0, 0, 0.22)),
-    inset 0 10px 22px color-mix(in srgb, var(--glass-highlight) 28%, transparent),
+    inset 0 var(--glass-top-bloom-y, 10px) var(--glass-top-bloom-blur, 22px) color-mix(in srgb, var(--glass-highlight) 28%, transparent),
     inset 0.7px 0 0 var(--glass-refract-a, transparent),
     inset -0.7px 0 0 var(--glass-refract-b, transparent);
   overflow: $overflow;
@@ -380,17 +405,17 @@ body::after {
       linear-gradient(
         180deg,
         var(--glass-specular-top, var(--glass-specular)) 0%,
-        transparent 26%
+        transparent var(--glass-sheen-end, 26%)
       ),
       linear-gradient(
         0deg,
         var(--glass-specular-bottom, color-mix(in srgb, var(--glass-specular) 70%, transparent)) 0%,
-        transparent 20%
+        transparent var(--glass-bottom-sheen-end, 20%)
       ),
       linear-gradient(
         180deg,
         var(--glass-edge-sheen) 0%,
-        transparent 34%
+        transparent var(--glass-edge-span, 34%)
       );
     border-radius: inherit;
     pointer-events: none;
@@ -411,7 +436,7 @@ body::after {
     box-shadow:
       inset 0 0 0 0.5px color-mix(in srgb, var(--glass-rim) 90%, transparent),
       inset 0 0 0 1.5px color-mix(in srgb, var(--glass-lip) 52%, transparent),
-      inset 0 12px 28px var(--glass-inner-glow),
+      inset 0 var(--glass-inner-bloom-y, 12px) var(--glass-inner-bloom-blur, 28px) var(--glass-inner-glow),
       inset 0 -16px 30px color-mix(in srgb, var(--glass-lip) 70%, transparent),
       inset 0 -1px 14px color-mix(in srgb, var(--glass-refract-a, transparent) 40%, transparent);
     pointer-events: none;
@@ -427,7 +452,7 @@ body::after {
     linear-gradient(
       165deg,
       color-mix(in srgb, var(--glass-highlight) 18%, transparent) 0%,
-      transparent 34%
+      transparent var(--glass-content-catch-end, 34%)
     ),
     var(--glass-bg-content, var(--glass-bg));
   // Slightly less blur than chrome — content hierarchy (no glass-on-glass mud)
@@ -465,12 +490,12 @@ body::after {
       linear-gradient(
         180deg,
         color-mix(in srgb, var(--glass-specular-top, var(--glass-specular)) 78%, transparent) 0%,
-        transparent 24%
+        transparent var(--glass-content-sheen-end, 24%)
       ),
       linear-gradient(
         0deg,
         color-mix(in srgb, var(--glass-specular-bottom, var(--glass-specular)) 70%, transparent) 0%,
-        transparent 18%
+        transparent var(--glass-content-bottom-end, 18%)
       );
     border-radius: inherit;
     pointer-events: none;
@@ -1136,6 +1161,15 @@ body.glass-nav-expanded {
     background: rgba(58, 58, 60, 0.94) !important;
     opacity: 1 !important;
   }
+
+  // navlistPanel pills (Carte / Data) were a low-opacity film on the sheen.
+  .nav-pills .nav-link:not(.active),
+  .nav-stacked > li:not(.active) > a,
+  .nav.flex-column .nav-link:not(.active) {
+    color: #f5f5f7 !important;
+    opacity: 1 !important;
+    background: rgba(44, 44, 48, 0.94) !important;
+  }
 }
 
 @mixin glass-button-type {
@@ -1599,12 +1633,24 @@ html[data-glass-preset] .material-switch > input[type="checkbox"]:checked + labe
   accent-color: #{$glass-accent};
 }
 
-// btn-check + primary (and similar) must keep light label ink
+// Solid primary keeps light ink. Outline segments (shinyWidgets
+// radioGroupButtons) sit on light glass, so white ink disappears.
 .btn-check:checked + .btn-primary,
-.btn-check:active + .btn-primary,
-.btn-check:checked + .btn-outline-primary,
-.btn-check:active + .btn-outline-primary {
+.btn-check:active + .btn-primary {
   color: #fff !important;
+}
+
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
+.radio-group-buttons .btn-check:checked + .btn {
+  color: var(--glass-body-color) !important;
+  background: color-mix(in srgb, var(--glass-accent, #{$primary}) 22%, var(--glass-bg)) !important;
+  border-color: color-mix(in srgb, var(--glass-accent, #{$primary}) 55%, var(--glass-border)) !important;
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 0 0.5px color-mix(in srgb, var(--glass-accent, #{$primary}) 40%, transparent) !important;
+  font-weight: 600;
+  opacity: 1 !important;
 }
 
 // Active list/nav/pagination text on primary fill should stay light
@@ -4189,6 +4235,10 @@ body .product-info {
   min-height: 7em;
   overflow: hidden;
   box-sizing: border-box;
+  color: var(--glass-body-color) !important;
+  background: var(--glass-menu-bg);
+  border-radius: calc(var(--glass-radius) * 0.85);
+  padding: 0.75rem 0.85rem;
 
   > img {
     flex: 0 0 auto;
@@ -4217,6 +4267,8 @@ body .product-info {
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: break-all;
+    color: var(--glass-body-color) !important;
+    opacity: 1 !important;
   }
 }
 
@@ -4224,11 +4276,13 @@ body .shiny-output-error,
 body .shiny-output-error-no-pat,
 body .shiny-output-error-validation {
   @include glass-surface(calc(var(--glass-radius) * 0.85));
-  background: var(--glass-bg) !important;
-  color: inherit !important;
+  background: var(--glass-menu-bg) !important;
+  background-color: var(--glass-menu-bg) !important;
+  color: var(--glass-body-color) !important;
   line-height: 1.5 !important;
   padding: 2rem 1.25rem !important;
   text-align: center;
+  opacity: 1 !important;
 }
 
 .plot-spin {
@@ -6744,6 +6798,58 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     width: 44px;
     height: 44px;
     transform: translate(-50%, -50%);
+  }
+
+  // min-height: 44px on every .btn, plus flex-wrap and the default stretch,
+  // turned Light/Dark/Auto into a tall column inside the phone frame.
+  // Segmented controls stay one 44px row at their natural width.
+  #{$root} .glass-theme-toggle {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    align-self: flex-start !important;
+    flex: 0 0 auto !important;
+    height: auto !important;
+    width: auto !important;
+    max-width: 100%;
+  }
+
+  #{$root} .glass-theme-toggle :is(.btn, .action-button) {
+    flex: 0 1 auto !important;
+    align-self: center !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    width: auto !important;
+    white-space: nowrap;
+  }
+
+  #{$root} :is(.radio-group-buttons .btn-group, .btn-group-container-sw) {
+    align-items: center !important;
+    align-self: flex-start !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  #{$root} :is(.radio-group-buttons .btn-group, .btn-group-container-sw) :is(.btn, label.btn) {
+    align-self: center !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  // Tab and pill rows were stretching to the height of a tall flex parent.
+  #{$root} :is(.nav-pills, .nav-tabs, .navbar-nav) {
+    align-self: flex-start;
+    height: auto !important;
+  }
+
+  #{$root} :is(.nav-pills, .nav-tabs, .navbar-nav) :is(.nav-link, .nav-item) {
+    align-self: center;
+    flex-grow: 0;
+    height: auto;
+    min-height: 44px;
   }
 }
 

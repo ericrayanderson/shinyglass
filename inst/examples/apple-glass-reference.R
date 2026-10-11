@@ -124,26 +124,27 @@ server <- function(input, output, session) {
   output$hero_plot <- renderPlot({
     df <- plot_data()
     cols <- palette_colors[[input$palette]]
-    text_col <- if (identical(glass_resolved_preset(input), "dark")) "#f5f5f7" else "#1d1d1f"
+    preset <- glass_resolved_preset(input)
+    # Light mode sits on a pale card. Opaque paper and darker ink keep the
+    # points, axes, labels, and density readable. Dark keeps a clear panel.
+    surface <- if (identical(preset, "light")) "opaque" else "clear"
+    ink <- if (identical(preset, "dark")) "#f5f5f7" else "#1d1d1f"
+    grid <- grDevices::adjustcolor(ink, alpha.f = if (identical(preset, "dark")) 0.28 else 0.38)
 
     p <- ggplot(df, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-      geom_point(size = 3, alpha = 0.85) +
+      geom_point(size = 3.4, alpha = 1) +
       scale_color_manual(values = cols) +
       labs(
         title = paste("Iris —", input$palette, "palette"),
         x = "Sepal length",
         y = "Sepal width"
       ) +
-      theme_minimal(base_size = 14) +
+      theme_glass(preset, base_size = 14, surface = surface) +
       theme(
-        panel.background = element_rect(fill = "transparent", color = NA),
-        plot.background = element_rect(fill = "transparent", color = NA),
-        legend.background = element_rect(fill = "transparent", color = NA),
         legend.position = "bottom",
-        text = element_text(color = text_col),
-        axis.text = element_text(color = text_col),
-        axis.title = element_text(color = text_col),
-        plot.title = element_text(color = text_col)
+        panel.grid.major = element_line(color = grid, linewidth = 0.45),
+        axis.line = element_line(color = ink, linewidth = 0.45),
+        axis.ticks = element_line(color = ink, linewidth = 0.4)
       )
 
     if (isTRUE(input$density)) {
@@ -151,8 +152,9 @@ server <- function(input, output, session) {
         aes(x = Sepal.Length),
         inherit.aes = FALSE,
         fill = cols[[2]],
-        alpha = 0.25,
-        color = NA
+        alpha = if (identical(preset, "light")) 0.55 else 0.35,
+        color = cols[[1]],
+        linewidth = 0.7
       )
     }
 

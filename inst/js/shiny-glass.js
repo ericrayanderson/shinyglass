@@ -386,14 +386,14 @@
       return {
         clear: {
           bgA: 0.08, bgHoverA: 0.14, contentA: 0.08, contentHoverA: 0.12,
-          borderA: 0.42, rimA: 0.60, lipA: 0.64, highlightA: 0.48, specularA: 0.56,
-          edgeSheenA: 0.34, innerGlowA: 0.16, menuA: 0.66, blurScale: 1.08,
+          borderA: 0.42, rimA: 0.60, lipA: 0.64, highlightA: 0.16, specularA: 0.56,
+          edgeSheenA: 0.08, innerGlowA: 0.06, menuA: 0.66, blurScale: 1.08,
           refractA: 0.08, refractB: 0.06, brightness: 1.02, contrast: 1.02
         },
         tinted: {
           bgA: 0.24, bgHoverA: 0.32, contentA: 0.20, contentHoverA: 0.28,
-          borderA: 0.68, rimA: 0.86, lipA: 0.92, highlightA: 0.72, specularA: 0.82,
-          edgeSheenA: 0.52, innerGlowA: 0.26, menuA: 0.92, blurScale: 1.14,
+          borderA: 0.68, rimA: 0.86, lipA: 0.92, highlightA: 0.26, specularA: 0.82,
+          edgeSheenA: 0.12, innerGlowA: 0.10, menuA: 0.92, blurScale: 1.14,
           refractA: 0.22, refractB: 0.16, brightness: 1.06, contrast: 1.06
         },
         fill: { r: 255, g: 255, b: 255 },
@@ -590,6 +590,23 @@
       root.style.setProperty("--glass-specular", rgba(255, 255, 255, A("specularA")));
       root.style.setProperty("--glass-edge-sheen", rgba(255, 255, 255, A("edgeSheenA")));
       root.style.setProperty("--glass-inner-glow", rgba(255, 255, 255, A("innerGlowA")));
+      // Dark top highlight is a 1px rim plus a short sheen. Percentage stops
+      // on a tall sidebar become a white wash over the title.
+      if (preset === "dark") {
+        root.style.setProperty("--glass-specular-top", rgba(255, 255, 255, lerp(0.14, 0.22, t)));
+        root.style.setProperty("--glass-specular-bottom", rgba(255, 255, 255, 0.16));
+        root.style.setProperty("--glass-fill-sheen-end", "12px");
+        root.style.setProperty("--glass-sheen-end", "8px");
+        root.style.setProperty("--glass-edge-span", "10px");
+        root.style.setProperty("--glass-bottom-sheen-end", "8px");
+        root.style.setProperty("--glass-content-catch-end", "12px");
+        root.style.setProperty("--glass-content-sheen-end", "8px");
+        root.style.setProperty("--glass-content-bottom-end", "8px");
+        root.style.setProperty("--glass-top-bloom-y", "1px");
+        root.style.setProperty("--glass-top-bloom-blur", "0px");
+        root.style.setProperty("--glass-inner-bloom-y", "1px");
+        root.style.setProperty("--glass-inner-bloom-blur", "0px");
+      }
       root.style.setProperty("--glass-refract-a", rgba(ep.refractA.r, ep.refractA.g, ep.refractA.b, A("refractA")));
       root.style.setProperty("--glass-refract-b", rgba(ep.refractB.r, ep.refractB.g, ep.refractB.b, A("refractB")));
       root.style.setProperty("--glass-refract-brightness", A("brightness").toFixed(4));

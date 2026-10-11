@@ -42,6 +42,10 @@
   the ambient specular drift are gone. `specular = TRUE` still paints the
   highlights. `specular = FALSE` hides them. iOS 27 does not tilt glass.
   Pointer tracking is not available in 0.5.0.
+* In dark mode the top highlight is a 1px rim plus a short sheen (about
+  8–12px). A tall sidebar or card no longer grows a white band over its title.
+* On a coarse pointer, the Light / Dark / Auto segmented control stays one
+  row, 44px tall, at its normal width.
 * Glass edges are darker, and diffusion is more even across chrome and
   content. Fill alphas are unchanged.
 * Chromium bends the backdrop through a convex squircle lens (index of

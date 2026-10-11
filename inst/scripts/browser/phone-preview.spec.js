@@ -46,6 +46,14 @@ test('desktop toggle frames the app and remembers the choice', async ({ page }) 
     return { width: box.width, height: box.height };
   });
   expect(framedSelect.height).toBeGreaterThanOrEqual(43.4);
+  await child.waitForSelector('.glass-theme-toggle', { timeout: 15000 });
+  const segments = await child.locator('.glass-theme-toggle').evaluate((el) => {
+    const box = el.getBoundingClientRect();
+    return { width: box.width, height: box.height };
+  });
+  expect(segments.height).toBeGreaterThanOrEqual(40);
+  expect(segments.height).toBeLessThanOrEqual(56);
+  expect(segments.width).toBeGreaterThan(segments.height);
   await expect(child.locator('.phone-preview-toggle')).toHaveCount(0);
   await child.waitForSelector('text=Form Controls', { timeout: 30000 });
 

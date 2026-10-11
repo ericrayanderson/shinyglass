@@ -152,7 +152,14 @@ fig_dir <- file.path(pkg_root, "man", "figures")
 dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 
 demo_lines <- readLines(file.path(pkg_root, "inst", "examples", "demo-app.R"))
-demo_lines <- sub("glass_theme\\(\\)", "glass_theme(preset = \"dark\")", demo_lines)
+# glass_page() does not contain glass_theme(), so the old substitution
+# left this capture on the light default.
+demo_lines <- sub(
+  "demo_page <- glass_page(",
+  "demo_page <- glass_page(\n  preset = \"dark\",",
+  demo_lines,
+  fixed = TRUE
+)
 tmp_demo <- tempfile(fileext = ".R")
 writeLines(demo_lines, tmp_demo)
 on.exit(unlink(tmp_demo), add = TRUE)

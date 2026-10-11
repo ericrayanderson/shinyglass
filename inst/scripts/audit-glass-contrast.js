@@ -296,8 +296,135 @@ function runGlassAudit(selectors, preset, minContrast, textAA) {
     }
   }
 
+  if (preset === "dark" || document.documentElement.dataset.glassPreset === "dark") {
+    glassAuditTitleSheen(all);
+  }
+
   return {
     preset: document.documentElement.dataset.glassPreset || preset,
     findings: all
   };
+}
+
+// Dark glass used to paint a percentage-based white gradient. On a tall
+// sidebar or card that band was 60–90px and sat under the title. The top
+// highlight must be a 1px rim plus a short sheen.
+function glassSheenReach(image, boxHeight) {
+  if (!image || image === "none") return null;
+  const parts = String(image).split(/linear-gradient\(/i).slice(1);
+  let worst = null;
+  parts.forEach((part) => {
+    const colors = [];
+    const re = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)\s*([0-9.]+(?:px|%))?/g;
+    let match;
+    while ((match = re.exec(part))) {
+      colors.push({
+        r: +match[1],
+        g: +match[2],
+        b: +match[3],
+        a: match[4] === undefined ? 1 : +match[4],
+        stop: match[5] || null
+      });
+    }
+    if (colors.length < 2) return;
+    const start = colors[0];
+    const white = start.r > 220 && start.g > 220 && start.b > 220 && start.a > 0.15;
+    if (!white) return;
+    const fade = colors.find((c) => c.a < 0.05) || colors[colors.length - 1];
+    if (!fade.stop) return;
+    const reach = fade.stop.slice(-1) === "%"
+      ? (parseFloat(fade.stop) / 100) * boxHeight
+      : parseFloat(fade.stop);
+    if (!isFinite(reach)) return;
+    if (!worst || reach > worst.reach) {
+      worst = { alpha: start.a, reach: reach, stop: fade.stop };
+    }
+  });
+  return worst;
+}
+
+function glassAuditTitleSheen(all) {
+  const surfaces = document.querySelectorAll(
+    ".bslib-sidebar-layout > .sidebar, .bslib-page-sidebar .sidebar, .card, .bslib-card, .bslib-value-box, .value-box, .stati"
+  );
+  const titleSel = [
+    ".sidebar-title",
+    ".card-header",
+    ".card-title",
+    ".bslib-value-box .value-box-title",
+    ".bslib-value-box .value-box-value",
+    ".value-box-title",
+    ".value-box-value"
+  ].join(", ");
+  const seen = new Set();
+  const limit = Math.min(surfaces.length, 12);
+  for (let i = 0; i < limit; i++) {
+    const el = surfaces[i];
+    if (seen.has(el)) continue;
+    seen.add(el);
+    const box = el.getBoundingClientRect();
+    if (box.width < 8 || box.height < 8) continue;
+    const before = getComputedStyle(el, "::before");
+    const own = getComputedStyle(el);
+    const reachBefore = glassSheenReach(before.backgroundImage, box.height);
+    const reachOwn = glassSheenReach(own.backgroundImage, box.height);
+    const reach = [reachBefore, reachOwn]
+      .filter(Boolean)
+      .sort((a, b) => b.reach - a.reach)[0];
+    const label = (el.className && String(el.className).split(/\s+/).slice(0, 2).join(".")) || el.tagName;
+    if (reach && reach.reach > 24) {
+      all.push({
+        level: "FAIL",
+        code: "wide-sheen",
+        message:
+          "dark top sheen fades over " +
+          Math.round(reach.reach) +
+          "px (stop " +
+          reach.stop +
+          ", alpha " +
+          reach.alpha.toFixed(2) +
+          ") on ." +
+          label,
+        meta: { selector: label, reach_px: Math.round(reach.reach), stop: reach.stop }
+      });
+    }
+    const titles = el.querySelectorAll(titleSel);
+    const titleLimit = Math.min(titles.length, 4);
+    for (let t = 0; t < titleLimit; t++) {
+      const title = titles[t];
+      const tb = title.getBoundingClientRect();
+      if (!tb.height) continue;
+      const text = (title.innerText || "").trim().slice(0, 40);
+      if (!text) continue;
+      const overlaps = tb.top < box.top + Math.max(reach ? reach.reach : 0, 12);
+      if (!overlaps) continue;
+      const ink = glassParseColor(getComputedStyle(title).color);
+      const page = { r: 0, g: 0, b: 0, a: 1 };
+      const film = glassParseColor(own.backgroundColor) || { r: 255, g: 255, b: 255, a: 0.16 };
+      let bg = glassComposite(film, page) || page;
+      if (reach && reach.alpha > 0) {
+        bg = glassComposite({ r: 255, g: 255, b: 255, a: Math.min(reach.alpha, 0.35) }, bg) || bg;
+      }
+      const fg = glassComposite(ink, bg);
+      if (!fg) continue;
+      const ratio = glassContrastRatio(fg, bg);
+      if (ratio < 4.5) {
+        all.push({
+          level: "FAIL",
+          code: "title-over-sheen",
+          message:
+            "title over the dark top sheen is " +
+            Math.round(ratio * 100) / 100 +
+            ':1 for "' +
+            text +
+            '"',
+          meta: {
+            selector: title.className || "title",
+            text: text,
+            contrast: Math.round(ratio * 100) / 100
+          }
+        });
+      }
+    }
+  }
 }
