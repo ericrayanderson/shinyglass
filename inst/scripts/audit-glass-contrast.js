@@ -6,12 +6,22 @@ function glassParseColor(str) {
     return null;
   }
   const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
-  if (!m) return null;
+  if (m) {
+    return {
+      r: +m[1],
+      g: +m[2],
+      b: +m[3],
+      a: m[4] === undefined ? 1 : +m[4]
+    };
+  }
+  // Chrome resolves color-mix() to color(srgb … / a), not rgba().
+  const c = str.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/i);
+  if (!c) return null;
   return {
-    r: +m[1],
-    g: +m[2],
-    b: +m[3],
-    a: m[4] === undefined ? 1 : +m[4]
+    r: Math.round(+c[1] * 255),
+    g: Math.round(+c[2] * 255),
+    b: Math.round(+c[3] * 255),
+    a: c[4] === undefined ? 1 : +c[4]
   };
 }
 
@@ -296,7 +306,10 @@ function runGlassAudit(selectors, preset, minContrast, textAA) {
     }
   }
 
-  if (preset === "dark" || document.documentElement.dataset.glassPreset === "dark") {
+  // The caller names the preset it asked for. Only score dark sheens when the
+  // page actually resolved to dark — a light page passed in as "dark" has
+  // dark ink, and estimating that ink over black looks like a failed title.
+  if (document.documentElement.dataset.glassPreset === "dark") {
     glassAuditTitleSheen(all);
     glassAuditValueBoxShowcase(all);
   }
@@ -316,15 +329,18 @@ function glassSheenReach(image, boxHeight) {
   let worst = null;
   parts.forEach((part) => {
     const colors = [];
-    const re = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)\s*([0-9.]+(?:px|%))?/g;
+    const re = /(?:rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)|color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\))\s*([0-9.]+(?:px|%))?/gi;
     let match;
     while ((match = re.exec(part))) {
+      const srgb = match[1] === undefined;
       colors.push({
-        r: +match[1],
-        g: +match[2],
-        b: +match[3],
-        a: match[4] === undefined ? 1 : +match[4],
-        stop: match[5] || null
+        r: srgb ? Math.round(+match[5] * 255) : +match[1],
+        g: srgb ? Math.round(+match[6] * 255) : +match[2],
+        b: srgb ? Math.round(+match[7] * 255) : +match[3],
+        a: srgb
+          ? (match[8] === undefined ? 1 : +match[8])
+          : (match[4] === undefined ? 1 : +match[4]),
+        stop: match[9] || null
       });
     }
     if (colors.length < 2) return;
@@ -389,6 +405,9 @@ function glassAuditTitleSheen(all) {
         meta: { selector: label, reach_px: Math.round(reach.reach), stop: reach.stop }
       });
     }
+    // An 8px rim does not sit under the title glyphs. Scoring every header
+    // within 12px painted that rim as a white film and failed light ink.
+    if (!reach || reach.reach <= 12) continue;
     const titles = el.querySelectorAll(titleSel);
     const titleLimit = Math.min(titles.length, 4);
     for (let t = 0; t < titleLimit; t++) {
@@ -397,7 +416,7 @@ function glassAuditTitleSheen(all) {
       if (!tb.height) continue;
       const text = (title.innerText || "").trim().slice(0, 40);
       if (!text) continue;
-      const overlaps = tb.top < box.top + Math.max(reach ? reach.reach : 0, 12);
+      const overlaps = tb.top < box.top + reach.reach;
       if (!overlaps) continue;
       const ink = glassParseColor(getComputedStyle(title).color);
       const page = { r: 0, g: 0, b: 0, a: 1 };

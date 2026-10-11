@@ -1247,7 +1247,13 @@ test_that("dark value boxes, map tiles, and table headers stay readable", {
   expect_match(scss, "body .small-box,\n  body .info-box,\n  .bslib-value-box", fixed = TRUE)
   expect_match(scss, "background: #1c1c1e !important;", fixed = TRUE)
   expect_match(scss, ".apexcharts-canvas .apexcharts-text", fixed = TRUE)
-  js <- paste(readLines(system.file("scripts", "audit-glass-contrast.js", package = "shinyglass"), warn = FALSE), collapse = "\n")
+})
+
+test_that("the contrast audit checks value-box showcase coverage", {
+  # inst/scripts is Rbuildignored, so the installed package has no copy.
+  js_path <- system.file("scripts", "audit-glass-contrast.js", package = "shinyglass")
+  skip_if(!nzchar(js_path), "audit script is not installed")
+  js <- paste(readLines(js_path, warn = FALSE), collapse = "\n")
   expect_match(js, "function glassAuditValueBoxShowcase", fixed = TRUE)
   expect_match(js, "value-box-showcase", fixed = TRUE)
   expect_match(js, "value-box-covered", fixed = TRUE)

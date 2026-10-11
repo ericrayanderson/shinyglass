@@ -808,6 +808,20 @@ run_case <- function(app_key, preset, port) {
     )))
   }
 
+  # Apps such as the demo use preset = "auto" and ignore SHINYGLASS_PRESET.
+  # Apply the requested pack in the page so a dark run is actually dark.
+  tryCatch(
+    b$Runtime$evaluate(
+      expression = sprintf(
+        "(function(){ if (window.shinyglass && window.shinyglass.setPreset) window.shinyglass.setPreset(%s); return document.documentElement.dataset.glassPreset || null; })();",
+        jsonlite::toJSON(preset, auto_unbox = TRUE)
+      ),
+      returnByValue = TRUE
+    ),
+    error = function(e) NULL
+  )
+  Sys.sleep(0.35)
+
   collect_sample <- function(phase, keep_all = FALSE) {
     val <- tryCatch(
       run_audit_js(b, sels, preset),
