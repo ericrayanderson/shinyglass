@@ -23,7 +23,7 @@ python -m build --wheel
 pip install dist/shinyglass-*.whl
 ```
 
-Default themes use **precompiled CSS** — **libsass is not required** at runtime.
+Default themes use **precompiled CSS**. **libsass is not required** at runtime.
 For custom `primary` / `blur` / `radius`, install the optional extra:
 
 ```bash

@@ -23,7 +23,7 @@
 #' those same sizes. Content starts below the status bar, and the frame
 #' does not show a desktop scrollbar.
 #'
-#' \figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}
+#' \if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}}
 #'
 #' @section Minimal app:
 #' [glass_page()] includes Light / Dark / Auto, the intensity slider, and

@@ -35,7 +35,7 @@
 ^inst/examples/teal-glass-demo\.R$
 ^inst/examples/querychat-demo\.R$
 ^inst/examples/quarto$
-# Shiny for Python spike (Option 2) — not part of the CRAN tarball
+# Shiny for Python spike (Option 2), not part of the CRAN tarball
 ^python$
 ^check$
 ^CRAN-SUBMISSION$

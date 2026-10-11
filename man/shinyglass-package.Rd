@@ -31,7 +31,7 @@ closes from its own buttons. The desktop phone frame sets
 those same sizes. Content starts below the status bar, and the frame
 does not show a desktop scrollbar.
 
-\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}
+\if{html}{\figure{phone-frame-demo.png}{options: width=280 alt="Basics demo in an iPhone-sized frame"}}
 }
 
 \section{Minimal app}{
