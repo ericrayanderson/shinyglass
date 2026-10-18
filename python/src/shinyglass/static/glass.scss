@@ -6692,6 +6692,12 @@ html[data-glass-preset] shiny-chat-page[data-mobile-menu-open] .shiny-chat-page-
     min-height: 44px !important;
   }
 
+  // Native <select> ignores min-height. Set the used height.
+  #{$root} :is(select.form-select, select.form-control, select.shiny-input-select) {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
   #{$root} body.glass-nav-compact :is(.tabbable > .nav-tabs, .navbar),
   #{$root} body.glass-tabs-min :is(.nav-pills, .tabbable > .nav-pills, .glass-tabbar) {
     transform: none !important;
