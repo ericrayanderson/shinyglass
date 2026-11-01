@@ -1,22 +1,21 @@
-# shinyglass CRAN release checklist (0.5.0 candidate)
+# shinyglass CRAN release checklist (0.6.0 candidate)
 
 Do **not** submit to CRAN until the maintainer explicitly asks.
 This file is excluded from the tarball (`.Rbuildignore`).
 
-`DESCRIPTION` `Version` is **0.5.0** on the release-candidate branch.
+`DESCRIPTION` `Version` is **0.6.0** on the release-candidate branch.
 Do not file a submission from a development (`.9000`) tree.
 
-## This candidate (done on the 0.5.0 bump)
+## This candidate (done on the 0.6.0 bump)
 
-- [x] `Version: 0.5.0` in DESCRIPTION (no Date field; follow existing style).
-- [x] NEWS.md finalized under a **0.5.0** heading with Breaking changes,
-      New features, and Bug fixes (development notes since 0.4.0 folded in).
+- [x] `Version: 0.6.0` in DESCRIPTION (no Date field; follow existing style).
+- [x] NEWS.md finalized under a **0.6.0** heading (development notes since 0.5.0 folded in).
 - [x] `cran-comments.md` refreshed for this upload.
 - [x] `vignette("migrating")` covers the visual and API changes, the
       0.4.0 approximation, and `material = "clear"`.
 - [x] pkgdown reference lists every export (`tests/testthat/test-pkgdown-reference.R`
       checks this when `_pkgdown.yml` is present).
-- [x] Python `pyproject.toml` / `_version.py` track 0.5.0 (not in tarball).
+- [x] Python `pyproject.toml` / `_version.py` track 0.6.0 (not in tarball).
 - [x] README install instructions mention CRAN 0.5.0; GitHub is secondary.
       Harbor notes is the flagship and links to the hosted app. The
       archived plotly-gt URL is not linked.
@@ -48,7 +47,7 @@ Do not file a submission from a development (`.9000`) tree.
 ## Submit (maintainer only)
 
 - [ ] `devtools::release()` or upload via the CRAN portal.
-- [ ] Do **not** file a submission from this agent / automation run.
+- [ ] Confirm the upload from the link CRAN emails to the maintainer.
 
 ## After accept
 

@@ -1,0 +1,7 @@
+shinyglass bundles the following third-party files.
+
+inst/fonts/inter/InterVariable-latin.woff2
+  Inter, a typeface by Rasmus Andersson.
+  Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+  Licensed under the SIL Open Font License, Version 1.1.
+  The full license is in inst/fonts/inter/OFL.txt.
