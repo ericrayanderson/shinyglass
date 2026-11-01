@@ -26,6 +26,8 @@ dev = ["pytest>=7.0", "libsass>=0.22", "build", "matplotlib"]
 [project.urls]
 Homepage = "https://github.com/ericrayanderson/shinyglass"
 Repository = "https://github.com/ericrayanderson/shinyglass"
+Issues = "https://github.com/ericrayanderson/shinyglass/issues"
+Changelog = "https://github.com/ericrayanderson/shinyglass/blob/main/NEWS.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/shinyglass"]

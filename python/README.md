@@ -1,9 +1,15 @@
 # shinyglass (Python)
 
 Liquid Glass themes for **Shiny for Python**, sharing design assets with the R
-package under [`inst/`](../inst/).
+package under [`inst/`](https://github.com/ericrayanderson/shinyglass/tree/main/inst).
 
 ## Install
+
+### From PyPI
+
+```bash
+pip install shinyglass
+```
 
 ### From a git checkout (developers)
 
