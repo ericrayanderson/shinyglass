@@ -2,10 +2,11 @@
 
 ## Live demo
 
-[Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) is
-the flagship chat. The [basics
-demo](https://ericrayanderson.shinyapps.io/shinyglass-demo/) is a full
-Shiny app with theme persistence, intensity, accent wells, and
+[Harbor
+notes](https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/)
+is the flagship chat. The [basics
+demo](https://ericrayanderson-shinyglass-demo.share.connect.posit.cloud/)
+is a full Shiny app with theme persistence, intensity, accent wells, and
 [`theme_glass()`](https://ericrayanderson.github.io/shinyglass/reference/theme_glass.md)
 plots. Apps may take a moment to wake up.
 

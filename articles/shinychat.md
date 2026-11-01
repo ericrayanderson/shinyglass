@@ -55,9 +55,9 @@ observeEvent(input$open_sources, {
 
 Harbor notes is a core demo, with the dusk wallpaper behind the glass.
 The hosted app is [Harbor
-notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). It
-answers with Gemini Flash and falls back to the local script if the API
-errors.
+notes](https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/).
+It answers with Gemini Flash and falls back to the local script if the
+API errors.
 
 ``` r
 

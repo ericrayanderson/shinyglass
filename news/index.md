@@ -24,6 +24,9 @@
   [`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
   and
   [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md).
+- The hosted demos now deploy to Posit Connect Cloud. The workflow
+  updates the existing content items by id, so it never adds an app, and
+  the old shinyapps.io links redirect to the new URLs.
 
 ## shinyglass 0.5.0
 
