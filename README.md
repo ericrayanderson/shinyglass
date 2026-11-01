@@ -160,4 +160,4 @@ Built for Bootstrap 5 and bslib. See [compatibility](https://ericrayanderson.git
 More: [examples](https://github.com/ericrayanderson/shinyglass/tree/main/inst/examples) ·
 [experimental Python package](https://github.com/ericrayanderson/shinyglass/tree/main/python) ·
 [testing](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/VISUAL-QA.md) ·
-[deployment](https://github.com/ericrayanderson/shinyglass/blob/main/inst/scripts/CONNECT-CLOUD-DEPLOY.md)
+[deployment](https://github.com/ericrayanderson/shinyglass/tree/main/inst/scripts)
