@@ -476,3 +476,48 @@ test('chat history mount does not shift the sidebar', async ({ browser }) => {
     await context.close();
   }
 });
+
+// On phones shinychat moves its toolbar into the sidebar after it starts.
+// The slot is reserved in CSS, so the project input must not move when the
+// toolbar arrives, even when the chat script loads slowly.
+test('chat toolbar mount does not shift the phone sidebar', async ({ browser }) => {
+  test.setTimeout(90000);
+  for (const delay of [0, 1500]) {
+    const context = await browser.newContext(iphone16Context());
+    if (delay) {
+      await context.route(/shinychat\.js/, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        await route.continue();
+      });
+    }
+    await context.addInitScript(() => {
+      window.__toolbarShift = null;
+      const t0 = performance.now();
+      let first = null;
+      let stable = 0;
+      let lastY = null;
+      const tick = () => {
+        const el = document.getElementById('project');
+        const mount = document.querySelector('.shiny-chat-page-controls-mount-mobile');
+        if (el && mount) {
+          const y = el.getBoundingClientRect().y;
+          if (first === null) first = y;
+          if (mount.childElementCount > 0) {
+            stable = y === lastY ? stable + 1 : 0;
+            if (stable >= 10) { window.__toolbarShift = y - first; return; }
+          }
+          lastY = y;
+        }
+        if (performance.now() - t0 < 20000) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    const page = await context.newPage();
+    await page.goto('http://127.0.0.1:3949/', { waitUntil: 'commit' });
+    await page.waitForFunction(() => window.__toolbarShift !== null, null, { timeout: 25000 });
+    const shift = await page.evaluate(() => window.__toolbarShift);
+    console.log('toolbar mount shift', delay, shift);
+    expect(Math.abs(shift)).toBeLessThanOrEqual(1);
+    await context.close();
+  }
+});

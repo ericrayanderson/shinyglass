@@ -78,6 +78,9 @@
   shinyapps.io links redirect to the new URLs. The demos publish when a
   release is published or when the workflow is run by hand, not on every
   merge to main.
+* On phones, the Harbor notes sidebar no longer jumps down about 100px
+  when the chat toolbar moves into it after the page loads. The demo now
+  holds the toolbar's space from the start.
 
 # shinyglass 0.5.0
 
