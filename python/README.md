@@ -67,6 +67,59 @@ app = App(app_ui, None)
 | `icon_style` | `"clear"` | Monochrome bar icons. `"color"` keeps author colors |
 | `floating_sidebar` | `False` | Opt-in detached sidebar |
 
+### Controls and tokens
+
+These helpers match the R functions of the same names. Inputs take `id`
+instead of `inputId`, and choice dicts map values to labels like
+`ui.input_select()`.
+
+```python
+from shiny import App, reactive, ui
+import shinyglass as sg
+
+theme = sg.glass_add_tokens(sg.glass_theme(preset="auto"), blur="28px")
+
+app_ui = ui.page_sidebar(
+    ui.sidebar(
+        sg.glass_theme_toggle(),
+        sg.glass_preset_input(),
+        sg.glass_accent_input(),
+        sg.glass_scene_input(),
+        ui.input_action_button("flat", "Flatten for capture"),
+    ),
+    ui.card(ui.card_header("Hello"), "Glass content"),
+    title="Controls demo",
+    theme=theme,
+)
+
+
+def server(input, output, session):
+    sg.observe_glass_theme_toggle(input, session)
+    sg.observe_glass_preset_input(input, session)
+    sg.observe_glass_accent(input, session)
+    sg.observe_glass_scene(input, session)
+
+    @reactive.effect
+    @reactive.event(input.flat)
+    def _():
+        sg.glass_flatten(session, True)
+
+
+app = App(app_ui, server)
+```
+
+| Helper | What it does |
+| --- | --- |
+| `glass_theme_toggle()` | Light / Dark / Auto button group |
+| `glass_preset_input()` | Light / Dark / Auto select, applied as soon as it changes |
+| `glass_accent_input()` | iOS accent color wells (`glass_system_colors()`) |
+| `glass_scene_input()` | Wallpaper scene select (`glass_scenes()`) |
+| `observe_glass_*()` | Echo those inputs through `update_glass_theme()` on the server |
+| `glass_flatten(session, on)` | Turn blur off for print, PDF, and screenshots |
+| `glass_css_tokens()` | Catalog of public `--glass-*` CSS variables |
+| `glass_token_pack(preset)` | Default variable values for light or dark |
+| `glass_add_tokens(theme, ...)` | Override variables on a theme without editing SCSS |
+
 ## Demo
 
 ```bash
@@ -115,6 +168,9 @@ all of the R runtime controls. Shared assets do not imply API parity.
 | Default blur / radius | 36 px / `1.5rem` | 36 px / `1.5rem` |
 | Default CSS delivery | bslib Sass compilation | Precompiled wheel assets |
 | Custom theme knobs | bslib / sass | Optional `[theme]` extra |
+| Theme toggle, preset / accent / scene inputs | Public UI + observers | Same helpers and `observe_glass_*()` |
+| Flatten for capture | `glass_flatten()` | `glass_flatten()` |
+| CSS token catalog / overrides | `glass_css_tokens()`, `glass_token_pack()`, `glass_add_tokens()` | Same names |
 
 When editing shared JavaScript, update its vendored copy too. When editing SCSS,
 run `python scripts/vendor_assets.py` from this directory to rebuild wheel CSS.
@@ -131,3 +187,8 @@ they include Bootstrap from whichever shiny version is installed.
 
 - Published PyPI release (package version tracks R **0.5.0**; not on PyPI)
 - Full R demo gallery parity
+- `glass_page()`, `glass_plot_surface_input()`, `glass_resolved_preset()`,
+  `observe_glass()` and the intensity / plot surface observers
+- Plot and table helpers (`theme_glass()`, `plotly_glass()`, `gt_theme_glass()`,
+  `dt_options_glass()`, `glass_plot_colors()`)
+- React components
