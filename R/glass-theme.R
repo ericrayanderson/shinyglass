@@ -38,8 +38,8 @@
 #'   and Increase Contrast override the painted glass.
 #' @param tint Logical. Content-aware ambient tint from plots and images.
 #'   Default `TRUE`.
-#' @param specular Static top and bottom specular highlights. iOS 27 does not
-#'   follow the pointer or device tilt. `FALSE` hides the highlights.
+#' @param specular Top and bottom specular highlights. `FALSE` hides the
+#'   highlights, including the pointer sheen (see `pointer_specular`).
 #' @param nav_morph Logical. Compact navbar on scroll down; expand on scroll
 #'   up. Default `TRUE`.
 #' @param ambient_motion Logical. Animate the decorative ambient sheen.
@@ -141,8 +141,28 @@ glass_theme <- function(
     minimize_tabs = TRUE,
     icon_style = c("clear", "color", "all"),
     floating_sidebar = FALSE,
+    pointer_specular = TRUE,
+    nav_pill = TRUE,
+    style = c("default", "clear", "tinted"),
+    motion = TRUE,
+    font = c("matched", "system"),
     ...) {
   preset <- match.arg(preset)
+  style <- match.arg(style)
+  font <- match.arg(font)
+  if (missing(intensity) && !identical(material, "clear")) {
+    intensity <- .glass_style_intensity(style, intensity)
+  }
+  .glass_assert_flags(pointer_specular = pointer_specular, nav_pill = nav_pill, motion = motion)
+  if (!isTRUE(motion)) {
+    ambient_motion <- FALSE
+    morph <- FALSE
+    press <- FALSE
+    nav_morph <- FALSE
+    minimize_tabs <- FALSE
+    pointer_specular <- FALSE
+    nav_pill <- FALSE
+  }
   material <- match.arg(material)
   if (identical(material, "clear")) {
     .glass_deprecate_material_clear()
@@ -263,7 +283,12 @@ glass_theme <- function(
     scroll_edge = scroll_edge,
     minimize_tabs = minimize_tabs,
     icon_style = icon_style,
-    floating_sidebar = floating_sidebar
+    floating_sidebar = floating_sidebar,
+    pointer_specular = pointer_specular,
+    nav_pill = nav_pill,
+    style = style,
+    motion = motion,
+    font = font
   )
 
   # htmlDependency (not tagFunction-returned tags) so htmltools does not
@@ -283,11 +308,14 @@ glass_theme <- function(
     script = c("shiny-glass.js", "glass-ios27.js"),
     all_files = FALSE
   )
-  theme <- bslib::bs_bundle(
-    theme,
+  layers <- list(
     sass::sass_layer(html = preset_dep),
     sass::sass_layer(html = glass_js)
   )
+  if (identical(font, "matched")) {
+    layers <- c(layers, list(sass::sass_layer(html = .glass_font_dependency())))
+  }
+  theme <- do.call(bslib::bs_bundle, c(list(theme), layers))
   if (length(user_tokens)) {
     theme <- glass_add_tokens(theme, user_tokens)
   }
@@ -369,7 +397,11 @@ update_glass_theme <- function(
     scroll_edge = NULL,
     minimize_tabs = NULL,
     icon_style = NULL,
-    floating_sidebar = NULL) {
+    floating_sidebar = NULL,
+    pointer_specular = NULL,
+    nav_pill = NULL,
+    style = NULL,
+    motion = NULL) {
   if (missing(session) || is.null(session)) {
     .glass_need_session("update_glass_theme")
   }
@@ -430,7 +462,16 @@ update_glass_theme <- function(
   if (!is.null(icon_style)) {
     icon_style <- match.arg(icon_style, c("clear", "color", "all"))
   }
-  if (is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
+  if (!is.null(pointer_specular)) .glass_assert_flag(pointer_specular, "pointer_specular")
+  if (!is.null(nav_pill)) .glass_assert_flag(nav_pill, "nav_pill")
+  if (!is.null(motion)) .glass_assert_flag(motion, "motion")
+  if (!is.null(style)) {
+    style <- match.arg(style, c("default", "clear", "tinted"))
+    if (is.null(intensity)) intensity <- .glass_style_intensity(style, NULL)
+  }
+  if (is.null(pointer_specular) && is.null(nav_pill) && is.null(motion) &&
+      is.null(style) &&
+      is.null(preset) && is.null(tint) && is.null(primary) && is.null(intensity) &&
       is.null(material) && is.null(plot_surface) && is.null(ambient_motion) &&
       is.null(scene) && is.null(flatten) && (is.null(tokens) || !length(tokens)) &&
       is.null(refraction) && is.null(morph) && is.null(press) &&
@@ -457,6 +498,10 @@ update_glass_theme <- function(
   if (!is.null(minimize_tabs)) payload$minimize_tabs <- minimize_tabs
   if (!is.null(icon_style)) payload$icon_style <- icon_style
   if (!is.null(floating_sidebar)) payload$floating_sidebar <- floating_sidebar
+  if (!is.null(pointer_specular)) payload$pointer_specular <- pointer_specular
+  if (!is.null(nav_pill)) payload$nav_pill <- nav_pill
+  if (!is.null(style)) payload$style <- style
+  if (!is.null(motion)) payload$motion <- motion
 
   # Dual-channel delivery: structured shinyglass payload + legacy glassPreset
   # string. Some hosts rewrite or drop one channel but not both; the client
@@ -967,7 +1012,12 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     scroll_edge = TRUE,
     minimize_tabs = TRUE,
     icon_style = "clear",
-    floating_sidebar = FALSE) {
+    floating_sidebar = FALSE,
+    pointer_specular = TRUE,
+    nav_pill = TRUE,
+    style = "default",
+    motion = TRUE,
+    font = "matched") {
   # Inline early so first paint uses the right pack. Keep this free of
   # external deps (runs before shiny-glass.js).
   rgb <- .glass_hex_to_rgb(primary)
@@ -1046,6 +1096,13 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
       "root.dataset.glassMinimizeTabs=%s;",
       "root.dataset.glassIconStyle=%s;",
       "root.dataset.glassFloatingSidebar=%s;",
+      "root.dataset.glassPointerSpecular=%s;",
+      "root.dataset.glassNavPill=%s;",
+      "root.dataset.glassStyle=%s;",
+      "root.dataset.glassMotion=%s;",
+      "root.dataset.glassFont=%s;",
+      "try{var ua=navigator.userAgentData&&navigator.userAgentData.platform||navigator.platform||'';",
+      "if(/Mac|iPhone|iPad|iPod/i.test(ua))root.dataset.glassApple='true';}catch(e){}",
       "root.style.setProperty('--glass-ior','1.5');",
       "var rgb=%s;",
       "var onPrim=%s;",
@@ -1082,6 +1139,11 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
     if (isTRUE(minimize_tabs)) "\"true\"" else "\"false\"",
     jsonlite_quote(icon_style),
     if (isTRUE(floating_sidebar)) "\"true\"" else "\"false\"",
+    if (isTRUE(pointer_specular)) "\"true\"" else "\"false\"",
+    if (isTRUE(nav_pill)) "\"true\"" else "\"false\"",
+    jsonlite_quote(style),
+    if (isTRUE(motion)) "\"true\"" else "\"false\"",
+    jsonlite_quote(font),
     rgb_css,
     jsonlite_quote(on_primary),
     .glass_intensity_head_js()
@@ -1112,4 +1174,25 @@ glass_resolved_preset <- function(input, default = c("light", "dark")) {
 # Avoid depending on jsonlite just to quote a short string.
 jsonlite_quote <- function(x) {
   paste0('"', gsub("([\\\\\"])", "\\\\\\1", as.character(x)), '"')
+}
+
+# Starting intensity for each glass_theme(style =) option. "default" keeps
+# the caller's value (0.5 unless set).
+.glass_style_intensity <- function(style, intensity) {
+  switch(style,
+    clear = 0.12,
+    tinted = 1,
+    if (is.null(intensity)) NULL else intensity
+  )
+}
+
+.glass_font_dependency <- function() {
+  htmltools::htmlDependency(
+    name = "shinyglass-inter",
+    version = "4.1",
+    src = system.file("fonts", "inter", package = "shinyglass"),
+    stylesheet = "shinyglass-inter.css",
+    attachment = "InterVariable-latin.woff2",
+    all_files = FALSE
+  )
 }

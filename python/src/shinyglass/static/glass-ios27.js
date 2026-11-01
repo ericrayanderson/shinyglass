@@ -46,6 +46,7 @@
     ".btn-group",
     ".glass-theme-toggle",
     ".nav-tabs",
+    ".navbar-nav",
     "[role='tablist']"
   ].join(",");
 
@@ -68,7 +69,12 @@
     return v === "true" || v === "1";
   }
 
+  function motionOff() {
+    return rootEl().dataset.glassMotion === "false";
+  }
+
   function reducedMotion() {
+    if (motionOff()) return true;
     try {
       return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch (e) {
@@ -509,6 +515,16 @@
     var height = h.toFixed(2) + "px";
     if (reducedMotion() || ind.dataset.ready !== "1") {
       ind.style.transition = "none";
+    }
+    if (ind.dataset.ready === "1" && !reducedMotion() && ind.style.transform &&
+        ind.style.transform !== transform && ind.animate) {
+      // Stretch along the travel direction, then settle (spring feel).
+      try {
+        ind.animate(
+          [{ scale: "1 1" }, { scale: "1.14 0.92", offset: 0.4 }, { scale: "1 1" }],
+          { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)", composite: "add" }
+        );
+      } catch (e) { /* ignore */ }
     }
     if (ind.style.width !== width) ind.style.width = width;
     if (ind.style.height !== height) ind.style.height = height;
@@ -1043,6 +1059,7 @@
     bindMenuMorph();
     bindScrollEdges();
     bindTabInteraction();
+    bindPointerSpecular();
     scheduleIos27Motion();
     window.addEventListener("resize", scheduleIos27Motion, { passive: true });
     window.addEventListener("scroll", function () {
@@ -1053,6 +1070,121 @@
     }, { passive: true });
   }
 
+  // ---------------------------------------------------------------------
+  // Pointer-following specular (0.6.0)
+  // Moves --glass-specular-x/y on the hovered glass surface. Fine pointers
+  // only, rAF throttled (about 30 fps), off under reduced motion, paused
+  // while the tab is hidden.
+  // ---------------------------------------------------------------------
+  var POINTER_SELECTOR = [
+    ".card",
+    ".bslib-value-box",
+    ".value-box",
+    ".navbar",
+    ".modal-content",
+    ".dropdown-menu",
+    ".popover",
+    ".btn",
+    ".glass-panel",
+    ".glass-card",
+    ".well"
+  ].join(",");
+  var pointerLit = null;
+  var pointerFrame = 0;
+  var pointerLast = 0;
+  var pointerEvt = null;
+  var pointerBound = false;
+
+  function finePointer() {
+    try {
+      return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function pointerSpecularEnabled() {
+    return flagEnabled("glassPointerSpecular", true) &&
+      flagEnabled("glassSpecular", true) &&
+      !reducedMotion() && finePointer() && !document.hidden;
+  }
+
+  function clearPointerLit() {
+    if (pointerLit) {
+      pointerLit.classList.remove("glass-pointer-lit");
+      pointerLit.style.removeProperty("--glass-specular-x");
+      pointerLit.style.removeProperty("--glass-specular-y");
+      pointerLit = null;
+    }
+  }
+
+  function paintPointer() {
+    pointerFrame = 0;
+    var e = pointerEvt;
+    if (!e) return;
+    var now = (window.performance && performance.now) ? performance.now() : Date.now();
+    if (now - pointerLast < 32) {
+      pointerFrame = window.requestAnimationFrame(paintPointer);
+      return;
+    }
+    pointerLast = now;
+    pointerEvt = null;
+    if (!pointerSpecularEnabled()) { clearPointerLit(); return; }
+    var t = e.target && e.target.closest ? e.target.closest(POINTER_SELECTOR) : null;
+    if (t && t.closest("[data-glass-no-pointer-specular]")) t = null;
+    if (t !== pointerLit) {
+      clearPointerLit();
+      if (!t) return;
+      pointerLit = t;
+      t.classList.add("glass-pointer-lit");
+    }
+    if (!t) return;
+    var r = t.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return;
+    var x = Math.max(0, Math.min(100, (e.clientX - r.left) / r.width * 100));
+    var y = Math.max(0, Math.min(100, (e.clientY - r.top) / r.height * 100));
+    t.style.setProperty("--glass-specular-x", x.toFixed(1) + "%");
+    t.style.setProperty("--glass-specular-y", y.toFixed(1) + "%");
+  }
+
+  function bindPointerSpecular() {
+    if (pointerBound) return;
+    pointerBound = true;
+    document.addEventListener("pointermove", function (e) {
+      if (e.pointerType && e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+      if (!flagEnabled("glassPointerSpecular", true)) return;
+      pointerEvt = e;
+      if (!pointerFrame) pointerFrame = window.requestAnimationFrame(paintPointer);
+    }, { passive: true });
+    document.addEventListener("pointerleave", clearPointerLit, { passive: true });
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
+        pointerFrame = 0;
+        pointerEvt = null;
+        clearPointerLit();
+      }
+    });
+  }
+
+  function setMotion(on) {
+    var v = on ? "true" : "false";
+    var r = rootEl().dataset;
+    r.glassMotion = v;
+    ["glassMorph", "glassPress", "glassNavMorph", "glassMinimizeTabs",
+      "glassAmbientMotion", "glassPointerSpecular"].forEach(function (k) { r[k] = v; });
+    if (!on) {
+      clearPointerLit();
+      if (document.body) document.body.classList.remove("glass-nav-compact", "glass-nav-expanded", "glass-tabs-min");
+    }
+    scheduleIos27Motion();
+  }
+
+  function setStyle(style) {
+    if (style !== "clear" && style !== "tinted") style = "default";
+    rootEl().dataset.glassStyle = style;
+  }
+
   var api = window.shinyglass = window.shinyglass || {};
   api.setRefraction = function (on) { setFlag("glassRefraction", !!on); };
   api.setMorph = function (on) { setFlag("glassMorph", !!on); };
@@ -1061,6 +1193,14 @@
   api.setMinimizeTabs = function (on) { setFlag("glassMinimizeTabs", !!on); };
   api.setFloatingSidebar = function (on) { setFlag("glassFloatingSidebar", !!on); };
   api.setIconStyle = setIconStyle;
+  api.setPointerSpecular = function (on) {
+    setFlag("glassPointerSpecular", !!on);
+    if (!on) clearPointerLit();
+  };
+  api.setNavPill = function (on) { setFlag("glassNavPill", !!on); };
+  api.setMotion = setMotion;
+  api.setStyle = setStyle;
+  api._pointerSpecularEnabled = pointerSpecularEnabled;
   api.supportsRefraction = supportsDisplacementBackdrop;
   api._buildDisplacementMap = buildDisplacementMap;
   api._isLowTierDevice = isLowTierDevice;

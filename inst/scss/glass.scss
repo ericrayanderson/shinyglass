@@ -48,6 +48,10 @@ $glass-check-input: ".form-check-input, .shiny-input-checkbox, .shiny-input-cont
   inherits: true;
   initial-value: 50%;
 }
+@property --glass-pointer-sheen {
+  syntax: "*";
+  inherits: false;
+}
 @property --glass-specular-y {
   syntax: "<percentage>";
   inherits: true;
@@ -345,7 +349,7 @@ body::after {
 //   • Defined borders (not shadow-only separation)
 //   • Darkened edge ring + bright rim for thickness
 //   • Chromatic micro-edge (refraction cue; Chromium also displaces the backdrop)
-//   • Static top and bottom specular on ::before (no pointer or tilt)
+//   • Top and bottom specular on ::before, plus an optional pointer sheen
 // $overflow: hidden clips children to the rounded rect (correct for chrome);
 // use overflow-x: auto on surfaces that hold wide content (tables) so headers
 // are not silently clipped — see .gt_table overrides.
@@ -402,6 +406,9 @@ body::after {
     position: absolute;
     inset: 0;
     background:
+      // Pointer sheen (glass_theme(pointer_specular = TRUE)); a no-op layer
+      // unless the JS marks this surface .glass-pointer-lit.
+      var(--glass-pointer-sheen, linear-gradient(transparent, transparent)),
       linear-gradient(
         180deg,
         var(--glass-specular-top, var(--glass-specular)) 0%,
@@ -7277,5 +7284,89 @@ html[data-glass-preset] .offcanvas-backdrop.show {
 
   body.glass-tabs-min :is(.nav-pills, .glass-tabbar, nav.fixed-bottom, .navbar.fixed-bottom, .tabbable > .nav-pills) {
     transform: none !important;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// 0.6.0 motion additions
+// ---------------------------------------------------------------------------
+
+// Pointer-following specular. glass-ios27.js sets --glass-specular-x/y on the
+// hovered surface (fine pointers only, never under reduced motion).
+.glass-pointer-lit {
+  --glass-pointer-sheen: radial-gradient(
+    circle at var(--glass-specular-x, 50%) var(--glass-specular-y, 0%),
+    color-mix(in srgb, var(--glass-specular-top, #fff) calc(var(--glass-pointer-strength, 0.32) * 100%), transparent) 0%,
+    transparent 58%
+  );
+}
+
+:root[data-glass-specular="false"] .glass-pointer-lit {
+  --glass-pointer-sheen: none;
+}
+
+// Morph indicator: stretch while it travels (set by glass-ios27.js).
+.glass-morph-indicator {
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1.18, 0.32, 1),
+    width 0.42s cubic-bezier(0.22, 1.18, 0.32, 1),
+    height 0.42s cubic-bezier(0.22, 1.18, 0.32, 1);
+}
+
+// Navbar nav links join the morph groups; keep link ink above the indicator.
+.glass-morph-group > :not(.glass-morph-indicator) {
+  position: relative;
+  z-index: 1;
+}
+
+// Compact pill top bar on desktop dashboards. Width animates on the bar
+// only, so content below does not reflow sideways.
+@media (min-width: 992px) {
+  :root[data-glass-nav-pill="true"] body.glass-nav-compact {
+    .navbar.navbar-static-top,
+    .navbar.navbar-default,
+    &.bslib-page-navbar > .navbar,
+    .bslib-page-sidebar > .navbar,
+    .bslib-page-navbar > .navbar {
+      max-width: unquote("min(calc(100% - 2rem), 64rem)");
+      margin-inline: auto;
+      border-radius: 999px !important;
+      transform: none;
+      transition:
+        max-width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+  :root[data-glass-nav-pill="true"] body.glass-nav-expanded {
+    .navbar.navbar-static-top,
+    .navbar.navbar-default,
+    &.bslib-page-navbar > .navbar,
+    .bslib-page-sidebar > .navbar {
+      transition:
+        max-width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        border-radius 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+}
+
+// Tinted style: the readable option. Denser fill and stronger ink so text
+// stays above the contrast floor on busy wallpapers.
+:root[data-glass-style="tinted"] {
+  --glass-diffusion: 1.2;
+}
+
+:root[data-glass-style="clear"] {
+  --glass-diffusion: 0.96;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-pointer-lit {
+    --glass-pointer-sheen: none;
+  }
+  :root[data-glass-nav-pill="true"] body :is(.navbar) {
+    transition: none !important;
   }
 }

@@ -130,6 +130,13 @@ def vendor(*, quiet: bool = False) -> Path:
     ios_src = root / "inst" / "js" / "glass-ios27.js"
     if ios_src.is_file():
         shutil.copy2(ios_src, STATIC / "glass-ios27.js")
+    fonts_src = root / "inst" / "fonts" / "inter"
+    if fonts_src.is_dir():
+        fonts_dst = STATIC / "fonts" / "inter"
+        fonts_dst.mkdir(parents=True, exist_ok=True)
+        for f in fonts_src.iterdir():
+            if f.is_file():
+                shutil.copy2(f, fonts_dst / f.name)
     head_src = root / "inst" / "js" / "glass-intensity-head.js"
     if head_src.is_file():
         shutil.copy2(head_src, STATIC / "glass-intensity-head.js")

@@ -1,0 +1,32 @@
+/* Bundled Inter (SIL Open Font License 1.1, see OFL.txt). Latin subset of
+   the variable font with weight and optical size axes. Apple devices keep
+   the system font (SF Pro) because it comes first in the stack. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root[data-glass-font="matched"] {
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --bs-body-font-family: var(--bs-font-sans-serif);
+}
+
+:root[data-glass-font="matched"] body {
+  font-optical-sizing: auto;
+}
+
+/* Inter tuning toward the SF look, only where Inter is the face in use
+   (not on Apple platforms). ss03 rounds quotes and commas like SF. cv11
+   (single storey a) stays off because SF uses a double storey a. Tabular
+   figures stay opt in. */
+:root[data-glass-font="matched"]:not([data-glass-apple="true"]) body {
+  font-feature-settings: "ss03" 1, "calt" 1, "kern" 1;
+}

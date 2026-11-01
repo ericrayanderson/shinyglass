@@ -1273,6 +1273,7 @@
       try {
         reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       } catch (e) { /* ignore */ }
+      if (rootEl().dataset.glassMotion === "false") reducedMotion = true;
 
       var holdUntil = 0;
       try {
@@ -1474,6 +1475,10 @@
       if (msg.scroll_edge != null) rootEl().dataset.glassScrollEdge = msg.scroll_edge ? "true" : "false";
       if (msg.minimize_tabs != null) rootEl().dataset.glassMinimizeTabs = msg.minimize_tabs ? "true" : "false";
       if (msg.floating_sidebar != null) rootEl().dataset.glassFloatingSidebar = msg.floating_sidebar ? "true" : "false";
+      if (msg.pointer_specular != null) rootEl().dataset.glassPointerSpecular = msg.pointer_specular ? "true" : "false";
+      if (msg.nav_pill != null) rootEl().dataset.glassNavPill = msg.nav_pill ? "true" : "false";
+      if (msg.style != null && window.shinyglass && window.shinyglass.setStyle) window.shinyglass.setStyle(String(msg.style));
+      if (msg.motion != null && window.shinyglass && window.shinyglass.setMotion) window.shinyglass.setMotion(!!msg.motion);
       if (msg.icon_style != null) {
         var iconStyle = String(msg.icon_style);
         if (iconStyle !== "clear" && iconStyle !== "color" && iconStyle !== "all") iconStyle = "clear";

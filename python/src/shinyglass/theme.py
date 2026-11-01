@@ -10,6 +10,7 @@ from htmltools import HTMLDependency, Tag, tags
 from shiny.ui import Theme
 
 from ._assets import (
+    _package_static,
     has_vendored_static,
     js_dir,
     package_root,
@@ -181,6 +182,11 @@ def _preset_head(
     minimize_tabs: bool = True,
     icon_style: str = "clear",
     floating_sidebar: bool = False,
+    pointer_specular: bool = True,
+    nav_pill: bool = True,
+    style: str = "default",
+    motion: bool = True,
+    font: str = "matched",
 ) -> str:
     wall = "null" if not wallpaper else repr(wallpaper)
     scenes = ",".join(f"{s}:1" for s in GLASS_SCENES)
@@ -237,6 +243,13 @@ def _preset_head(
         f"root.dataset.glassMinimizeTabs='{_js_bool(minimize_tabs)}';"
         f"root.dataset.glassIconStyle={icon_style!r};"
         f"root.dataset.glassFloatingSidebar='{_js_bool(floating_sidebar)}';"
+        f"root.dataset.glassPointerSpecular='{_js_bool(pointer_specular)}';"
+        f"root.dataset.glassNavPill='{_js_bool(nav_pill)}';"
+        f"root.dataset.glassStyle={style!r};"
+        f"root.dataset.glassMotion='{_js_bool(motion)}';"
+        f"root.dataset.glassFont={font!r};"
+        "try{var ua=navigator.userAgentData&&navigator.userAgentData.platform||navigator.platform||'';"
+        "if(/Mac|iPhone|iPad|iPod/i.test(ua))root.dataset.glassApple='true';}catch(e){}"
         "root.style.setProperty('--glass-ior','1.5');"
         "if(prim){root.dataset.glassPrimary=prim;"
         "root.style.setProperty('--bs-primary',prim);"
@@ -280,6 +293,11 @@ class GlassTheme(Theme):
         minimize_tabs: bool = True,
         icon_style: str = "clear",
         floating_sidebar: bool = False,
+        pointer_specular: bool = True,
+        nav_pill: bool = True,
+        style: str = "default",
+        motion: bool = True,
+        font: str = "matched",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -304,6 +322,11 @@ class GlassTheme(Theme):
         self._minimize_tabs = bool(minimize_tabs)
         self._icon_style = icon_style if icon_style in ("clear", "color", "all") else "clear"
         self._floating_sidebar = bool(floating_sidebar)
+        self._pointer_specular = bool(pointer_specular)
+        self._nav_pill = bool(nav_pill)
+        self._style = style if style in ("default", "clear", "tinted") else "default"
+        self._motion = bool(motion)
+        self._font = "system" if font == "system" else "matched"
 
     def _html_dependencies(self) -> list[HTMLDependency]:
         if self._precompiled_css is not None:
@@ -346,6 +369,11 @@ class GlassTheme(Theme):
                     minimize_tabs=self._minimize_tabs,
                     icon_style=self._icon_style,
                     floating_sidebar=self._floating_sidebar,
+                    pointer_specular=self._pointer_specular,
+                    nav_pill=self._nav_pill,
+                    style=self._style,
+                    motion=self._motion,
+                    font=self._font,
                 ),
             )
         )
@@ -375,6 +403,16 @@ class GlassTheme(Theme):
                     name="shinyglass-tokens",
                     version=__version__,
                     head=f'<style data-shinyglass-tokens="true">{css}</style>',
+                )
+            )
+        if self._font == "matched":
+            deps.append(
+                HTMLDependency(
+                    name="shinyglass-inter",
+                    version="4.1",
+                    source={"subdir": str(_package_static() / "fonts" / "inter")},
+                    stylesheet={"href": "shinyglass-inter.css"},
+                    all_files=True,
                 )
             )
         return deps
@@ -417,6 +455,11 @@ def glass_theme(
     minimize_tabs: bool = True,
     icon_style: str = "clear",
     floating_sidebar: bool = False,
+    pointer_specular: bool = True,
+    nav_pill: bool = True,
+    style: str = "default",
+    motion: bool = True,
+    font: str = "matched",
     *,
     tokens: Mapping[str, Any] | None = None,
     base: str | None = None,
@@ -465,6 +508,21 @@ def glass_theme(
         Remember preset, intensity, accent, material, plot surface, and scene.
     tint, specular, nav_morph, ambient_motion
         JS behavior knobs (same defaults as R).
+    pointer_specular
+        Move the specular highlight with the mouse on glass surfaces. Fine
+        pointers only; off under reduced motion.
+    nav_pill
+        Turn the compact navbar into a rounded pill on wide screens while
+        scrolling down.
+    style
+        ``"default"``, ``"clear"`` (intensity ``0.12``), or ``"tinted"``
+        (intensity ``1``, the most readable). Only sets intensity when
+        ``intensity`` is not given.
+    motion
+        ``False`` turns off every motion effect in one switch.
+    font
+        ``"matched"`` (default) adds a bundled Inter as the next choice after
+        the Apple system font. ``"system"`` skips it.
     tokens
         Optional mapping of CSS token overrides, the same as calling
         :func:`glass_add_tokens` on the result.
@@ -482,8 +540,19 @@ def glass_theme(
         _deprecate_clear_material()
         if intensity is None:
             intensity = _CLEAR_MATERIAL_INTENSITY
+    if style not in ("default", "clear", "tinted"):
+        raise ValueError('style must be "default", "clear", or "tinted"')
+    if font not in ("matched", "system"):
+        raise ValueError('font must be "matched" or "system"')
+    if intensity is None and style == "clear":
+        intensity = 0.12
+    if intensity is None and style == "tinted":
+        intensity = 1.0
     if intensity is None:
         intensity = _DEFAULT_INTENSITY
+    if not motion:
+        ambient_motion = morph = press = nav_morph = minimize_tabs = False
+        pointer_specular = nav_pill = False
     if scene not in GLASS_SCENES:
         raise ValueError(f"scene must be one of {GLASS_SCENES}")
     if not 0.0 <= float(intensity) <= 1.0:
@@ -520,6 +589,11 @@ def glass_theme(
         minimize_tabs=minimize_tabs,
         icon_style=icon_style,
         floating_sidebar=floating_sidebar,
+        pointer_specular=pointer_specular,
+        nav_pill=nav_pill,
+        style=style,
+        motion=motion,
+        font=font,
     )
 
     if use_precompiled:
@@ -625,6 +699,10 @@ def update_glass_theme(
     minimize_tabs: bool | None = None,
     icon_style: str | None = None,
     floating_sidebar: bool | None = None,
+    pointer_specular: bool | None = None,
+    nav_pill: bool | None = None,
+    style: str | None = None,
+    motion: bool | None = None,
 ) -> None:
     """Send a ``shinyglass`` custom message (same payload as R)."""
     payload: dict[str, Any] = {}
@@ -676,6 +754,18 @@ def update_glass_theme(
         payload["icon_style"] = icon_style
     if floating_sidebar is not None:
         payload["floating_sidebar"] = bool(floating_sidebar)
+    if pointer_specular is not None:
+        payload["pointer_specular"] = bool(pointer_specular)
+    if nav_pill is not None:
+        payload["nav_pill"] = bool(nav_pill)
+    if style is not None:
+        if style not in ("default", "clear", "tinted"):
+            raise ValueError('style must be "default", "clear", or "tinted"')
+        payload["style"] = style
+        if intensity is None and style in ("clear", "tinted"):
+            payload["intensity"] = 0.12 if style == "clear" else 1.0
+    if motion is not None:
+        payload["motion"] = bool(motion)
     if tokens:
         payload["tokens"] = dict(tokens)
     if not payload:
