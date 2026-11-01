@@ -93,6 +93,11 @@ is not enough: shinyreact would suppress Bootstrap and drop this CSS).</p>
 <span>  minimize_tabs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  icon_style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clear"</span>, <span class="st">"color"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
 <span>  floating_sidebar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pointer_specular <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nav_pill <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"clear"</span>, <span class="st">"tinted"</span><span class="op">)</span>,</span>
+<span>  motion <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  font <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched"</span>, <span class="st">"system"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -153,8 +158,8 @@ Default <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-specular">specular<a class="anchor" aria-label="anchor" href="#arg-specular"></a></dt>
-<dd><p>Static top and bottom specular highlights. iOS 27 does not
-follow the pointer or device tilt. <code>FALSE</code> hides the highlights.</p></dd>
+<dd><p>Top and bottom specular highlights. <code>FALSE</code> hides the
+highlights, including the pointer sheen (see <code>pointer_specular</code>).</p></dd>
 
 
 <dt id="arg-nav-morph">nav_morph<a class="anchor" aria-label="anchor" href="#arg-nav-morph"></a></dt>
@@ -238,6 +243,42 @@ inside cards, still skipping solid accent buttons.</p></dd>
 <dd><p><code>FALSE</code> (default). <code>TRUE</code> detaches bslib and
 <code>.glass-sidebar</code> panels into a rounded glass card with margin (iPadOS 26
 style). Off by default so existing layouts keep their docked sidebar.</p></dd>
+
+
+<dt id="arg-pointer-specular">pointer_specular<a class="anchor" aria-label="anchor" href="#arg-pointer-specular"></a></dt>
+<dd><p><code>TRUE</code> (default) moves the specular highlight to
+follow the mouse while it hovers a glass surface (cards, value boxes,
+the navbar, menus, buttons). Updates are throttled to about 30 frames a
+second and pause while the page is hidden. Touch screens, pens without
+hover, and reduced motion keep the static highlight.</p></dd>
+
+
+<dt id="arg-nav-pill">nav_pill<a class="anchor" aria-label="anchor" href="#arg-nav-pill"></a></dt>
+<dd><p><code>TRUE</code> (default) turns the compact navbar into a rounded
+glass pill on wide screens while scrolling down (needs <code>nav_morph</code>). It
+returns to full width on scroll up.</p></dd>
+
+
+<dt id="arg-style">style<a class="anchor" aria-label="anchor" href="#arg-style"></a></dt>
+<dd><p><code>"default"</code>, <code>"clear"</code>, or <code>"tinted"</code>. Sets the starting
+<code>intensity</code> when <code>intensity</code> is not given (<code>"clear"</code> is <code>0.12</code>,
+<code>"tinted"</code> is <code>1</code>) and marks the page with <code>data-glass-style</code>.
+<code>"tinted"</code> is the most readable option and passes the contrast audit.</p></dd>
+
+
+<dt id="arg-motion">motion<a class="anchor" aria-label="anchor" href="#arg-motion"></a></dt>
+<dd><p><code>TRUE</code> (default). <code>FALSE</code> is one switch that turns off all
+motion effects: <code>ambient_motion</code>, <code>morph</code>, <code>press</code>, <code>nav_morph</code>,
+<code>minimize_tabs</code>, <code>pointer_specular</code>, and <code>nav_pill</code>.</p></dd>
+
+
+<dt id="arg-font">font<a class="anchor" aria-label="anchor" href="#arg-font"></a></dt>
+<dd><p><code>"matched"</code> (default) or <code>"system"</code>. Apple devices always use
+the system font (SF Pro). <code>"matched"</code> adds a bundled, locally served copy
+of Inter (SIL Open Font License) as the next choice, so Windows, Linux,
+and Android get a close match instead of Segoe UI or Roboto. Inter is
+tuned with optical sizing and rounded punctuation. <code>"system"</code> skips the
+bundled font.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

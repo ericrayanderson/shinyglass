@@ -27,7 +27,11 @@ update_glass_theme(
   scroll_edge = NULL,
   minimize_tabs = NULL,
   icon_style = NULL,
-  floating_sidebar = NULL
+  floating_sidebar = NULL,
+  pointer_specular = NULL,
+  nav_pill = NULL,
+  style = NULL,
+  motion = NULL
 )
 ```
 
@@ -93,6 +97,16 @@ update_glass_theme(
 - icon_style:
 
   Optional `"clear"`, `"color"`, or `"all"`.
+
+- pointer_specular, nav_pill, motion:
+
+  Optional logicals. See
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md).
+
+- style:
+
+  Optional `"default"`, `"clear"`, or `"tinted"`. Also sets intensity
+  when `intensity` is not given.
 
 ## Value
 

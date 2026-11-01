@@ -41,6 +41,11 @@ glass_theme(
   minimize_tabs = TRUE,
   icon_style = c("clear", "color", "all"),
   floating_sidebar = FALSE,
+  pointer_specular = TRUE,
+  nav_pill = TRUE,
+  style = c("default", "clear", "tinted"),
+  motion = TRUE,
+  font = c("matched", "system"),
   ...
 )
 ```
@@ -101,8 +106,8 @@ glass_theme(
 
 - specular:
 
-  Static top and bottom specular highlights. iOS 27 does not follow the
-  pointer or device tilt. `FALSE` hides the highlights.
+  Top and bottom specular highlights. `FALSE` hides the highlights,
+  including the pointer sheen (see `pointer_specular`).
 
 - nav_morph:
 
@@ -192,6 +197,42 @@ glass_theme(
   `FALSE` (default). `TRUE` detaches bslib and `.glass-sidebar` panels
   into a rounded glass card with margin (iPadOS 26 style). Off by
   default so existing layouts keep their docked sidebar.
+
+- pointer_specular:
+
+  `TRUE` (default) moves the specular highlight to follow the mouse
+  while it hovers a glass surface (cards, value boxes, the navbar,
+  menus, buttons). Updates are throttled to about 30 frames a second and
+  pause while the page is hidden. Touch screens, pens without hover, and
+  reduced motion keep the static highlight.
+
+- nav_pill:
+
+  `TRUE` (default) turns the compact navbar into a rounded glass pill on
+  wide screens while scrolling down (needs `nav_morph`). It returns to
+  full width on scroll up.
+
+- style:
+
+  `"default"`, `"clear"`, or `"tinted"`. Sets the starting `intensity`
+  when `intensity` is not given (`"clear"` is `0.12`, `"tinted"` is `1`)
+  and marks the page with `data-glass-style`. `"tinted"` is the most
+  readable option and passes the contrast audit.
+
+- motion:
+
+  `TRUE` (default). `FALSE` is one switch that turns off all motion
+  effects: `ambient_motion`, `morph`, `press`, `nav_morph`,
+  `minimize_tabs`, `pointer_specular`, and `nav_pill`.
+
+- font:
+
+  `"matched"` (default) or `"system"`. Apple devices always use the
+  system font (SF Pro). `"matched"` adds a bundled, locally served copy
+  of Inter (SIL Open Font License) as the next choice, so Windows,
+  Linux, and Android get a close match instead of Segoe UI or Roboto.
+  Inter is tuned with optical sizing and rounded punctuation. `"system"`
+  skips the bundled font.
 
 - ...:
 
