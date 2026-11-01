@@ -102,7 +102,10 @@
 #' | `refraction`, `morph`, `press`, `scroll_edge`, `minimize_tabs` | `TRUE` | `TRUE` or `FALSE` |
 #' | `icon_style` | `"clear"` | `"clear"`, `"color"`, `"all"` |
 #' | `floating_sidebar` | `FALSE` | `TRUE` or `FALSE` |
-#' | `specular` | `TRUE` | `TRUE` or `FALSE`. Highlights are static bands |
+#' | `specular` | `TRUE` | `TRUE` or `FALSE` |
+#' | `pointer_specular`, `nav_pill`, `motion` | `TRUE` | `TRUE` or `FALSE` |
+#' | `style` | `"default"` | `"default"`, `"clear"`, `"tinted"` |
+#' | `font` | `"matched"` | `"matched"`, `"system"` |
 #'
 #' [update_glass_theme()] changes these in a running app. `NULL` leaves that
 #' setting alone. When the user picks Auto, `input$glass_preset` stays

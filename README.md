@@ -110,7 +110,11 @@ Defaults also follow iOS 27 as far as a browser can. Chromium refracts the
 backdrop through a squircle lens. Safari and Firefox keep blur and tint.
 Active pills and tabs spring into each other, buttons press with a short
 spring, and floating bars pick up a scroll-edge fade. Tab bars shrink while
-you scroll down. Specular highlights are static (no pointer tilt). Icons in
+you scroll down, and on desktop dashboards the top bar shrinks into a
+centred pill. Specular highlights follow the mouse over cards, bars and
+buttons (`pointer_specular = FALSE` keeps them static). Pick the iOS 27
+look with `style = "clear"` or `style = "tinted"`, and turn every motion
+effect off with `motion = FALSE`. Icons in
 bars and non-primary buttons are monochrome clear glass (`icon_style =
 "clear"`). Pass `icon_style = "color"` to keep author colors. The detached
 sidebar is opt-in: `floating_sidebar = TRUE`.
@@ -124,6 +128,12 @@ Named wallpaper scenes (`tahoe`, `dusk`, `mesh`, `aurora`, `harbor`, `grove`)
 and optional `wallpaper=` photos stay behind a blur + wash so text meets the
 contrast floor. For chromote, PDF, or screenshots, call `glass_flatten()` or
 open the app with `?glass_flatten=1`.
+
+Text uses the system font on Apple devices. Elsewhere shinyglass serves a
+bundled copy of Inter, tuned toward SF Pro, from the app itself with no
+CDN. Inter is licensed under the SIL Open Font License 1.1 (see
+`inst/fonts/inter/OFL.txt`). Pass `font = "system"` to use the platform
+font instead.
 
 Power users can read `glass_css_tokens()` and override `--glass-*` variables
 with `glass_theme(tokens = list(blur = "28px"))` without forking SCSS.
