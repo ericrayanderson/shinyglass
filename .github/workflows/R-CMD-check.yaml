@@ -54,7 +54,9 @@ jobs:
 
       - name: Install inconsolata
         if: matrix.config.manual
-        run: tlmgr install inconsolata
+        run: |
+          tlmgr update --self
+          tlmgr install inconsolata
 
       # Once a version is on CRAN, main carries that same version until the
       # next bump, and the remote incoming check then fails on "Insufficient

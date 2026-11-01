@@ -487,7 +487,7 @@
   corner radius.
 * Works with `fluidPage()`, `navbarPage()`, `bslib::page_sidebar()`, and other
   page functions that accept a bslib theme. Pass the theme via
-  `theme = glass_theme()`, or for [teal](https://insightsengineering.github.io/teal/)
+  `theme = glass_theme()`, or for [teal](https://CRAN.R-project.org/package=teal)
   apps via `options(teal.bs_theme = glass_theme())`.
 * Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars, inputs,
   tables, plots, modals) and holds up on denser UIs such as leaflet maps, DT,

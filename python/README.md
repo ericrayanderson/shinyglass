@@ -97,7 +97,7 @@ pytest
 
 GitHub Actions (`.github/workflows/python.yml`):
 
-1. Editable install + vendor + pytest  
+1. Editable install + vendor + sync check + pytest  
 2. Build wheel, install in a **clean venv** with no monorepo `inst/`, re-run tests  
 
 ## R / Python feature scope
@@ -119,6 +119,13 @@ all of the R runtime controls. Shared assets do not imply API parity.
 When editing shared JavaScript, update its vendored copy too. When editing SCSS,
 run `python scripts/vendor_assets.py` from this directory to rebuild wheel CSS.
 The Python CI jobs verify editable and isolated wheel installations.
+
+The editable job also re-runs `vendor_assets.py` and fails if the vendored
+`glass.scss`, JavaScript, or `glass-rules-*.css` files differ from what is
+committed. If that check fails, run `python python/scripts/vendor_assets.py`
+from the repo root and commit the updated files under
+`src/shinyglass/static/`. The `theme-*.css` bundles are not compared because
+they include Bootstrap from whichever shiny version is installed.
 
 ## Not yet
 
