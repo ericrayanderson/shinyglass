@@ -445,3 +445,34 @@ for (const app of IPHONE_APPS) {
     }
   });
 }
+
+// The history list mounts after the server connects. Its slot is reserved
+// in CSS, so the project input must not move when it appears.
+test('chat history mount does not shift the sidebar', async ({ browser }) => {
+  for (const ctx of [iphone16Context(), { viewport: { width: 1280, height: 800 } }]) {
+    const context = await browser.newContext(ctx);
+    await context.addInitScript(() => {
+      window.__shift = null;
+      const t0 = performance.now();
+      let before = null;
+      const tick = () => {
+        const el = document.getElementById('project');
+        const h = document.querySelector('shiny-chat-history');
+        if (el && h) {
+          const y = el.getBoundingClientRect().y;
+          if (h.childElementCount === 0) before = y;
+          else if (before !== null) { window.__shift = y - before; return; }
+        }
+        if (performance.now() - t0 < 15000) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    const page = await context.newPage();
+    await page.goto('http://127.0.0.1:3949/', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.__shift !== null, null, { timeout: 15000 });
+    const shift = await page.evaluate(() => window.__shift);
+    console.log('history mount shift', JSON.stringify(ctx.viewport), shift);
+    expect(Math.abs(shift)).toBeLessThanOrEqual(1);
+    await context.close();
+  }
+});

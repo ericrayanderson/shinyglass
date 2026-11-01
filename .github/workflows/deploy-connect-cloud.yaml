@@ -1,7 +1,8 @@
 name: Deploy Connect Cloud demos
 
 on:
-  # Demos publish when a release is published, or by hand. Merges to main
+  # Demos publish when a package release is published (not a py-v Python
+  # release), or by hand. Merges to main
   # do not deploy, which keeps Connect Cloud usage credits for releases.
   release:
     types: [published]
@@ -26,7 +27,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'ericrayanderson/shinyglass' && (github.event_name == 'release' || github.ref == 'refs/heads/main')
+    if: github.repository == 'ericrayanderson/shinyglass' && ((github.event_name == 'release' && !startsWith(github.event.release.tag_name, 'py-v')) || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: connect-cloud-production
