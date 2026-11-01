@@ -8,6 +8,11 @@
   glass track with a raised white capsule thumb that grows while dragged, and
   a larger thumb on touch screens. Firefox also fills the active part of the
   track with the accent color.
+* The Python package gains the R controls and token helpers:
+  `glass_theme_toggle()`, `glass_preset_input()`, `glass_accent_input()`,
+  `glass_scene_input()`, their `observe_glass_*()` server helpers,
+  `glass_flatten()`, `glass_system_colors()`, `glass_scenes()`,
+  `glass_css_tokens()`, `glass_token_pack()` and `glass_add_tokens()`.
 
 # shinyglass 0.5.0
 

@@ -367,6 +367,16 @@ class GlassTheme(Theme):
                 all_files=False,
             )
         )
+        extra_tokens = getattr(self, "_glass_tokens", None)
+        if extra_tokens:
+            css = ":root{" + "".join(f"{k}:{v};" for k, v in extra_tokens.items()) + "}"
+            deps.append(
+                HTMLDependency(
+                    name="shinyglass-tokens",
+                    version=__version__,
+                    head=f'<style data-shinyglass-tokens="true">{css}</style>',
+                )
+            )
         return deps
 
     def to_css(self, compile_args=None) -> str:
