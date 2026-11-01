@@ -206,10 +206,8 @@ they include Bootstrap from whichever shiny version is installed.
 
 ## Not yet
 
-- Published PyPI release (package version tracks R **0.5.0**; not on PyPI)
 - Full R demo gallery parity
-- `glass_page()`, `glass_plot_surface_input()`, `glass_resolved_preset()`,
-  `observe_glass()` and the intensity / plot surface observers
-- Plot and table helpers (`theme_glass()`, `plotly_glass()`, `gt_theme_glass()`,
-  `dt_options_glass()`, `glass_plot_colors()`)
+- `glass_page()`
+- Plot and table helpers tied to R packages (`theme_glass()`, `plotly_glass()`,
+  `gt_theme_glass()`, `dt_options_glass()`)
 - React components

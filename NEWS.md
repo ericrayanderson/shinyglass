@@ -1,6 +1,6 @@
-# shinyglass (development version)
+# shinyglass 0.6.0
 
-## Planned for 0.6.0: motion, style and font
+## Motion, style and font
 
 * Specular highlights now follow the mouse on desktop. A soft sheen moves
   across cards, value boxes, the navbar, menus and buttons while the pointer
@@ -10,55 +10,27 @@
   `data-glass-no-pointer-specular` attribute.
 * Navbar links (`.navbar-nav`) join tabs and pills in the morphing indicator.
   The indicator now stretches slightly as it moves between items.
-* On desktop-width dashboards, the top bar shrinks into a centred glass pill
+* On desktop-width dashboards, the top bar shrinks into a centered glass pill
   while scrolling down and returns to full width on scroll up.
   `glass_theme(nav_pill = FALSE)` keeps the full-width compact bar.
-* `glass_theme(style = "clear")` and `style = "tinted"` match the two iOS 27
-  Liquid Glass settings. The style sets the starting intensity (`0.12` or
+* `glass_theme(style = "clear")` and `style = "tinted"` match the two Liquid
+  Glass appearance settings. The style sets the starting intensity (`0.12` or
   `1`) when `intensity` is not given, and adjusts diffusion. Tinted is the
   most readable choice for dense dashboards.
 * `glass_theme(motion = FALSE)` is one switch that turns off every motion
   effect: ambient motion, morphing, press springs, navbar morph, tab
   minimizing, pointer specular and the navbar pill. Reduced motion in the
-  OS has the same effect.
+  operating system has the same effect.
 * `update_glass_theme()` gains `pointer_specular`, `nav_pill`, `style` and
   `motion` for live changes.
 * Text on Windows, Linux and Android now uses a bundled copy of Inter, the
   closest open match to SF Pro, instead of Segoe UI or Roboto. Apple
   devices keep the system font. Inter (SIL Open Font License 1.1) ships as a
   local variable font, latin subset, about 100 KB, and is served with the
-  app. No CDN is used. It is tuned with optical sizing and rounded
-  punctuation. Use `glass_theme(font = "system")` to skip it.
-* The Python package mirrors all of these arguments.
+  app, so no outside font server is used. Use
+  `glass_theme(font = "system")` to skip it.
 
-* A new CI check, `tools/api_parity.py`, compares the R exports with the
-  Python package's public functions and their argument names. Items that are
-  one-sided on purpose are listed with a reason in
-  `tools/api-parity-allow.toml`. `tools/draft_python_wrapper.py` prints a
-  first draft of a Python function from an R function's arguments.
-  `.github/CONTRIBUTING.md` describes both.
-* The Python package gains `glass_plot_surface_input()`,
-  `observe_glass_plot_surface()`, `observe_glass_intensity()`,
-  `observe_glass()`, `glass_resolved_preset()` and `glass_plot_colors()`,
-  matching the R functions.
-* In Python, `glass_theme()` gains `tokens=` like R, and
-  `glass_intensity_slider()` gains `min`, `max`, `step`, `preview` and
-  `width`. Its markup now matches R, including the preview chips and hint.
-  When `value` is left as `None` the slider follows the page intensity
-  instead of always starting at 0.5.
-* The Python tests now cover the glass progress bar and range slider
-  styling and the range fill script, which the Python package already ships
-  through the shared CSS and JavaScript.
-* Native range inputs now show the accent-colored fill in Chrome and Safari
-  as well as Firefox. A small script in `shiny-glass.js` keeps a
-  `--glass-range-fill` custom property up to date on each `.form-range`,
-  including inputs added later and values changed from the server.
-* In Shiny for Python, `ui.page_sidebar()` now fills the page height like the
-  R version when the main content is short, so the sidebar no longer stops at
-  the height of the main content.
-* The shinychat browser test now measures the offcanvas close button after
-  the panel's entry animation finishes. It could read 43.96px on the last
-  frame of that animation.
+## New styling
 
 * Progress bars (`.progress` / `.progress-bar`) now use the Liquid Glass look:
   a thin recessed glass track with a rounded accent fill and a soft sheen.
@@ -66,21 +38,39 @@
   thinner than before (0.5rem, or 1rem when they carry a label).
 * Native range inputs (`.form-range`) now use a Liquid Glass slider: a thin
   glass track with a raised white capsule thumb that grows while dragged, and
-  a larger thumb on touch screens. Firefox also fills the active part of the
-  track with the accent color.
-* The Python package gains the R controls and token helpers:
-  `glass_theme_toggle()`, `glass_preset_input()`, `glass_accent_input()`,
-  `glass_scene_input()`, their `observe_glass_*()` server helpers,
-  `glass_flatten()`, `glass_system_colors()`, `glass_scenes()`,
-  `glass_css_tokens()`, `glass_token_pack()` and `glass_add_tokens()`.
-* The hosted demos now deploy to Posit Connect Cloud. The workflow updates
-  the existing content items by id, so it never adds an app, and the old
-  shinyapps.io links redirect to the new URLs. The demos publish when a
-  release is published or when the workflow is run by hand, not on every
-  merge to main.
-* On phones, the Harbor notes sidebar no longer jumps down about 100px
-  when the chat toolbar moves into it after the page loads. The demo now
-  holds the toolbar's space from the start.
+  a larger thumb on touch screens. The active part of the track is filled
+  with the accent color in Chrome, Safari and Firefox, including inputs
+  added later and values changed from the server.
+
+## Python package
+
+* The Python package is now on PyPI (`pip install shinyglass`) and mirrors
+  every new `glass_theme()` argument above.
+* It gains the R controls and token helpers: `glass_theme_toggle()`,
+  `glass_preset_input()`, `glass_accent_input()`, `glass_scene_input()`,
+  `glass_plot_surface_input()`, their `observe_glass_*()` server helpers,
+  `observe_glass_intensity()`, `observe_glass()`, `glass_resolved_preset()`,
+  `glass_plot_colors()`, `glass_flatten()`, `glass_system_colors()`,
+  `glass_scenes()`, `glass_css_tokens()`, `glass_token_pack()` and
+  `glass_add_tokens()`.
+* `glass_theme()` gains `tokens=` like R, and `glass_intensity_slider()`
+  gains `min`, `max`, `step`, `preview` and `width`. Its markup now matches
+  R, including the preview chips and hint. When `value` is left as `None`
+  the slider follows the page intensity instead of always starting at 0.5.
+* `ui.page_sidebar()` now fills the page height like the R version when the
+  main content is short.
+* A CI check compares the R exports with the Python functions and their
+  argument names, so the two packages stay in step.
+
+## Demos
+
+* The dashboard demo turns on the new options and adds live controls for the
+  glass style, motion and pointer shine. The inputs demo shows the new
+  progress bar and range slider.
+* The hosted demos now run on Posit Connect Cloud, and the old shinyapps.io
+  links redirect to the new addresses.
+* On phones, the Harbor notes chat demo no longer shifts its layout when the
+  chat history and toolbar load after the page.
 
 # shinyglass 0.5.0
 
