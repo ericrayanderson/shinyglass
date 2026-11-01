@@ -1092,6 +1092,14 @@ harbor_page <- tagList(
       @media (pointer: coarse) {
         .shiny-chat-page-sidebar shiny-chat-history:empty { min-height: 126px; }
       }
+      /* On narrow screens shinychat moves the toolbar into the sidebar
+         after it starts. Hold the toolbar's height (167px with its
+         padding) until then, so the history list and inputs stay put. */
+      @media (max-width: 799px) {
+        .shiny-chat-page-sidebar > .shiny-chat-page-controls-mount-mobile:empty {
+          min-height: 167px;
+        }
+      }
 
       .harbor-mark { display: block; width: 22px; height: 22px; }
       /* Toast under the chat header, over the transcript only. It must not
