@@ -54,7 +54,12 @@ dashboard_page <- page_sidebar(
     intensity = 0.5,
     persist = TRUE,
     scene = "tahoe",
-    plot_surface = "clear"
+    plot_surface = "clear",
+    style = "default",
+    pointer_specular = TRUE,
+    nav_pill = TRUE,
+    motion = TRUE,
+    font = "matched"
   ),
   class = "bslib-page-dashboard",
   fillable = TRUE,
@@ -76,6 +81,15 @@ dashboard_page <- page_sidebar(
       width = "100%"
     ),
     glass_accent_input("accent", selected = "blue"),
+    radioButtons(
+      "glass_style",
+      "Glass style",
+      choices = c("Default" = "default", "Clear" = "clear", "Tinted" = "tinted"),
+      selected = "default",
+      inline = TRUE
+    ),
+    checkboxInput("glass_motion", "Motion effects", TRUE),
+    checkboxInput("glass_pointer", "Shine follows the pointer", TRUE),
     glass_scene_input("glass_scene", selected = "tahoe", width = "100%"),
     glass_plot_surface_input("plot_surface", selected = "clear", width = "100%"),
     selectInput(
@@ -150,6 +164,15 @@ server <- function(input, output, session) {
   observe_glass_accent(input, session, "accent")
   observe_glass_scene(input, session, "glass_scene")
   observe_glass_plot_surface(input, session, "plot_surface")
+  observeEvent(input$glass_style, {
+    update_glass_theme(session, style = input$glass_style)
+  }, ignoreInit = TRUE)
+  observeEvent(input$glass_motion, {
+    update_glass_theme(session, motion = isTRUE(input$glass_motion))
+  }, ignoreInit = TRUE)
+  observeEvent(input$glass_pointer, {
+    update_glass_theme(session, pointer_specular = isTRUE(input$glass_pointer))
+  }, ignoreInit = TRUE)
 
   output$metric_n <- renderText({
     format(nrow(filtered_data()), big.mark = ",")

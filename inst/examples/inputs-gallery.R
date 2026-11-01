@@ -44,7 +44,7 @@ glass_preset <- match.arg(
 
 inputs_page <- page_sidebar(
   title = "Shiny Inputs Gallery",
-  theme = glass_theme(preset = glass_preset),
+  theme = glass_theme(preset = glass_preset, pointer_specular = TRUE, font = "matched"),
   fillable = FALSE,
   sidebar = sidebar(
     title = "About",
@@ -53,7 +53,7 @@ inputs_page <- page_sidebar(
     p(
       class = "text-muted",
       "Every built-in Shiny input and button, styled with ",
-      code("glass_theme()"), ". Change controls — values update live below."
+      code("glass_theme()"), ". Change controls and the values update live below."
     ),
     glass_preset_input(
       "preset",
@@ -145,6 +145,23 @@ inputs_page <- page_sidebar(
         selected = "Species",
         multiple = TRUE,
         width = "100%"
+      )
+    ),
+    card(
+      card_header("Progress and range"),
+      tags$div(
+        class = "progress",
+        role = "progressbar",
+        `aria-label` = "Upload progress",
+        `aria-valuenow` = "64",
+        `aria-valuemin` = "0",
+        `aria-valuemax` = "100",
+        tags$div(class = "progress-bar", style = "width: 64%")
+      ),
+      tags$label(`for` = "native_range", class = "form-label mt-3", "Native range input"),
+      tags$input(
+        type = "range", class = "form-range", id = "native_range",
+        min = "0", max = "100", value = "40"
       )
     ),
     card(
