@@ -72,6 +72,11 @@ app = App(app_ui, None)
 | `minimize_tabs` | `True` | Shrink tab bars on scroll down |
 | `icon_style` | `"clear"` | Monochrome bar icons. `"color"` keeps author colors |
 | `floating_sidebar` | `False` | Opt-in detached sidebar |
+| `pointer_specular` | `True` | Highlight follows the mouse over glass surfaces |
+| `nav_pill` | `True` | Desktop top bar shrinks to a pill while scrolling down |
+| `style` | `"default"` | `"clear"` or `"tinted"` sets the starting intensity |
+| `motion` | `True` | `False` turns off every motion effect |
+| `font` | `"matched"` | Bundled Inter (SIL OFL 1.1, served locally) off Apple devices. `"system"` skips it |
 
 ### Controls and tokens
 

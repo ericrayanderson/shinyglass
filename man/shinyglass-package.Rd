@@ -112,7 +112,10 @@ The server is unchanged: \code{observe_glass(input, session)}.
    \code{refraction}, \code{morph}, \code{press}, \code{scroll_edge}, \code{minimize_tabs} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE} \cr
    \code{icon_style} \tab \code{"clear"} \tab \code{"clear"}, \code{"color"}, \code{"all"} \cr
    \code{floating_sidebar} \tab \code{FALSE} \tab \code{TRUE} or \code{FALSE} \cr
-   \code{specular} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE}. Highlights are static bands \cr
+   \code{specular} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE} \cr
+   \code{pointer_specular}, \code{nav_pill}, \code{motion} \tab \code{TRUE} \tab \code{TRUE} or \code{FALSE} \cr
+   \code{style} \tab \code{"default"} \tab \code{"default"}, \code{"clear"}, \code{"tinted"} \cr
+   \code{font} \tab \code{"matched"} \tab \code{"matched"}, \code{"system"} \cr
 }
 
 
