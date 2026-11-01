@@ -38,7 +38,7 @@ test('desktop toggle frames the app and remembers the choice', async ({ page }) 
   await expect(frame).toHaveAttribute('src', /[?&]frame=0(?:&|$)/);
 
   const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
-  await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForFunction(() => !!document.documentElement && document.documentElement.getAttribute('data-phone-frame') === '0');
   await child.waitForFunction(() => document.documentElement.getAttribute('data-glass-pointer') === 'coarse');
   await child.waitForSelector('.selectize-control .selectize-input', { timeout: 30000 });
   const framedSelect = await child.locator('.selectize-control .selectize-input').first().evaluate((el) => {
@@ -170,7 +170,7 @@ test('the phone frame clears the island and fills the window', async ({ page }) 
   expect(glyphs.x).toBeGreaterThan(island.x + island.width + 1);
 
   const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
-  await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForFunction(() => !!document.documentElement && document.documentElement.getAttribute('data-phone-frame') === '0');
   await child.waitForSelector('.glass-page-controls', { timeout: 30000 });
   const framed = await child.evaluate(() => {
     const bodyStyle = getComputedStyle(document.body);
@@ -208,7 +208,7 @@ test('the framed chat header sits below the island', async ({ page }) => {
   await page.waitForFunction(() => window.Shiny && Shiny.shinyapp && Shiny.shinyapp.isConnected());
   await expect(page.locator('iframe.phone-preview-frame')).toBeVisible();
   const child = page.frames().find((f) => f.parentFrame() === page.mainFrame());
-  await child.waitForFunction(() => document.documentElement.getAttribute('data-phone-frame') === '0');
+  await child.waitForFunction(() => !!document.documentElement && document.documentElement.getAttribute('data-phone-frame') === '0');
   await child.waitForSelector('.shiny-chat-page-header', { timeout: 30000 });
   const layout = await child.evaluate(() => {
     const header = document.querySelector('.shiny-chat-page-header').getBoundingClientRect();
@@ -289,6 +289,9 @@ const IPHONE_APPS = [
     url: 'http://127.0.0.1:3949/',
     selectors: ['#chat_page', '#project', '#chat_user_input'],
     ready: '#chat_user_input',
+    // shinychat mounts the history list (126px) at the top of the sidebar only
+    // after the server handshake, which pushes #project down by its height.
+    mounted: '.shiny-chat-history',
   },
 ];
 
@@ -337,7 +340,33 @@ async function settle(page, app) {
   }
   await page.evaluate(() => (document.fonts ? document.fonts.ready : null));
   await page.waitForFunction(() => !document.getElementById('shiny-disconnected-overlay'), null, { timeout: 15000 }).catch(() => {});
-  await page.waitForTimeout(400);
+  if (app.mounted) await page.waitForSelector(app.mounted, { state: 'attached', timeout: 30000 });
+  await waitForStableLayout(page, app.selectors);
+}
+
+// Resolve once every tracked box keeps the same rect for 10 frames in a row.
+async function waitForStableLayout(page, selectors) {
+  await page.waitForFunction((sels) => new Promise((resolve) => {
+    const read = () => sels.map((sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return 'missing';
+      const r = el.getBoundingClientRect();
+      return [r.x, r.y, r.width, r.height].map(Math.round).join(',');
+    }).join('|');
+    let last = read();
+    let still = 0;
+    let frames = 0;
+    const tick = () => {
+      const now = read();
+      still = now === last ? still + 1 : 0;
+      last = now;
+      frames += 1;
+      if (still >= 10) resolve(true);
+      else if (frames > 600) resolve(false);
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }), selectors, { timeout: 30000 });
 }
 
 async function layoutSnapshot(page, app) {
