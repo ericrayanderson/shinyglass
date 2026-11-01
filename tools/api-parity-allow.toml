@@ -1,0 +1,22 @@
+# Functions and arguments that exist in only one of the two packages on
+# purpose. tools/api_parity.py reads this file. Every entry needs a reason.
+# Remove an entry once the missing side is added; the check fails on stale
+# entries so this list stays accurate.
+
+[r_only]
+glass_page = "R page wrapper built on bslib::page_sidebar. Shiny for Python apps pass glass_theme() to ui.page_sidebar() or another ui.page_* function instead."
+glass_page_react = "Page shell for shinyreact apps. shinyreact is R only."
+glass_react_dependency = "Loads the React bridge script for shinyreact apps. R only."
+glass_theme_dependencies = "Turns a bslib theme into HTML dependencies for shinyreact pages. R only."
+theme_glass = "ggplot2 theme. ggplot2 is an R package. Python users can build a plot style from glass_plot_colors()."
+plotly_glass = "Styles an R plotly object. Python users can pass glass_plot_colors() values to a plotly layout."
+gt_theme_glass = "Styles an R gt table. gt is an R package."
+dt_options_glass = "Options list for the R DT package. The glass CSS styles DataTables in both packages without it."
+
+[python_only]
+
+# Arguments for functions that exist on both sides.
+[arguments.glass_theme]
+r_only = ["..."]
+python_only = ["base"]
+reason = "R forwards ... to bslib::bs_theme(). Python picks the Shiny Theme preset with base instead, since shiny.ui.Theme has no matching extra arguments."

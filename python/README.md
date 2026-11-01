@@ -125,6 +125,10 @@ app = App(app_ui, server)
 | `glass_css_tokens()` | Catalog of public `--glass-*` CSS variables |
 | `glass_token_pack(preset)` | Default variable values for light or dark |
 | `glass_add_tokens(theme, ...)` | Override variables on a theme without editing SCSS |
+| `glass_plot_surface_input()` | Clear / Opaque select for chart and table panels |
+| `glass_plot_colors(preset)` | Ink, grid, fill, and paper colors for plots |
+| `glass_resolved_preset(input)` | `"light"` or `"dark"`, with Auto resolved to what the page shows |
+| `observe_glass(input, session)` | Wire the toggle, intensity slider, and accent observers at once |
 
 ## Demo
 
@@ -161,8 +165,11 @@ GitHub Actions (`.github/workflows/python.yml`):
 
 ## R / Python feature scope
 
-R is the primary implementation. Python is experimental and does not yet offer
-all of the R runtime controls. Shared assets do not imply API parity.
+R is the primary implementation. The Python package covers the same theme,
+controls, and plot color helpers. A CI check (`tools/api_parity.py`) fails when
+an R export has no Python counterpart, or when argument names differ, unless
+the item is listed with a reason in `tools/api-parity-allow.toml`. That file
+lists what stays R only, such as the ggplot2, gt, DT, and shinyreact helpers.
 
 | Feature | R | Python |
 | --- | --- | --- |
@@ -177,6 +184,9 @@ all of the R runtime controls. Shared assets do not imply API parity.
 | Theme toggle, preset / accent / scene inputs | Public UI + observers | Same helpers and `observe_glass_*()` |
 | Flatten for capture | `glass_flatten()` | `glass_flatten()` |
 | CSS token catalog / overrides | `glass_css_tokens()`, `glass_token_pack()`, `glass_add_tokens()` | Same names |
+| Plot surface input, plot colors, resolved preset | `glass_plot_surface_input()`, `glass_plot_colors()`, `glass_resolved_preset()` | Same names |
+| One-call server wiring | `observe_glass()` | `observe_glass()` |
+| Progress bars and range sliders | Shared CSS / JS | Shared vendored CSS / JS |
 
 When editing shared JavaScript, update its vendored copy too. When editing SCSS,
 run `python scripts/vendor_assets.py` from this directory to rebuild wheel CSS.

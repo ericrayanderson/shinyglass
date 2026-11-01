@@ -7,6 +7,9 @@ on:
       - "python/**"
       - "inst/scss/**"
       - "inst/js/**"
+      - "R/**"
+      - "NAMESPACE"
+      - "tools/**"
       - ".github/workflows/python.yml"
   pull_request:
     branches: [main, master]
@@ -14,12 +17,31 @@ on:
       - "python/**"
       - "inst/scss/**"
       - "inst/js/**"
+      - "R/**"
+      - "NAMESPACE"
+      - "tools/**"
       - ".github/workflows/python.yml"
 
 permissions:
   contents: read
 
 jobs:
+  api-parity:
+    name: R and Python API parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compare R exports with Python functions
+        run: python tools/api_parity.py
+
+      - name: Wrapper draft script still runs
+        run: python tools/draft_python_wrapper.py glass_plot_surface_input
+
   test-editable:
     name: editable + pytest
     runs-on: ubuntu-latest
