@@ -81,6 +81,27 @@
 #' @param floating_sidebar `FALSE` (default). `TRUE` detaches bslib and
 #'   `.glass-sidebar` panels into a rounded glass card with margin (iPadOS 26
 #'   style). Off by default so existing layouts keep their docked sidebar.
+#' @param pointer_specular `TRUE` (default) moves the specular highlight to
+#'   follow the mouse while it hovers a glass surface (cards, value boxes,
+#'   the navbar, menus, buttons). Updates are throttled to about 30 frames a
+#'   second and pause while the page is hidden. Touch screens, pens without
+#'   hover, and reduced motion keep the static highlight.
+#' @param nav_pill `TRUE` (default) turns the compact navbar into a rounded
+#'   glass pill on wide screens while scrolling down (needs `nav_morph`). It
+#'   returns to full width on scroll up.
+#' @param style `"default"`, `"clear"`, or `"tinted"`. Sets the starting
+#'   `intensity` when `intensity` is not given (`"clear"` is `0.12`,
+#'   `"tinted"` is `1`) and marks the page with `data-glass-style`.
+#'   `"tinted"` is the most readable option and passes the contrast audit.
+#' @param motion `TRUE` (default). `FALSE` is one switch that turns off all
+#'   motion effects: `ambient_motion`, `morph`, `press`, `nav_morph`,
+#'   `minimize_tabs`, `pointer_specular`, and `nav_pill`.
+#' @param font `"matched"` (default) or `"system"`. Apple devices always use
+#'   the system font (SF Pro). `"matched"` adds a bundled, locally served copy
+#'   of Inter (SIL Open Font License) as the next choice, so Windows, Linux,
+#'   and Android get a close match instead of Segoe UI or Roboto. Inter is
+#'   tuned with optical sizing and rounded punctuation. `"system"` skips the
+#'   bundled font.
 #' @param ... Additional arguments forwarded to [bslib::bs_theme()].
 #'
 #' @return A [bslib::bs_theme()] object suitable for 'shiny' page functions.
@@ -352,6 +373,10 @@ glass_theme <- function(
 #' @param refraction,morph,press,scroll_edge,minimize_tabs,floating_sidebar
 #'   Optional logicals. See [glass_theme()].
 #' @param icon_style Optional `"clear"`, `"color"`, or `"all"`.
+#' @param pointer_specular,nav_pill,motion Optional logicals. See
+#'   [glass_theme()].
+#' @param style Optional `"default"`, `"clear"`, or `"tinted"`. Also sets
+#'   intensity when `intensity` is not given.
 #'
 #' @return `session`, invisibly.
 #'
