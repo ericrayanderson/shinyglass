@@ -385,6 +385,14 @@ class GlassTheme(Theme):
         return super().to_css(compile_args=compile_args)
 
 
+def _with_tokens(theme: GlassTheme, tokens: Mapping[str, Any] | None) -> GlassTheme:
+    if not tokens:
+        return theme
+    from .tokens import glass_add_tokens
+
+    return glass_add_tokens(theme, tokens)
+
+
 def glass_theme(
     preset: Preset = "light",
     primary: str = _DEFAULT_PRIMARY,
@@ -410,6 +418,7 @@ def glass_theme(
     icon_style: str = "clear",
     floating_sidebar: bool = False,
     *,
+    tokens: Mapping[str, Any] | None = None,
     base: str | None = None,
     _allow_compile: bool = False,
 ) -> GlassTheme:
@@ -456,6 +465,9 @@ def glass_theme(
         Remember preset, intensity, accent, material, plot surface, and scene.
     tint, specular, nav_morph, ambient_motion
         JS behavior knobs (same defaults as R).
+    tokens
+        Optional mapping of CSS token overrides, the same as calling
+        :func:`glass_add_tokens` on the result.
     base
         Shiny ``Theme`` preset base. Defaults to ``"bootstrap"`` (light) or
         ``"darkly"`` (dark). Ignored when loading precompiled CSS.
@@ -513,13 +525,14 @@ def glass_theme(
     if use_precompiled:
         css_preset = "light" if preset == "auto" else preset
         css_path = precompiled_theme_css(css_preset)
-        return GlassTheme(
+        theme = GlassTheme(
             preset,
             "bootstrap",
             name=f"shinyglass-{preset}",
             precompiled_css=css_path,
             **theme_kwargs,
         )
+        return _with_tokens(theme, tokens)
 
     if not _libsass_available():
         raise ImportError(
@@ -589,7 +602,7 @@ def glass_theme(
     )
 
     theme = theme.add_rules(_BOOTSTRAP_STUBS, glass_rules)
-    return theme
+    return _with_tokens(theme, tokens)
 
 
 def update_glass_theme(
@@ -672,23 +685,85 @@ def update_glass_theme(
         session.send_custom_message("glassPreset", preset)
 
 
+def _css_width(width: str | float | None) -> str | None:
+    if width is None:
+        return None
+    if isinstance(width, (int, float)) and not isinstance(width, bool):
+        return f"width:{width}px;"
+    return f"width:{width};"
+
+
 def glass_intensity_slider(
     id: str = "glass_intensity",
     *,
-    label: str = "Liquid Glass",
-    value: float = _DEFAULT_INTENSITY,
+    label: str | None = "Liquid Glass",
+    value: float | None = None,
+    min: float = 0,
+    max: float = 1,
+    step: float = 0.01,
     min_label: str = "Ultra Clear",
     max_label: str = "Tinted",
+    preview: bool = True,
+    width: str | float | None = None,
 ) -> Tag:
-    """iOS-style Ultra Clear → Tinted control (same markup as R).
+    """iOS-style Ultra Clear to Tinted control (same markup as R).
 
     The shared JS binds ``[data-glass-intensity-input]`` so the slider
-    updates glass live without a Python observer.
+    updates glass live without a Python observer. When ``value`` is ``None``
+    the slider starts at the theme default and follows the page intensity.
+    ``min``, ``max`` and ``step`` set the range (inside 0 to 1). ``preview``
+    shows three small glass chips as a live sample.
     """
-    if not 0.0 <= float(value) <= 1.0:
-        raise ValueError("value must be between 0 and 1")
+    import builtins
+
+    nums = (min, max, step)
+    if not (
+        all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in nums)
+        and all(float(x) == float(x) and abs(float(x)) != float("inf") for x in nums)
+        and step > 0
+        and 0 <= min < max <= 1
+    ):
+        raise ValueError(
+            "min, max, and step must be finite numbers with "
+            "0 <= min < max <= 1 and step > 0"
+        )
+    explicit = value is not None
+    if explicit:
+        value = float(value)
+        if not 0.0 <= value <= 1.0:
+            raise ValueError("value must be between 0 and 1")
+        if not min <= value <= max:
+            raise ValueError("value must be within min and max")
+    else:
+        value = builtins.min(max, builtins.max(min, _DEFAULT_INTENSITY))
+
+    chips = (
+        tags.div(
+            tags.div("Clear", cls="glass-intensity-chip"),
+            tags.div("Default", cls="glass-intensity-chip"),
+            tags.div("Tinted", cls="glass-intensity-chip"),
+            cls="glass-intensity-preview",
+        )
+        if preview
+        else None
+    )
+    range_attrs: dict[str, str] = {
+        "aria-valuemin": str(min),
+        "aria-valuemax": str(max),
+    }
+    if label is None:
+        range_attrs["aria-label"] = "Liquid Glass intensity"
+    else:
+        range_attrs["aria-labelledby"] = f"{id}-label"
+    outer_attrs: dict[str, str] = {"data-glass-intensity-input": id}
+    if explicit:
+        outer_attrs["data-glass-initial-intensity"] = str(value)
     return tags.div(
-        tags.label(label, cls="control-label", **{"for": id}),
+        (
+            tags.label(label, cls="control-label", id=f"{id}-label", **{"for": id})
+            if label is not None
+            else None
+        ),
         tags.div(
             tags.span(min_label, cls="glass-intensity-end glass-intensity-end--min"),
             tags.div(
@@ -698,20 +773,24 @@ def glass_intensity_slider(
                     type="range",
                     cls="glass-intensity-range form-range",
                     id=id,
-                    min="0",
-                    max="1",
-                    step="0.01",
+                    min=str(min),
+                    max=str(max),
+                    step=str(step),
                     value=str(value),
-                    **{"aria-valuemin": "0", "aria-valuemax": "1"},
+                    **range_attrs,
                 ),
                 cls="glass-intensity-track",
             ),
             tags.span(max_label, cls="glass-intensity-end glass-intensity-end--max"),
             cls="glass-intensity-row",
         ),
+        chips,
+        tags.span(
+            "Matches Settings -> Appearance -> Liquid Glass "
+            "(Ultra Clear through Tinted).",
+            cls="glass-intensity-hint",
+        ),
         cls="form-group shiny-input-container glass-intensity-slider",
-        **{
-            "data-glass-intensity-input": id,
-            "data-glass-initial-intensity": str(value),
-        },
+        style=_css_width(width),
+        **outer_attrs,
     )

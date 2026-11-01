@@ -268,3 +268,87 @@ def observe_glass_theme_toggle(
                 update_glass_theme(session, preset=m)
 
         make(mode)
+
+
+def observe_glass_intensity(
+    input: Any, session: Any, id: str = "glass_intensity"
+) -> Any:
+    """Echo :func:`glass_intensity_slider` changes through ``update_glass_theme()``.
+
+    The slider already updates glass live in the browser. This keeps server
+    state in step, for example when other code reads the intensity.
+    """
+    _check_id(id)
+
+    @reactive.effect
+    @reactive.event(input[id], ignore_init=True)
+    def _() -> None:
+        val = input[id]()
+        try:
+            num = float(val)
+        except (TypeError, ValueError):
+            return
+        if num == num and 0.0 <= num <= 1.0:
+            update_glass_theme(session, intensity=num)
+
+    return _
+
+
+def glass_plot_surface_input(
+    id: str = "plot_surface",
+    label: str | None = "Plot / table surface",
+    selected: str = "clear",
+    width: str | None = None,
+) -> Tag:
+    """Clear / Opaque select for chart and table panels.
+
+    The page switches as soon as a value is picked. Pair with
+    :func:`observe_glass_plot_surface` to echo the value on the server.
+    """
+    _check_id(id)
+    if selected not in ("clear", "opaque"):
+        raise ValueError('selected must be "clear" or "opaque"')
+    sel = ui.input_select(
+        id,
+        label,
+        choices={"clear": "Clear (show wallpaper)", "opaque": "Opaque (readable)"},
+        selected=selected,
+        width=width,
+    )
+    return _mark_select(
+        sel, "glass-plot-surface-input", "data-glass-plot-surface-input", id
+    )
+
+
+def observe_glass_plot_surface(
+    input: Any, session: Any, id: str = "plot_surface"
+) -> Any:
+    """Echo :func:`glass_plot_surface_input` changes through ``update_glass_theme()``."""
+    _check_id(id)
+
+    @reactive.effect
+    @reactive.event(input[id], ignore_init=True)
+    def _() -> None:
+        val = input[id]()
+        if val in ("clear", "opaque"):
+            update_glass_theme(session, plot_surface=val)
+
+    return _
+
+
+def observe_glass(
+    input: Any,
+    session: Any,
+    toggle_id: str = "glass_toggle",
+    intensity_id: str = "glass_intensity",
+    accent_id: str = "glass_accent",
+) -> None:
+    """Wire the common glass controls in one call.
+
+    Runs :func:`observe_glass_theme_toggle`, :func:`observe_glass_intensity`
+    and :func:`observe_glass_accent` with the given ids. Controls that are
+    not on the page are simply never triggered.
+    """
+    observe_glass_theme_toggle(input, session, id=toggle_id)
+    observe_glass_intensity(input, session, id=intensity_id)
+    observe_glass_accent(input, session, id=accent_id)
