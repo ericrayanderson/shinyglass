@@ -1,5 +1,16 @@
 # shinyglass (development version)
 
+* Native range inputs now show the accent-colored fill in Chrome and Safari
+  as well as Firefox. A small script in `shiny-glass.js` keeps a
+  `--glass-range-fill` custom property up to date on each `.form-range`,
+  including inputs added later and values changed from the server.
+* In Shiny for Python, `ui.page_sidebar()` now fills the page height like the
+  R version when the main content is short, so the sidebar no longer stops at
+  the height of the main content.
+* The shinychat browser test now measures the offcanvas close button after
+  the panel's entry animation finishes. It could read 43.96px on the last
+  frame of that animation.
+
 * Progress bars (`.progress` / `.progress-bar`) now use the Liquid Glass look:
   a thin recessed glass track with a rounded accent fill and a soft sheen.
   Contextual colors, striped bars and labeled bars keep working. Bars are
