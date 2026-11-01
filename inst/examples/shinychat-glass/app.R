@@ -1083,6 +1083,16 @@ harbor_page <- tagList(
     ")),
     tags$link(rel = "icon", type = "image/svg+xml", href = harbor_icon_src()),
     tags$style(HTML("
+      /* Reserve the history list's height before shinychat mounts it,
+         so the sidebar inputs below it do not shift down on connect. */
+      .shiny-chat-page-sidebar shiny-chat-history:empty {
+        display: block;
+        min-height: 117px;
+      }
+      @media (pointer: coarse) {
+        .shiny-chat-page-sidebar shiny-chat-history:empty { min-height: 126px; }
+      }
+
       .harbor-mark { display: block; width: 22px; height: 22px; }
       /* Toast under the chat header, over the transcript only. It must not
          cover the sidebar or the sources offcanvas, grow the page, or take

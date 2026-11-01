@@ -73,10 +73,6 @@ jobs:
         working-directory: inst/scripts/browser
       - run: npx playwright install --with-deps chromium
         working-directory: inst/scripts/browser
-      - run: npx playwright test phone-preview.spec.js -g "DIAG" || true
-        working-directory: inst/scripts/browser
-        env:
-          RUN_PHONE_TESTS: "1"
       - run: npx playwright test phone-preview.spec.js
         working-directory: inst/scripts/browser
         env:

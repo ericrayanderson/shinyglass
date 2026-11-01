@@ -446,27 +446,33 @@ for (const app of IPHONE_APPS) {
   });
 }
 
-test('DIAG history slot', async ({ browser }) => {
+// The history list mounts after the server connects. Its slot is reserved
+// in CSS, so the project input must not move when it appears.
+test('chat history mount does not shift the sidebar', async ({ browser }) => {
   for (const ctx of [iphone16Context(), { viewport: { width: 1280, height: 800 } }]) {
     const context = await browser.newContext(ctx);
     await context.addInitScript(() => {
-      window.__trace = [];
-      let last = null;
+      window.__shift = null;
       const t0 = performance.now();
+      let before = null;
       const tick = () => {
         const el = document.getElementById('project');
-        const sb = document.querySelector('.shiny-chat-page-sidebar');
         const h = document.querySelector('shiny-chat-history');
-        const v = el ? [Math.round(el.getBoundingClientRect().y), h ? Math.round(h.getBoundingClientRect().height) + ':' + h.childElementCount : 'noel', sb ? Array.from(sb.querySelectorAll(':scope > *, :scope > * > *')).map((c) => c.tagName.toLowerCase() + '.' + String(c.className).split(' ')[0] + ':' + Math.round(c.getBoundingClientRect().height)).join(',') : 'nosb', document.documentElement.className].join(' | ') : 'none';
-        if (v !== last) { window.__trace.push([Math.round(performance.now() - t0), v]); last = v; }
-        if (performance.now() - t0 < 6000) requestAnimationFrame(tick);
+        if (el && h) {
+          const y = el.getBoundingClientRect().y;
+          if (h.childElementCount === 0) before = y;
+          else if (before !== null) { window.__shift = y - before; return; }
+        }
+        if (performance.now() - t0 < 15000) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
     });
     const page = await context.newPage();
     await page.goto('http://127.0.0.1:3949/', { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(6500);
-    console.log('DIAG', JSON.stringify(ctx.viewport), JSON.stringify(await page.evaluate(() => window.__trace), null, 1));
+    await page.waitForFunction(() => window.__shift !== null, null, { timeout: 15000 });
+    const shift = await page.evaluate(() => window.__shift);
+    console.log('history mount shift', JSON.stringify(ctx.viewport), shift);
+    expect(Math.abs(shift)).toBeLessThanOrEqual(1);
     await context.close();
   }
 });

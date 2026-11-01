@@ -52,8 +52,17 @@ Do not file a submission from a development (`.9000`) tree.
 
 ## After accept
 
-- [ ] GitHub release + pkgdown.
-- [ ] Redeploy shinyapps demos if CSS/JS changed. Harbor notes is
-      already at `shinyglass-chat`. Leave the archived plotly-gt app
-      offline.
+- [ ] GitHub release (tag `vX.Y.Z`) + pkgdown. Publishing the release runs
+      **Deploy Connect Cloud demos**, which updates the five hosted demos
+      (`core5`) in place. Merges to main do not deploy.
+- [ ] Without a release, deploy by hand: **Actions, Deploy Connect Cloud
+      demos, Run workflow** on `main`. Leave **Stage and validate only**
+      checked for a dry run, and uncheck it to publish. Each real deploy
+      uses Connect Cloud usage credits, so skip it when no CSS, JS or
+      example changed. Harbor notes is `shinyglass-chat`. See
+      `inst/scripts/CONNECT-CLOUD-DEPLOY.md`.
+- [ ] Python package, if `python/` changed: bump `version` in
+      `python/pyproject.toml` and `python/src/shinyglass/_version.py`, then
+      publish a GitHub release tagged `py-vX.Y.Z`. **Publish Python package to PyPI** runs
+      on `py-v` releases only, and the demo deploy skips them.
 - [ ] Record the upload in `CRAN-SUBMISSION` (devtools writes this).

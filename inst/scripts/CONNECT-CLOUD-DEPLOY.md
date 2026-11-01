@@ -1,8 +1,8 @@
 # Deploying the demos with GitHub Actions
 
 The **Deploy Connect Cloud demos** workflow publishes the hosted demos to
-Posit Connect Cloud. It runs when a GitHub release is published, and it can
-be run by hand from main. Merges to main do not deploy, which keeps the free
+Posit Connect Cloud. It runs when a GitHub release is published (Python
+releases tagged `py-v*` are skipped), and it can be run by hand from main. Merges to main do not deploy, which keeps the free
 plan's monthly usage credits for releases. It installs the exact release or
 main commit from GitHub, so the deployed package has remote provenance rather
 than a local-path installation.
@@ -41,8 +41,9 @@ at their current URL names.
 1. Create a credential at https://login.posit.cloud/identity/credentials with
    **Use with: Connect Cloud**. The secret is shown once.
 2. In this repository's **Settings, Environments**, create
-   `connect-cloud-production` and restrict it to the main branch and to
-   release tags (for example `v*`), so release runs can use it.
+   `connect-cloud-production`. It has no branch rule today. If you add one
+   later, allow release tags (for example `v*`) as well as main, or release
+   runs will be blocked.
 3. Add the environment secrets `CONNECT_CLOUD_CLIENT_ID` and
    `CONNECT_CLOUD_CLIENT_SECRET`.
 4. Add `GEMINI_API_KEY` to the same environment. Leave it unset to keep
