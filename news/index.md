@@ -2,6 +2,46 @@
 
 ## shinyglass (development version)
 
+### Planned for 0.6.0: motion, style and font
+
+- Specular highlights now follow the mouse on desktop. A soft sheen
+  moves across cards, value boxes, the navbar, menus and buttons while
+  the pointer is over them. Updates are throttled to about 30 frames a
+  second, pause while the tab is hidden, and skip touch input. Turn it
+  off with `glass_theme(pointer_specular = FALSE)`, or per element with
+  the `data-glass-no-pointer-specular` attribute.
+
+- Navbar links (`.navbar-nav`) join tabs and pills in the morphing
+  indicator. The indicator now stretches slightly as it moves between
+  items.
+
+- On desktop-width dashboards, the top bar shrinks into a centred glass
+  pill while scrolling down and returns to full width on scroll up.
+  `glass_theme(nav_pill = FALSE)` keeps the full-width compact bar.
+
+- `glass_theme(style = "clear")` and `style = "tinted"` match the two
+  iOS 27 Liquid Glass settings. The style sets the starting intensity
+  (`0.12` or `1`) when `intensity` is not given, and adjusts diffusion.
+  Tinted is the most readable choice for dense dashboards.
+
+- `glass_theme(motion = FALSE)` is one switch that turns off every
+  motion effect: ambient motion, morphing, press springs, navbar morph,
+  tab minimizing, pointer specular and the navbar pill. Reduced motion
+  in the OS has the same effect.
+
+- [`update_glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/update_glass_theme.md)
+  gains `pointer_specular`, `nav_pill`, `style` and `motion` for live
+  changes.
+
+- Text on Windows, Linux and Android now uses a bundled copy of Inter,
+  the closest open match to SF Pro, instead of Segoe UI or Roboto. Apple
+  devices keep the system font. Inter (SIL Open Font License 1.1) ships
+  as a local variable font, latin subset, about 100 KB, and is served
+  with the app. No CDN is used. It is tuned with optical sizing and
+  rounded punctuation. Use `glass_theme(font = "system")` to skip it.
+
+- The Python package mirrors all of these arguments.
+
 - A new CI check, `tools/api_parity.py`, compares the R exports with the
   Python package’s public functions and their argument names. Items that
   are one-sided on purpose are listed with a reason in
