@@ -1,5 +1,5 @@
 # Desktop phone preview for the hosted demos.
-# Not a package export. deploy-shinyapps-demos.R copies this directory
+# Not a package export. deploy-connect-cloud-demos.R copies this directory
 # into each staged app as phone-preview/. Apps source this file, then call
 # phone_preview() on the page object.
 

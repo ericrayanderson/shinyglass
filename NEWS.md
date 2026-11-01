@@ -13,6 +13,9 @@
   `glass_scene_input()`, their `observe_glass_*()` server helpers,
   `glass_flatten()`, `glass_system_colors()`, `glass_scenes()`,
   `glass_css_tokens()`, `glass_token_pack()` and `glass_add_tokens()`.
+* The hosted demos now deploy to Posit Connect Cloud. The workflow updates
+  the existing content items by id, so it never adds an app, and the old
+  shinyapps.io links redirect to the new URLs.
 
 # shinyglass 0.5.0
 

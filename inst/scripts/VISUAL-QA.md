@@ -60,7 +60,7 @@ npx playwright test overflow.spec.js
 covers a 480px dashboard-like `page_sidebar` and an Olympics-like hero + table
 (no page horizontal scrollbar).
 
-Manual (do this before shinyapps redeploy):
+Manual (do this before demo redeploy):
 
 1. [ ] Dashboard at 480×800: sidebar closed by default; value boxes stack;
    histogram / scatter / iris table stay in the viewport; intensity + scene +
@@ -126,7 +126,7 @@ Existing screenshot runners (manual review of PNGs):
 
 ## Definition of done (theme / demo change)
 
-Before merge or shinyapps redeploy:
+Before merge or demo redeploy:
 
 1. [ ] `Rscript inst/scripts/audit-glass-contrast.R` exits 0  
 2. [ ] Spot-check dashboard DT pagination in dark  
@@ -136,7 +136,7 @@ Before merge or shinyapps redeploy:
    (`Rscript inst/scripts/capture-demo-screenshots.R`: keep dashboard sidebar visible)  
 5. [ ] `Rscript -e 'devtools::test()'` (or `testthat::test_local()`)  
 6. [ ] Redeploy demos if examples or package CSS changed  
-   (`Rscript inst/scripts/deploy-shinyapps-demos.R`)
+   (`Rscript inst/scripts/deploy-connect-cloud-demos.R`)
 
 ## High-risk surfaces (quick inventory)
 
