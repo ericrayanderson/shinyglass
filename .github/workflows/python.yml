@@ -43,6 +43,20 @@ jobs:
         env:
           SHINYGLASS_PKG_ROOT: ${{ github.workspace }}
 
+      - name: Check vendored assets match R sources
+        working-directory: ${{ github.workspace }}
+        run: |
+          # theme-*.css bundle Bootstrap from the installed shiny version and
+          # MANIFEST.txt records the checkout path, so they are not compared.
+          if ! git diff --exit-code -- \
+              python/src/shinyglass/static \
+              ':(exclude)python/src/shinyglass/static/theme-light.css' \
+              ':(exclude)python/src/shinyglass/static/theme-dark.css' \
+              ':(exclude)python/src/shinyglass/static/MANIFEST.txt'; then
+            echo "::error::Vendored assets in python/src/shinyglass/static are out of date. Run 'python python/scripts/vendor_assets.py' and commit the result."
+            exit 1
+          fi
+
       - name: Pytest
         run: pytest -q
 
