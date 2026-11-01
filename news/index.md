@@ -42,7 +42,9 @@
 
 - The hosted demos now deploy to Posit Connect Cloud. The workflow
   updates the existing content items by id, so it never adds an app, and
-  the old shinyapps.io links redirect to the new URLs.
+  the old shinyapps.io links redirect to the new URLs. The demos publish
+  when a release is published or when the workflow is run by hand, not
+  on every merge to main.
 
 ## shinyglass 0.5.0
 
