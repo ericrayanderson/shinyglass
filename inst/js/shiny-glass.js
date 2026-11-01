@@ -2192,3 +2192,78 @@
     }
   });
 })();
+
+// Range fill for Chrome and Safari. Firefox paints the filled part of a
+// native range track with ::-moz-range-progress. WebKit and Blink have no
+// such part, so this sets --glass-range-fill (a percentage) on each
+// .form-range and glass.scss draws the fill from it.
+(function () {
+  "use strict";
+
+  var SELECTOR = "input[type='range'].form-range";
+
+  function syncRangeFill(el) {
+    if (!el || !el.style) return;
+    var min = parseFloat(el.min);
+    var max = parseFloat(el.max);
+    var val = parseFloat(el.value);
+    if (!isFinite(min)) min = 0;
+    if (!isFinite(max)) max = 100;
+    if (!isFinite(val)) val = min;
+    var pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+    pct = Math.max(0, Math.min(100, pct));
+    el.style.setProperty("--glass-range-fill", pct.toFixed(3) + "%");
+  }
+
+  function syncAll(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    if (scope.matches && scope.matches(SELECTOR)) syncRangeFill(scope);
+    Array.prototype.forEach.call(scope.querySelectorAll(SELECTOR), syncRangeFill);
+  }
+
+  function onValue(e) {
+    var t = e.target;
+    if (t && t.matches && t.matches(SELECTOR)) syncRangeFill(t);
+  }
+
+  document.addEventListener("input", onValue, true);
+  document.addEventListener("change", onValue, true);
+
+  // Server-side updates set .value without an input event.
+  if (window.jQuery) {
+    window.jQuery(document).on("shiny:updateinput shiny:bound shiny:value", function (e) {
+      if (e.target && e.target.matches && e.target.matches(SELECTOR)) {
+        window.setTimeout(function () { syncRangeFill(e.target); }, 0);
+      } else {
+        window.setTimeout(function () { syncAll(e.target); }, 0);
+      }
+    });
+  }
+
+  function start() {
+    syncAll(document);
+    if (!window.MutationObserver || !document.body) return;
+    new MutationObserver(function (mutations) {
+      mutations.forEach(function (m) {
+        if (m.type === "attributes") {
+          if (m.target.matches && m.target.matches(SELECTOR)) syncRangeFill(m.target);
+          return;
+        }
+        Array.prototype.forEach.call(m.addedNodes, function (node) {
+          if (node.nodeType === 1) syncAll(node);
+        });
+      });
+    }).observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["value", "min", "max"],
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

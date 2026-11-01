@@ -292,6 +292,11 @@ test('coarse pointers keep 44px chat targets', async ({ browser }) => {
   const sourcesClose = page.locator('#sources_panel .btn-close');
   await expect(page.locator('#sources_panel')).toHaveClass(/\bshow\b/, { timeout: 8000 });
   await expect(sourcesClose).toBeVisible();
+  // The panel grows in with a short scale animation (morphFromTrigger in
+  // glass-ios27.js). Measure once it has finished, not on its last frames.
+  await page.evaluate(() => Promise.all(
+    document.getElementById('sources_panel').getAnimations().map((a) => a.finished.catch(() => null))
+  ));
   const closeBox = await sourcesClose.boundingBox();
   expect(closeBox.width).toBeGreaterThanOrEqual(44);
   expect(closeBox.height).toBeGreaterThanOrEqual(44);
