@@ -641,7 +641,7 @@ CRAN release: 2026-07-28
   [`bslib::page_sidebar()`](https://rstudio.github.io/bslib/reference/page_sidebar.html),
   and other page functions that accept a bslib theme. Pass the theme via
   `theme = glass_theme()`, or for
-  [teal](https://insightsengineering.github.io/teal/) apps via
+  [teal](https://CRAN.R-project.org/package=teal) apps via
   `options(teal.bs_theme = glass_theme())`.
 - Styles common Bootstrap and Shiny surfaces (cards, navbars, sidebars,
   inputs, tables, plots, modals) and holds up on denser UIs such as
