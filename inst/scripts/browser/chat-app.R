@@ -5,7 +5,7 @@
 # SHINYGLASS_CHAT_PORT selects the port (default 3943).
 pkgload::load_all(normalizePath("../../.."), quiet = TRUE)
 
-deploy_path <- normalizePath("../deploy-shinyapps-demos.R")
+deploy_path <- normalizePath("../deploy-connect-cloud-demos.R")
 env <- new.env(parent = baseenv())
 sys.source(deploy_path, env)
 

@@ -1,4 +1,4 @@
-name: Deploy shinyapps.io demos
+name: Deploy Connect Cloud demos
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - "R/**"
       - "inst/**"
       - "DESCRIPTION"
-      - ".github/workflows/deploy-shinyapps.yaml"
+      - ".github/workflows/deploy-connect-cloud.yaml"
   workflow_dispatch:
     inputs:
       apps:
@@ -26,7 +26,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: shinyapps-production-${{ github.ref }}
+  group: connect-cloud-production-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
     if: github.repository == 'ericrayanderson/shinyglass' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    environment: shinyapps-production
+    environment: connect-cloud-production
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -67,7 +67,7 @@ jobs:
         run: |
           # pak records CRAN installs as RemoteType=standard and extra-packages
           # as RemoteType=any, both with Repository: RSPM (a name, not a URL).
-          # renv snapshots that name, and shinyapps.io then tries
+          # renv snapshots that name, and the host then tries
           # RSPM/src/contrib/... which is not a valid URL.
           # extra-packages can also carry PPM-only versions (data.table 1.18.6.1).
           installed <- installed.packages(fields = c("RemoteType", "Repository"))
@@ -124,34 +124,33 @@ jobs:
       - name: Authenticate and deploy (or stage a dry run)
         shell: Rscript {0}
         env:
-          R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
-          SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
-          SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
+          R_USER_CONFIG_DIR: ${{ runner.temp }}/connect-cloud-config
+          CONNECT_CLOUD_CLIENT_ID: ${{ secrets.CONNECT_CLOUD_CLIENT_ID }}
+          CONNECT_CLOUD_CLIENT_SECRET: ${{ secrets.CONNECT_CLOUD_CLIENT_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # A push publishes core5 for real. workflow_dispatch keeps its inputs,
           # including dry_run and the single-app choices.
           DEPLOY_APPS: ${{ github.event_name == 'push' && 'core5' || inputs.apps }}
           DEPLOY_DRY_RUN: ${{ github.event_name == 'push' && 'false' || inputs.dry_run }}
         run: |
-          # Push always publishes the five free-tier apps. intensity and
-          # plotly_gt stay on workflow_dispatch so the account is not asked
-          # to host a sixth app.
+          # Push always publishes the five hosted apps. intensity and
+          # plotly_gt have no content item, so only a dry run accepts them.
           if (identical(Sys.getenv("GITHUB_EVENT_NAME"), "push")) {
             Sys.setenv(DEPLOY_APPS = "core5", DEPLOY_DRY_RUN = "false")
           }
           dry_run <- identical(Sys.getenv("DEPLOY_DRY_RUN"), "true")
           if (!dry_run) {
-            if (!nzchar(Sys.getenv("SHINYAPPS_TOKEN")) ||
-                !nzchar(Sys.getenv("SHINYAPPS_SECRET"))) {
-              stop("Add SHINYAPPS_TOKEN and SHINYAPPS_SECRET to the shinyapps-production environment.")
+            if (!nzchar(Sys.getenv("CONNECT_CLOUD_CLIENT_ID")) ||
+                !nzchar(Sys.getenv("CONNECT_CLOUD_CLIENT_SECRET"))) {
+              stop("Add CONNECT_CLOUD_CLIENT_ID and CONNECT_CLOUD_CLIENT_SECRET to the connect-cloud-production environment.")
             }
-            rsconnect::setAccountInfo(
-              name = "ericrayanderson",
-              token = Sys.getenv("SHINYAPPS_TOKEN"),
-              secret = Sys.getenv("SHINYAPPS_SECRET")
+            rsconnect::connectCloudClientCredentials(
+              clientId = Sys.getenv("CONNECT_CLOUD_CLIENT_ID"),
+              clientSecret = Sys.getenv("CONNECT_CLOUD_CLIENT_SECRET"),
+              accountName = "ericrayanderson"
             )
           }
-          Sys.unsetenv(c("SHINYAPPS_TOKEN", "SHINYAPPS_SECRET"))
+          Sys.unsetenv(c("CONNECT_CLOUD_CLIENT_ID", "CONNECT_CLOUD_CLIENT_SECRET"))
           # GEMINI_API_KEY stays in the environment for the chat staging
           # step. The deploy script reads the name and does not print it.
           apps <- Sys.getenv("DEPLOY_APPS")
@@ -159,7 +158,7 @@ jobs:
           if (identical(apps, "all")) apps <- paste(allowed, collapse = ",")
           if (identical(apps, "core5")) apps <- "demo,dashboard,inputs,olympics,chat"
           stopifnot(all(strsplit(apps, ",", fixed = TRUE)[[1]] %in% allowed))
-          args <- c("inst/scripts/deploy-shinyapps-demos.R",
+          args <- c("inst/scripts/deploy-connect-cloud-demos.R",
                     "--account=ericrayanderson", paste0("--apps=", apps))
           if (dry_run) args <- c(args, "--dry-run")
           status <- system2(file.path(R.home("bin"), "Rscript"), args)
@@ -168,9 +167,9 @@ jobs:
         if: always()
         shell: Rscript {0}
         env:
-          R_USER_CONFIG_DIR: ${{ runner.temp }}/shinyapps-config
+          R_USER_CONFIG_DIR: ${{ runner.temp }}/connect-cloud-config
         run: |
           config <- Sys.getenv("R_USER_CONFIG_DIR")
-          expected <- file.path(Sys.getenv("RUNNER_TEMP"), "shinyapps-config")
+          expected <- file.path(Sys.getenv("RUNNER_TEMP"), "connect-cloud-config")
           stopifnot(nzchar(Sys.getenv("RUNNER_TEMP")), identical(config, expected))
           unlink(config, recursive = TRUE)

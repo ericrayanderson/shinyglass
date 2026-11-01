@@ -54,7 +54,7 @@ test_that("phone preview attaches assets and suppresses the frame", {
 })
 
 test_that("core5 staging copies the phone preview helper", {
-  deploy_path <- testthat::test_path("../../inst/scripts/deploy-shinyapps-demos.R")
+  deploy_path <- testthat::test_path("../../inst/scripts/deploy-connect-cloud-demos.R")
   skip_if_not(file.exists(deploy_path))
   src <- testthat::test_path("../../inst/examples/demo-app.R")
   skip_if_not(file.exists(src))

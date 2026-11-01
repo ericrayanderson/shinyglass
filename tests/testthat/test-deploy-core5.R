@@ -3,7 +3,7 @@
 # source checkout and skips under R CMD check.
 
 test_that("core5 is the five hosted demos", {
-  deploy_path <- testthat::test_path("../../inst/scripts/deploy-shinyapps-demos.R")
+  deploy_path <- testthat::test_path("../../inst/scripts/deploy-connect-cloud-demos.R")
   skip_if_not(file.exists(deploy_path))
 
   env <- new.env(parent = baseenv())
@@ -27,12 +27,25 @@ test_that("core5 is the five hosted demos", {
   expect_identical(catalog$inputs$appName, "shinyglass-inputs")
   expect_true(file.exists(testthat::test_path("../../inst/examples/plotly-gt-demo.R")))
 
+  # Every hosted app redeploys into its existing content item.
+  expect_identical(sort(names(env$content_ids)), sort(env$core5_keys))
+  expect_true(all(grepl("^[0-9a-f-]{36}$", env$content_ids)))
+  expect_false(anyDuplicated(env$content_ids) > 0)
+  expect_false(any(c("plotly_gt", "intensity") %in% names(env$content_ids)))
+  expect_identical(
+    env$content_url("shinyglass-olympics"),
+    "https://ericrayanderson-shinyglass-olympics.share.connect.posit.cloud/"
+  )
+
   src <- paste(readLines(deploy_path, warn = FALSE), collapse = "\n")
   expect_match(src, 'get_flag("--apps", "core5")', fixed = TRUE)
   expect_false(grepl("envVars\\s*=", src))
   expect_false(grepl("deploy_args\\$envVars", src))
+  expect_match(src, "appId = app_id", fixed = TRUE)
+  expect_match(src, "forceUpdate = TRUE", fixed = TRUE)
+  expect_false(grepl("appName = spec$appName", src, fixed = TRUE))
 
-  wf_path <- testthat::test_path("../../.github/workflows/deploy-shinyapps.yaml")
+  wf_path <- testthat::test_path("../../.github/workflows/deploy-connect-cloud.yaml")
   wf <- paste(readLines(wf_path, warn = FALSE), collapse = "\n")
   expect_match(
     wf,
@@ -41,11 +54,15 @@ test_that("core5 is the five hosted demos", {
   )
   expect_false(grepl("olympics,plotly_gt,chat", wf, fixed = TRUE))
   expect_match(wf, "GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}", fixed = TRUE)
+  expect_match(wf, "environment: connect-cloud-production", fixed = TRUE)
+  expect_match(wf, "connectCloudClientCredentials(", fixed = TRUE)
+  expect_false(grepl("SHINYAPPS", wf, fixed = TRUE))
+  expect_false(grepl("setAccountInfo", wf, fixed = TRUE))
   expect_false(grepl("echo", wf, fixed = TRUE))
 })
 
 test_that("chat deploy stages GEMINI_API_KEY without logging it", {
-  deploy_path <- testthat::test_path("../../inst/scripts/deploy-shinyapps-demos.R")
+  deploy_path <- testthat::test_path("../../inst/scripts/deploy-connect-cloud-demos.R")
   skip_if_not(file.exists(deploy_path))
 
   env <- new.env(parent = baseenv())
@@ -122,7 +139,7 @@ test_that("chat deploy stages GEMINI_API_KEY without logging it", {
 })
 
 test_that("chat staging copies www favicons and the icon is inline", {
-  deploy_path <- testthat::test_path("../../inst/scripts/deploy-shinyapps-demos.R")
+  deploy_path <- testthat::test_path("../../inst/scripts/deploy-connect-cloud-demos.R")
   skip_if_not(file.exists(deploy_path))
   src <- testthat::test_path("../../inst/examples/shinychat-glass/app.R")
   skip_if_not(file.exists(src))
