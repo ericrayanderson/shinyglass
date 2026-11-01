@@ -129,32 +129,6 @@ inside cards, still skipping solid accent buttons.}
 \code{.glass-sidebar} panels into a rounded glass card with margin (iPadOS 26
 style). Off by default so existing layouts keep their docked sidebar.}
 
-\item{pointer_specular}{\code{TRUE} (default) moves the specular highlight to
-follow the mouse while it hovers a glass surface (cards, value boxes,
-the navbar, menus, buttons). Updates are throttled to about 30 frames a
-second and pause while the page is hidden. Touch screens, pens without
-hover, and reduced motion keep the static highlight.}
-
-\item{nav_pill}{\code{TRUE} (default) turns the compact navbar into a rounded
-glass pill on wide screens while scrolling down (needs \code{nav_morph}). It
-returns to full width on scroll up.}
-
-\item{style}{\code{"default"}, \code{"clear"}, or \code{"tinted"}. Sets the starting
-\code{intensity} when \code{intensity} is not given (\code{"clear"} is \code{0.12},
-\code{"tinted"} is \code{1}) and marks the page with \code{data-glass-style}.
-\code{"tinted"} is the most readable option and passes the contrast audit.}
-
-\item{motion}{\code{TRUE} (default). \code{FALSE} is one switch that turns off all
-motion effects: \code{ambient_motion}, \code{morph}, \code{press}, \code{nav_morph},
-\code{minimize_tabs}, \code{pointer_specular}, and \code{nav_pill}.}
-
-\item{font}{\code{"matched"} (default) or \code{"system"}. Apple devices always use
-the system font (SF Pro). \code{"matched"} adds a bundled, locally served copy
-of Inter (SIL Open Font License) as the next choice, so Windows, Linux,
-and Android get a close match instead of Segoe UI or Roboto. Inter is
-tuned with optical sizing and rounded punctuation. \code{"system"} skips the
-bundled font.}
-
 \item{...}{Additional arguments forwarded to \code{\link[bslib:bs_theme]{bslib::bs_theme()}}.}
 }
 \value{

@@ -59,12 +59,6 @@ when \code{intensity} is omitted it is sent as intensity \code{0.12}.}
 \item{refraction, morph, press, scroll_edge, minimize_tabs, floating_sidebar}{Optional logicals. See \code{\link[=glass_theme]{glass_theme()}}.}
 
 \item{icon_style}{Optional \code{"clear"}, \code{"color"}, or \code{"all"}.}
-
-\item{pointer_specular, nav_pill, motion}{Optional logicals. See
-\code{\link[=glass_theme]{glass_theme()}}.}
-
-\item{style}{Optional \code{"default"}, \code{"clear"}, or \code{"tinted"}. Also sets
-intensity when \code{intensity} is not given.}
 }
 \value{
 \code{session}, invisibly.
