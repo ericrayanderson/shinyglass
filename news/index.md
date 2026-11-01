@@ -2,15 +2,30 @@
 
 ## shinyglass (development version)
 
+- Native range inputs now show the accent-colored fill in Chrome and
+  Safari as well as Firefox. A small script in `shiny-glass.js` keeps a
+  `--glass-range-fill` custom property up to date on each `.form-range`,
+  including inputs added later and values changed from the server.
+
+- In Shiny for Python, `ui.page_sidebar()` now fills the page height
+  like the R version when the main content is short, so the sidebar no
+  longer stops at the height of the main content.
+
+- The shinychat browser test now measures the offcanvas close button
+  after the panel’s entry animation finishes. It could read 43.96px on
+  the last frame of that animation.
+
 - Progress bars (`.progress` / `.progress-bar`) now use the Liquid Glass
   look: a thin recessed glass track with a rounded accent fill and a
   soft sheen. Contextual colors, striped bars and labeled bars keep
   working. Bars are thinner than before (0.5rem, or 1rem when they carry
   a label).
+
 - Native range inputs (`.form-range`) now use a Liquid Glass slider: a
   thin glass track with a raised white capsule thumb that grows while
   dragged, and a larger thumb on touch screens. Firefox also fills the
   active part of the track with the accent color.
+
 - The Python package gains the R controls and token helpers:
   [`glass_theme_toggle()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme_toggle.md),
   [`glass_preset_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_preset_input.md),
@@ -24,6 +39,7 @@
   [`glass_token_pack()`](https://ericrayanderson.github.io/shinyglass/reference/glass_token_pack.md)
   and
   [`glass_add_tokens()`](https://ericrayanderson.github.io/shinyglass/reference/glass_add_tokens.md).
+
 - The hosted demos now deploy to Posit Connect Cloud. The workflow
   updates the existing content items by id, so it never adds an app, and
   the old shinyapps.io links redirect to the new URLs.
