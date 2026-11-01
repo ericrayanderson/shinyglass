@@ -1,3 +1,14 @@
+# shinyglass (development version)
+
+* Progress bars (`.progress` / `.progress-bar`) now use the Liquid Glass look:
+  a thin recessed glass track with a rounded accent fill and a soft sheen.
+  Contextual colors, striped bars and labeled bars keep working. Bars are
+  thinner than before (0.5rem, or 1rem when they carry a label).
+* Native range inputs (`.form-range`) now use a Liquid Glass slider: a thin
+  glass track with a raised white capsule thumb that grows while dragged, and
+  a larger thumb on touch screens. Firefox also fills the active part of the
+  track with the accent color.
+
 # shinyglass 0.5.0
 
 ## Mobile-ready
