@@ -2,6 +2,36 @@
 
 ## shinyglass (development version)
 
+- A new CI check, `tools/api_parity.py`, compares the R exports with the
+  Python package’s public functions and their argument names. Items that
+  are one-sided on purpose are listed with a reason in
+  `tools/api-parity-allow.toml`. `tools/draft_python_wrapper.py` prints
+  a first draft of a Python function from an R function’s arguments.
+  `.github/CONTRIBUTING.md` describes both.
+
+- The Python package gains
+  [`glass_plot_surface_input()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_surface_input.md),
+  [`observe_glass_plot_surface()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_plot_surface.md),
+  [`observe_glass_intensity()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass_intensity.md),
+  [`observe_glass()`](https://ericrayanderson.github.io/shinyglass/reference/observe_glass.md),
+  [`glass_resolved_preset()`](https://ericrayanderson.github.io/shinyglass/reference/glass_resolved_preset.md)
+  and
+  [`glass_plot_colors()`](https://ericrayanderson.github.io/shinyglass/reference/glass_plot_colors.md),
+  matching the R functions.
+
+- In Python,
+  [`glass_theme()`](https://ericrayanderson.github.io/shinyglass/reference/glass_theme.md)
+  gains `tokens=` like R, and
+  [`glass_intensity_slider()`](https://ericrayanderson.github.io/shinyglass/reference/glass_intensity_slider.md)
+  gains `min`, `max`, `step`, `preview` and `width`. Its markup now
+  matches R, including the preview chips and hint. When `value` is left
+  as `None` the slider follows the page intensity instead of always
+  starting at 0.5.
+
+- The Python tests now cover the glass progress bar and range slider
+  styling and the range fill script, which the Python package already
+  ships through the shared CSS and JavaScript.
+
 - Native range inputs now show the accent-colored fill in Chrome and
   Safari as well as Firefox. A small script in `shiny-glass.js` keeps a
   `--glass-range-fill` custom property up to date on each `.form-range`,
