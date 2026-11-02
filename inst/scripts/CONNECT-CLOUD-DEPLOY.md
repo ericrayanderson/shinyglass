@@ -1,5 +1,9 @@
 # Deploying the demos with GitHub Actions
 
+The demos are served from shinyapps.io for now. Publish them with the
+manual `deploy-shinyapps.yaml` workflow (script
+`inst/scripts/deploy-shinyapps-demos.R`).
+
 The **Deploy Connect Cloud demos** workflow publishes the hosted demos to
 Posit Connect Cloud. It runs when a GitHub release is published (Python
 releases tagged `py-v*` are skipped), and it can be run by hand from main. Merges to main do not deploy, which keeps the free
