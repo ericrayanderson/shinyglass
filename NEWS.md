@@ -67,8 +67,9 @@
 * The dashboard demo turns on the new options and adds live controls for the
   glass style, motion and pointer shine. The inputs demo shows the new
   progress bar and range slider.
-* The hosted demos now run on Posit Connect Cloud, and the old shinyapps.io
-  links redirect to the new addresses.
+* The hosted demos are on shinyapps.io again for now. They can be published
+  by hand with the deploy-shinyapps workflow. The Connect Cloud workflow
+  stays in place for later use.
 * On phones, the Harbor notes chat demo no longer shifts its layout when the
   chat history and toolbar load after the page.
 

@@ -153,7 +153,7 @@ page_chat(
 ```
 
 Harbor notes is the flagship demo:
-[https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/](https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/).
+[https://ericrayanderson.shinyapps.io/shinyglass-chat/](https://ericrayanderson.shinyapps.io/shinyglass-chat/).
 The source is `inst/examples/shinychat-glass`.
 
 ```{r, eval = FALSE}
