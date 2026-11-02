@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ericrayanderson/shinyglass/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ericrayanderson/shinyglass/blob/py-v0.6.0/DESCRIPTION)
 
 Anderson E (2026). *shinyglass: Liquid Glass Design Themes for 'shiny'
 Applications*. R package version 0.6.0,
