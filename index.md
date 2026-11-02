@@ -16,7 +16,7 @@ table](reference/figures/bslib-dashboard.png)
 
 ## Install
 
-CRAN **0.5.0**:
+CRAN **0.6.0**:
 
 ``` r
 
@@ -169,11 +169,11 @@ Apps may take a moment to wake up.
 
 | Demo | Explore |
 |----|----|
-| [Harbor notes](https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/) | Flagship chat on Liquid Glass |
-| [Basics](https://ericrayanderson-shinyglass-demo.share.connect.posit.cloud/) | Theme switching and core controls |
-| [Dashboard](https://ericrayanderson-shinyglass-dashboard.share.connect.posit.cloud/) | Cards, plots, and tables |
-| [Inputs](https://ericrayanderson-shinyglass-inputs.share.connect.posit.cloud/) | Shiny input controls |
-| [Olympic medals](https://ericrayanderson-shinyglass-olympics.share.connect.posit.cloud/) | A complete dashboard |
+| [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) | Flagship chat on Liquid Glass |
+| [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) | Theme switching and core controls |
+| [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) | Cards, plots, and tables |
+| [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) | Shiny input controls |
+| [Olympic medals](https://ericrayanderson.shinyapps.io/shinyglass-olympics/) | A complete dashboard |
 
 These five are the hosted set. plotly + gt stays a local example in
 `inst/examples/plotly-gt-demo.R`.
@@ -186,10 +186,9 @@ Harbor notes is the flagship demo: a shinychat window on the dusk
 wallpaper, with a floating composer, a scripted reply (thinking, a
 citation, and a tide-table tool card), and an offcanvas sources panel.
 [Open Harbor
-notes](https://ericrayanderson-shinyglass-chat.share.connect.posit.cloud/).
-The hosted app answers with Gemini Flash and falls back to a local
-script if the API errors. The same app is in
-`inst/examples/shinychat-glass`.
+notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/). The
+hosted app answers with Gemini Flash and falls back to a local script if
+the API errors. The same app is in `inst/examples/shinychat-glass`.
 
 ## Compatibility
 
