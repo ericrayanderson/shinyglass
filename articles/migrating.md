@@ -161,7 +161,7 @@ page_chat(
 ```
 
 Harbor notes is the flagship demo:
-<https://ericrayanderson.shinyapps.io/shinyglass-chat/>. The source is
+<https://ericrayanderson.shinyapps.io/glass-chat/>. The source is
 `inst/examples/shinychat-glass`.
 
 ``` r

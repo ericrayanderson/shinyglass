@@ -4,6 +4,8 @@
 
 ## shinyglass 0.6.0
 
+CRAN release: 2026-11-01
+
 ### Motion, style and font
 
 - Specular highlights now follow the mouse on desktop. A soft sheen
