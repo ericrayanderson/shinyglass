@@ -1,3 +1,5 @@
+# shinyglass (development version)
+
 # shinyglass 0.6.0
 
 ## Motion, style and font
