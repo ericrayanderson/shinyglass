@@ -34,6 +34,8 @@ jobs:
           persist-credentials: false
       - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2
         with:
+          # shinyapps.io does not have R 4.6 images yet.
+          r-version: "4.5"
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2
         with:
