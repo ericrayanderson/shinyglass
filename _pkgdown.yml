@@ -22,11 +22,11 @@ home:
         text: |
           [Source code](https://github.com/ericrayanderson/shinyglass)
           [Report a bug](https://github.com/ericrayanderson/shinyglass/issues)
-          [Harbor notes](https://ericrayanderson.shinyapps.io/shinyglass-chat/) ·
-          [Basics](https://ericrayanderson.shinyapps.io/shinyglass-demo/) ·
-          [Dashboard](https://ericrayanderson.shinyapps.io/shinyglass-dashboard/) ·
-          [Inputs](https://ericrayanderson.shinyapps.io/shinyglass-inputs/) ·
-          [Olympics](https://ericrayanderson.shinyapps.io/shinyglass-olympics/)
+          [Harbor notes](https://ericrayanderson.shinyapps.io/glass-chat/) ·
+          [Basics](https://ericrayanderson.shinyapps.io/glass-demo/) ·
+          [Dashboard](https://ericrayanderson.shinyapps.io/glass-dashboard/) ·
+          [Inputs](https://ericrayanderson.shinyapps.io/glass-inputs/) ·
+          [Olympics](https://ericrayanderson.shinyapps.io/glass-olympics/)
 
 navbar:
   structure:
