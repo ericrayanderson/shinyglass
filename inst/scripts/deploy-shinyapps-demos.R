@@ -19,15 +19,15 @@
 #   Rscript inst/scripts/deploy-shinyapps-demos.R --apps=all --dry-run
 #
 # core5 (the default) is the five-app shinyapps.io set:
-#   shinyglass-demo, shinyglass-dashboard, shinyglass-inputs,
-#   shinyglass-olympics, shinyglass-chat.
+#   glass-demo, glass-dashboard, glass-inputs,
+#   glass-olympics, glass-chat.
 # plotly_gt stays in the catalog. inst/examples/plotly-gt-demo.R stays a
 # local example. intensity stays in the catalog too. `all` lists every
 # catalog entry, which is more than the five hosted slots.
 #
 # After deploy, paste the printed URLs into README.md "Live demos".
 #
-# Harbor notes (`chat`, shinyapps name shinyglass-chat) answers with a
+# Harbor notes (`chat`, shinyapps name glass-chat) answers with a
 # local script unless GEMINI_API_KEY is set in the environment that runs
 # this script. The value is written to a temporary .Renviron in the chat
 # staging directory and is never printed. shinyapps.io rejects the
@@ -73,7 +73,7 @@ renviron_line <- function(name, value) {
 }
 
 stage_chat_secret <- function(app_dir, app_name) {
-  if (!identical(app_name, "shinyglass-chat")) {
+  if (!identical(app_name, "glass-chat")) {
     return(invisible(FALSE))
   }
   value <- Sys.getenv("GEMINI_API_KEY", "")
@@ -100,13 +100,13 @@ stage_chat_secret <- function(app_dir, app_name) {
 demo_catalog <- function(pkg_root) {
   list(
     demo = list(
-      appName = "shinyglass-demo",
+      appName = "glass-demo",
       source = file.path(pkg_root, "inst", "examples", "demo-app.R"),
       kind = "single",
       imports = c("shiny", "bslib", "ggplot2", "shinyglass")
     ),
     dashboard = list(
-      appName = "shinyglass-dashboard",
+      appName = "glass-dashboard",
       source = file.path(pkg_root, "inst", "examples", "bslib-dashboard.R"),
       kind = "single",
       imports = c("shiny", "bslib", "ggplot2", "DT", "shinyglass")
@@ -118,13 +118,13 @@ demo_catalog <- function(pkg_root) {
       imports = c("shiny", "bslib", "ggplot2", "shinyglass")
     ),
     inputs = list(
-      appName = "shinyglass-inputs",
+      appName = "glass-inputs",
       source = file.path(pkg_root, "inst", "examples", "inputs-gallery.R"),
       kind = "single",
       imports = c("shiny", "bslib", "shinyglass")
     ),
     olympics = list(
-      appName = "shinyglass-olympics",
+      appName = "glass-olympics",
       source = file.path(pkg_root, "inst", "shinyapps", "olympic-medals"),
       kind = "dreamrs",
       entry = "app-glass.R",
@@ -140,7 +140,7 @@ demo_catalog <- function(pkg_root) {
       imports = c("shiny", "bslib", "plotly", "gt", "waiter", "shinyglass")
     ),
     chat = list(
-      appName = "shinyglass-chat",
+      appName = "glass-chat",
       source = file.path(pkg_root, "inst", "examples", "shinychat-glass", "app.R"),
       kind = "single",
       imports = c("shiny", "bslib", "shinyglass", "shinychat", "ellmer", "later")
